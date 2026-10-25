@@ -32,8 +32,8 @@ class LocaleController extends Controller
             return redirect()->back()->with('error', __('Unsupported language.'));
         }
 
-        /** @var User|null $user */
-        $user = $request->user();
+        /** @var mixed $user */
+        $user = $request->user('admin') ?? $request->user();
         $activeLocale = $this->localizationService->setLocale($locale, $user);
 
         if ($request->expectsJson()) {

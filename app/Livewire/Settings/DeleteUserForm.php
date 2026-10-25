@@ -26,4 +26,9 @@ class DeleteUserForm extends Component
 
         $this->redirect('/', navigate: true);
     }
+
+    public function render()
+    {
+        return view('web.settings.delete-user-form');
+    }
 }

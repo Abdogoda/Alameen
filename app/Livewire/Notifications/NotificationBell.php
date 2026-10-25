@@ -67,7 +67,7 @@ class NotificationBell extends Component
         /** @var Collection<int, DatabaseNotification> $recentNotifications */
         $recentNotifications = $user !== null ? $service->getRecentNotifications($user, 6) : collect();
 
-        return view('livewire.notifications.notification-bell', [
+        return view('web.notifications.notification-bell', [
             'unreadCount' => $unreadCount,
             'recentNotifications' => $recentNotifications,
         ]);

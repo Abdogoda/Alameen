@@ -1,0 +1,417 @@
+/* ==========================================================================
+   AL-AMEEN PLATFORM - MODERN ANIMATION & TRANSITION SYSTEM
+   Speech Therapy & Education Theme (النطق والتخاطب)
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. BRANDED THEMATIC LOADER (Speech Sound Waves & Acoustic Equalizer)
+   -------------------------------------------------------------------------- */
+#alameen-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  background: radial-gradient(circle at center, #FFFFFF 0%, #FAFCFF 60%, #EAF1FB 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.45s, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+#alameen-loader.loader-hidden {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  transform: scale(1.03) !important;
+}
+
+/* Sound Wave Resonator Wrapper */
+.alameen-loader-resonator {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+/* Concentric Speech Resonance Rings */
+.alameen-voice-wave {
+  position: absolute;
+  border-radius: 9999px;
+  border: 2px solid rgba(1, 35, 131, 0.18);
+  pointer-events: none;
+  animation: voiceWavePulse 2.4s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+}
+
+.alameen-voice-wave:nth-child(1) {
+  width: 90px;
+  height: 90px;
+  animation-delay: 0s;
+  border-color: rgba(1, 35, 131, 0.35);
+}
+
+.alameen-voice-wave:nth-child(2) {
+  width: 120px;
+  height: 120px;
+  animation-delay: 0.6s;
+  border-color: rgba(11, 42, 143, 0.22);
+}
+
+.alameen-voice-wave:nth-child(3) {
+  width: 155px;
+  height: 155px;
+  animation-delay: 1.2s;
+  border-color: rgba(16, 183, 127, 0.25);
+}
+
+@keyframes voiceWavePulse {
+  0% {
+    transform: scale(0.65);
+    opacity: 0.8;
+  }
+  50% {
+    opacity: 0.4;
+  }
+  100% {
+    transform: scale(1.35);
+    opacity: 0;
+  }
+}
+
+/* Central Themed Logo Capsule */
+.alameen-loader-logo-capsule {
+  position: relative;
+  z-index: 10;
+  width: 82px;
+  height: 82px;
+  background: #FFFFFF;
+  border-radius: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 16px 36px -6px rgba(1, 35, 131, 0.18), 0 0 0 1px rgba(222, 232, 247, 0.9);
+  animation: floatLogo 3s ease-in-out infinite;
+}
+
+@keyframes floatLogo {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.alameen-loader-logo-capsule img {
+  width: 52px;
+  height: 52px;
+  object-contain: contain;
+}
+
+/* Speech Therapy Harmonic Equalizer Bars */
+.alameen-loader-equalizer {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  height: 28px;
+  margin-bottom: 16px;
+}
+
+.alameen-eq-bar {
+  width: 4px;
+  border-radius: 9999px;
+  background: linear-gradient(180deg, #012383 0%, #10B77F 100%);
+  animation: eqBounce 1.2s ease-in-out infinite alternate;
+}
+
+.alameen-eq-bar:nth-child(1) { height: 12px; animation-delay: 0.0s; }
+.alameen-eq-bar:nth-child(2) { height: 24px; animation-delay: 0.2s; }
+.alameen-eq-bar:nth-child(3) { height: 16px; animation-delay: 0.4s; }
+.alameen-eq-bar:nth-child(4) { height: 26px; animation-delay: 0.15s; }
+.alameen-eq-bar:nth-child(5) { height: 14px; animation-delay: 0.35s; }
+
+@keyframes eqBounce {
+  0% {
+    transform: scaleY(0.3);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+
+/* Themed Brand Labels */
+.alameen-loader-title {
+  font-family: 'Baloo Bhaijaan 2', cursive, sans-serif;
+  font-size: 26px;
+  font-weight: 800;
+  color: #012383;
+  letter-spacing: -0.5px;
+  margin-bottom: 4px;
+  text-align: center;
+}
+
+.alameen-loader-subtitle {
+  font-family: 'Cairo', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #0B2A8F;
+  background: linear-gradient(90deg, #012383 0%, #0B2A8F 50%, #10B77F 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: 200% auto;
+  animation: shimmerGradient 2.5s linear infinite;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+@keyframes shimmerGradient {
+  to {
+    background-position: 200% center;
+  }
+}
+
+/* Ambient Loading Track */
+.alameen-loader-track {
+  width: 180px;
+  height: 4px;
+  background: rgba(222, 232, 247, 0.8);
+  border-radius: 9999px;
+  overflow: hidden;
+  position: relative;
+}
+
+.alameen-loader-indicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 50%;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, #012383 0%, #10B77F 100%);
+  animation: loadingBarSlide 1.5s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+@keyframes loadingBarSlide {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(350%);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   2. SCROLL PROGRESS BAR (Pinned to Top)
+   -------------------------------------------------------------------------- */
+#alameen-scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  width: 0%;
+  z-index: 99998;
+  background: linear-gradient(90deg, #012383 0%, #0B2A8F 45%, #2563EB 80%, #10B77F 100%);
+  box-shadow: 0 1px 8px rgba(1, 35, 131, 0.35);
+  transition: width 0.08s ease-out;
+  pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   3. SCROLL REVEAL ANIMATIONS (IntersectionObserver-Driven)
+   -------------------------------------------------------------------------- */
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(26px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1), filter 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.reveal-on-scroll.revealed {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-30px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal-left.revealed {
+  opacity: 1 !important;
+  transform: translateX(0) !important;
+}
+
+.reveal-right {
+  opacity: 0;
+  transform: translateX(30px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal-right.revealed {
+  opacity: 1 !important;
+  transform: translateX(0) !important;
+}
+
+.reveal-zoom {
+  opacity: 0;
+  transform: scale(0.94);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal-zoom.revealed {
+  opacity: 1 !important;
+  transform: scale(1) !important;
+}
+
+/* Stagger Delays */
+.delay-75 { transition-delay: 75ms; }
+.delay-150 { transition-delay: 150ms; }
+.delay-200 { transition-delay: 200ms; }
+.delay-300 { transition-delay: 300ms; }
+.delay-400 { transition-delay: 400ms; }
+
+/* --------------------------------------------------------------------------
+   4. HOVER & TRANSITION EFFECTS (Cards, Buttons, Tables)
+   -------------------------------------------------------------------------- */
+/* Universal Card Hover Elevation */
+.hover-lift {
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.28s ease !important;
+  will-change: transform, box-shadow;
+}
+
+.hover-lift:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 18px 36px -8px rgba(1, 35, 131, 0.12), 0 6px 14px -3px rgba(11, 42, 143, 0.05) !important;
+  border-color: #93C5FD !important;
+}
+
+/* Button Shimmer Effect */
+.btn-shine {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.btn-shine::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -70%;
+  width: 50%;
+  height: 200%;
+  background: linear-gradient(
+    60deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.28) 50%,
+    transparent 100%
+  );
+  transform: rotate(25deg);
+  pointer-events: none;
+  transition: transform 0.75s ease;
+}
+
+.btn-shine:hover::after {
+  transform: rotate(25deg) translate(300%, 0);
+}
+
+.btn-shine:active {
+  transform: scale(0.97) !important;
+}
+
+/* Subtle Interactive Scale */
+.hover-scale {
+  transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.hover-scale:hover {
+  transform: scale(1.04);
+}
+
+/* Interactive Badge Pulse on Hover */
+.badge-interactive {
+  transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.badge-interactive:hover {
+  transform: translateY(-1.5px) scale(1.02);
+  box-shadow: 0 4px 10px rgba(1, 35, 131, 0.1);
+}
+
+/* Table Row Smooth Highlight */
+tr.table-row-hover {
+  transition: background-color 0.2s ease;
+}
+
+tr.table-row-hover:hover {
+  background-color: rgba(234, 241, 251, 0.6) !important;
+}
+
+/* --------------------------------------------------------------------------
+   5. BACK TO TOP BUTTON
+   -------------------------------------------------------------------------- */
+#alameen-back-to-top {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  background: #012383;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 24px -4px rgba(1, 35, 131, 0.35);
+  z-index: 99990;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(16px) scale(0.9);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#alameen-back-to-top.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+}
+
+#alameen-back-to-top:hover {
+  background: #0B2A8F;
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 14px 28px -4px rgba(1, 35, 131, 0.45);
+}
+
+#alameen-back-to-top:active {
+  transform: scale(0.95);
+}
+
+/* RTL adjustment if needed */
+html[dir="rtl"] #alameen-back-to-top {
+  right: auto;
+  left: 28px;
+}
+
+/* Page Entrance Soft Transition */
+.page-fade-in {
+  animation: pageEntrance 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes pageEntrance {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

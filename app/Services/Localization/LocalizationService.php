@@ -65,7 +65,7 @@ class LocalizationService
     /**
      * Set the application locale and persist it across session, cookie, and user profile.
      */
-    public function setLocale(string $locale, ?User $user = null): string
+    public function setLocale(string $locale, mixed $user = null): string
     {
         $normalized = strtolower($locale);
 
@@ -86,7 +86,7 @@ class LocalizationService
             (int) config('localization.cookie_lifetime', 525600)
         );
 
-        if ($user !== null) {
+        if ($user !== null && method_exists($user, 'update')) {
             $user->update(['locale' => $normalized]);
         }
 
@@ -112,8 +112,8 @@ class LocalizationService
             }
 
             // Fallback to authenticated user's saved preference
-            /** @var User|null $user */
-            $user = $request->user();
+            /** @var mixed $user */
+            $user = $request->user('admin') ?? $request->user();
             if ($user !== null && ! empty($user->locale) && $this->isSupported($user->locale)) {
                 return strtolower($user->locale);
             }
@@ -135,8 +135,8 @@ class LocalizationService
         }
 
         // 3. Authenticated user preference
-        /** @var User|null $user */
-        $user = $request->user();
+        /** @var mixed $user */
+        $user = $request->user('admin') ?? $request->user();
         if ($user !== null && ! empty($user->locale) && $this->isSupported($user->locale)) {
             return strtolower($user->locale);
         }

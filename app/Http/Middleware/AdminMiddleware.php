@@ -19,10 +19,9 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        /** @var User|null $user */
-        $user = $request->user();
+        $isAdmin = auth('admin')->check() || ($request->user() instanceof \App\Models\Admin);
 
-        if ($user === null || ! $user->isAdmin()) {
+        if (! $isAdmin) {
             if ($request->is('api/*') || $request->expectsJson()) {
                 return ApiResponse::error(
                     __('messages.unauthorized') !== 'messages.unauthorized'
@@ -32,7 +31,7 @@ class AdminMiddleware
                 );
             }
 
-            abort(403, 'Unauthorized access. Administrator privileges required.');
+            return redirect()->guest(route('admin.login'));
         }
 
         return $next($request);

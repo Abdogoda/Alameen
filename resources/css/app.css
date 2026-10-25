@@ -2,6 +2,8 @@
 @import '../../vendor/livewire/flux/dist/flux.css';
 
 @source '../views';
+@source '../../app/Livewire/**/*.php';
+@source '../../public/frontend/**/*.html';
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../vendor/livewire/flux-pro/stubs/**/*.blade.php';
 @source '../../vendor/livewire/flux/stubs/**/*.blade.php';
@@ -9,7 +11,16 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-    --font-sans: 'Instrument Sans', 'Cairo', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans: 'Cairo', 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
+    --font-display: 'Baloo Bhaijaan 2', cursive, sans-serif;
+    --font-body: 'Cairo', sans-serif;
+
+    --color-brand-navy: #012383;
+    --color-primary-navy: #0B2A8F;
+    --color-surface-soft: #EAF1FB;
+    --color-bg-header: #FAFCFF;
+    --color-border-divider: #DEE8F7;
+    --color-pale-blue: #CFDBEA;
 
     --color-zinc-50: #fafafa;
     --color-zinc-100: #f5f5f5;
@@ -23,38 +34,37 @@
     --color-zinc-900: #171717;
     --color-zinc-950: #0a0a0a;
 
-    --color-accent: var(--color-zinc-800);
-    --color-accent-content: var(--color-zinc-800);
-    --color-accent-foreground: var(--color-white);
+    --color-accent: #012383;
+    --color-accent-content: #012383;
+    --color-accent-foreground: #ffffff;
 }
 
 @layer theme {
     .dark {
-        --color-accent: var(--color-white);
-        --color-accent-content: var(--color-white);
-        --color-accent-foreground: var(--color-zinc-900);
+        --color-accent: #012383;
+        --color-accent-content: #012383;
+        --color-accent-foreground: #ffffff;
     }
 }
 
 .dark {
-    --color-accent: var(--color-white);
-    --color-accent-content: var(--color-white);
-    --color-accent-foreground: var(--color-zinc-900);
+    --color-accent: #012383;
+    --color-accent-content: #012383;
+    --color-accent-foreground: #ffffff;
 }
 
-/* Ensure default Flux primary buttons have high-contrast text in dark mode */
-.dark [data-flux-button][class*="bg-[var(--color-accent)]"],
-.dark button[class*="bg-[var(--color-accent)]"],
-:where(.dark, .dark *) [data-flux-button][class*="bg-[var(--color-accent)]"],
-:where(.dark, .dark *) button[class*="bg-[var(--color-accent)]"] {
-    color: var(--color-zinc-900) !important;
-}
-
-.dark [data-flux-button][class*="bg-[var(--color-accent)]"] > span,
-.dark button[class*="bg-[var(--color-accent)]"] > span,
-:where(.dark, .dark *) [data-flux-button][class*="bg-[var(--color-accent)]"] > span,
-:where(.dark, .dark *) button[class*="bg-[var(--color-accent)]"] > span {
-    color: var(--color-zinc-900) !important;
+/* Ensure buttons on dark/navy backgrounds have pure white text */
+button[class*="bg-[#012383]"],
+button[class*="bg-[#0B2A8F]"],
+button[class*="bg-[#0b2a8f]"],
+a[class*="bg-[#012383]"],
+a[class*="bg-[#0B2A8F]"],
+a[class*="bg-[#0b2a8f]"],
+button.text-white,
+a.text-white,
+button.text-white *,
+a.text-white * {
+    color: #ffffff !important;
 }
 
 @layer base {

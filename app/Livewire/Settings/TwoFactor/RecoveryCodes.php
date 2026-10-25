@@ -41,4 +41,9 @@ class RecoveryCodes extends Component
             $this->recoveryCodes = $twoFactorService->getRecoveryCodes($user);
         }
     }
+
+    public function render()
+    {
+        return view('web.settings.two-factor.recovery-codes');
+    }
 }

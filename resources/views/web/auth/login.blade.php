@@ -1,0 +1,130 @@
+<x-layouts::auth :title="__('تسجيل الدخول')">
+    <div class="flex flex-col gap-6 w-full text-start">
+        
+        <!-- Welcome Heading -->
+        <div class="flex flex-col gap-2 items-start w-full">
+            <p class="font-semibold text-[15px] leading-relaxed text-[#0B2A8F] w-full">
+                {{ __('مرحبًا بعودتك إلى الأمين') }}
+            </p>
+            <h1 class="font-['Cairo'] font-extrabold text-3xl sm:text-4xl text-[#012383] w-full leading-tight">
+                {{ __('تسجيل الدخول') }}
+            </h1>
+            <p class="font-normal text-[15px] text-[#475569] w-full">
+                {{ __('سجّل دخولك لمتابعة رحلتك التعليمية.') }}
+            </p>
+        </div>
+
+        <!-- Session Status -->
+        <x-auth-session-status class="text-start" :status="session('status')" />
+
+        <!-- Passkey verification -->
+        <x-passkey-verify />
+
+        <!-- Login Form -->
+        <form method="POST" action="{{ route('login.store') }}" class="flex flex-col gap-5 w-full">
+            @csrf
+
+            <!-- Email Field -->
+            <div class="flex flex-col gap-1.5 items-start w-full">
+                <label for="email" class="font-bold text-[15px] text-[#012383] block">
+                    {{ __('البريد الإلكتروني') }}
+                </label>
+                <div class="w-full relative">
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        value="{{ old('email') }}"
+                        required
+                        autofocus
+                        autocomplete="email"
+                        placeholder="name@example.com"
+                        class="w-full h-[52px] px-4 rounded-xl bg-white border border-[#DEE8F7] focus:border-[#0B2A8F] focus:ring-2 focus:ring-[#0B2A8F]/10 text-sm text-[#475569] outline-none transition-all placeholder:text-slate-400"
+                    />
+                </div>
+                @error('email')
+                    <p class="text-xs text-rose-600 font-semibold mt-0.5">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <!-- Password Field -->
+            <div class="flex flex-col gap-1.5 items-start w-full" x-data="{ show: false }">
+                <label for="password" class="font-bold text-[15px] text-[#012383] block">
+                    {{ __('كلمة المرور') }}
+                </label>
+                <div class="w-full relative flex items-center">
+                    <input
+                        :type="show ? 'text' : 'password'"
+                        id="password"
+                        name="password"
+                        required
+                        autocomplete="current-password"
+                        placeholder="{{ __('أدخل كلمة المرور') }}"
+                        class="w-full h-[52px] ps-4 pe-12 rounded-xl bg-white border border-[#DEE8F7] focus:border-[#0B2A8F] focus:ring-2 focus:ring-[#0B2A8F]/10 text-sm text-[#475569] outline-none transition-all placeholder:text-slate-400"
+                    />
+                    <button
+                        type="button"
+                        @click="show = !show"
+                        class="absolute end-3 top-1/2 -translate-y-1/2 size-9 flex items-center justify-center text-slate-400 hover:text-[#012383] transition-colors cursor-pointer"
+                        aria-label="Toggle password visibility"
+                    >
+                        <svg x-show="!show" class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                        <svg x-show="show" x-cloak class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"/></svg>
+                    </button>
+                </div>
+                @error('password')
+                    <p class="text-xs text-rose-600 font-semibold mt-0.5">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <!-- Login Preferences: Remember me & Forgot Password -->
+            <div class="flex items-center justify-between h-10 w-full">
+                <label class="flex items-center gap-2 cursor-pointer select-none">
+                    <input
+                        type="checkbox"
+                        name="remember"
+                        id="remember"
+                        class="size-4 rounded border border-[#CFDBEA] text-[#0B2A8F] accent-[#0B2A8F] cursor-pointer"
+                        {{ old('remember', true) ? 'checked' : '' }}
+                    />
+                    <span class="font-normal text-sm text-[#475569]">
+                        {{ __('تذكرني') }}
+                    </span>
+                </label>
+
+                @if (Route::has('password.request'))
+                    <a href="{{ route('password.request') }}" class="font-bold text-sm text-[#0B2A8F] hover:underline whitespace-nowrap" wire:navigate>
+                        {{ __('نسيت كلمة المرور؟') }}
+                    </a>
+                @endif
+            </div>
+
+            <!-- Submit Button -->
+            <div class="flex flex-col gap-4 w-full mt-2">
+                <button
+                    type="submit"
+                    class="w-full h-14 rounded-2xl bg-[#0B2A8F] hover:bg-[#012383] !text-white font-['Cairo'] font-bold text-base shadow-md hover:shadow-lg transition-all duration-200 cursor-pointer active:scale-[0.99] flex items-center justify-center text-white"
+                    style="color: #ffffff !important;"
+                    data-test="login-button"
+                >
+                    <span class="text-white" style="color: #ffffff !important;">{{ __('تسجيل الدخول') }}</span>
+                </button>
+
+                <p class="font-normal text-sm text-center w-full text-[#475569]">
+                    <span>{{ __('ليس لديك حساب؟') }} </span>
+                    <a href="{{ route('register') }}" class="font-bold text-[#0B2A8F] underline hover:text-[#012383] transition-colors" wire:navigate>
+                        {{ __('إنشاء حساب') }}
+                    </a>
+                </p>
+
+                <div class="pt-4 border-t border-[#DEE8F7] text-center w-full">
+                    <a href="{{ route('admin.login') }}" class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-[#012383] transition-colors">
+                        <svg class="size-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                        <span>{{ __('بوابة الإدارة والمشرفين') }}</span>
+                    </a>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</x-layouts::auth>

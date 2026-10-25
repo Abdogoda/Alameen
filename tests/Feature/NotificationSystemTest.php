@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
+use App\Models\Admin;
 use App\Models\User;
 use App\Notifications\UnifiedNotification;
 use App\Services\Notification\NotificationService;
@@ -35,7 +36,7 @@ class NotificationSystemTest extends TestCase
 
         $notification = $user->fresh()->notifications->first();
         $this->assertNotNull($notification);
-        $this->assertEquals('Welcome to Laravel!', $notification->data['title']);
+        $this->assertEquals('Welcome to '.config('app.name').'!', $notification->data['title']);
         $this->assertEquals('success', $notification->data['type']);
         $this->assertEquals('https://example.com/welcome', $notification->data['action_url']);
         $this->assertEquals('Get Started', $notification->data['action_text']);
@@ -216,7 +217,7 @@ class NotificationSystemTest extends TestCase
 
     public function test_non_admin_cannot_access_admin_notification_api(): void
     {
-        $user = User::factory()->create(['is_admin' => false]);
+        $user = User::factory()->create();
         Sanctum::actingAs($user);
 
         $this->getJson('/api/v1/admin/notifications')->assertForbidden();
@@ -229,7 +230,7 @@ class NotificationSystemTest extends TestCase
 
     public function test_admin_can_send_notification_via_api(): void
     {
-        $admin = User::factory()->admin()->create();
+        $admin = Admin::factory()->create();
         $user = User::factory()->create(['locale' => 'ar']);
 
         Sanctum::actingAs($admin);
@@ -258,7 +259,7 @@ class NotificationSystemTest extends TestCase
 
     public function test_admin_can_view_stats_and_delete_notifications_via_api(): void
     {
-        $admin = User::factory()->admin()->create();
+        $admin = Admin::factory()->create();
         $user = User::factory()->create();
         $service = app(NotificationService::class);
 
@@ -286,8 +287,8 @@ class NotificationSystemTest extends TestCase
 
     public function test_web_routes_authorization(): void
     {
-        $user = User::factory()->create(['is_admin' => false]);
-        $admin = User::factory()->admin()->create();
+        $user = User::factory()->create();
+        $admin = Admin::factory()->create();
 
         // User can access their notification inbox
         $this->actingAs($user)
@@ -297,10 +298,10 @@ class NotificationSystemTest extends TestCase
         // Non-admin cannot access admin notifications
         $this->actingAs($user)
             ->get(route('admin.notifications.index'))
-            ->assertForbidden();
+            ->assertRedirect(route('admin.login'));
 
         // Admin can access admin notifications
-        $this->actingAs($admin)
+        $this->actingAs($admin, 'admin')
             ->get(route('admin.notifications.index'))
             ->assertOk();
     }

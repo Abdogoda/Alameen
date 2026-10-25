@@ -21,32 +21,88 @@ class PhpFileLoader extends FileLoader
     }
 
     /**
-     * Load messages for string keys from PHP translation files instead of JSON.
+     * Load messages for string keys exclusively from PHP translation files.
      *
      * @param  string  $locale
      * @return array<string, string|array<mixed>>
      */
     protected function loadJsonPaths($locale)
     {
-        return (new Collection($this->paths))
-            ->reduce(function (array $output, string $path) use ($locale): array {
-                $dir = "{$path}/{$locale}";
+        /** @var array<string, string> $output */
+        $output = [];
 
-                if (! $this->files->isDirectory($dir)) {
-                    return $output;
+        // 1. Load standard lang/{locale}/*.php files
+        foreach ($this->paths as $path) {
+            $dir = "{$path}/{$locale}";
+
+            if (! $this->files->isDirectory($dir)) {
+                continue;
+            }
+
+            foreach ($this->files->files($dir) as $file) {
+                if ($file->getExtension() === 'php') {
+                    $prefix = $file->getBasename('.php');
+                    $lines = $this->files->getRequire($file->getRealPath());
+
+                    if (is_array($lines)) {
+                        // Flatten with file prefix so __('landing.heroTitle') works
+                        $output = array_replace($output, $this->flatten($lines, $prefix));
+                        // Also register direct root keys so __('Save') or __('الرئيسية') works
+                        $output = array_replace($output, $this->flatten($lines));
+                    }
+                }
+            }
+        }
+
+        // 2. If English locale, cross-map Arabic string keys to English translations from PHP files
+        if ($locale === 'en') {
+            foreach ($this->paths as $path) {
+                $arDir = "{$path}/ar";
+                $enDir = "{$path}/en";
+
+                if (! $this->files->isDirectory($arDir) || ! $this->files->isDirectory($enDir)) {
+                    continue;
                 }
 
-                foreach ($this->files->files($dir) as $file) {
-                    if ($file->getExtension() === 'php') {
-                        $lines = $this->files->getRequire($file->getRealPath());
+                foreach ($this->files->files($arDir) as $arFile) {
+                    $base = $arFile->getBasename();
+                    $enFilePath = "{$enDir}/{$base}";
 
-                        if (is_array($lines)) {
-                            $output = array_replace($output, $lines);
+                    if ($this->files->exists($enFilePath)) {
+                        $arLines = $this->flatten($this->files->getRequire($arFile->getRealPath()));
+                        $enLines = $this->flatten($this->files->getRequire($enFilePath));
+
+                        foreach ($arLines as $k => $arText) {
+                            if (is_string($arText) && $arText !== '' && isset($enLines[$k]) && is_string($enLines[$k])) {
+                                $output[$arText] = $enLines[$k];
+                            }
                         }
                     }
                 }
+            }
+        }
 
-                return $output;
-            }, []);
+        return $output;
+    }
+
+    /**
+     * Flatten multi-dimensional array into dot-notated string keys.
+     *
+     * @param  array<string, mixed>  $array
+     * @return array<string, string>
+     */
+    protected function flatten(array $array, string $prefix = ''): array
+    {
+        $result = [];
+        foreach ($array as $key => $value) {
+            $fullKey = $prefix === '' ? (string) $key : "{$prefix}.{$key}";
+            if (is_array($value)) {
+                $result = array_replace($result, $this->flatten($value, $fullKey));
+            } elseif (is_string($value)) {
+                $result[$fullKey] = $value;
+            }
+        }
+
+        return $result;
     }
 }

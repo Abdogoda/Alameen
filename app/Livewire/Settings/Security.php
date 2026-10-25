@@ -288,4 +288,9 @@ class Security extends Component
             'buttonText' => __('Continue'),
         ];
     }
+
+    public function render()
+    {
+        return view('web.settings.security')->layout('web.layouts.app');
+    }
 }

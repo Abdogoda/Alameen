@@ -79,7 +79,7 @@ class NotificationInbox extends Component
         $notifications = $service->getUserNotifications($user, 15, $type, $unreadOnly);
         $unreadCount = $service->getUnreadCount($user);
 
-        return view('livewire.notifications.notification-inbox', [
+        return view('web.notifications.notification-inbox', [
             'notifications' => $notifications,
             'unreadCount' => $unreadCount,
         ]);

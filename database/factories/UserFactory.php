@@ -31,21 +31,10 @@ class UserFactory extends Factory
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
             'locale' => 'en',
-            'is_admin' => false,
             'two_factor_secret' => null,
             'two_factor_recovery_codes' => null,
             'two_factor_confirmed_at' => null,
         ];
-    }
-
-    /**
-     * Indicate that the user is an administrator.
-     */
-    public function admin(): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'is_admin' => true,
-        ]);
     }
 
     /**

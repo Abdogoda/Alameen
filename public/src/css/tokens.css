@@ -1,0 +1,309 @@
+:root {
+  /* Primitive Colors (Extracted from Figma 1:249) */
+  --color-brand-navy: #012383;
+  --color-primary-navy: #0B2A8F;
+  --color-body-slate: #334155;
+  --color-surface-soft: #EAF1FB;
+  --color-bg-header: #FAFCFF;
+  --color-border-divider: #DEE8F7;
+  --color-pale-blue: #CFDBEA;
+  --color-white: #FFFFFF;
+
+  /* Photo Support & Contrast Colors */
+  --color-photo-1: #DCE8F2;
+  --color-photo-2: #152D4D;
+  --color-photo-3: #EDF2F7;
+  --color-photo-4: #203C60;
+
+  /* Shadows */
+  --shadow-subtle: 0px 4px 20px rgba(1, 35, 131, 0.04);
+  --shadow-card: 0px 8px 30px rgba(11, 42, 143, 0.06);
+  --shadow-certificate: 0px 20px 60px rgba(1, 35, 131, 0.08);
+
+  /* Radii */
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
+}
+
+/* Bi-directional Dynamic Fonts */
+:root[lang="ar"],
+html[dir="rtl"] {
+  --font-display: 'Baloo Bhaijaan 2', cursive, sans-serif;
+  --font-body: 'Cairo', sans-serif;
+}
+
+:root[lang="en"],
+html[dir="ltr"] {
+  --font-display: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--color-body-slate);
+  background-color: #F8FAFC;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+.font-body {
+  font-family: var(--font-body);
+}
+
+/* Guarantee white text color on all dark/navy buttons */
+button[class*="bg-[#012383]"],
+button[class*="bg-[#0B2A8F]"],
+button[class*="bg-[#0b2a8f]"],
+a[class*="bg-[#012383]"],
+a[class*="bg-[#0B2A8F]"],
+a[class*="bg-[#0b2a8f]"],
+button.text-white,
+a.text-white,
+button.text-white *,
+a.text-white * {
+  color: #FFFFFF !important;
+}
+
+/* Logical RTL Flipping Helpers */
+[dir="rtl"] .rtl-flip {
+  transform: scaleX(-1);
+}
+
+[dir="ltr"] .ltr-flip {
+  transform: scaleX(-1);
+}
+
+/* ========================================================
+   Landing Page Micro-Animations & Dynamic Motion Tokens
+   ======================================================== */
+
+@keyframes floatSlow {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(0.4deg);
+  }
+}
+
+@keyframes floatSlowReverse {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(6px) rotate(-0.4deg);
+  }
+}
+
+@keyframes pulseSoftGlow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(11, 42, 143, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 0 14px rgba(11, 42, 143, 0);
+  }
+}
+
+@keyframes voiceWave {
+  0%, 100% {
+    height: 6px;
+  }
+  50% {
+    height: 22px;
+  }
+}
+
+@keyframes scrollBounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(5px);
+  }
+  60% {
+    transform: translateY(3px);
+  }
+}
+
+@keyframes ambientGlowDrift {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translate(20px, -15px) scale(1.08);
+    opacity: 0.75;
+  }
+}
+
+.animate-float-slow {
+  animation: floatSlow 5s ease-in-out infinite;
+}
+
+.animate-float-reverse {
+  animation: floatSlowReverse 6s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulseSoftGlow 2.5s infinite;
+}
+
+.animate-scroll-bounce {
+  animation: scrollBounce 2s infinite;
+}
+
+.animate-ambient-glow {
+  animation: ambientGlowDrift 8s ease-in-out infinite;
+}
+
+.voice-wave-bar {
+  animation: voiceWave 1.2s ease-in-out infinite;
+}
+.voice-wave-bar:nth-child(2) { animation-delay: 0.15s; }
+.voice-wave-bar:nth-child(3) { animation-delay: 0.3s; }
+.voice-wave-bar:nth-child(4) { animation-delay: 0.45s; }
+.voice-wave-bar:nth-child(5) { animation-delay: 0.2s; }
+.voice-wave-bar:nth-child(6) { animation-delay: 0.35s; }
+
+/* Custom Cubic Bezier for Ultra-Smooth Slide Motion */
+.ease-apple {
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ========================================================
+   Cinematic Hero Slider Transitions (Creative & Ultra-Smooth)
+   ======================================================== */
+
+.hero-slider-canvas {
+  display: grid !important;
+  grid-template-columns: 100% !important;
+  grid-template-rows: 1fr !important;
+  align-items: center;
+  position: relative;
+  width: 100%;
+  min-height: 520px;
+}
+
+@media (min-width: 1024px) {
+  .hero-slider-canvas {
+    min-height: 600px;
+  }
+}
+
+.hero-slide {
+  grid-column: 1 / -1;
+  grid-row: 1 / -1;
+  width: 100%;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: scale(0.96) translateY(14px);
+  filter: blur(8px);
+  transition: 
+    opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+    filter 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+    visibility 0.75s ease;
+  will-change: transform, opacity, filter;
+}
+
+.hero-slide.is-active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: scale(1) translateY(0);
+  filter: blur(0px);
+  z-index: 10;
+}
+
+/* Staggered Children Animations inside Active Slide */
+.hero-slide.is-active .slide-eyebrow {
+  animation: slideFadeDown 0.65s cubic-bezier(0.16, 1, 0.3, 1) both 0.08s;
+}
+
+.hero-slide.is-active .slide-title {
+  animation: slideFadeUp 0.75s cubic-bezier(0.16, 1, 0.3, 1) both 0.16s;
+}
+
+.hero-slide.is-active .slide-desc {
+  animation: slideFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) both 0.24s;
+}
+
+.hero-slide.is-active .slide-ctas {
+  animation: slideFadeUp 0.85s cubic-bezier(0.16, 1, 0.3, 1) both 0.32s;
+}
+
+.hero-slide.is-active .slide-visual {
+  animation: visualGlazeIn 0.9s cubic-bezier(0.16, 1, 0.3, 1) both 0.12s;
+}
+
+@keyframes slideFadeDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-14px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideFadeUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+    filter: blur(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes visualGlazeIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.92) translateY(16px);
+    filter: blur(6px);
+  }
+  60% {
+    filter: blur(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* ========================================================
+   Calm & Beautiful Scroll Reveal Micro-Animations
+   ======================================================== */
+
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: 
+    opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.reveal-on-scroll.is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+

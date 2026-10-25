@@ -1,0 +1,12 @@
+@import "tailwindcss";
+@import "./tokens.css";
+@import "./animations.css";
+
+/* Custom utility overrides */
+.certificate-brand-edge {
+  background: linear-gradient(180deg, #012383 0%, #0B2A8F 100%);
+}
+
+.arc-motif {
+  background: radial-gradient(circle, rgba(234, 241, 251, 0.8) 0%, rgba(207, 219, 234, 0.2) 70%, transparent 100%);
+}

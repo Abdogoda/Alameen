@@ -36,6 +36,46 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->configureDefaults();
+        $this->configureViewPaths();
+        $this->configureAuthorization();
+    }
+
+    /**
+     * Configure Gates and authorization logic for Admin guard and permissions.
+     */
+    protected function configureAuthorization(): void
+    {
+        \Illuminate\Support\Facades\Gate::before(function ($user, string $ability) {
+            if ($user instanceof \App\Models\Admin) {
+                if ($user->isSuperAdmin()) {
+                    return true;
+                }
+
+                return $user->hasPermission($ability) ? true : null;
+            }
+        });
+    }
+
+    /**
+     * Configure isolated view paths and component namespaces for web and admin.
+     */
+    protected function configureViewPaths(): void
+    {
+        \Illuminate\Support\Facades\View::addNamespace('web', resource_path('views/web'));
+        \Illuminate\Support\Facades\View::addNamespace('admin', resource_path('views/admin'));
+        \Illuminate\Support\Facades\View::addLocation(resource_path('views/web'));
+        \Illuminate\Support\Facades\View::addLocation(resource_path('views/admin'));
+
+        \Illuminate\Support\Facades\Blade::anonymousComponentPath(resource_path('views/web/components'));
+        \Illuminate\Support\Facades\Blade::anonymousComponentPath(resource_path('views/web/components'), 'components');
+        \Illuminate\Support\Facades\Blade::anonymousComponentPath(resource_path('views/web/components'), 'web');
+        \Illuminate\Support\Facades\Blade::anonymousComponentPath(resource_path('views/web/layouts'));
+        \Illuminate\Support\Facades\Blade::anonymousComponentPath(resource_path('views/web/layouts'), 'layouts');
+        \Illuminate\Support\Facades\Blade::anonymousComponentPath(resource_path('views/web/layouts'), 'web-layouts');
+        \Illuminate\Support\Facades\Blade::anonymousComponentPath(resource_path('views/admin/layouts'), 'admin-layouts');
+        \Illuminate\Support\Facades\Blade::anonymousComponentPath(resource_path('views/admin/layouts'), 'admin-layout');
+        \Illuminate\Support\Facades\Blade::anonymousComponentPath(resource_path('views/admin/components'), 'admin');
+        \Illuminate\Support\Facades\Blade::anonymousComponentPath(resource_path('views/admin/components'), 'admin-components');
     }
 
     /**

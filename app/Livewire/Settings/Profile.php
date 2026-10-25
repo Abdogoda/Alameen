@@ -95,4 +95,9 @@ class Profile extends Component
 
         return ! $user instanceof MustVerifyEmail || $user->hasVerifiedEmail();
     }
+
+    public function render()
+    {
+        return view('web.settings.profile')->layout('web.layouts.app');
+    }
 }

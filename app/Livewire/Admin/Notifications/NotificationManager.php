@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Livewire\Admin\Notifications;
 
+use App\Models\Admin;
 use App\Models\User;
 use App\Services\Notification\NotificationService;
 use Illuminate\Contracts\View\View;
@@ -12,7 +13,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-#[Layout('layouts.app')]
+#[Layout('admin.layouts.admin')]
 class NotificationManager extends Component
 {
     use WithPagination;
@@ -76,9 +77,9 @@ class NotificationManager extends Component
      */
     public function mount(): void
     {
-        /** @var User|null $user */
-        $user = auth()->user();
-        if ($user === null || ! $user->isAdmin()) {
+        /** @var Admin|null $admin */
+        $admin = auth('admin')->user();
+        if ($admin === null || ! $admin->hasPermission('notifications.send')) {
             abort(403, 'Unauthorized access.');
         }
     }
@@ -108,9 +109,9 @@ class NotificationManager extends Component
             ];
         }
 
-        /** @var User $currentUser */
-        $currentUser = auth()->user();
-        $senderId = $currentUser->id;
+        /** @var Admin|null $admin */
+        $admin = auth('admin')->user();
+        $senderId = $admin?->id;
 
         if ($this->target === 'all') {
             $service->sendToAll(
@@ -165,7 +166,7 @@ class NotificationManager extends Component
         /** @var Collection<int, User> $users */
         $users = User::query()->select('id', 'name', 'email')->orderBy('name')->limit(100)->get();
 
-        return view('livewire.admin.notifications.notification-manager', [
+        return view('admin.notifications.notification-manager', [
             'stats' => $stats,
             'history' => $history,
             'users' => $users,

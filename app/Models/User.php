@@ -21,6 +21,7 @@ use Laravel\Sanctum\HasApiTokens;
  * @property string $name
  * @property string $email
  * @property string $locale
+ * @property bool $is_admin
  * @property Carbon|null $email_verified_at
  * @property string $password
  * @property string|null $two_factor_secret
@@ -30,7 +31,7 @@ use Laravel\Sanctum\HasApiTokens;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-#[Fillable(['name', 'email', 'password', 'locale'])]
+#[Fillable(['name', 'email', 'password', 'locale', 'is_admin'])]
 #[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
 class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
 {
@@ -48,7 +49,16 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'locale' => 'string',
+            'is_admin' => 'boolean',
         ];
+    }
+
+    /**
+     * Determine if the user is an administrator.
+     */
+    public function isAdmin(): bool
+    {
+        return (bool) $this->is_admin;
     }
 
     /**

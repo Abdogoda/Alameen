@@ -13,6 +13,11 @@
                 <flux:navbar.item icon="layout-grid" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
                     {{ __('Dashboard') }}
                 </flux:navbar.item>
+                @if (auth()->check() && auth()->user()->isAdmin())
+                    <flux:navbar.item icon="bell" :href="route('admin.notifications.index')" :current="request()->routeIs('admin.notifications.*')" wire:navigate>
+                        {{ __('notifications.admin.title') }}
+                    </flux:navbar.item>
+                @endif
             </flux:navbar>
 
             <flux:spacer />
@@ -39,6 +44,7 @@
                         :label="__('Documentation')"
                     />
                 </flux:tooltip>
+                <livewire:notifications.notification-bell />
                 <x-language-switcher />
             </flux:navbar>
 

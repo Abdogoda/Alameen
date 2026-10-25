@@ -31,5 +31,7 @@ return [
     'Repository' => 'المستودع',
     'Documentation' => 'التوثيق',
     'Search' => 'بحث',
-
+    'Notifications' => 'الإشعارات',
+    'Admin' => 'لوحة الإدارة',
+    'Manage Notifications' => 'إدارة الإشعارات',
 ];

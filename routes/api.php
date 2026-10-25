@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\Auth\PasskeyController;
 use App\Http\Controllers\Api\Auth\PasswordController;
 use App\Http\Controllers\Api\Auth\TokenController;
 use App\Http\Controllers\Api\Auth\TwoFactorController;
+use App\Http\Controllers\Api\NotificationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -73,5 +74,28 @@ Route::prefix('v1/auth')->group(function () {
             Route::delete('/{id}', [TokenController::class, 'destroy']);
             Route::delete('/', [TokenController::class, 'destroyOthers']);
         });
+    });
+});
+
+/*
+|--------------------------------------------------------------------------
+| Notification API Routes (v1)
+|--------------------------------------------------------------------------
+*/
+Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
+    // User Notification Endpoints
+    Route::prefix('notifications')->group(function () {
+        Route::get('/', [NotificationController::class, 'index']);
+        Route::patch('/{id}/read', [NotificationController::class, 'markAsRead']);
+        Route::post('/read-all', [NotificationController::class, 'markAllAsRead']);
+        Route::delete('/{id}', [NotificationController::class, 'destroy']);
+    });
+
+    // Admin Notification Management Endpoints
+    Route::prefix('admin/notifications')->middleware('admin')->group(function () {
+        Route::get('/', [App\Http\Controllers\Api\Admin\NotificationController::class, 'index']);
+        Route::get('/stats', [App\Http\Controllers\Api\Admin\NotificationController::class, 'stats']);
+        Route::post('/send', [App\Http\Controllers\Api\Admin\NotificationController::class, 'send']);
+        Route::delete('/{id}', [App\Http\Controllers\Api\Admin\NotificationController::class, 'destroy']);
     });
 });

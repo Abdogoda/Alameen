@@ -19,6 +19,14 @@
         </div>
         <flux:menu.separator />
         <flux:menu.radio.group>
+            <flux:menu.item :href="route('notifications.index')" icon="bell" wire:navigate>
+                {{ __('notifications.notifications') }}
+            </flux:menu.item>
+            @if (auth()->check() && auth()->user()->isAdmin())
+                <flux:menu.item :href="route('admin.notifications.index')" icon="shield-check" wire:navigate>
+                    {{ __('notifications.admin.title') }}
+                </flux:menu.item>
+            @endif
             <flux:menu.item :href="route('profile.edit')" icon="cog" wire:navigate>
                 {{ __('Settings') }}
             </flux:menu.item>

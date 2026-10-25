@@ -15,6 +15,14 @@
                     <flux:sidebar.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
                         {{ __('Dashboard') }}
                     </flux:sidebar.item>
+                    <flux:sidebar.item icon="bell" :href="route('notifications.index')" :current="request()->routeIs('notifications.*')" wire:navigate>
+                        {{ __('notifications.notifications') }}
+                    </flux:sidebar.item>
+                    @if (auth()->check() && auth()->user()->isAdmin())
+                        <flux:sidebar.item icon="shield-check" :href="route('admin.notifications.index')" :current="request()->routeIs('admin.notifications.*')" wire:navigate>
+                            {{ __('notifications.admin.title') }}
+                        </flux:sidebar.item>
+                    @endif
                 </flux:sidebar.group>
             </flux:sidebar.nav>
 
@@ -38,6 +46,11 @@
             <flux:sidebar.toggle class="lg:hidden" icon="bars-2" inset="left" />
 
             <flux:spacer />
+
+            <div class="flex items-center gap-1">
+                <livewire:notifications.notification-bell />
+                <x-language-switcher />
+            </div>
 
             <flux:dropdown position="top" align="end">
                 <flux:profile

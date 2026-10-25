@@ -31,5 +31,7 @@ return [
     'Repository' => 'Repository',
     'Documentation' => 'Documentation',
     'Search' => 'Search',
-
+    'Notifications' => 'Notifications',
+    'Admin' => 'Admin',
+    'Manage Notifications' => 'Manage Notifications',
 ];

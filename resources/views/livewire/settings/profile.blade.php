@@ -24,6 +24,11 @@
                 @endif
             </div>
 
+            <flux:radio.group wire:model="locale" :label="__('Language')" variant="segmented">
+                <flux:radio value="en" label="English 🇺🇸" />
+                <flux:radio value="ar" label="العربية 🇸🇦" />
+            </flux:radio.group>
+
             <div class="flex items-center gap-4">
                 <flux:button variant="primary" type="submit">{{ __('Save') }}</flux:button>
             </div>

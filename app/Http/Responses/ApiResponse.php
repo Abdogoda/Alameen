@@ -11,11 +11,11 @@ class ApiResponse
     /**
      * Return a standardized success JSON response.
      */
-    public static function success(mixed $data = null, string $message = 'Operation successful.', int $status = 200): JsonResponse
+    public static function success(mixed $data = null, ?string $message = null, int $status = 200): JsonResponse
     {
         $response = [
             'success' => true,
-            'message' => $message,
+            'message' => $message ?? __('Operation successful.'),
         ];
 
         if ($data !== null) {
@@ -28,11 +28,11 @@ class ApiResponse
     /**
      * Return a standardized error JSON response.
      */
-    public static function error(string $message = 'An error occurred.', int $status = 400, mixed $errors = null): JsonResponse
+    public static function error(?string $message = null, int $status = 400, mixed $errors = null): JsonResponse
     {
         $response = [
             'success' => false,
-            'message' => $message,
+            'message' => $message ?? __('An error occurred.'),
         ];
 
         if ($errors !== null) {

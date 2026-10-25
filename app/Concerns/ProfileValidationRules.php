@@ -18,7 +18,18 @@ trait ProfileValidationRules
         return [
             'name' => $this->nameRules(),
             'email' => $this->emailRules($userId),
+            'locale' => $this->localeRules(),
         ];
+    }
+
+    /**
+     * Get the validation rules used to validate user language / locale.
+     *
+     * @return array<int, ValidationRule|array<mixed>|string>
+     */
+    protected function localeRules(): array
+    {
+        return ['nullable', 'string', 'in:en,ar'];
     }
 
     /**

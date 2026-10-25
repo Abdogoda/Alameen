@@ -138,7 +138,7 @@ return [
     'تصدير تقرير' => 'Export Report',
 
     // Student & Admin Auth Translations
-    'تسجيل الدخول' => 'Sign In',
+    'تسجيل الدخول' => 'Log in',
     'مرحبًا بعودتك إلى الأمين' => 'Welcome back to Al-Ameen',
     'سجّل دخولك لمتابعة رحلتك التعليمية.' => 'Sign in to continue your learning journey.',
     'البريد الإلكتروني' => 'Email Address',

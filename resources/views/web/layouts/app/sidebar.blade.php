@@ -1,7 +1,13 @@
+@props([
+    'title' => null,
+    'modals' => null,
+    'scripts' => null,
+])
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
     <head>
         @include('partials.head')
+        <title>{{ filled($title ?? null) ? $title . ' | ' . config('app.name', 'منصة الأمين') : config('app.name', 'منصة الأمين') }}</title>
         <link rel="stylesheet" href="/assets/css/admin.css" />
     </head>
     <body class="bg-[#F8FAFC] text-[#334155] min-h-screen flex flex-col font-['Cairo'] antialiased selection:bg-[#EAF1FB] selection:text-[#0B2A8F]" x-data="{ mobileSidebarOpen: false }">
@@ -33,7 +39,7 @@
                     <!-- Platform Brand & Role Badge -->
                     <div class="flex items-center justify-between border-b border-[#DEE8F7] pb-4">
                         <a href="{{ route('dashboard') }}" class="flex items-center gap-3 cursor-pointer" wire:navigate>
-                            <div class="size-11 rounded-xl bg-[#EAF1FB] flex items-center justify-center p-2 shrink-0 border border-[#DEE8F7]">
+                            <div class="size-11 rounded-xl bg-[#EAF1FB] dark:bg-white flex items-center justify-center p-2 shrink-0 border border-[#DEE8F7] dark:border-transparent shadow-xs">
                                 <img src="/assets/images/logo.png" alt="{{ config('app.name', 'منصة الأمين') }}" class="size-full object-contain pointer-events-none" />
                             </div>
                             <div>
@@ -157,14 +163,17 @@
                         </div>
                     </div>
 
-                    <!-- Left: Quick Actions, Notification Bell, Language, Profile -->
-                    <div class="flex items-center gap-3">
+                    <!-- Left: Quick Actions, Notification Bell, Theme Switcher, Language, Profile -->
+                    <div class="flex items-center gap-2 sm:gap-3">
                         
+                        <!-- Theme Switcher (Light / Dark / Device) -->
+                        <x-theme-switcher />
+
                         <!-- Notifications Bell (Livewire Component) -->
                         <livewire:notifications.notification-bell />
 
-                        <!-- Language Switcher Pill -->
-                        <x-language-switcher variant="pill" />
+                        <!-- Language Switcher Dropdown -->
+                        <x-language-switcher />
 
                         <!-- User Profile Summary & Dropdown -->
                         <div class="relative" x-data="{ userMenuOpen: false }">
@@ -210,6 +219,11 @@
                                     <span>{{ __('الملف الشخصي والإعدادات') }}</span>
                                 </a>
 
+                                <a href="{{ route('appearance.edit') }}" class="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-[#EAF1FB] hover:text-[#012383] transition-colors" wire:navigate>
+                                    <svg class="size-4 text-[#0B2A8F]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+                                    <span>{{ __('المظهر والموضوع') }}</span>
+                                </a>
+
                                 <a href="{{ route('security.edit') }}" class="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-[#EAF1FB] hover:text-[#012383] transition-colors" wire:navigate>
                                     <svg class="size-4 text-[#0B2A8F]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
                                     <span>{{ __('الأمان وكلمة المرور') }}</span>
@@ -245,6 +259,9 @@
                 <flux:toast />
             </flux:toast.group>
         @endpersist
+
+        {{ $modals ?? '' }}
+        {{ $scripts ?? '' }}
 
         @fluxScripts
     </body>

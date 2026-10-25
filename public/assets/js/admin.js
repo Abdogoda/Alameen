@@ -504,4 +504,17 @@ export function filterByPill(pillSelector, targetAttribute, tableBodyId) {
 if (typeof window !== 'undefined') {
   window.filterTableRows = filterTableRows;
   window.filterByPill = filterByPill;
+  if (!window.setTheme) {
+    window.setTheme = (theme) => {
+      if (window.AlameenTheme) {
+        window.AlameenTheme.setTheme(theme);
+      } else {
+        localStorage.setItem('alameen_theme', theme);
+        const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.classList.toggle('dark', isDark);
+        document.documentElement.setAttribute('data-theme', theme);
+      }
+    };
+  }
 }
+

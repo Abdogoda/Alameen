@@ -1,0 +1,25 @@
+<?php
+
+return [
+    'eyebrow' => 'دليل كورسات التخاطب للطلاب',
+    'heroTitle' => 'استكشف كورسات التخاطب للطلاب',
+    'heroDesc' => 'اختر مسارك التدريبي الأكاديمي والسريري في علوم التخاطب مع مناهج معتمدة وتطبيقات عملية شاملة للطلاب.',
+    'searchPlaceholder' => 'ابحث باسم الكورس، المحاضر، أو المهارة...',
+    'filterCategory' => 'تصنيف الكورس',
+    'filterLevel' => 'المستوى',
+    'filterDuration' => 'المدة',
+    'allCategories' => 'جميع التصنيفات',
+    'catSpeech' => 'تخاطب ونطق',
+    'catBehavior' => 'تعديل سلوك',
+    'catLearning' => 'صعوبات تعلّم',
+    'catEarly' => 'التدخل المبكر',
+    'levelBeginner' => 'مبتدئ',
+    'levelIntermediate' => 'متوسط',
+    'levelAdvanced' => 'متقدم',
+    'enrolledStudents' => 'طالب مسجل',
+    'lessonsCount' => 'درساً',
+    'hoursCount' => 'ساعات تدريبية',
+    'includedInPlan' => 'مشمول بالاشتراك',
+    'viewCourseDetails' => 'عرض تفاصيل الكورس',
+    'noCoursesFound' => 'لا توجد كورسات تطابق معايير البحث الحالية.',
+];

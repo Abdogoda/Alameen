@@ -1,0 +1,25 @@
+<?php
+
+return [
+    'eyebrow' => 'Course Catalog & Directory',
+    'heroTitle' => 'Explore Specialized Speech Therapy Courses',
+    'heroDesc' => 'Choose the optimal learning pathway for your child or clinical career with verified curricula and comprehensive practical exercises.',
+    'searchPlaceholder' => 'Search by course title, specialist, or skill...',
+    'filterCategory' => 'Course Category',
+    'filterLevel' => 'Difficulty Level',
+    'filterDuration' => 'Duration',
+    'allCategories' => 'All Categories',
+    'catSpeech' => 'Speech & Articulation',
+    'catBehavior' => 'Behavior Modification',
+    'catLearning' => 'Learning Difficulties',
+    'catEarly' => 'Early Intervention',
+    'levelBeginner' => 'Beginner',
+    'levelIntermediate' => 'Intermediate',
+    'levelAdvanced' => 'Advanced',
+    'enrolledStudents' => 'Enrolled Students',
+    'lessonsCount' => 'Lessons',
+    'hoursCount' => 'Hours Training',
+    'includedInPlan' => 'Included with Subscription',
+    'viewCourseDetails' => 'View Course Details',
+    'noCoursesFound' => 'No courses match your selected search criteria.',
+];

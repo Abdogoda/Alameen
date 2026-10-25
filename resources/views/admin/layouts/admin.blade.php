@@ -1,9 +1,16 @@
+@props([
+    'title' => null,
+    'description' => null,
+    'actions' => null,
+    'contentClass' => 'flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto',
+    'modals' => null,
+])
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
     <head>
         @include('partials.head')
         <link rel="stylesheet" href="/assets/css/admin.css" />
-        <title>{{ $title ?? __('لوحة الإدارة المركزية | منصة الأمين') }}</title>
+        <title>{{ filled($title ?? null) ? $title.' - '.config('app.name', 'منصة الأمين') : config('app.name', 'منصة الأمين') }}</title>
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="bg-[#F8FAFC] text-[#334155] min-h-screen flex flex-col font-['Cairo'] antialiased selection:bg-[#EAF1FB] selection:text-[#0B2A8F]" x-data="{ adminSidebarOpen: false }">
@@ -35,7 +42,7 @@
                     <!-- Platform Brand & Role Badge -->
                     <div class="flex items-center justify-between border-b border-[#DEE8F7] pb-4">
                         <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 cursor-pointer">
-                            <div class="size-11 rounded-xl bg-[#EAF1FB] flex items-center justify-center p-2 shrink-0 border border-[#DEE8F7]">
+                            <div class="size-11 rounded-xl bg-[#EAF1FB] dark:bg-white flex items-center justify-center p-2 shrink-0 border border-[#DEE8F7] dark:border-transparent shadow-xs">
                                 <img src="/assets/images/logo.png" alt="منصة الأمين" class="size-full object-contain pointer-events-none" />
                             </div>
                             <div>
@@ -154,14 +161,23 @@
                                 {{ $title ?? __('لوحة التحكم والإشراف الأكاديمي') }}
                             </h2>
                             <p class="text-[11px] text-slate-500 hidden sm:block">
-                                {{ __('إدارة شاملة لبرنامج التخاطب، المشتركين، والموافقات المالية') }}
+                                {{ $description ?? __('إدارة شاملة لبرنامج التخاطب، المشتركين، والموافقات المالية') }}
                             </p>
                         </div>
                     </div>
 
                     <!-- Left: Admin Status & Profile Badge -->
-                    <div class="flex items-center gap-3">
+                    <div class="flex items-center gap-2.5 sm:gap-3">
                         
+                        @if (isset($actions))
+                            <div class="flex items-center gap-2">
+                                {{ $actions }}
+                            </div>
+                        @endif
+
+                        <!-- Theme Switcher for Admin (Light / Dark / Device) -->
+                        <x-admin::theme-switcher />
+
                         <!-- Language Switcher for Admin -->
                         <x-admin::language-switcher />
 
@@ -194,9 +210,11 @@
                 </header>
 
                 <!-- Page Content Area -->
-                <div class="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">
+                <div class="{{ $contentClass }}">
                     {{ $slot }}
                 </div>
+
+                {{ $modals ?? '' }}
 
                 <!-- Admin Footer -->
                 <footer class="h-14 border-t border-[#DEE8F7] bg-white px-4 sm:px-8 flex items-center justify-between text-xs text-slate-500">
@@ -210,3 +228,4 @@
         <script type="module" src="/assets/js/admin.js"></script>
     </body>
 </html>
+

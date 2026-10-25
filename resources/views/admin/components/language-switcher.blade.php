@@ -12,11 +12,11 @@
 @endphp
 
 @if ($variant === 'pill')
-    <div {{ $attributes->merge(['class' => 'inline-flex items-center gap-1 rounded-full border border-slate-700 bg-slate-800/80 p-1 text-xs shadow-xs']) }}>
+    <div {{ $attributes->merge(['class' => 'inline-flex items-center gap-1 rounded-full border border-[#DEE8F7] dark:border-slate-700 bg-white/95 dark:bg-slate-800/80 p-1 text-xs shadow-xs backdrop-blur-sm']) }}>
         @foreach ($locales as $code => $locale)
             <a
                 href="{{ route('locale.switch', $code) }}"
-                class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold transition-all {{ $current === $code ? 'bg-[#0B2A8F] text-white shadow-sm' : 'text-slate-300 hover:text-white' }}"
+                class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold transition-all {{ $current === $code ? 'bg-[#0B2A8F] text-white shadow-xs' : 'text-[#475569] dark:text-slate-300 hover:text-[#012383] dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-700/60' }}"
                 title="{{ $locale['name'] }}"
             >
                 <span>{{ $locale['native'] }}</span>
@@ -28,23 +28,23 @@
         @foreach ($locales as $code => $locale)
             <a
                 href="{{ route('locale.switch', $code) }}"
-                class="inline-flex items-center gap-1 transition-colors {{ $current === $code ? 'font-semibold text-white underline underline-offset-4' : 'text-slate-400 hover:text-white' }}"
+                class="inline-flex items-center gap-1 transition-colors {{ $current === $code ? 'font-semibold text-[#012383] dark:text-white underline underline-offset-4' : 'text-slate-400 hover:text-[#012383] dark:hover:text-white' }}"
             >
                 <span>{{ $locale['flag'] }}</span>
                 <span>{{ $locale['native'] }}</span>
             </a>
             @if (! $loop->last)
-                <span class="text-slate-600">|</span>
+                <span class="text-slate-300 dark:text-slate-600">|</span>
             @endif
         @endforeach
     </div>
 @else
-    {{-- Dropdown style for Admin Topbars --}}
-    <div x-data="{ open: false }" class="relative inline-block text-left" @click.outside="open = false">
+    {{-- Dropdown style for Admin Topbars & Auth --}}
+    <div x-data="{ open: false }" class="relative inline-block text-start" @click.outside="open = false">
         <button
             type="button"
             @click="open = !open"
-            class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-700/80 bg-slate-800/90 hover:bg-slate-700/80 text-xs font-semibold text-slate-200 transition-all cursor-pointer shadow-xs"
+            class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border border-[#DEE8F7] dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700/80 text-xs font-bold text-[#012383] dark:text-slate-200 transition-all cursor-pointer shadow-xs"
         >
             <span>{{ $locales[$current]['flag'] ?? '🌐' }}</span>
             <span>{{ $locales[$current]['native'] ?? strtoupper($current) }}</span>
@@ -55,25 +55,25 @@
 
         <div
             x-show="open"
+            x-cloak
             x-transition:enter="transition ease-out duration-100"
             x-transition:enter-start="transform opacity-0 scale-95"
             x-transition:enter-end="transform opacity-100 scale-100"
             x-transition:leave="transition ease-in duration-75"
             x-transition:leave-start="transform opacity-100 scale-100"
             x-transition:leave-end="transform opacity-0 scale-95"
-            class="absolute {{ $align === 'end' ? 'ltr:right-0 rtl:left-0' : 'ltr:left-0 rtl:right-0' }} z-50 mt-2 w-36 origin-top-right rounded-xl border border-slate-700 bg-slate-900 p-1.5 shadow-xl ring-1 ring-black/50"
-            style="display: none;"
+            class="absolute {{ $align === 'end' ? 'ltr:right-0 rtl:left-0' : 'ltr:left-0 rtl:right-0' }} z-50 mt-2 w-36 origin-top-right rounded-xl border border-[#DEE8F7] dark:border-slate-700 bg-white dark:bg-slate-900 p-1.5 shadow-xl"
         >
             @foreach ($locales as $code => $locale)
                 <a
                     href="{{ route('locale.switch', $code) }}"
-                    class="flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium transition-all {{ $current === $code ? 'bg-[#0B2A8F] text-white font-bold' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}"
+                    class="flex items-center justify-between px-3 py-2 rounded-lg text-xs font-semibold transition-all {{ $current === $code ? 'bg-[#0B2A8F] text-white font-bold shadow-xs' : 'text-[#334155] dark:text-slate-300 hover:bg-[#EAF1FB] dark:hover:bg-slate-800 hover:text-[#012383] dark:hover:text-white' }}"
                 >
                     <span class="flex items-center gap-2">
                         <span>{{ $locale['flag'] }}</span>
                         <span>{{ $locale['native'] }}</span>
                     </span>
-                    <span class="text-[10px] uppercase {{ $current === $code ? 'text-white/80' : 'text-slate-500' }}">({{ $code }})</span>
+                    <span class="text-[10px] uppercase {{ $current === $code ? 'text-white/80' : 'text-slate-400' }}">({{ $code }})</span>
                 </a>
             @endforeach
         </div>

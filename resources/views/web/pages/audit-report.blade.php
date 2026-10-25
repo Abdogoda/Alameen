@@ -1,65 +1,6 @@
-﻿<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>منصة مركز الأمين | تقرير تدقيق الهوية البصرية وجودة الكود</title>
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;600;700;800&family=Cairo:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="/src/css/styles.css" />
-    <style>
-      @media print {
-        .no-print { display: none !important; }
-        body { background: white !important; }
-        .page-break { page-break-before: always; }
-      }
-    </style>
-  </head>
-  <body class="bg-[#F8FAFC] text-[#475569] font-['Cairo'] antialiased min-h-screen">
-
-    <!-- Top Sticky Header -->
-    <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-[#DEE8F7] px-6 lg:px-12 py-3.5 flex items-center justify-between shadow-xs">
-      <div class="flex items-center gap-3">
-        <a href="{{ route('home') }}" class="flex items-center gap-2 hover:opacity-90 transition-opacity">
-          <div class="size-10 rounded-xl bg-[#EAF1FB] flex items-center justify-center p-1.5 border border-[#DEE8F7]">
-            <img src="/assets/images/logo.png" alt="منصة مركز الأمين" class="size-full object-contain" />
-          </div>
-          <div>
-            <span class="font-['Baloo_Bhaijaan_2'] font-bold text-lg text-[#012383] leading-none block">منصة مركز الأمين</span>
-            <span class="text-[11px] text-[#0B2A8F] font-semibold">وثيقة التدقيق الاستراتيجي والهوية</span>
-          </div>
-        </a>
-        <span class="px-2.5 py-1 rounded-full bg-amber-50 text-amber-800 border border-amber-200 text-xs font-bold hidden sm:inline-block">
-          بانتظار الاعتماد (Pending Approval)
-        </span>
-      </div>
-
-      <div class="flex items-center gap-3 no-print">
-        <a
-          href="{{ route('dashboard') }}"
-          class="px-4 py-2 rounded-xl text-xs font-bold text-[#475569] hover:bg-[#EAF1FB] transition-colors"
-        >
-          العودة للمنصة
-        </a>
-        <button
-          type="button"
-          onclick="window.print()"
-          class="px-4 py-2 rounded-xl text-xs font-bold bg-[#012383] text-white hover:bg-[#0B2A8F] transition-all flex items-center gap-2 shadow-xs cursor-pointer"
-        >
-          <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
-          </svg>
-          <span>طباعة / حفظ PDF</span>
-        </button>
-      </div>
-    </header>
-
-    <!-- Main Container -->
-    <main class="max-w-5xl mx-auto px-4 sm:px-6 py-8 flex flex-col gap-8">
-
-      <!-- Hero Header Banner -->
+<x-layouts::marketing :title="__('تقرير تدقيق الهوية البصرية وجودة الكود')">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8 flex flex-col gap-8">
+<!-- Hero Header Banner -->
       <section class="bg-gradient-to-br from-[#012383] via-[#0B2A8F] to-[#153B9D] rounded-[24px] p-8 text-white shadow-xl relative overflow-hidden">
         <div class="absolute -top-12 -left-12 size-56 rounded-full bg-white/5 pointer-events-none"></div>
         <div class="absolute -bottom-16 -right-16 size-72 rounded-full bg-white/5 pointer-events-none"></div>
@@ -667,10 +608,10 @@
       <footer class="text-center text-xs text-[#94A3B8] py-4 border-t border-[#DEE8F7]">
         منصة مركز الأمين للتعليم والتأهيل • وثيقة تدقيق التصميم والكود • جميع الحقوق محفوظة ٢٠٢٦
       </footer>
+    </div>
 
-    </main>
-
-    <script>
+    <x-slot:scripts>
+<script>
       document.getElementById('copy-decisions-btn')?.addEventListener('click', () => {
         const form = document.getElementById('approval-form');
         const formData = new FormData(form);
@@ -690,8 +631,5 @@
         });
       });
     </script>
-      <script type="module" src="/src/js/animations.js"></script>
-  </body>
-</html>
-
-
+    </x-slot:scripts>
+</x-layouts::marketing>

@@ -1,120 +1,15 @@
-﻿<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>منصة الأمين | مراجعة واعتماد إيصالات الدفع اليدوي</title>
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;600;700;800&family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="/assets/css/admin.css" />
-  </head>
-  <body class="bg-[#F8FAFC] text-[#334155] min-h-screen flex flex-col font-['Cairo'] antialiased selection:bg-[#EAF1FB] selection:text-[#0B2A8F]">
-    
-    <!-- Mobile Sidebar Overlay -->
-    <div id="sidebar-overlay" onclick="toggleAdminSidebar()" class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-40 hidden lg:hidden transition-opacity"></div>
+<x-admin-layout::admin
+    :title="__('إيصالات الدفع اليدوي والتحويلات')"
+    :description="__('فحص صور الإيصالات المرفوعة، التحقق من المبالغ، وتفعيل وصول الطلاب للكورس')"
+    contentClass="p-4 sm:p-8 flex flex-col gap-6 max-w-[1500px] w-full mx-auto"
+>
+    <x-slot:actions>
+        <span class="text-xs font-bold text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 px-3 py-1.5 rounded-xl flex items-center gap-1.5">
+            <span class="size-2 rounded-full bg-amber-500 animate-ping"></span>
+            {{ __('١٢ إيصال معلق بانتظار الاعتماد') }}
+        </span>
+    </x-slot:actions>
 
-    <div class="flex-1 flex flex-row min-h-screen w-full relative">
-      
-      <!-- ============================================== -->
-      <!-- 1. ADMIN SIDEBAR NAVIGATION                    -->
-      <!-- ============================================== -->
-      <aside id="admin-sidebar" class="fixed lg:sticky top-0 start-0 z-50 w-[270px] h-screen bg-white border-e border-[#DEE8F7] flex flex-col justify-between p-5 shrink-0 transition-transform duration-300 -translate-x-full lg:translate-x-0 rtl:translate-x-full lg:rtl:translate-x-0 shadow-sm lg:shadow-none">
-        
-        <div class="flex flex-col gap-6">
-          <div class="flex items-center justify-between border-b border-[#DEE8F7] pb-4">
-            <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 cursor-pointer">
-              <div class="size-11 rounded-xl bg-[#EAF1FB] flex items-center justify-center p-2 shrink-0 border border-[#DEE8F7]">
-                <img src="/assets/images/logo.png" alt="منصة الأمين" class="size-full object-contain pointer-events-none" />
-              </div>
-              <div>
-                <span class="font-['Baloo_Bhaijaan_2'] font-extrabold text-xl leading-tight text-[#012383] block">منصة الأمين</span>
-                <span class="text-[11px] font-bold text-[#0B2A8F] bg-[#EAF1FB] px-2 py-0.5 rounded-full inline-block mt-0.5">لوحة الإدارة المركزية</span>
-              </div>
-            </a>
-            <button type="button" onclick="toggleAdminSidebar()" class="lg:hidden p-1.5 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100">
-              <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-            </button>
-          </div>
-
-          <nav class="flex flex-col gap-1.5">
-            <p class="text-[11px] font-bold text-slate-400 px-3 uppercase tracking-wider mb-1">المالية والاشتراكات</p>
-            
-            <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-[#EAF1FB]/60 hover:text-[#012383] font-semibold text-sm transition-colors">
-              <svg class="size-5 shrink-0 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
-              <span class="flex-1 text-start">لوحة الإحصائيات</span>
-            </a>
-
-            <a href="{{ route('admin.courses.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-[#EAF1FB]/60 hover:text-[#012383] font-semibold text-sm transition-colors">
-              <svg class="size-5 shrink-0 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
-              <span class="flex-1 text-start">المستويات والفيديوهات</span>
-              <span class="px-2 py-0.5 text-[11px] font-bold bg-blue-50 text-[#0B2A8F] rounded-md">ديناميك</span>
-            </a>
-
-            <!-- إيصالات الدفع (ACTIVE) -->
-            <a href="{{ route('admin.receipts.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-[#012383] text-white font-bold text-sm shadow-xs transition-colors">
-              <svg class="size-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-              <span class="flex-1 text-start">إيصالات الدفع</span>
-              <span class="px-2 py-0.5 text-[11px] font-bold bg-amber-400 text-slate-900 rounded-full">١٢ معلق</span>
-            </a>
-
-            <a href="{{ route('admin.tasks.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-[#EAF1FB]/60 hover:text-[#012383] font-semibold text-sm transition-colors">
-              <svg class="size-5 shrink-0 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
-              <span class="flex-1 text-start">تصحيح المهام</span>
-              <span class="px-2 py-0.5 text-[11px] font-bold bg-blue-100 text-[#0B2A8F] rounded-full">٢٨ مهمة</span>
-            </a>
-
-            <a href="{{ route('admin.students.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-[#EAF1FB]/60 hover:text-[#012383] font-semibold text-sm transition-colors">
-              <svg class="size-5 shrink-0 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-              <span class="flex-1 text-start">الطلاب والاشتراكات</span>
-            </a>
-
-            <a href="{{ route('admin.certificates.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-[#EAF1FB]/60 hover:text-[#012383] font-semibold text-sm transition-colors">
-              <svg class="size-5 shrink-0 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-              <span class="flex-1 text-start">الشهادات المعتمدة</span>
-            </a>
-
-            <a href="{{ route('admin.settings.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-[#EAF1FB]/60 hover:text-[#012383] font-semibold text-sm transition-colors">
-              <svg class="size-5 shrink-0 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-              <span class="flex-1 text-start">إعدادات المنصة والدفع</span>
-            </a>
-          </nav>
-        </div>
-
-        <div class="border-t border-[#DEE8F7] pt-4">
-          <p class="text-[11px] text-slate-400 text-center font-medium">منصة الأمين © ٢٠٢٦</p>
-        </div>
-
-      </aside>
-
-      <!-- ============================================== -->
-      <!-- 2. MAIN RECEIPTS CONTENT WORKSPACE             -->
-      <!-- ============================================== -->
-      <main class="flex-1 flex flex-col min-w-0 bg-[#F8FAFC]">
-        
-        <!-- Header Bar -->
-        <header class="h-20 bg-white border-b border-[#DEE8F7] px-4 sm:px-8 flex items-center justify-between gap-4 sticky top-0 z-30">
-          <div class="flex items-center gap-3">
-            <button type="button" onclick="toggleAdminSidebar()" class="lg:hidden p-2 rounded-xl text-slate-600 hover:bg-slate-100 cursor-pointer">
-              <svg class="size-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
-            </button>
-            <div>
-              <h1 class="font-['Baloo_Bhaijaan_2'] font-bold text-xl sm:text-2xl text-[#012383] leading-tight">إيصالات الدفع اليدوي والتحويلات</h1>
-              <p class="text-xs text-slate-500">فحص صور الإيصالات المرفوعة، التحقق من المبالغ، وتفعيل وصول الطلاب للكورس</p>
-            </div>
-          </div>
-
-          <div class="flex items-center gap-3">
-            <span class="text-xs font-bold text-amber-700 bg-amber-50 border border-amber-200 px-3 py-1.5 rounded-xl flex items-center gap-1.5">
-              <span class="size-2 rounded-full bg-amber-500 animate-ping"></span>
-              ١٢ إيصال معلق بانتظار الاعتماد
-            </span>
-          </div>
-        </header>
-
-        <!-- Body Content -->
-        <div class="p-4 sm:p-8 flex flex-col gap-6 max-w-[1500px] w-full mx-auto">
           
           <!-- Filters & Search Toolbar -->
           <div class="bg-white border border-[#DEE8F7] rounded-3xl p-4 sm:p-6 shadow-xs flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
@@ -326,106 +221,102 @@
 
         </div>
 
-      </main>
+    <x-slot:modals>
+        <!-- Modal: View Receipt Details -->
+        <div id="modal-view-receipt" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4 modal-hidden">
+          <div class="modal-content bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 flex flex-col gap-6 shadow-2xl border border-[#DEE8F7] max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between border-b border-[#DEE8F7] pb-4">
+              <div class="flex items-center gap-2">
+                <span class="size-8 rounded-lg bg-amber-50 text-amber-700 flex items-center justify-center font-bold">
+                  <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                </span>
+                <h3 class="font-['Baloo_Bhaijaan_2'] font-bold text-xl text-[#012383]">مراجعة إيصال التحويل اليدوي</h3>
+              </div>
+              <button type="button" onclick="closeModal('modal-view-receipt')" class="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 cursor-pointer">
+                <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+              </button>
+            </div>
 
-    </div>
+            <div class="w-full h-56 rounded-2xl bg-slate-100 border border-[#DEE8F7] overflow-hidden relative group">
+              <img id="receipt-image-preview" src="/assets/images/certificate-preview.png" alt="إيصال الدفع" class="size-full object-contain pointer-events-none" />
+            </div>
 
-    <!-- Modal: View Receipt Details -->
-    <div id="modal-view-receipt" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4 modal-hidden">
-      <div class="modal-content bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 flex flex-col gap-6 shadow-2xl border border-[#DEE8F7] max-h-[90vh] overflow-y-auto">
-        <div class="flex items-center justify-between border-b border-[#DEE8F7] pb-4">
-          <div class="flex items-center gap-2">
-            <span class="size-8 rounded-lg bg-amber-50 text-amber-700 flex items-center justify-center font-bold">
-              <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-            </span>
-            <h3 class="font-['Baloo_Bhaijaan_2'] font-bold text-xl text-[#012383]">مراجعة إيصال التحويل اليدوي</h3>
+            <div class="grid grid-cols-2 gap-3 text-xs bg-slate-50 p-4 rounded-2xl border border-[#DEE8F7]/60">
+              <div>
+                <span class="text-slate-400 block">اسم الطالب المحول:</span>
+                <span id="receipt-student-name" class="font-bold text-[#012383] text-sm mt-0.5 block">سارة خالد المنصور</span>
+              </div>
+              <div>
+                <span class="text-slate-400 block">رقم الهاتف / الحساب:</span>
+                <span id="receipt-student-phone" class="font-bold text-slate-700 text-sm mt-0.5 block">01023456789</span>
+              </div>
+              <div>
+                <span class="text-slate-400 block">المبلغ المرفوع:</span>
+                <span id="receipt-amount" class="font-bold text-emerald-700 text-sm mt-0.5 block">١,٢٠٠ ج.م</span>
+              </div>
+              <div>
+                <span class="text-slate-400 block">طريقة التحويل:</span>
+                <span id="receipt-method" class="font-bold text-slate-700 mt-0.5 block">فودافون كاش</span>
+              </div>
+              <div>
+                <span class="text-slate-400 block">رقم العملية / المرجع:</span>
+                <span id="receipt-ref" class="font-mono text-slate-600 mt-0.5 block">VF-948271</span>
+              </div>
+              <div>
+                <span class="text-slate-400 block">تاريخ الإرسال:</span>
+                <span id="receipt-date" class="font-medium text-slate-600 mt-0.5 block">منذ ١٥ دقيقة</span>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-end gap-3 pt-2">
+              <button type="button" onclick="openRejectReceiptModal()" class="px-5 h-11 rounded-xl bg-rose-50 text-rose-700 hover:bg-rose-100 text-xs font-bold transition-colors cursor-pointer border border-rose-200">
+                رفض الإيصال مع سبب
+              </button>
+              <button type="button" onclick="approveReceipt()" class="px-6 h-11 rounded-xl bg-[#012383] hover:bg-[#0B2A8F] text-white text-xs font-bold transition-all shadow-md cursor-pointer flex items-center gap-2">
+                <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                <span>اعتماد ومنح الوصول للكورس</span>
+              </button>
+            </div>
           </div>
-          <button type="button" onclick="closeModal('modal-view-receipt')" class="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 cursor-pointer">
-            <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-          </button>
         </div>
 
-        <div class="w-full h-56 rounded-2xl bg-slate-100 border border-[#DEE8F7] overflow-hidden relative group">
-          <img id="receipt-image-preview" src="/assets/images/certificate-preview.png" alt="إيصال الدفع" class="size-full object-contain pointer-events-none" />
+        <!-- Modal: Reject Reason -->
+        <div id="modal-reject-receipt" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4 modal-hidden">
+          <div class="modal-content bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 flex flex-col gap-5 shadow-2xl border border-rose-100">
+            <div class="flex items-center gap-2.5 text-rose-600">
+              <div class="size-9 rounded-xl bg-rose-50 flex items-center justify-center">
+                <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+              </div>
+              <h3 class="font-bold text-lg text-slate-800">سبب رفض إيصال التحويل</h3>
+            </div>
+            <p class="text-xs text-slate-500">سيصل هذا التوضيح للطالب عبر لوحة تحكمه لإعادة المحاولة.</p>
+
+            <form onsubmit="submitRejectReceipt(event)" class="flex flex-col gap-4">
+              <div>
+                <label class="text-xs font-bold text-slate-700 block mb-1.5">سبب الرفض:</label>
+                <select id="reject-reason-input" class="w-full h-11 px-3.5 rounded-xl border border-[#DEE8F7] bg-white text-xs font-bold text-slate-700 outline-none focus:border-rose-500">
+                  <option value="صورة الإيصال غير واضحة أو مقطوعة">صورة الإيصال غير واضحة أو مقطوعة</option>
+                  <option value="المبلغ المحول أقل من سعر الكورس المحدد">المبلغ المحول أقل من سعر الكورس المحدد</option>
+                  <option value="رقم العملية غير موجود في سجل الحساب">رقم العملية غير موجود في سجل الحساب</option>
+                  <option value="بيانات المحول غير متطابقة">بيانات المحول غير متطابقة</option>
+                </select>
+              </div>
+              <div class="flex items-center justify-end gap-2 pt-2">
+                <button type="button" onclick="closeModal('modal-reject-receipt')" class="px-4 h-10 rounded-xl bg-slate-100 text-slate-600 font-bold text-xs">إلغاء</button>
+                <button type="submit" class="px-5 h-10 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs">تأكيد الرفض</button>
+              </div>
+            </form>
+          </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-3 text-xs bg-slate-50 p-4 rounded-2xl border border-[#DEE8F7]/60">
-          <div>
-            <span class="text-slate-400 block">اسم الطالب المحول:</span>
-            <span id="receipt-student-name" class="font-bold text-[#012383] text-sm mt-0.5 block">سارة خالد المنصور</span>
-          </div>
-          <div>
-            <span class="text-slate-400 block">رقم الهاتف / الحساب:</span>
-            <span id="receipt-student-phone" class="font-bold text-slate-700 text-sm mt-0.5 block">01023456789</span>
-          </div>
-          <div>
-            <span class="text-slate-400 block">المبلغ المرفوع:</span>
-            <span id="receipt-amount" class="font-bold text-emerald-700 text-sm mt-0.5 block">١,٢٠٠ ج.م</span>
-          </div>
-          <div>
-            <span class="text-slate-400 block">طريقة التحويل:</span>
-            <span id="receipt-method" class="font-bold text-slate-700 mt-0.5 block">فودافون كاش</span>
-          </div>
-          <div>
-            <span class="text-slate-400 block">رقم العملية / المرجع:</span>
-            <span id="receipt-ref" class="font-mono text-slate-600 mt-0.5 block">VF-948271</span>
-          </div>
-          <div>
-            <span class="text-slate-400 block">تاريخ الإرسال:</span>
-            <span id="receipt-date" class="font-medium text-slate-600 mt-0.5 block">منذ ١٥ دقيقة</span>
-          </div>
-        </div>
+        <!-- Module Script -->
+        <script type="module">
+          import { filterTableRows, filterByPill } from '/assets/js/admin.js';
+          filterTableRows('receipts-search-input', 'receipts-table-body');
+          filterByPill('.receipt-filter-pill', 'data-status', 'receipts-table-body');
+        </script>
+    </x-slot:modals>
+</x-admin-layout::admin>
 
-        <div class="flex items-center justify-end gap-3 pt-2">
-          <button type="button" onclick="openRejectReceiptModal()" class="px-5 h-11 rounded-xl bg-rose-50 text-rose-700 hover:bg-rose-100 text-xs font-bold transition-colors cursor-pointer border border-rose-200">
-            رفض الإيصال مع سبب
-          </button>
-          <button type="button" onclick="approveReceipt()" class="px-6 h-11 rounded-xl bg-[#012383] hover:bg-[#0B2A8F] text-white text-xs font-bold transition-all shadow-md cursor-pointer flex items-center gap-2">
-            <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-            <span>اعتماد ومنح الوصول للكورس</span>
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Modal: Reject Reason -->
-    <div id="modal-reject-receipt" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4 modal-hidden">
-      <div class="modal-content bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 flex flex-col gap-5 shadow-2xl border border-rose-100">
-        <div class="flex items-center gap-2.5 text-rose-600">
-          <div class="size-9 rounded-xl bg-rose-50 flex items-center justify-center">
-            <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-          </div>
-          <h3 class="font-bold text-lg text-slate-800">سبب رفض إيصال التحويل</h3>
-        </div>
-        <p class="text-xs text-slate-500">سيصل هذا التوضيح للطالب عبر لوحة تحكمه لإعادة المحاولة.</p>
-
-        <form onsubmit="submitRejectReceipt(event)" class="flex flex-col gap-4">
-          <div>
-            <label class="text-xs font-bold text-slate-700 block mb-1.5">سبب الرفض:</label>
-            <select id="reject-reason-input" class="w-full h-11 px-3.5 rounded-xl border border-[#DEE8F7] bg-white text-xs font-bold text-slate-700 outline-none focus:border-rose-500">
-              <option value="صورة الإيصال غير واضحة أو مقطوعة">صورة الإيصال غير واضحة أو مقطوعة</option>
-              <option value="المبلغ المحول أقل من سعر الكورس المحدد">المبلغ المحول أقل من سعر الكورس المحدد</option>
-              <option value="رقم العملية غير موجود في سجل الحساب">رقم العملية غير موجود في سجل الحساب</option>
-              <option value="بيانات المحول غير متطابقة">بيانات المحول غير متطابقة</option>
-            </select>
-          </div>
-          <div class="flex items-center justify-end gap-2 pt-2">
-            <button type="button" onclick="closeModal('modal-reject-receipt')" class="px-4 h-10 rounded-xl bg-slate-100 text-slate-600 font-bold text-xs">إلغاء</button>
-            <button type="submit" class="px-5 h-10 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs">تأكيد الرفض</button>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <!-- Module Script -->
-    <script type="module">
-      import { filterTableRows, filterByPill } from '/assets/js/admin.js';
-      filterTableRows('receipts-search-input', 'receipts-table-body');
-      filterByPill('.receipt-filter-pill', 'data-status', 'receipts-table-body');
-    </script>
-    <script type="module" src="/assets/js/admin.js"></script>
-      <script type="module" src="./js/animations.js"></script>
-  </body>
-</html>
 
 

@@ -92,6 +92,308 @@ select:focus[data-flux-control] {
     @apply outline-hidden ring-2 ring-accent ring-offset-2 ring-offset-accent-foreground;
 }
 
-/* \[:where(&)\]:size-4 {
-    @apply size-4;
-} */
+/* ========================================================
+   Al-Ameen Universal Dark Theme Styles
+   Applies to Website, Student Portal, and Admin Dashboard
+   ======================================================== */
+
+html.dark {
+    color-scheme: dark;
+}
+
+html.dark body {
+    background-color: #0B1120 !important;
+    color: #CBD5E1 !important;
+}
+
+/* Background canvas, sections, and containers */
+html.dark .bg-\[\#F8FAFC\],
+html.dark .bg-\[\#FAFCFF\],
+html.dark .bg-slate-50,
+html.dark #landing-frame,
+html.dark section#home,
+html.dark section#courses,
+html.dark section#about,
+html.dark section#reviews,
+html.dark section#contact {
+    background-color: #0B1120 !important;
+}
+
+/* Hero section & linear gradients in Dark Mode (prevents stark white overlays) */
+html.dark section#home {
+    background-image: linear-gradient(to bottom, #0B1120, #0F172A) !important;
+}
+
+html.dark .from-\[\#FAFCFF\],
+html.dark .from-white {
+    --tw-gradient-from: #0B1120 var(--tw-gradient-from-position) !important;
+}
+
+html.dark .to-white,
+html.dark .to-\[\#FAFCFF\] {
+    --tw-gradient-to: #0F172A var(--tw-gradient-to-position) !important;
+}
+
+html.dark .to-\[\#EAF1FB\] {
+    --tw-gradient-to: #1E293B var(--tw-gradient-to-position) !important;
+}
+
+/* Cards, sidebars, headers and white surfaces */
+html.dark .bg-white {
+    background-color: #131D31 !important;
+}
+
+html.dark .bg-white\/95,
+html.dark .bg-\[\#FAFCFF\]\/95,
+html.dark header.sticky,
+html.dark #main-header {
+    background-color: rgba(19, 29, 49, 0.95) !important;
+}
+
+html.dark .bg-white\/80 {
+    background-color: rgba(19, 29, 49, 0.8) !important;
+}
+
+html.dark .bg-white\/90 {
+    background-color: rgba(19, 29, 49, 0.9) !important;
+}
+
+/* Soft surface pills, badges, secondary containers */
+html.dark .bg-\[\#EAF1FB\],
+html.dark .bg-\[\#eaf1fb\],
+html.dark .bg-blue-50 {
+    background-color: #1E293B !important;
+}
+
+html.dark .bg-slate-100 {
+    background-color: #1E293B !important;
+}
+
+html.dark .bg-slate-200 {
+    background-color: #334155 !important;
+}
+
+/* Borders and dividers */
+html.dark .border-\[\#DEE8F7\],
+html.dark .border-\[\#D7E3F5\],
+html.dark .border-\[\#CFDBEA\],
+html.dark .border-\[\#dee8f7\],
+html.dark .border-\[\#cfdbea\],
+html.dark .border-slate-200,
+html.dark .border-blue-200,
+html.dark .border-zinc-200 {
+    border-color: #26354D !important;
+}
+
+html.dark :where(.divide-\[\#DEE8F7\] > :not(:last-child)),
+html.dark :where(.divide-zinc-100 > :not(:last-child)),
+html.dark :where(.divide-slate-200 > :not(:last-child)) {
+    border-color: #26354D !important;
+}
+
+/* Typography in Dark Mode */
+html.dark .text-\[\#012383\] {
+    color: #93C5FD !important;
+}
+
+html.dark .text-\[\#0B2A8F\],
+html.dark .text-\[\#0b2a8f\] {
+    color: #60A5FA !important;
+}
+
+html.dark .text-\[\#1E293B\],
+html.dark .text-\[\#1e293b\],
+html.dark .slide-desc {
+    color: #CBD5E1 !important;
+}
+
+html.dark .text-\[\#334155\],
+html.dark .text-slate-700 {
+    color: #CBD5E1 !important;
+}
+
+html.dark .text-\[\#475569\],
+html.dark .text-\[\#475569\]\/80 {
+    color: #94A3B8 !important;
+}
+
+html.dark .text-slate-800 {
+    color: #F1F5F9 !important;
+}
+
+html.dark .text-slate-900 {
+    color: #F8FAFC !important;
+}
+
+html.dark .text-slate-600 {
+    color: #94A3B8 !important;
+}
+
+html.dark .text-slate-500,
+html.dark .text-slate-400 {
+    color: #94A3B8 !important;
+}
+
+/* Interactive Hover States */
+html.dark .hover\:bg-\[\#EAF1FB\]:hover,
+html.dark .hover\:bg-\[\#EAF1FB\]\/50:hover,
+html.dark .hover\:bg-\[\#EAF1FB\]\/60:hover,
+html.dark .hover\:bg-slate-50:hover,
+html.dark .hover\:bg-slate-100:hover {
+    background-color: #1E2E4A !important;
+}
+
+html.dark .hover\:text-\[\#012383\]:hover,
+html.dark .hover\:text-\[\#0B2A8F\]:hover {
+    color: #BFDBFE !important;
+}
+
+/* Form controls in Dark Mode */
+html.dark input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]),
+html.dark textarea,
+html.dark select {
+    background-color: #0F172A !important;
+    border-color: #26354D !important;
+    color: #F8FAFC !important;
+}
+
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+    color: #64748B !important;
+}
+
+/* Modals & Dialogs */
+html.dark .modal-content,
+html.dark [id^="modal-"] .bg-white {
+    background-color: #131D31 !important;
+    border-color: #26354D !important;
+    color: #F1F5F9 !important;
+}
+
+/* Keep white text white on dark navy buttons */
+html.dark button[class*="bg-[#012383]"],
+html.dark a[class*="bg-[#012383]"] {
+    background-color: #0B2A8F !important;
+    color: #FFFFFF !important;
+}
+
+html.dark button[class*="bg-[#0B2A8F]"],
+html.dark a[class*="bg-[#0B2A8F]"] {
+    background-color: #1D4ED8 !important;
+    color: #FFFFFF !important;
+}
+
+html.dark button.text-white,
+html.dark a.text-white,
+html.dark button.text-white *,
+html.dark a.text-white *,
+.text-white,
+html.dark .text-white {
+    color: #FFFFFF !important;
+}
+
+/* Alpine x-cloak helper */
+[x-cloak] {
+    display: none !important;
+}
+
+/* Hide scrollbar for clean horizontal scrolls */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* Back to top button must stay below headers, sidebars, and drawers */
+#alameen-back-to-top {
+    z-index: 30 !important;
+}
+
+/* Dark Mode Themed Loader */
+html.dark #alameen-loader,
+[data-theme="dark"] #alameen-loader,
+#alameen-loader.dark {
+    background: radial-gradient(circle at center, #0F172A 0%, #0B1120 70%, #060913 100%) !important;
+}
+
+html.dark .alameen-loader-logo-capsule,
+[data-theme="dark"] .alameen-loader-logo-capsule,
+#alameen-loader.dark .alameen-loader-logo-capsule {
+    background: #FFFFFF !important;
+    box-shadow: 0 16px 36px -6px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.2) !important;
+}
+
+html.dark .alameen-voice-wave,
+[data-theme="dark"] .alameen-voice-wave,
+#alameen-loader.dark .alameen-voice-wave {
+    border-color: rgba(96, 165, 250, 0.25) !important;
+}
+
+html.dark .alameen-voice-wave:nth-child(1),
+[data-theme="dark"] .alameen-voice-wave:nth-child(1),
+#alameen-loader.dark .alameen-voice-wave:nth-child(1) {
+    border-color: rgba(96, 165, 250, 0.45) !important;
+}
+
+html.dark .alameen-voice-wave:nth-child(2),
+[data-theme="dark"] .alameen-voice-wave:nth-child(2),
+#alameen-loader.dark .alameen-voice-wave:nth-child(2) {
+    border-color: rgba(59, 130, 246, 0.3) !important;
+}
+
+html.dark .alameen-voice-wave:nth-child(3),
+[data-theme="dark"] .alameen-voice-wave:nth-child(3),
+#alameen-loader.dark .alameen-voice-wave:nth-child(3) {
+    border-color: rgba(30, 58, 138, 0.4) !important;
+}
+
+html.dark .alameen-loader-title,
+[data-theme="dark"] .alameen-loader-title,
+#alameen-loader.dark .alameen-loader-title {
+    color: #F8FAFC !important;
+}
+
+html.dark .alameen-loader-subtitle,
+[data-theme="dark"] .alameen-loader-subtitle,
+#alameen-loader.dark .alameen-loader-subtitle {
+    background: linear-gradient(90deg, #93C5FD 0%, #60A5FA 50%, #34D399 100%) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+}
+
+html.dark .alameen-loader-track,
+[data-theme="dark"] .alameen-loader-track,
+#alameen-loader.dark .alameen-loader-track {
+    background: rgba(38, 53, 77, 0.8) !important;
+}
+
+html.dark .alameen-loader-indicator,
+[data-theme="dark"] .alameen-loader-indicator,
+#alameen-loader.dark .alameen-loader-indicator {
+    background: linear-gradient(90deg, #3B82F6 0%, #10B77F 100%) !important;
+}
+
+html.dark .alameen-eq-bar,
+[data-theme="dark"] .alameen-eq-bar,
+#alameen-loader.dark .alameen-eq-bar {
+    background: linear-gradient(180deg, #60A5FA 0%, #34D399 100%) !important;
+}
+
+/* Logo White Background in Dark Theme */
+html.dark header#main-header a div:first-child,
+html.dark header a div:has(img[src*="logo.png"]),
+html.dark header img[src*="logo.png"],
+html.dark nav img[src*="logo.png"],
+html.dark aside div:has(img[src*="logo.png"]).bg-white,
+html.dark aside div:has(img[src*="logo.png"]),
+html.dark footer div:has(img[src*="logo.png"]).bg-white {
+    background-color: #FFFFFF !important;
+}
+
+html.dark header#main-header a div:first-child {
+    border-radius: 9999px !important;
+    padding: 4px !important;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25) !important;
+}

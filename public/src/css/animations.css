@@ -205,6 +205,76 @@
   }
 }
 
+/* Dark Mode Themed Loader */
+html.dark #alameen-loader,
+[data-theme="dark"] #alameen-loader,
+#alameen-loader.dark {
+  background: radial-gradient(circle at center, #0F172A 0%, #0B1120 70%, #060913 100%) !important;
+}
+
+html.dark .alameen-loader-logo-capsule,
+[data-theme="dark"] .alameen-loader-logo-capsule,
+#alameen-loader.dark .alameen-loader-logo-capsule {
+  background: #FFFFFF !important;
+  box-shadow: 0 16px 36px -6px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.2) !important;
+}
+
+html.dark .alameen-voice-wave,
+[data-theme="dark"] .alameen-voice-wave,
+#alameen-loader.dark .alameen-voice-wave {
+  border-color: rgba(96, 165, 250, 0.25) !important;
+}
+
+html.dark .alameen-voice-wave:nth-child(1),
+[data-theme="dark"] .alameen-voice-wave:nth-child(1),
+#alameen-loader.dark .alameen-voice-wave:nth-child(1) {
+  border-color: rgba(96, 165, 250, 0.45) !important;
+}
+
+html.dark .alameen-voice-wave:nth-child(2),
+[data-theme="dark"] .alameen-voice-wave:nth-child(2),
+#alameen-loader.dark .alameen-voice-wave:nth-child(2) {
+  border-color: rgba(59, 130, 246, 0.3) !important;
+}
+
+html.dark .alameen-voice-wave:nth-child(3),
+[data-theme="dark"] .alameen-voice-wave:nth-child(3),
+#alameen-loader.dark .alameen-voice-wave:nth-child(3) {
+  border-color: rgba(30, 58, 138, 0.4) !important;
+}
+
+html.dark .alameen-loader-title,
+[data-theme="dark"] .alameen-loader-title,
+#alameen-loader.dark .alameen-loader-title {
+  color: #F8FAFC !important;
+}
+
+html.dark .alameen-loader-subtitle,
+[data-theme="dark"] .alameen-loader-subtitle,
+#alameen-loader.dark .alameen-loader-subtitle {
+  background: linear-gradient(90deg, #93C5FD 0%, #60A5FA 50%, #34D399 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+html.dark .alameen-loader-track,
+[data-theme="dark"] .alameen-loader-track,
+#alameen-loader.dark .alameen-loader-track {
+  background: rgba(38, 53, 77, 0.8) !important;
+}
+
+html.dark .alameen-loader-indicator,
+[data-theme="dark"] .alameen-loader-indicator,
+#alameen-loader.dark .alameen-loader-indicator {
+  background: linear-gradient(90deg, #3B82F6 0%, #10B77F 100%) !important;
+}
+
+html.dark .alameen-eq-bar,
+[data-theme="dark"] .alameen-eq-bar,
+#alameen-loader.dark .alameen-eq-bar {
+  background: linear-gradient(180deg, #60A5FA 0%, #34D399 100%) !important;
+}
+
 /* --------------------------------------------------------------------------
    2. SCROLL PROGRESS BAR (Pinned to Top)
    -------------------------------------------------------------------------- */
@@ -369,7 +439,7 @@ tr.table-row-hover:hover {
   align-items: center;
   justify-content: center;
   box-shadow: 0 10px 24px -4px rgba(1, 35, 131, 0.35);
-  z-index: 99990;
+  z-index: 30;
   cursor: pointer;
   border: 1px solid rgba(255, 255, 255, 0.2);
   opacity: 0;

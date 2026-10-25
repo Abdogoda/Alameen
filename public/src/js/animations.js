@@ -22,6 +22,9 @@
     if (!loader) {
       loader = document.createElement('div');
       loader.id = 'alameen-loader';
+      if (document.documentElement.classList.contains('dark')) {
+        loader.classList.add('dark');
+      }
       loader.setAttribute('role', 'status');
       loader.setAttribute('aria-label', 'جاري تحميل منصة الأمين');
 

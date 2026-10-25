@@ -17,8 +17,23 @@
         <!-- Session Status -->
         <x-auth-session-status class="text-start" :status="session('status')" />
 
-        <!-- Passkey verification -->
-        <x-passkey-verify />
+        <!-- Social & Passwordless Authentication -->
+        <div class="flex flex-col gap-3 w-full">
+            <x-google-button action="login" />
+            <x-passkey-verify :separator="null" />
+        </div>
+
+        <!-- Section Divider -->
+        <div class="relative my-1">
+            <div class="absolute inset-0 flex items-center">
+                <div class="w-full border-t border-[#DEE8F7] dark:border-slate-800"></div>
+            </div>
+            <div class="relative flex justify-center text-xs">
+                <span class="px-3 text-[#475569] dark:text-slate-400 bg-[#FAFCFF] dark:bg-[#0B1120] font-semibold">
+                    {{ __('أو المتابعة بالبريد الإلكتروني') }}
+                </span>
+            </div>
+        </div>
 
         <!-- Login Form -->
         <form method="POST" action="{{ route('login.store') }}" class="flex flex-col gap-5 w-full">
@@ -78,8 +93,8 @@
             </div>
 
             <!-- Login Preferences: Remember me & Forgot Password -->
-            <div class="flex items-center justify-between h-10 w-full">
-                <label class="flex items-center gap-2 cursor-pointer select-none">
+            <div class="flex items-center justify-between h-10 w-full gap-2">
+                <label class="flex items-center gap-2 cursor-pointer select-none shrink-0">
                     <input
                         type="checkbox"
                         name="remember"
@@ -87,13 +102,13 @@
                         class="size-4 rounded border border-[#CFDBEA] text-[#0B2A8F] accent-[#0B2A8F] cursor-pointer"
                         {{ old('remember', true) ? 'checked' : '' }}
                     />
-                    <span class="font-normal text-sm text-[#475569]">
+                    <span class="font-normal text-sm text-[#475569] dark:text-slate-300">
                         {{ __('تذكرني') }}
                     </span>
                 </label>
 
                 @if (Route::has('password.request'))
-                    <a href="{{ route('password.request') }}" class="font-bold text-sm text-[#0B2A8F] hover:underline whitespace-nowrap" wire:navigate>
+                    <a href="{{ route('password.request') }}" class="font-bold text-xs sm:text-sm text-[#0B2A8F] dark:text-blue-400 hover:underline whitespace-nowrap" wire:navigate>
                         {{ __('نسيت كلمة المرور؟') }}
                     </a>
                 @endif
@@ -116,13 +131,6 @@
                         {{ __('إنشاء حساب') }}
                     </a>
                 </p>
-
-                <div class="pt-4 border-t border-[#DEE8F7] text-center w-full">
-                    <a href="{{ route('admin.login') }}" class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-[#012383] transition-colors">
-                        <svg class="size-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-                        <span>{{ __('بوابة الإدارة والمشرفين') }}</span>
-                    </a>
-                </div>
             </div>
         </form>
 

@@ -16,5 +16,23 @@
 <link rel="stylesheet" href="/src/css/tokens.css">
 <link rel="stylesheet" href="/src/css/animations.css">
 <link rel="stylesheet" href="/assets/css/admin.css">
+<!-- Theme Initialization (Zero Flash) -->
+<script>
+    (function () {
+        try {
+            var stored = localStorage.getItem('alameen_theme') || localStorage.getItem('flux.appearance') || 'system';
+            var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            var isDark = stored === 'dark' || (stored === 'system' && prefersDark);
+            if (isDark) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+            document.documentElement.setAttribute('data-theme', stored);
+        } catch (e) {}
+    })();
+</script>
 
 @vite(['resources/css/app.css', 'resources/js/app.js'])
+@fluxAppearance
+

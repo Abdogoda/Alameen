@@ -17,6 +17,23 @@
         <!-- Session Status -->
         <x-auth-session-status class="text-start" :status="session('status')" />
 
+        <!-- Social Signup Options -->
+        <div class="flex flex-col gap-3 w-full">
+            <x-google-button action="signup" />
+        </div>
+
+        <!-- Section Divider -->
+        <div class="relative my-1">
+            <div class="absolute inset-0 flex items-center">
+                <div class="w-full border-t border-[#DEE8F7] dark:border-slate-800"></div>
+            </div>
+            <div class="relative flex justify-center text-xs">
+                <span class="px-3 text-[#475569] dark:text-slate-400 bg-[#FAFCFF] dark:bg-[#0B1120] font-semibold">
+                    {{ __('أو التسجيل بالبريد الإلكتروني') }}
+                </span>
+            </div>
+        </div>
+
         <!-- Register Form -->
         <form method="POST" action="{{ route('register.store') }}" class="flex flex-col gap-4 w-full">
             @csrf

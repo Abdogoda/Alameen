@@ -1,126 +1,15 @@
-﻿<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>منصة الأمين | إدارة المستويات والدروس والتسعير</title>
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;600;700;800&family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="/assets/css/admin.css" />
-  </head>
-  <body class="bg-[#F8FAFC] text-[#334155] min-h-screen flex flex-col font-['Cairo'] antialiased selection:bg-[#EAF1FB] selection:text-[#0B2A8F]">
-    
-    <!-- Mobile Sidebar Overlay -->
-    <div id="sidebar-overlay" onclick="toggleAdminSidebar()" class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-40 hidden lg:hidden transition-opacity"></div>
+<x-admin-layout::admin
+    :title="__('إدارة محتوى الكورس والمستويات')"
+    :description="__('تحكم كامل في المستويات، رفع الفيديوهات، ربط المهام، وتعديل السعر ديناميكياً')"
+    contentClass="p-4 sm:p-8 flex flex-col gap-6 max-w-[1400px] w-full mx-auto"
+>
+    <x-slot:actions>
+        <button type="button" onclick="openModal('modal-add-level')" class="h-10 sm:h-11 px-4 sm:px-5 rounded-xl bg-[#012383] hover:bg-[#0B2A8F] text-white font-bold text-xs shadow-sm transition-all flex items-center gap-2 cursor-pointer">
+            <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+            <span>{{ __('إضافة مستوى جديد') }}</span>
+        </button>
+    </x-slot:actions>
 
-    <div class="flex-1 flex flex-row min-h-screen w-full relative">
-      
-      <!-- ============================================== -->
-      <!-- 1. ADMIN SIDEBAR NAVIGATION                    -->
-      <!-- ============================================== -->
-      <aside id="admin-sidebar" class="fixed lg:sticky top-0 start-0 z-50 w-[270px] h-screen bg-white border-e border-[#DEE8F7] flex flex-col justify-between p-5 shrink-0 transition-transform duration-300 -translate-x-full lg:translate-x-0 rtl:translate-x-full lg:rtl:translate-x-0 shadow-sm lg:shadow-none">
-        
-        <div class="flex flex-col gap-6">
-          <!-- Platform Brand -->
-          <div class="flex items-center justify-between border-b border-[#DEE8F7] pb-4">
-            <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 cursor-pointer">
-              <div class="size-11 rounded-xl bg-[#EAF1FB] flex items-center justify-center p-2 shrink-0 border border-[#DEE8F7]">
-                <img src="/assets/images/logo.png" alt="منصة الأمين" class="size-full object-contain pointer-events-none" />
-              </div>
-              <div>
-                <span class="font-['Baloo_Bhaijaan_2'] font-extrabold text-xl leading-tight text-[#012383] block">منصة الأمين</span>
-                <span class="text-[11px] font-bold text-[#0B2A8F] bg-[#EAF1FB] px-2 py-0.5 rounded-full inline-block mt-0.5">لوحة الإدارة المركزية</span>
-              </div>
-            </a>
-            <button type="button" onclick="toggleAdminSidebar()" class="lg:hidden p-1.5 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100">
-              <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-            </button>
-          </div>
-
-          <!-- Navigation Links Group -->
-          <nav class="flex flex-col gap-1.5">
-            <p class="text-[11px] font-bold text-slate-400 px-3 uppercase tracking-wider mb-1">المنهج والتعليم</p>
-            
-            <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-[#EAF1FB]/60 hover:text-[#012383] font-semibold text-sm transition-colors">
-              <svg class="size-5 shrink-0 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
-              <span class="flex-1 text-start">لوحة الإحصائيات</span>
-            </a>
-
-            <!-- المنهج والمستويات الديناميكية (ACTIVE) -->
-            <a href="{{ route('admin.courses.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-[#012383] text-white font-bold text-sm shadow-xs transition-colors">
-              <svg class="size-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
-              <span class="flex-1 text-start">المستويات والفيديوهات</span>
-              <span class="px-2 py-0.5 text-[11px] font-bold bg-white/20 text-white rounded-md">ديناميك</span>
-            </a>
-
-            <a href="{{ route('admin.receipts.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-[#EAF1FB]/60 hover:text-[#012383] font-semibold text-sm transition-colors">
-              <svg class="size-5 shrink-0 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-              <span class="flex-1 text-start">إيصالات الدفع</span>
-              <span class="px-2 py-0.5 text-[11px] font-bold bg-amber-100 text-amber-800 rounded-full">١٢ معلق</span>
-            </a>
-
-            <a href="{{ route('admin.tasks.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-[#EAF1FB]/60 hover:text-[#012383] font-semibold text-sm transition-colors">
-              <svg class="size-5 shrink-0 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
-              <span class="flex-1 text-start">تصحيح المهام</span>
-              <span class="px-2 py-0.5 text-[11px] font-bold bg-blue-100 text-[#0B2A8F] rounded-full">٢٨ مهمة</span>
-            </a>
-
-            <a href="{{ route('admin.students.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-[#EAF1FB]/60 hover:text-[#012383] font-semibold text-sm transition-colors">
-              <svg class="size-5 shrink-0 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-              <span class="flex-1 text-start">الطلاب والاشتراكات</span>
-            </a>
-
-            <a href="{{ route('admin.certificates.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-[#EAF1FB]/60 hover:text-[#012383] font-semibold text-sm transition-colors">
-              <svg class="size-5 shrink-0 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-              <span class="flex-1 text-start">الشهادات المعتمدة</span>
-            </a>
-
-            <a href="{{ route('admin.settings.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-[#EAF1FB]/60 hover:text-[#012383] font-semibold text-sm transition-colors">
-              <svg class="size-5 shrink-0 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-              <span class="flex-1 text-start">إعدادات المنصة والدفع</span>
-            </a>
-          </nav>
-        </div>
-
-        <div class="border-t border-[#DEE8F7] pt-4 flex flex-col gap-2">
-          <a href="../pages/course-details.html" target="_blank" class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 hover:bg-[#EAF1FB] text-[#012383] text-xs font-bold transition-colors">
-            <span>معاينة صفحة الكورس</span>
-            <span class="text-[10px] text-slate-400">فتح ↗</span>
-          </a>
-        </div>
-
-      </aside>
-
-      <!-- ============================================== -->
-      <!-- 2. MAIN CURRICULUM WORKSPACE                   -->
-      <!-- ============================================== -->
-      <main class="flex-1 flex flex-col min-w-0 bg-[#F8FAFC]">
-        
-        <!-- Header Bar -->
-        <header class="h-20 bg-white border-b border-[#DEE8F7] px-4 sm:px-8 flex items-center justify-between gap-4 sticky top-0 z-30">
-          <div class="flex items-center gap-3">
-            <button type="button" onclick="toggleAdminSidebar()" class="lg:hidden p-2 rounded-xl text-slate-600 hover:bg-slate-100 cursor-pointer">
-              <svg class="size-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
-            </button>
-            <div>
-              <h1 class="font-['Baloo_Bhaijaan_2'] font-bold text-xl sm:text-2xl text-[#012383] leading-tight">إدارة محتوى الكورس والمستويات</h1>
-              <p class="text-xs text-slate-500">تحكم كامل في المستويات، رفع الفيديوهات، ربط المهام، وتعديل السعر ديناميكياً</p>
-            </div>
-          </div>
-
-          <div class="flex items-center gap-3">
-            <!-- Add Level Primary Button -->
-            <button type="button" onclick="openModal('modal-add-level')" class="h-11 px-5 rounded-xl bg-[#012383] hover:bg-[#0B2A8F] text-white font-bold text-xs shadow-sm transition-all flex items-center gap-2 cursor-pointer">
-              <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
-              <span>إضافة مستوى جديد</span>
-            </button>
-          </div>
-        </header>
-
-        <!-- Content Body -->
-        <div class="p-4 sm:p-8 flex flex-col gap-6 max-w-[1400px] w-full mx-auto">
           
           <!-- Course Card Info Bar with Dynamic Pricing Controller -->
           <div class="bg-white border border-[#DEE8F7] rounded-3xl p-6 sm:p-7 shadow-xs flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
@@ -383,130 +272,124 @@
 
         </div>
 
-      </main>
+    <x-slot:modals>
+        <!-- Modal: Add New Lesson / Video -->
+        <div id="modal-add-lesson" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4 modal-hidden">
+          <div class="modal-content bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 flex flex-col gap-5 shadow-2xl border border-[#DEE8F7]">
+            <div class="flex items-center justify-between border-b border-[#DEE8F7] pb-4">
+              <div>
+                <h3 class="font-['Baloo_Bhaijaan_2'] font-bold text-xl text-[#012383]">إضافة فيديو ودرس جديد</h3>
+                <p class="text-xs text-slate-500 mt-0.5">المستوى المستهدف: <span id="add-lesson-level-label" class="font-bold text-[#0B2A8F]">المستوى الأول</span></p>
+              </div>
+              <button type="button" onclick="closeModal('modal-add-lesson')" class="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 cursor-pointer">
+                <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+              </button>
+            </div>
 
-    </div>
+            <form onsubmit="submitAddLesson(event)" class="flex flex-col gap-4">
+              <div>
+                <label class="text-xs font-bold text-slate-700 block mb-1">عنوان الفيديو / الدرس:</label>
+                <input type="text" id="new-lesson-title" required placeholder="مثال: الدرس ٦: تمارين تقوية عضلات النطق" class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] text-sm font-bold text-[#012383] outline-none focus:border-[#0B2A8F]" />
+              </div>
 
-    <!-- Modal: Add New Lesson / Video -->
-    <div id="modal-add-lesson" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4 modal-hidden">
-      <div class="modal-content bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 flex flex-col gap-5 shadow-2xl border border-[#DEE8F7]">
-        <div class="flex items-center justify-between border-b border-[#DEE8F7] pb-4">
-          <div>
-            <h3 class="font-['Baloo_Bhaijaan_2'] font-bold text-xl text-[#012383]">إضافة فيديو ودرس جديد</h3>
-            <p class="text-xs text-slate-500 mt-0.5">المستوى المستهدف: <span id="add-lesson-level-label" class="font-bold text-[#0B2A8F]">المستوى الأول</span></p>
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="text-xs font-bold text-slate-700 block mb-1">مدة الفيديو (بالدقائق):</label>
+                  <input type="number" id="new-lesson-duration" required min="1" max="300" value="20" class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] text-sm font-bold text-slate-700 outline-none focus:border-[#0B2A8F]" />
+                </div>
+                <div>
+                  <label class="text-xs font-bold text-slate-700 block mb-1">ترتيب العرض:</label>
+                  <input type="number" min="1" value="6" class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] text-sm font-bold text-slate-700 outline-none focus:border-[#0B2A8F]" />
+                </div>
+              </div>
+
+              <div>
+                <label class="text-xs font-bold text-slate-700 block mb-1">رابط الفيديو أو معرّف البث (Vimeo / Bunny / HLS):</label>
+                <input type="text" required placeholder="https://player.vimeo.com/video/..." class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] text-xs font-mono text-slate-700 outline-none focus:border-[#0B2A8F]" />
+              </div>
+
+              <div class="border-t border-[#DEE8F7] pt-3">
+                <label class="text-xs font-bold text-[#012383] block mb-1">المهمة السريرية الملحقة بالفيديو (تفتح بعد إتمام المشاهدة):</label>
+                <input type="text" id="new-lesson-task-title" required placeholder="عنوان المهمة (مثال: إعداد خطة تمارين عملية)" class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] text-xs font-bold text-slate-700 outline-none focus:border-[#0B2A8F]" />
+              </div>
+
+              <div class="flex items-center justify-end gap-2 pt-2">
+                <button type="button" onclick="closeModal('modal-add-lesson')" class="px-4 h-10 rounded-xl bg-slate-100 text-slate-600 font-bold text-xs">إلغاء</button>
+                <button type="submit" class="px-6 h-10 rounded-xl bg-[#012383] hover:bg-[#0B2A8F] text-white font-bold text-xs shadow-sm">حفظ وإضافة الدرس</button>
+              </div>
+            </form>
           </div>
-          <button type="button" onclick="closeModal('modal-add-lesson')" class="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 cursor-pointer">
-            <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-          </button>
         </div>
 
-        <form onsubmit="submitAddLesson(event)" class="flex flex-col gap-4">
-          <div>
-            <label class="text-xs font-bold text-slate-700 block mb-1">عنوان الفيديو / الدرس:</label>
-            <input type="text" id="new-lesson-title" required placeholder="مثال: الدرس ٦: تمارين تقوية عضلات النطق" class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] text-sm font-bold text-[#012383] outline-none focus:border-[#0B2A8F]" />
-          </div>
-
-          <div class="grid grid-cols-2 gap-3">
-            <div>
-              <label class="text-xs font-bold text-slate-700 block mb-1">مدة الفيديو (بالدقائق):</label>
-              <input type="number" id="new-lesson-duration" required min="1" max="300" value="20" class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] text-sm font-bold text-slate-700 outline-none focus:border-[#0B2A8F]" />
+        <!-- Modal: Add New Level -->
+        <div id="modal-add-level" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4 modal-hidden">
+          <div class="modal-content bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 flex flex-col gap-5 shadow-2xl border border-[#DEE8F7]">
+            <div class="flex items-center justify-between border-b border-[#DEE8F7] pb-4">
+              <div class="flex items-center gap-2">
+                <div class="size-8 rounded-lg bg-blue-50 text-[#0B2A8F] flex items-center justify-center font-bold">
+                  <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+                </div>
+                <h3 class="font-['Baloo_Bhaijaan_2'] font-bold text-xl text-[#012383]">إضافة مستوى ديناميكي جديد</h3>
+              </div>
+              <button type="button" onclick="closeModal('modal-add-level')" class="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 cursor-pointer">
+                <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+              </button>
             </div>
-            <div>
-              <label class="text-xs font-bold text-slate-700 block mb-1">ترتيب العرض:</label>
-              <input type="number" min="1" value="6" class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] text-sm font-bold text-slate-700 outline-none focus:border-[#0B2A8F]" />
-            </div>
-          </div>
 
-          <div>
-            <label class="text-xs font-bold text-slate-700 block mb-1">رابط الفيديو أو معرّف البث (Vimeo / Bunny / HLS):</label>
-            <input type="text" required placeholder="https://player.vimeo.com/video/..." class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] text-xs font-mono text-slate-700 outline-none focus:border-[#0B2A8F]" />
-          </div>
+            <form onsubmit="submitAddLevel(event)" class="flex flex-col gap-4">
+              <div>
+                <label class="text-xs font-bold text-slate-700 block mb-1">عنوان المستوى الجديد:</label>
+                <input type="text" id="new-level-title" required placeholder="مثال: المستوى الخامس: استراتيجيات التدخل المبكر" class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] text-sm font-bold text-[#012383] outline-none focus:border-[#0B2A8F]" />
+              </div>
 
-          <div class="border-t border-[#DEE8F7] pt-3">
-            <label class="text-xs font-bold text-[#012383] block mb-1">المهمة السريرية الملحقة بالفيديو (تفتح بعد إتمام المشاهدة):</label>
-            <input type="text" id="new-lesson-task-title" required placeholder="عنوان المهمة (مثال: إعداد خطة تمارين عملية)" class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] text-xs font-bold text-slate-700 outline-none focus:border-[#0B2A8F]" />
-          </div>
+              <div>
+                <label class="text-xs font-bold text-slate-700 block mb-1">وصف موجز للمستوى:</label>
+                <textarea id="new-level-desc" rows="2" placeholder="أهداف المستوى وعدد الفيديوهات والمهام..." class="w-full p-3.5 rounded-xl border border-[#DEE8F7] text-xs font-medium text-slate-700 outline-none focus:border-[#0B2A8F] resize-none"></textarea>
+              </div>
 
-          <div class="flex items-center justify-end gap-2 pt-2">
-            <button type="button" onclick="closeModal('modal-add-lesson')" class="px-4 h-10 rounded-xl bg-slate-100 text-slate-600 font-bold text-xs">إلغاء</button>
-            <button type="submit" class="px-6 h-10 rounded-xl bg-[#012383] hover:bg-[#0B2A8F] text-white font-bold text-xs shadow-sm">حفظ وإضافة الدرس</button>
+              <div class="flex items-center justify-end gap-2 pt-2">
+                <button type="button" onclick="closeModal('modal-add-level')" class="px-4 h-10 rounded-xl bg-slate-100 text-slate-600 font-bold text-xs">إلغاء</button>
+                <button type="submit" class="px-6 h-10 rounded-xl bg-[#012383] hover:bg-[#0B2A8F] text-white font-bold text-xs shadow-sm">إنشاء المستوى</button>
+              </div>
+            </form>
           </div>
-        </form>
-      </div>
-    </div>
-
-    <!-- Modal: Add New Level -->
-    <div id="modal-add-level" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4 modal-hidden">
-      <div class="modal-content bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 flex flex-col gap-5 shadow-2xl border border-[#DEE8F7]">
-        <div class="flex items-center justify-between border-b border-[#DEE8F7] pb-4">
-          <div class="flex items-center gap-2">
-            <div class="size-8 rounded-lg bg-blue-50 text-[#0B2A8F] flex items-center justify-center font-bold">
-              <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
-            </div>
-            <h3 class="font-['Baloo_Bhaijaan_2'] font-bold text-xl text-[#012383]">إضافة مستوى ديناميكي جديد</h3>
-          </div>
-          <button type="button" onclick="closeModal('modal-add-level')" class="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 cursor-pointer">
-            <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-          </button>
         </div>
 
-        <form onsubmit="submitAddLevel(event)" class="flex flex-col gap-4">
-          <div>
-            <label class="text-xs font-bold text-slate-700 block mb-1">عنوان المستوى الجديد:</label>
-            <input type="text" id="new-level-title" required placeholder="مثال: المستوى الخامس: استراتيجيات التدخل المبكر" class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] text-sm font-bold text-[#012383] outline-none focus:border-[#0B2A8F]" />
-          </div>
-
-          <div>
-            <label class="text-xs font-bold text-slate-700 block mb-1">وصف موجز للمستوى:</label>
-            <textarea id="new-level-desc" rows="2" placeholder="أهداف المستوى وعدد الفيديوهات والمهام..." class="w-full p-3.5 rounded-xl border border-[#DEE8F7] text-xs font-medium text-slate-700 outline-none focus:border-[#0B2A8F] resize-none"></textarea>
-          </div>
-
-          <div class="flex items-center justify-end gap-2 pt-2">
-            <button type="button" onclick="closeModal('modal-add-level')" class="px-4 h-10 rounded-xl bg-slate-100 text-slate-600 font-bold text-xs">إلغاء</button>
-            <button type="submit" class="px-6 h-10 rounded-xl bg-[#012383] hover:bg-[#0B2A8F] text-white font-bold text-xs shadow-sm">إنشاء المستوى</button>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <!-- Modal: Edit Price -->
-    <div id="modal-edit-price" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4 modal-hidden">
-      <div class="modal-content bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 flex flex-col gap-5 shadow-2xl border border-[#DEE8F7]">
-        <div class="flex items-center justify-between border-b border-[#DEE8F7] pb-4">
-          <div class="flex items-center gap-2">
-            <div class="size-8 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center font-bold">
-              <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <!-- Modal: Edit Price -->
+        <div id="modal-edit-price" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4 modal-hidden">
+          <div class="modal-content bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 flex flex-col gap-5 shadow-2xl border border-[#DEE8F7]">
+            <div class="flex items-center justify-between border-b border-[#DEE8F7] pb-4">
+              <div class="flex items-center gap-2">
+                <div class="size-8 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center font-bold">
+                  <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+                <h3 class="font-['Baloo_Bhaijaan_2'] font-bold text-xl text-[#012383]">تعديل سعر كورس التخاطب</h3>
+              </div>
+              <button type="button" onclick="closeModal('modal-edit-price')" class="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 cursor-pointer">
+                <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+              </button>
             </div>
-            <h3 class="font-['Baloo_Bhaijaan_2'] font-bold text-xl text-[#012383]">تعديل سعر كورس التخاطب</h3>
+
+            <form onsubmit="handleUpdatePrice(event)" class="flex flex-col gap-4">
+              <div>
+                <label class="text-xs font-bold text-slate-700 block mb-1">السعر الأصلي (قبل الخصم):</label>
+                <input type="number" name="originalPrice" required value="1800" class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] text-sm font-bold text-slate-600 outline-none focus:border-[#0B2A8F]" />
+              </div>
+
+              <div>
+                <label class="text-xs font-bold text-slate-700 block mb-1">السعر الفعلي المطلوب دفعه:</label>
+                <input type="number" name="currentPrice" required value="1200" class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] text-sm font-bold text-[#012383] outline-none focus:border-[#0B2A8F]" />
+              </div>
+
+              <div class="flex items-center justify-end gap-2 pt-2">
+                <button type="button" onclick="closeModal('modal-edit-price')" class="px-4 h-10 rounded-xl bg-slate-100 text-slate-600 font-bold text-xs">إلغاء</button>
+                <button type="submit" class="px-6 h-10 rounded-xl bg-[#012383] hover:bg-[#0B2A8F] text-white font-bold text-xs shadow-sm">حفظ ونشر السعر</button>
+              </div>
+            </form>
           </div>
-          <button type="button" onclick="closeModal('modal-edit-price')" class="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 cursor-pointer">
-            <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-          </button>
         </div>
+    </x-slot:modals>
+</x-admin-layout::admin>
 
-        <form onsubmit="handleUpdatePrice(event)" class="flex flex-col gap-4">
-          <div>
-            <label class="text-xs font-bold text-slate-700 block mb-1">السعر الأصلي (قبل الخصم):</label>
-            <input type="number" name="originalPrice" required value="1800" class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] text-sm font-bold text-slate-600 outline-none focus:border-[#0B2A8F]" />
-          </div>
-
-          <div>
-            <label class="text-xs font-bold text-slate-700 block mb-1">السعر الفعلي المطلوب دفعه:</label>
-            <input type="number" name="currentPrice" required value="1200" class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] text-sm font-bold text-[#012383] outline-none focus:border-[#0B2A8F]" />
-          </div>
-
-          <div class="flex items-center justify-end gap-2 pt-2">
-            <button type="button" onclick="closeModal('modal-edit-price')" class="px-4 h-10 rounded-xl bg-slate-100 text-slate-600 font-bold text-xs">إلغاء</button>
-            <button type="submit" class="px-6 h-10 rounded-xl bg-[#012383] hover:bg-[#0B2A8F] text-white font-bold text-xs shadow-sm">حفظ ونشر السعر</button>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <!-- Scripts -->
-    <script type="module" src="/assets/js/admin.js"></script>
-      <script type="module" src="./js/animations.js"></script>
-  </body>
-</html>
 
 

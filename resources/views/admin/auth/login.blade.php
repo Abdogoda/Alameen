@@ -10,52 +10,67 @@
     @include('partials.head')
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-gradient-to-br from-slate-900 via-[#011B65] to-[#012383] text-slate-100 min-h-screen flex flex-col items-center justify-center p-4 selection:bg-[#F2AE2E] selection:text-slate-900 font-['Cairo']">
+<body class="bg-[#FAFCFF] min-h-screen text-[#1E293B] flex flex-col justify-center items-center px-4 py-8 sm:px-6 lg:px-10 font-['Cairo'] antialiased relative selection:bg-[#0B2A8F]/10 selection:text-[#0B2A8F] overflow-x-hidden">
 
-    <!-- Language Switcher in Corner -->
-    <div class="fixed top-6 end-6 z-50">
-        <x-admin::language-switcher />
+    <!-- Language Switcher & Home Return in Corner -->
+    <div class="fixed top-3.5 sm:top-6 end-3.5 sm:end-8 z-30 flex items-center gap-2.5 sm:gap-3">
+        <x-admin::language-switcher variant="pill" />
+
+        <a
+            href="{{ route('home') }}"
+            class="size-9 sm:size-10 rounded-full bg-white border border-[#DEE8F7] shadow-xs flex items-center justify-center text-[#475569] hover:text-[#012383] hover:border-[#012383] transition-all cursor-pointer"
+            title="{{ __('العودة إلى الرئيسية') }}"
+        >
+            <svg class="size-4 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+        </a>
     </div>
 
-    <!-- Background Ambient Glows -->
+    <!-- Soft Decorative Ambient Mesh Blobs (Light Aesthetic) -->
     <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
-        <div class="absolute -top-40 -end-40 w-96 h-96 rounded-full bg-[#0B2A8F]/40 blur-3xl"></div>
-        <div class="absolute -bottom-40 -start-40 w-96 h-96 rounded-full bg-[#F2AE2E]/15 blur-3xl"></div>
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-blue-600/10 blur-[120px]"></div>
+        <div class="absolute -top-32 -end-32 size-96 rounded-full bg-blue-100/40 blur-3xl"></div>
+        <div class="absolute -bottom-32 -start-32 size-96 rounded-full bg-amber-100/35 blur-3xl"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-[650px] rounded-full bg-indigo-50/50 blur-[130px]"></div>
     </div>
 
-    <!-- Main Container -->
-    <div class="w-full max-w-md relative z-10 my-auto">
+    <!-- Main Container with dedicated mobile horizontal padding and top clearance -->
+    <div class="w-full max-w-md relative z-10 my-auto pt-14 pb-8 sm:py-10 px-3 sm:px-0">
         
         <!-- Header Branding -->
-        <div class="flex flex-col items-center text-center mb-8">
-            <div class="size-16 rounded-2xl bg-white border border-white/30 p-2.5 shadow-2xl flex items-center justify-center mb-4 transition-transform hover:scale-105 duration-300">
-                <img src="/assets/images/logo.png" alt="منصة الأمين" class="size-full object-contain" />
+        <div class="flex flex-col items-center text-center mb-7">
+            <!-- Polished White Logo Badge -->
+            <div class="size-16 rounded-2xl bg-white border border-[#DEE8F7] p-2.5 shadow-md shadow-blue-900/5 flex items-center justify-center mb-3.5 transition-transform hover:scale-105 duration-300">
+                <img src="/assets/images/logo.png" alt="منصة الأمين" class="size-full object-contain pointer-events-none" />
             </div>
 
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#F2AE2E]/20 border border-[#F2AE2E]/40 text-[#F2AE2E] text-xs font-bold mb-2 tracking-wide">
-                <svg class="size-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-50 border border-amber-200/90 text-amber-900 text-xs font-bold mb-2.5 tracking-wide shadow-xs">
+                <svg class="size-3.5 text-amber-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                </svg>
                 <span>{{ __('بوابة الإدارة المركزية والتحكم') }}</span>
             </div>
 
-            <h1 class="text-2xl sm:text-3xl font-extrabold text-white font-['Baloo_Bhaijaan_2'] tracking-tight">
+            <h1 class="text-3xl sm:text-[34px] font-extrabold text-[#012383] font-['Baloo_Bhaijaan_2'] tracking-tight mb-1">
                 {{ __('منصة الأمين') }}
             </h1>
-            <p class="text-xs sm:text-sm text-slate-300 mt-1 max-w-xs">
+            <p class="text-xs sm:text-sm text-[#475569] font-medium max-w-sm leading-relaxed">
                 {{ __('تسجيل الدخول المخصص للمشرفين، المحاضرين، وإدارة المنصة') }}
             </p>
         </div>
 
-        <!-- Login Card -->
-        <div class="bg-white/10 backdrop-blur-xl border border-white/15 rounded-3xl p-6 sm:p-8 shadow-[0_20px_50px_rgba(0,0,0,0.35)]">
+        <!-- Crisp Light Login Card -->
+        <div class="bg-white border border-[#DEE8F7] rounded-3xl p-6 sm:p-9 shadow-[0_20px_50px_-12px_rgba(1,35,131,0.08),0_1px_3px_rgba(0,0,0,0.02)]">
             
             @if ($errors->any())
-                <div class="mb-6 p-4 rounded-2xl bg-rose-500/20 border border-rose-500/30 text-rose-200 text-sm">
+                <div class="mb-6 p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-sm">
                     <div class="flex items-center gap-2 font-bold mb-1">
-                        <svg class="size-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                        <svg class="size-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                        </svg>
                         <span>{{ __('تنبيه تحقق') }}</span>
                     </div>
-                    <ul class="list-disc list-inside text-xs space-y-0.5 text-rose-200/90">
+                    <ul class="list-disc list-inside text-xs space-y-0.5 text-rose-600 font-semibold">
                         @foreach ($errors->all() as $error)
                             <li>{{ $error }}</li>
                         @endforeach
@@ -68,12 +83,14 @@
 
                 <!-- Email Field -->
                 <div>
-                    <label for="admin_email" class="block text-xs font-bold text-slate-200 mb-1.5">
+                    <label for="admin_email" class="block text-xs font-bold text-[#012383] mb-1.5">
                         {{ __('البريد الإلكتروني للإدارة') }}
                     </label>
                     <div class="relative">
-                        <div class="absolute inset-y-0 start-0 ps-3.5 flex items-center pointer-events-none text-slate-400">
-                            <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"/></svg>
+                        <div class="absolute inset-y-0 start-0 ps-3.5 flex items-center pointer-events-none text-[#0B2A8F]">
+                            <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"/>
+                            </svg>
                         </div>
                         <input
                             type="email"
@@ -83,35 +100,46 @@
                             required
                             autofocus
                             placeholder="admin@alameen.edu.sa"
-                            class="w-full ps-10 pe-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-[#F2AE2E] focus:border-transparent transition-all"
+                            class="w-full ps-11 pe-4 py-3.5 rounded-xl bg-[#FAFCFF] border border-[#DEE8F7] text-[#1E293B] placeholder-slate-400 text-sm focus:bg-white focus:outline-none focus:ring-4 focus:ring-[#0B2A8F]/10 focus:border-[#0B2A8F] transition-all"
                         />
                     </div>
                 </div>
 
-                <!-- Password Field -->
-                <div>
-                    <label for="admin_password" class="block text-xs font-bold text-slate-200 mb-1.5">
+                <!-- Password Field with Show/Hide -->
+                <div x-data="{ show: false }">
+                    <label for="admin_password" class="block text-xs font-bold text-[#012383] mb-1.5">
                         {{ __('كلمة المرور') }}
                     </label>
-                    <div class="relative">
-                        <div class="absolute inset-y-0 start-0 ps-3.5 flex items-center pointer-events-none text-slate-400">
-                            <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                    <div class="relative flex items-center">
+                        <div class="absolute inset-y-0 start-0 ps-3.5 flex items-center pointer-events-none text-[#0B2A8F]">
+                            <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                            </svg>
                         </div>
                         <input
-                            type="password"
+                            :type="show ? 'text' : 'password'"
                             id="admin_password"
                             name="password"
                             required
                             placeholder="••••••••"
-                            class="w-full ps-10 pe-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-[#F2AE2E] focus:border-transparent transition-all"
+                            class="w-full ps-11 pe-12 py-3.5 rounded-xl bg-[#FAFCFF] border border-[#DEE8F7] text-[#1E293B] placeholder-slate-400 text-sm focus:bg-white focus:outline-none focus:ring-4 focus:ring-[#0B2A8F]/10 focus:border-[#0B2A8F] transition-all"
                         />
+                        <button
+                            type="button"
+                            @click="show = !show"
+                            class="absolute end-3 top-1/2 -translate-y-1/2 size-9 flex items-center justify-center text-slate-400 hover:text-[#012383] transition-colors cursor-pointer"
+                            aria-label="Toggle password visibility"
+                        >
+                            <svg x-show="!show" class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                            <svg x-show="show" x-cloak class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"/></svg>
+                        </button>
                     </div>
                 </div>
 
                 <!-- Remember Me -->
                 <div class="flex items-center justify-between text-xs pt-1">
-                    <label class="flex items-center gap-2 cursor-pointer select-none text-slate-300 hover:text-white">
-                        <input type="checkbox" name="remember" class="rounded border-white/30 text-[#F2AE2E] focus:ring-[#F2AE2E] bg-white/10 size-4">
+                    <label class="flex items-center gap-2 cursor-pointer select-none text-[#475569] hover:text-[#012383] transition-colors font-medium">
+                        <input type="checkbox" name="remember" class="rounded border-[#CFDBEA] text-[#0B2A8F] focus:ring-[#0B2A8F] size-4 cursor-pointer">
                         <span>{{ __('تذكر جلستي على هذا الجهاز') }}</span>
                     </label>
                 </div>
@@ -119,32 +147,23 @@
                 <!-- Submit Button -->
                 <button
                     type="submit"
-                    class="w-full py-3.5 px-4 rounded-xl font-bold text-sm bg-gradient-to-r from-[#F2AE2E] to-amber-500 hover:from-amber-400 hover:to-[#F2AE2E] text-slate-950 shadow-lg shadow-amber-500/25 transition-all transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2 cursor-pointer"
+                    class="w-full py-4 px-5 rounded-2xl font-bold text-base bg-[#012383] hover:bg-[#0B2A8F] text-white shadow-lg shadow-[#012383]/20 hover:shadow-xl hover:shadow-[#012383]/25 active:scale-[0.99] transition-all flex items-center justify-center gap-2.5 cursor-pointer"
                 >
-                    <svg class="size-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/></svg>
+                    <svg class="size-5 shrink-0 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
+                    </svg>
                     <span>{{ __('دخول لوحة الإدارة') }}</span>
                 </button>
             </form>
-
-            <!-- Separation / Student Redirect Footer -->
-            <div class="mt-8 pt-6 border-t border-white/10 text-center">
-                <p class="text-xs text-slate-300">
-                    {{ __('هل أنت طالب وتبحث عن دروسك؟') }}
-                </p>
-                <a href="{{ route('login') }}" class="inline-flex items-center gap-1.5 mt-2 text-xs font-bold text-[#F2AE2E] hover:text-amber-300 transition-colors">
-                    <span>{{ __('الانتقال إلى بوابة دخول الطلاب') }}</span>
-                    <span class="rtl:rotate-180">→</span>
-                </a>
-            </div>
-
         </div>
 
         <!-- Footer Notice -->
-        <div class="text-center mt-6 text-[11px] text-slate-400">
-            <p>{{ __('منصة الأمين التعليمية • نظام إدارة المحتوى والتحكم') }}</p>
+        <div class="text-center mt-6 text-xs text-[#94A3B8] font-medium">
+            <p>{{ __('منصة الأمين التعليمية • نظام إدارة المحتوى والتحكم المركزي') }}</p>
         </div>
 
     </div>
 
+    @fluxScripts
 </body>
 </html>

@@ -1,11 +1,20 @@
 <?php
 
+use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Controllers\LocaleController;
 use App\Livewire\Notifications\NotificationInbox;
 use Illuminate\Support\Facades\Route;
 
 // Language Switcher
 Route::match(['get', 'post'], 'locale/{locale}', [LocaleController::class, 'switch'])->name('locale.switch');
+
+// -------------------------------------------------------------
+// Google Social Authentication (Login & Signup)
+// -------------------------------------------------------------
+Route::middleware('guest')->group(function () {
+    Route::get('auth/google/redirect', [GoogleAuthController::class, 'redirect'])->name('auth.google.redirect');
+    Route::get('auth/google/callback', [GoogleAuthController::class, 'callback'])->name('auth.google.callback');
+});
 
 // -------------------------------------------------------------
 // Public Web Pages (Marketing & Catalogue)

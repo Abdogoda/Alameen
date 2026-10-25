@@ -1,18 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Settings;
 
 use App\Concerns\PasswordValidationRules;
-use Exception;
+use App\Services\Auth\PasskeyService;
+use App\Services\Auth\PasswordSecurityService;
+use App\Services\Auth\TwoFactorService;
 use Flux\Flux;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
-use Laravel\Fortify\Actions\ConfirmTwoFactorAuthentication;
-use Laravel\Fortify\Actions\DisableTwoFactorAuthentication;
-use Laravel\Fortify\Actions\EnableTwoFactorAuthentication;
 use Laravel\Fortify\Features;
 use Laravel\Fortify\Fortify;
-use Laravel\Passkeys\Actions\DeletePasskey;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Locked;
 use Livewire\Attributes\Title;
@@ -72,13 +72,13 @@ class Security extends Component
     /**
      * Mount the component.
      */
-    public function mount(DisableTwoFactorAuthentication $disableTwoFactorAuthentication): void
+    public function mount(TwoFactorService $twoFactorService): void
     {
         $this->canManageTwoFactor = Features::canManageTwoFactorAuthentication();
 
         if ($this->canManageTwoFactor) {
             if (Fortify::confirmsTwoFactorAuthentication() && is_null(auth()->user()->two_factor_confirmed_at)) {
-                $disableTwoFactorAuthentication(auth()->user());
+                $twoFactorService->disable(auth()->user());
             }
 
             $this->twoFactorEnabled = auth()->user()->hasEnabledTwoFactorAuthentication();
@@ -95,7 +95,7 @@ class Security extends Component
     /**
      * Update the password for the currently authenticated user.
      */
-    public function updatePassword(): void
+    public function updatePassword(PasswordSecurityService $passwordService): void
     {
         try {
             $validated = $this->validate([
@@ -108,9 +108,7 @@ class Security extends Component
             throw $e;
         }
 
-        Auth::user()->update([
-            'password' => $validated['password'],
-        ]);
+        $passwordService->updatePassword(Auth::user(), $validated['current_password'], $validated['password']);
 
         $this->reset('current_password', 'password', 'password_confirmation');
 
@@ -151,16 +149,13 @@ class Security extends Component
     /**
      * Delete the passkey.
      */
-    public function deletePasskey(DeletePasskey $deletePasskey): void
+    public function deletePasskey(PasskeyService $passkeyService): void
     {
         if (! $this->deletingPasskeyId) {
             return;
         }
 
-        $user = Auth::user();
-        $passkey = $user->passkeys()->findOrFail($this->deletingPasskeyId);
-
-        $deletePasskey($user, $passkey);
+        $passkeyService->deletePasskey(Auth::user(), $this->deletingPasskeyId);
 
         $this->closeDeleteModal();
         $this->loadPasskeys();
@@ -179,34 +174,18 @@ class Security extends Component
     /**
      * Enable two-factor authentication for the user.
      */
-    public function enable(EnableTwoFactorAuthentication $enableTwoFactorAuthentication): void
+    public function enable(TwoFactorService $twoFactorService): void
     {
-        $enableTwoFactorAuthentication(auth()->user());
+        $setup = $twoFactorService->enable(auth()->user());
 
         if (! $this->requiresConfirmation) {
             $this->twoFactorEnabled = auth()->user()->hasEnabledTwoFactorAuthentication();
         }
 
-        $this->loadSetupData();
+        $this->qrCodeSvg = $setup['qr_code_svg'];
+        $this->manualSetupKey = $setup['manual_setup_key'];
 
         $this->showModal = true;
-    }
-
-    /**
-     * Load the two-factor authentication setup data for the user.
-     */
-    private function loadSetupData(): void
-    {
-        $user = auth()->user();
-
-        try {
-            $this->qrCodeSvg = $user?->twoFactorQrCodeSvg();
-            $this->manualSetupKey = decrypt($user->two_factor_secret);
-        } catch (Exception) {
-            $this->addError('setupData', 'Failed to fetch setup data.');
-
-            $this->reset('qrCodeSvg', 'manualSetupKey');
-        }
     }
 
     /**
@@ -228,11 +207,11 @@ class Security extends Component
     /**
      * Confirm two-factor authentication for the user.
      */
-    public function confirmTwoFactor(ConfirmTwoFactorAuthentication $confirmTwoFactorAuthentication): void
+    public function confirmTwoFactor(TwoFactorService $twoFactorService): void
     {
         $this->validate();
 
-        $confirmTwoFactorAuthentication(auth()->user(), $this->code);
+        $twoFactorService->confirm(auth()->user(), $this->code);
 
         $this->closeModal();
 
@@ -252,9 +231,9 @@ class Security extends Component
     /**
      * Disable two-factor authentication for the user.
      */
-    public function disable(DisableTwoFactorAuthentication $disableTwoFactorAuthentication): void
+    public function disable(TwoFactorService $twoFactorService): void
     {
-        $disableTwoFactorAuthentication(auth()->user());
+        $twoFactorService->disable(auth()->user());
 
         $this->twoFactorEnabled = false;
     }

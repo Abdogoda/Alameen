@@ -28,12 +28,33 @@
     --color-accent-foreground: var(--color-white);
 }
 
-@layer base {
+@layer theme {
     .dark {
         --color-accent: var(--color-white);
         --color-accent-content: var(--color-white);
-        --color-accent-foreground: var(--color-zinc-800);
+        --color-accent-foreground: var(--color-zinc-900);
     }
+}
+
+.dark {
+    --color-accent: var(--color-white);
+    --color-accent-content: var(--color-white);
+    --color-accent-foreground: var(--color-zinc-900);
+}
+
+/* Ensure default Flux primary buttons have high-contrast text in dark mode */
+.dark [data-flux-button][class*="bg-[var(--color-accent)]"],
+.dark button[class*="bg-[var(--color-accent)]"],
+:where(.dark, .dark *) [data-flux-button][class*="bg-[var(--color-accent)]"],
+:where(.dark, .dark *) button[class*="bg-[var(--color-accent)]"] {
+    color: var(--color-zinc-900) !important;
+}
+
+.dark [data-flux-button][class*="bg-[var(--color-accent)]"] > span,
+.dark button[class*="bg-[var(--color-accent)]"] > span,
+:where(.dark, .dark *) [data-flux-button][class*="bg-[var(--color-accent)]"] > span,
+:where(.dark, .dark *) button[class*="bg-[var(--color-accent)]"] > span {
+    color: var(--color-zinc-900) !important;
 }
 
 @layer base {

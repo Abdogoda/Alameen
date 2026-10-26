@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Responses\ApiResponse;
-use App\Models\User;
 use App\Services\Localization\LocalizationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;

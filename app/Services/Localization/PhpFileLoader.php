@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Services\Localization;
 
 use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Collection;
 use Illuminate\Translation\FileLoader;
 
 class PhpFileLoader extends FileLoader

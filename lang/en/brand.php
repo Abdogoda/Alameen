@@ -1,6 +1,6 @@
 <?php
 
-return array (
-  'name' => 'Al-Ameen Platform',
-  'tagline' => 'Educational Platform for Speech Therapy',
-);
+return [
+    'name' => 'Al-Ameen Platform',
+    'tagline' => 'Educational Platform for Speech Therapy',
+];

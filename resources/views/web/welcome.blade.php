@@ -1,4 +1,9 @@
 <x-layouts::marketing active="home">
+@php
+    $heroBlock = \App\Models\ContentBlock::where('section_key', 'hero')->first();
+    $faqBlock = \App\Models\ContentBlock::where('section_key', 'faq')->first();
+    $cmsSettings = app(\App\Services\Cms\SettingsService::class);
+@endphp
 <!-- SECTION 1: #home (HERO SLIDER SHOWCASE)                                   -->
       <!-- ========================================================================= -->
       <section id="home" class="w-full min-h-[calc(100vh-80px)] flex flex-col justify-between px-4 sm:px-8 lg:px-16 xl:px-24 2xl:px-32 py-5 sm:py-6 lg:py-8 relative overflow-hidden bg-gradient-to-b from-[#FAFCFF] to-white dark:from-[#0B1120] dark:to-[#0F172A] scroll-mt-20">
@@ -22,9 +27,13 @@
               </div>
 
               <div class="flex flex-col gap-2.5 sm:gap-4 items-center lg:items-start w-full">
-                <h1 class="slide-title font-['Baloo_Bhaijaan_2'] font-bold text-[26px] xs:text-[30px] sm:text-[44px] lg:text-[56px] xl:text-[60px] leading-[1.2] text-[#012383] w-full tracking-tight">{{ __('landing.slide1Title') }}</h1>
+                <h1 class="slide-title font-['Baloo_Bhaijaan_2'] font-bold text-[26px] xs:text-[30px] sm:text-[44px] lg:text-[56px] xl:text-[60px] leading-[1.2] text-[#012383] w-full tracking-tight">
+                    {{ $heroBlock?->title ?: __('landing.slide1Title') }}
+                </h1>
 
-                <p class="slide-desc font-['Cairo'] font-semibold text-[14px] sm:text-[17px] lg:text-[20px] leading-[1.7] text-[#1E293B] dark:text-slate-300 w-full max-w-[580px]">{{ __('landing.slide1Desc') }}</p>
+                <p class="slide-desc font-['Cairo'] font-semibold text-[14px] sm:text-[17px] lg:text-[20px] leading-[1.7] text-[#1E293B] dark:text-slate-300 w-full max-w-[580px]">
+                    {{ $heroBlock?->subtitle ?: __('landing.slide1Desc') }}
+                </p>
               </div>
 
               <div class="slide-ctas flex flex-wrap sm:flex-nowrap items-center justify-center lg:justify-start gap-2.5 sm:gap-3 pt-1 sm:pt-2 w-full sm:w-auto">
@@ -928,9 +937,50 @@
             </div>
           </div>
 
+      </section>
+
+      <!-- SECTION 7: #faq (DYNAMIC FREQUENTLY ASKED QUESTIONS CMS) -->
+      @if($faqBlock && !empty($faqBlock->metadata['items']))
+      <section id="faq" class="w-full max-w-[1536px] mx-auto px-4 sm:px-8 lg:px-16 xl:px-24 2xl:px-32 py-12 lg:py-20 flex flex-col items-center gap-10">
+        <div class="flex flex-col items-center text-center max-w-2xl gap-3">
+          <span class="px-4 py-1.5 rounded-full bg-[#EAF1FB] text-[#0B2A8F] text-xs font-bold border border-[#0B2A8F]/20">
+            {{ __('الأسئلة الشائعة') }}
+          </span>
+          <h2 class="font-['Baloo_Bhaijaan_2'] font-bold text-3xl sm:text-4xl text-[#012383]">
+            {{ $faqBlock->title ?: __('الأسئلة الأكثر تكراراً') }}
+          </h2>
+          <p class="text-xs sm:text-sm text-slate-500 font-medium">
+            {{ $faqBlock->subtitle ?: __('كل ما تحتاج معرفته عن نظام الكورسات، طرق الدفع فودافون كاش وإنستاباي، والشهادات.') }}
+          </p>
         </div>
 
+        <div class="w-full max-w-3xl flex flex-col gap-3" x-data="{ activeAccordion: null }">
+          @foreach($faqBlock->metadata['items'] as $index => $item)
+            @php
+              $q = app()->getLocale() === 'en' && !empty($item['question_en']) ? $item['question_en'] : $item['question_ar'];
+              $a = app()->getLocale() === 'en' && !empty($item['answer_en']) ? $item['answer_en'] : $item['answer_ar'];
+            @endphp
+            <div class="rounded-2xl border border-[#DEE8F7] bg-white overflow-hidden shadow-xs transition-colors">
+              <button
+                type="button"
+                @click="activeAccordion = activeAccordion === {{ $index }} ? null : {{ $index }}"
+                class="w-full p-5 text-start flex items-center justify-between font-bold text-sm text-[#012383] hover:bg-slate-50/70 cursor-pointer"
+              >
+                <span>{{ $q }}</span>
+                <span class="text-lg transition-transform duration-200" :class="activeAccordion === {{ $index }} ? 'rotate-180' : ''">↓</span>
+              </button>
+              <div
+                x-show="activeAccordion === {{ $index }}"
+                x-collapse
+                class="px-5 pb-5 text-xs text-slate-600 leading-relaxed border-t border-[#DEE8F7]/50 pt-3"
+              >
+                {{ $a }}
+              </div>
+            </div>
+          @endforeach
+        </div>
       </section>
+      @endif
 
       <!-- ============================================== -->
 

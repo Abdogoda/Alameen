@@ -3,6 +3,12 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\Admin\AdminAuthController;
+use App\Http\Controllers\Admin\CertificateController;
+use App\Http\Controllers\Admin\ClinicalTaskController;
+use App\Http\Controllers\Admin\CourseController;
+use App\Http\Controllers\Admin\ReceiptController;
+use App\Http\Controllers\Admin\SettingsController;
+use App\Http\Controllers\Admin\StudentManagerController;
 use App\Livewire\Admin\Notifications\NotificationManager;
 use Illuminate\Support\Facades\Route;
 
@@ -13,7 +19,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::prefix('admin')->name('admin.')->group(function () {
-    
+
     // -------------------------------------------------------------
     // Admin Guest Routes
     // -------------------------------------------------------------
@@ -30,22 +36,30 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::view('dashboard', 'admin.dashboard')->name('dashboard');
 
         // Curriculum, Levels & Video Management
-        Route::view('courses', 'admin.courses.index')->name('courses.index');
+        Route::get('courses', [CourseController::class, 'index'])->name('courses.index');
+        Route::post('courses', [CourseController::class, 'store'])->name('courses.store');
+        Route::post('courses/{course}/videos', [CourseController::class, 'storeVideo'])->name('courses.videos.store');
 
         // Clinical Tasks Evaluation & Voice Grading
-        Route::view('tasks', 'admin.tasks.index')->name('tasks.index');
+        Route::get('tasks', [ClinicalTaskController::class, 'index'])->name('tasks.index');
+        Route::post('tasks/{submission}/grade', [ClinicalTaskController::class, 'grade'])->name('tasks.grade');
 
         // Certificates Approval & Issue (95% standard)
-        Route::view('certificates', 'admin.certificates.index')->name('certificates.index');
+        Route::get('certificates', [CertificateController::class, 'index'])->name('certificates.index');
 
-        // Bank Wire Receipts Verification
-        Route::view('receipts', 'admin.receipts.index')->name('receipts.index');
+        // Manual Payment Receipts Verification & Auto-Grant
+        Route::get('receipts', [ReceiptController::class, 'index'])->name('receipts.index');
+        Route::post('receipts/{receipt}/approve', [ReceiptController::class, 'approve'])->name('receipts.approve');
+        Route::post('receipts/{receipt}/reject', [ReceiptController::class, 'reject'])->name('receipts.reject');
 
         // Students & Interns Management
-        Route::view('students', 'admin.students.index')->name('students.index');
+        Route::get('students', [StudentManagerController::class, 'index'])->name('students.index');
+        Route::post('students/{user}/toggle', [StudentManagerController::class, 'toggleStatus'])->name('students.toggle');
 
-        // System Settings & Parameters
-        Route::view('settings', 'admin.settings.index')->name('settings.index');
+        // Dynamic CMS, Menus & System Settings
+        Route::get('settings', [SettingsController::class, 'index'])->name('settings.index');
+        Route::post('settings', [SettingsController::class, 'update'])->name('settings.update');
+        Route::post('settings/menus/{menu}/items', [SettingsController::class, 'saveMenuItem'])->name('settings.menus.item');
 
         // Admin Notification Broadcasting
         Route::livewire('notifications', NotificationManager::class)->name('notifications.index');

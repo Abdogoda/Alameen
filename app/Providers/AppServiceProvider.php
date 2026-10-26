@@ -2,10 +2,14 @@
 
 namespace App\Providers;
 
+use App\Models\Admin;
 use App\Services\Localization\PhpFileLoader;
 use Carbon\CarbonImmutable;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Translation\Translator;
 use Illuminate\Validation\Rules\Password;
@@ -45,8 +49,8 @@ class AppServiceProvider extends ServiceProvider
      */
     protected function configureAuthorization(): void
     {
-        \Illuminate\Support\Facades\Gate::before(function ($user, string $ability) {
-            if ($user instanceof \App\Models\Admin) {
+        Gate::before(function ($user, string $ability) {
+            if ($user instanceof Admin) {
                 if ($user->isSuperAdmin()) {
                     return true;
                 }
@@ -61,21 +65,21 @@ class AppServiceProvider extends ServiceProvider
      */
     protected function configureViewPaths(): void
     {
-        \Illuminate\Support\Facades\View::addNamespace('web', resource_path('views/web'));
-        \Illuminate\Support\Facades\View::addNamespace('admin', resource_path('views/admin'));
-        \Illuminate\Support\Facades\View::addLocation(resource_path('views/web'));
-        \Illuminate\Support\Facades\View::addLocation(resource_path('views/admin'));
+        View::addNamespace('web', resource_path('views/web'));
+        View::addNamespace('admin', resource_path('views/admin'));
+        View::addLocation(resource_path('views/web'));
+        View::addLocation(resource_path('views/admin'));
 
-        \Illuminate\Support\Facades\Blade::anonymousComponentPath(resource_path('views/web/components'));
-        \Illuminate\Support\Facades\Blade::anonymousComponentPath(resource_path('views/web/components'), 'components');
-        \Illuminate\Support\Facades\Blade::anonymousComponentPath(resource_path('views/web/components'), 'web');
-        \Illuminate\Support\Facades\Blade::anonymousComponentPath(resource_path('views/web/layouts'));
-        \Illuminate\Support\Facades\Blade::anonymousComponentPath(resource_path('views/web/layouts'), 'layouts');
-        \Illuminate\Support\Facades\Blade::anonymousComponentPath(resource_path('views/web/layouts'), 'web-layouts');
-        \Illuminate\Support\Facades\Blade::anonymousComponentPath(resource_path('views/admin/layouts'), 'admin-layouts');
-        \Illuminate\Support\Facades\Blade::anonymousComponentPath(resource_path('views/admin/layouts'), 'admin-layout');
-        \Illuminate\Support\Facades\Blade::anonymousComponentPath(resource_path('views/admin/components'), 'admin');
-        \Illuminate\Support\Facades\Blade::anonymousComponentPath(resource_path('views/admin/components'), 'admin-components');
+        Blade::anonymousComponentPath(resource_path('views/web/components'));
+        Blade::anonymousComponentPath(resource_path('views/web/components'), 'components');
+        Blade::anonymousComponentPath(resource_path('views/web/components'), 'web');
+        Blade::anonymousComponentPath(resource_path('views/web/layouts'));
+        Blade::anonymousComponentPath(resource_path('views/web/layouts'), 'layouts');
+        Blade::anonymousComponentPath(resource_path('views/web/layouts'), 'web-layouts');
+        Blade::anonymousComponentPath(resource_path('views/admin/layouts'), 'admin-layouts');
+        Blade::anonymousComponentPath(resource_path('views/admin/layouts'), 'admin-layout');
+        Blade::anonymousComponentPath(resource_path('views/admin/components'), 'admin');
+        Blade::anonymousComponentPath(resource_path('views/admin/components'), 'admin-components');
     }
 
     /**

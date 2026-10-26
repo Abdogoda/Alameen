@@ -42,7 +42,9 @@ enum AdminPermission: string
     case ADMINS_MANAGE = 'admins.manage';
     case ROLES_MANAGE = 'roles.manage';
 
-    // Settings & Reports
+    // Dynamic CMS & Global Settings
+    case CMS_MANAGE = 'cms.manage';
+    case MENUS_MANAGE = 'menus.manage';
     case SETTINGS_MANAGE = 'settings.manage';
     case REPORTS_VIEW = 'reports.view';
     case REPORTS_EXPORT = 'reports.export';
@@ -73,6 +75,8 @@ enum AdminPermission: string
             self::ADMINS_VIEW => 'استعراض فريق العمل والمشرفين',
             self::ADMINS_MANAGE => 'إضافة وتعديل حسابات المشرفين',
             self::ROLES_MANAGE => 'إدارة الأدوار الديناميكية وتعيين صلاحياتها',
+            self::CMS_MANAGE => 'إدارة محتوى الموقع والصفحات والمحتوى الديناميكي',
+            self::MENUS_MANAGE => 'إدارة القوائم العلوية والسفلية (Menu Manager)',
             self::SETTINGS_MANAGE => 'التحكم في إعدادات المنصة العامة',
             self::REPORTS_VIEW => 'استعراض التقارير المالية والأكاديمية',
             self::REPORTS_EXPORT => 'تصدير التقارير بصيغة Excel / PDF',
@@ -105,6 +109,8 @@ enum AdminPermission: string
             self::ADMINS_VIEW => 'View supervisor and staff roster',
             self::ADMINS_MANAGE => 'Manage supervisor accounts',
             self::ROLES_MANAGE => 'Manage dynamic roles and permissions',
+            self::CMS_MANAGE => 'Manage dynamic CMS blocks, pages & FAQs',
+            self::MENUS_MANAGE => 'Manage website headers and footers navigation',
             self::SETTINGS_MANAGE => 'Configure platform wide parameters',
             self::REPORTS_VIEW => 'View financial and academic analytics',
             self::REPORTS_EXPORT => 'Export analytical data to Excel/PDF',
@@ -125,6 +131,7 @@ enum AdminPermission: string
             self::NOTIFICATIONS_VIEW, self::NOTIFICATIONS_SEND, self::NOTIFICATIONS_MANAGE => 'الإشعارات والتعاميم',
             self::STUDENTS_VIEW, self::STUDENTS_MANAGE => 'شؤون الطلاب والمتدربين',
             self::ADMINS_VIEW, self::ADMINS_MANAGE, self::ROLES_MANAGE => 'إدارة المشرفين والأدوار',
+            self::CMS_MANAGE, self::MENUS_MANAGE => 'إدارة المحتوى والقوائم',
             self::SETTINGS_MANAGE, self::REPORTS_VIEW, self::REPORTS_EXPORT => 'الإعدادات والتقارير',
         };
     }

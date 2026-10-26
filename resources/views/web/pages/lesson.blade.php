@@ -33,72 +33,26 @@
                 </div>
               </div>
 
-              <!-- Paused Lesson Player (Node 1155:18362) -->
-              <div class="bg-[#152D4D] rounded-[16px] md:rounded-[20px] overflow-hidden flex flex-col w-full shrink-0 relative shadow-md" data-node-id="1155:18362">
-                
-                <!-- Instructional Video Frame (Node 1155:18363) -->
-                <div class="w-full aspect-video md:h-[366px] relative overflow-hidden shrink-0 bg-[#0F2038]" data-node-id="1155:18363">
-                  <img src="/assets/images/lesson-video-frame.png" alt="تدريبات الوعي الصوتي" class="size-full object-cover pointer-events-none" />
-                  <div class="absolute inset-0 bg-[#152D4D]/25"></div>
-
-                  <!-- Resume Playback Overlay Button (Node 1155:18388) -->
-                  <button
-                    type="button"
-                    class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-[54px] md:size-[60px] rounded-full bg-[#0B2A8F] flex items-center justify-center drop-shadow-[0px_4px_12px_rgba(11,42,143,0.45)] hover:scale-105 active:scale-95 transition-all cursor-pointer"
-                    aria-label="تشغيل الفيديو"
-                    data-node-id="1155:18388"
-                  >
-                    <div class="size-[22px] shrink-0 relative translate-x-0.5 rtl:-translate-x-0.5" data-node-id="1155:19437">
-                      <img src="/assets/images/icon-play-overlay.svg" alt="" class="size-full" />
-                    </div>
-                  </button>
-                </div>
-
-                <!-- Video Playback Controls (Height: 82px - Node 1155:18390) -->
-                <div class="h-[82px] px-[20px] py-[14px] flex flex-col gap-[12px] w-full shrink-0 bg-[#152D4D]" data-node-id="1155:18390">
-                  
-                  <!-- Time Scrubber Track (Node 1155:18391) -->
-                  <div class="h-[5px] bg-white/25 rounded-[10px] w-full relative overflow-visible shrink-0 cursor-pointer" data-node-id="1155:18391">
-                    <!-- Played portion 40% -->
-                    <div class="absolute top-0 bottom-0 start-0 w-[40%] bg-white rounded-[10px]" data-node-id="1155:18392"></div>
-                    <!-- Playhead -->
-                    <div class="absolute top-[-4px] start-[40%] -translate-x-1/2 size-[13px] rounded-full bg-white shadow-md" data-node-id="1155:18393"></div>
+              @if(!$canAccess)
+                <!-- Sequential Lock Card -->
+                <div class="w-full p-8 rounded-2xl bg-slate-900 border border-amber-500/30 text-white flex flex-col items-center justify-center text-center gap-4">
+                  <div class="size-14 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center border border-amber-500/30">
+                    <svg class="size-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
                   </div>
-
-                  <!-- Playback Actions (Node 1155:18394) -->
-                  <div class="flex items-center justify-between w-full shrink-0" data-node-id="1155:18394">
-                    
-                    <!-- Left / Time and Playback (Node 1155:18395) -->
-                    <div class="flex items-center gap-[18px] shrink-0" data-node-id="1155:18395">
-                      <button type="button" class="size-[20px] shrink-0 cursor-pointer text-white hover:opacity-80" data-node-id="1155:19440">
-                        <img src="/assets/images/icon-play-btn.svg" alt="" class="size-full" />
-                      </button>
-                      <button type="button" class="size-[20px] shrink-0 cursor-pointer text-white hover:opacity-80" data-node-id="1155:19443">
-                        <img src="/assets/images/icon-volume-2.svg" alt="" class="size-full" />
-                      </button>
-                      <div class="font-['Cairo'] font-medium text-[12px] leading-[1.8] text-white flex items-center gap-[5px]" data-node-id="1155:18398">
-                        <span data-i18n="lesson.currentTime">٠٨:٠٠</span>
-                        <span class="text-[#DEE8F7]">/</span>
-                        <span class="text-[#DEE8F7]" data-i18n="lesson.totalTime">٢٠:٠٠</span>
-                      </div>
-                    </div>
-
-                    <!-- Right / Player Preferences (Node 1155:18402) -->
-                    <div class="flex items-center gap-[20px] shrink-0 text-white" data-node-id="1155:18402">
-                      <span class="font-['Cairo'] font-medium text-[12px] leading-[1.8] cursor-pointer" data-i18n="lesson.playbackSpeed" data-node-id="1155:18403">١×</span>
-                      <button type="button" class="size-[20px] shrink-0 cursor-pointer hover:opacity-80" data-node-id="1155:19446">
-                        <img src="/assets/images/icon-captions.svg" alt="" class="size-full" />
-                      </button>
-                      <button type="button" class="size-[20px] shrink-0 cursor-pointer hover:opacity-80" data-node-id="1155:19449">
-                        <img src="/assets/images/icon-maximize.svg" alt="" class="size-full" />
-                      </button>
-                    </div>
-
+                  <div>
+                    <h3 class="font-bold text-lg text-amber-300 font-['Cairo']">{{ __('المحاضرة مقيدة بالتسلسل الإلزامي') }}</h3>
+                    <p class="text-xs text-slate-400 mt-1 max-w-md">
+                      {{ __('حرصاً على التدرج السريري للمنهج، لا يمكنك فتح هذه المحاضرة حتى تكمل نسبة المشاهدة المطلوبة للمحاضرة السابقة.') }}
+                    </p>
                   </div>
-
                 </div>
-
-              </div>
+              @else
+                <!-- Dynamic Bunny.net Stream Player with Dynamic Watermark Canvas Overlay -->
+                <x-video-watermark-player 
+                  :embed-url="$embedUrl" 
+                  :student="auth()->user()" 
+                />
+              @endif
 
               <!-- Resume Action and Saved State Row (Node 1155:18406) -->
               <div class="flex gap-[20px] items-center w-full shrink-0" data-node-id="1155:18406">

@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
+use Laravel\Socialite\Two\GoogleProvider;
 
 class GoogleAuthController extends Controller
 {
@@ -21,7 +22,7 @@ class GoogleAuthController extends Controller
             return redirect()->route('login')->with('status', __('تسجيل الدخول عبر Google يتطلب ضبط بيانات الاعتماد في ملف الإعدادات (.env).'));
         }
 
-        /** @var \Laravel\Socialite\Two\GoogleProvider $driver */
+        /** @var GoogleProvider $driver */
         $driver = Socialite::driver('google');
 
         return $driver->redirect();
@@ -43,7 +44,7 @@ class GoogleAuthController extends Controller
             $googleUser = Socialite::driver('google')->user();
         } catch (\Throwable $e) {
             return redirect()->route('login')->withErrors([
-                'email' => __('تعذر الاتصال بـ Google لتسجيل الدخول: ') . $e->getMessage(),
+                'email' => __('تعذر الاتصال بـ Google لتسجيل الدخول: ').$e->getMessage(),
             ]);
         }
 
@@ -79,7 +80,7 @@ class GoogleAuthController extends Controller
             }
         } else {
             // Create a new student user
-            $user = new User();
+            $user = new User;
             $user->forceFill([
                 'name' => $googleUser->getName() ?: ($googleUser->getNickname() ?: 'طالب الأمين'),
                 'email' => $email,

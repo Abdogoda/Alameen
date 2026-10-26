@@ -1,312 +1,354 @@
-<x-layouts::app :title="__('تسليم المهمة')">
-    <!-- Page Content (Node 1155:18550) -->
-        <div class="px-4 sm:px-6 lg:px-[40px] pt-[24px] lg:pt-[30px] pb-[40px] flex flex-col gap-[24px] w-full" data-node-id="1155:18550">
-          
-          <!-- Page Introduction (Node 1155:18551) -->
-          <div class="flex flex-col gap-[4px] items-start text-start w-full" data-node-id="1155:18551">
-            <p class="font-['Cairo'] font-semibold text-[12px] leading-[1.8] text-[#0b2a8f] text-start w-full" data-i18n="assignment.breadcrumb" data-node-id="1155:18552">
-              مساحة التعلّم / المهام
+<x-layouts::app :title="__('تسليم المهمة السريرية والتدريب الصوتي')">
+    <div class="px-4 sm:px-6 lg:px-[40px] pt-[24px] lg:pt-[30px] pb-[40px] flex flex-col gap-[24px] w-full">
+        
+        <!-- Page Introduction -->
+        <div class="flex flex-col gap-[4px] items-start text-start w-full">
+            <p class="font-['Cairo'] font-semibold text-[12px] leading-[1.8] text-[#0b2a8f] text-start w-full">
+                {{ __('مساحة التعلّم / المهام السريرية والتدريب الصوتي') }}
             </p>
-            <h1 class="font-['Cairo'] font-bold text-[28px] sm:text-[32px] leading-[1.3] text-[#012383] text-start w-full" data-i18n="assignment.pageTitle" data-node-id="1155:18553">
-              تطبيق التمييز السمعي
+            <h1 class="font-['Cairo'] font-bold text-[28px] sm:text-[32px] leading-[1.3] text-[#012383] text-start w-full">
+                {{ $task?->title ?? __('تطبيق التمييز السمعي ومخارج الأصوات') }}
             </h1>
-            <p class="font-['Cairo'] font-medium text-[13px] sm:text-[14px] leading-[1.7] text-[#475569] text-start w-full" data-i18n="assignment.pageSubtitle" data-node-id="1155:18554">
-              مهمة الدرس ٨ / أساسيات التخاطب / المستوى الثاني: مهارات الصوت والاستماع
+            <p class="font-['Cairo'] font-medium text-[13px] sm:text-[14px] leading-[1.7] text-[#475569] text-start w-full">
+                {{ $task?->course?->title ?? __('أساسيات التخاطب وعلاج النطق') }}
             </p>
-          </div>
-
-          <!-- Submission Context Banner (Node 1155:18555) -->
-          <div class="bg-gradient-to-l from-[#EAF1FB] via-[#F4F8FD] to-white border border-[#DEE8F7] rounded-[16px] p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 w-full shadow-xs" data-node-id="1155:18555">
-            
-            <!-- Right in RTL: Completed Lesson Reference (Node 1155:18571) -->
-            <div class="flex items-center gap-[14px]">
-              <div class="size-[32px] rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center shrink-0" data-node-id="1155:19488">
-                <svg class="size-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-              </div>
-              <div class="flex flex-col gap-[2px] items-start text-start" data-node-id="1155:18571">
-                <p class="font-['Cairo'] font-bold text-[15px] leading-[1.6] text-[#012383]" data-i18n="assignment.linkedLessonTitle" data-node-id="1155:18572">
-                  الدرس المرتبط: التمييز السمعي
-                </p>
-                <p class="font-['Cairo'] font-medium text-[12px] sm:text-[13px] text-[#475569]" data-i18n="assignment.linkedLessonStatus" data-node-id="1155:18573">
-                  الفيديو مكتمل ١٠٠٪ • المهمة متاحة ولم تُسلّم بعد
-                </p>
-              </div>
-            </div>
-
-            <!-- Left in RTL: Back to Lesson 8 Button (Node 1155:18556) -->
-            <a
-              href="{{ route('lessons.show') }}"
-              class="bg-white border border-[#DEE8F7] hover:border-[#0b2a8f]/40 hover:bg-[#EAF1FB] rounded-[10px] h-[44px] px-[18px] flex items-center justify-center font-['Cairo'] font-bold text-[13px] text-[#0B2A8F] transition-all shrink-0 shadow-2xs"
-              data-i18n="assignment.backToLesson8"
-              data-node-id="1155:18556"
-            >
-              العودة إلى الدرس ٨
-            </a>
-
-          </div>
-
-          <!-- Assignment Instructions and Form Grid (Node 1155:18575) -->
-          <!-- In RTL: First child is on the RIGHT (Main Form Column), Second child is on the LEFT (Task Context & Tips) -->
-          <div class="flex flex-col lg:flex-row gap-[24px] items-start w-full" data-node-id="1155:18575">
-            
-            <!-- RIGHT in RTL: Ready Submission Main Form Column (Node 1155:18594) -->
-            <div class="flex-1 min-w-0 flex flex-col gap-[20px] w-full" data-node-id="1155:18594">
-              
-              <!-- Task Instructions Card (Node 1155:18595) -->
-              <div class="bg-white border border-[#DEE8F7] rounded-[16px] p-6 sm:p-7 flex flex-col gap-[16px] text-start w-full shadow-[0px_4px_20px_rgba(11,42,143,0.03)]" data-node-id="1155:18595">
-                <div class="flex items-center justify-between border-b border-[#DEE8F7]/60 pb-3">
-                  <h2 class="font-['Cairo'] font-bold text-[20px] leading-[1.4] text-[#012383]" data-i18n="assignment.instructionsTitle" data-node-id="1155:18596">
-                    المطلوب في هذه المهمة
-                  </h2>
-                  <span class="text-xs font-bold text-[#0B2A8F] bg-[#EAF1FB] px-2.5 py-0.5 rounded-full font-['Cairo']">
-                    خطوات التطبيق
-                  </span>
-                </div>
-                
-                <p class="font-['Cairo'] font-medium text-[14px] leading-[1.8] text-[#475569]" data-i18n="assignment.instructionsDesc" data-node-id="1155:18597">
-                  صمّمي ورقة نشاط قصيرة للتمييز بين الأصوات، باستخدام أمثلة تعليمية افتراضية دون بيانات شخصية.
-                </p>
-
-                <!-- Steps with Clean Badges -->
-                <div class="space-y-3 pt-1">
-                  <div class="flex items-start gap-3 p-3 rounded-xl bg-slate-50/70 border border-[#DEE8F7]/50">
-                    <span class="size-6 rounded-full bg-[#012383] text-white flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">١</span>
-                    <p class="font-['Cairo'] font-medium text-[13px] sm:text-[14px] leading-[1.7] text-slate-700" data-i18n="assignment.step1" data-node-id="1155:18598">
-                      اختاري ٦ أزواج من الكلمات، مع توضيح أوجه التشابه والاختلاف الصوتي.
-                    </p>
-                  </div>
-
-                  <div class="flex items-start gap-3 p-3 rounded-xl bg-slate-50/70 border border-[#DEE8F7]/50">
-                    <span class="size-6 rounded-full bg-[#012383] text-white flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">٢</span>
-                    <p class="font-['Cairo'] font-medium text-[13px] sm:text-[14px] leading-[1.7] text-slate-700" data-i18n="assignment.step2" data-node-id="1155:18599">
-                      اكتبي تعليمات النشاط وخطوات تقديم كل زوج بترتيب واضح.
-                    </p>
-                  </div>
-
-                  <div class="flex items-start gap-3 p-3 rounded-xl bg-slate-50/70 border border-[#DEE8F7]/50">
-                    <span class="size-6 rounded-full bg-[#012383] text-white flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">٣</span>
-                    <p class="font-['Cairo'] font-medium text-[13px] sm:text-[14px] leading-[1.7] text-slate-700" data-i18n="assignment.step3" data-node-id="1155:18600">
-                      أضيفي نموذجًا لتسجيل الاستجابة وملاحظة قصيرة حول تدرّج الصعوبة.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Submission Form Card (Node 1155:18601) -->
-              <div class="bg-white border border-[#DEE8F7] rounded-[16px] p-6 sm:p-7 flex flex-col gap-[20px] text-start w-full shadow-[0px_4px_20px_rgba(11,42,143,0.03)]" data-node-id="1155:18601">
-                
-                <!-- File Selection Header (Node 1155:18602) -->
-                <div class="flex items-center justify-between w-full border-b border-[#DEE8F7]/60 pb-3" data-node-id="1155:18602">
-                  <h3 class="font-['Cairo'] font-bold text-[18px] sm:text-[19px] leading-[1.6] text-[#012383]" data-i18n="assignment.submissionFormTitle" data-node-id="1155:18605">
-                    ملف المهمة
-                  </h3>
-                  <div class="bg-[#EEF7F3] border border-[#D1EADB] rounded-full px-3 py-1 flex items-center gap-1.5" data-node-id="1155:18603">
-                    <span class="size-2 rounded-full bg-emerald-500"></span>
-                    <span class="font-['Cairo'] font-bold text-[12px] text-emerald-800 whitespace-nowrap" data-i18n="assignment.statusReadyBadge" data-node-id="1155:18604">
-                      جاهز للإرسال
-                    </span>
-                  </div>
-                </div>
-
-                <!-- File Drop Zone (Node 1155:18606) -->
-                <div class="bg-[#FAFCFF] border-2 border-dashed border-[#CFDBEA] hover:border-[#0B2A8F] hover:bg-[#EAF1FB]/30 rounded-[14px] p-6 sm:p-8 flex flex-col gap-2.5 items-center text-center w-full transition-all cursor-pointer group" data-node-id="1155:18606">
-                  <div class="size-[48px] rounded-2xl bg-[#EAF1FB] text-[#0B2A8F] flex items-center justify-center group-hover:scale-110 transition-transform shadow-xs" data-node-id="1155:19494">
-                    <img src="/assets/images/icon-upload-cloud.svg" alt="" class="size-6" />
-                  </div>
-                  <p class="font-['Cairo'] font-bold text-[15px] sm:text-[16px] text-[#012383]" data-i18n="assignment.dropzoneTitle" data-node-id="1155:18608">
-                    اسحب الملف هنا أو اختره من جهازك
-                  </p>
-                  <p class="font-['Cairo'] font-medium text-[12px] text-[#475569]" data-i18n="assignment.dropzonePolicy" data-node-id="1155:18609">
-                    سياسة رفع مقترحة: PDF أو DOCX أو MP3 أو MP4 • بحد أقصى ٢٥ م.ب
-                  </p>
-                  <button
-                    type="button"
-                    class="bg-white border border-[#DEE8F7] hover:border-[#0B2A8F] hover:bg-[#EAF1FB] rounded-[10px] h-[42px] px-5 flex items-center justify-center font-['Cairo'] font-bold text-[13px] text-[#0B2A8F] transition-all mt-2 cursor-pointer shadow-xs"
-                    data-i18n="assignment.btnChooseFile"
-                    data-node-id="1155:18610"
-                  >
-                    اختيار ملف
-                  </button>
-                </div>
-
-                <!-- Attached Submission File Row (Node 1155:18625) -->
-                <div class="bg-blue-50/40 border border-[#DEE8F7] rounded-[12px] p-4 flex items-center justify-between w-full" data-node-id="1155:18625">
-                  <div class="flex items-center gap-3 min-w-0">
-                    <div class="size-[36px] rounded-lg bg-[#EAF1FB] flex items-center justify-center shrink-0" data-node-id="1155:19497">
-                      <img src="/assets/images/icon-file-text-blue.svg" alt="" class="size-5" />
-                    </div>
-                    <div class="flex flex-col gap-0.5 items-start text-start min-w-0" data-node-id="1155:18627">
-                      <p class="font-['Cairo'] font-bold text-[14px] text-[#012383] truncate" data-i18n="assignment.fileName" data-node-id="1155:18628">
-                        أحمد_التمييز_السمعي.pdf
-                      </p>
-                      <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="assignment.fileMeta" data-node-id="1155:18629">
-                        PDF • ٢٫٤ م.ب
-                      </p>
-                    </div>
-                  </div>
-                  <button
-                    type="button"
-                    class="font-['Cairo'] font-bold text-[12px] text-rose-600 hover:text-rose-800 hover:bg-rose-50 px-3 py-1.5 rounded-lg transition-colors cursor-pointer shrink-0"
-                    data-i18n="assignment.removeFile"
-                    data-node-id="1155:18626"
-                  >
-                    إزالة
-                  </button>
-                </div>
-
-                <!-- Optional Student Note (Node 1155:18631) -->
-                <div class="flex flex-col gap-2 items-start w-full" data-node-id="1155:18631">
-                  <label class="font-['Cairo'] font-bold text-[14px] text-[#012383]" data-i18n="assignment.studentNoteLabel" data-node-id="1155:18632">
-                    ملاحظتك للمحاضر (اختياري)
-                  </label>
-                  <textarea
-                    rows="3"
-                    class="bg-white border border-[#DEE8F7] rounded-[10px] p-3.5 min-h-[94px] w-full font-['Cairo'] font-medium text-[14px] text-[#475569] outline-none focus:border-[#0B2A8F] focus:ring-1 focus:ring-[#0B2A8F] transition-all resize-none"
-                    data-i18n="assignment.studentNoteValue"
-                    data-i18n-placeholder="assignment.studentNoteValue"
-                    data-node-id="1155:18633"
-                  >أرفقتُ ورقة النشاط مع ترتيب الأزواج من الأسهل إلى الأصعب، ونموذجًا لتسجيل الاستجابات.</textarea>
-                </div>
-
-                <!-- Submit Assignment Action (Node 1155:18635) -->
-                <div class="flex flex-col sm:flex-row sm:items-center gap-3 w-full pt-1" data-node-id="1155:18635">
-                  <a
-                    href="{{ route('results.show') }}"
-                    class="bg-[#0B2A8F] hover:bg-[#012383] text-white rounded-[10px] h-[48px] px-8 flex items-center justify-center font-['Cairo'] font-bold text-[15px] shadow-sm hover:shadow transition-all cursor-pointer whitespace-nowrap"
-                    data-i18n="assignment.submitBtn"
-                    data-node-id="1155:18636"
-                  >
-                    إرسال المهمة إلى المحاضر
-                  </a>
-                  <p class="font-['Cairo'] font-medium text-[12px] text-[#475569] text-start" data-i18n="assignment.submitNotice" data-node-id="1155:18651">
-                    الملف مُختار فقط؛ تبدأ المراجعة بعد إرسال المهمة.
-                  </p>
-                </div>
-
-              </div>
-
-            </div>
-
-            <!-- LEFT in RTL: Task Context and Creative Tips Column (w: 320px - Node 1155:18576) -->
-            <div class="w-full lg:w-[320px] shrink-0 flex flex-col gap-[16px]" data-node-id="1155:18576">
-              
-              <div class="bg-white border border-[#DEE8F7] rounded-[16px] p-5 sm:p-6 flex flex-col gap-4 w-full shadow-[0px_4px_20px_rgba(11,42,143,0.03)]" data-node-id="1155:18581">
-                
-                <h3 class="font-['Cairo'] font-bold text-[17px] leading-[1.4] text-[#012383] text-start w-full" data-i18n="assignment.afterSubmitTitle" data-node-id="1155:18584">
-                  بعد الضغط على «إرسال المهمة»
-                </h3>
-
-                <!-- Awaiting Review Example Card (Node 1155:18585) -->
-                <div class="bg-[#FAFCFF] border border-[#DEE8F7] rounded-[12px] p-4 flex flex-col gap-2.5 items-start w-full text-start" data-node-id="1155:18585">
-                  <div class="flex items-center gap-2 w-full" data-node-id="1155:18586">
-                    <p class="font-['Cairo'] font-bold text-[14px] text-[#012383] flex-1 text-start" data-i18n="assignment.submittedTitle" data-node-id="1155:18587">
-                      تم تسليم المهمة
-                    </p>
-                    <div class="size-[20px] shrink-0 relative" data-node-id="1155:19491">
-                      <img src="/assets/images/icon-send-blue.svg" alt="" class="size-full" />
-                    </div>
-                  </div>
-
-                  <div class="bg-[#EAF1FB] rounded-full px-2.5 py-0.5 flex items-center" data-node-id="1155:18589">
-                    <p class="font-['Cairo'] font-bold text-[11px] text-[#0B2A8F] whitespace-nowrap" data-i18n="assignment.pendingReviewBadge" data-node-id="1155:18590">
-                      بانتظار مراجعة المحاضر
-                    </p>
-                  </div>
-
-                  <p class="font-['Cairo'] font-medium text-[12px] text-[#475569] text-start w-full" data-i18n="assignment.pendingReviewDesc" data-node-id="1155:18591">
-                    يظهر هنا الملف المُرسل وتاريخ التسليم. لم تُرصد درجة بعد.
-                  </p>
-
-                  <p class="font-['Cairo'] font-bold text-[12px] text-[#0B2A8F] text-start w-full" data-i18n="assignment.gradePlaceholder" data-node-id="1155:18592">
-                    الدرجة: — / ١٠٠
-                  </p>
-                </div>
-
-                <!-- Creative Tips (Node 3153:154) -->
-                <div class="flex flex-col gap-3 items-start w-full pt-1" data-node-id="3153:154">
-                  
-                  <div class="flex flex-col gap-1 items-start text-start w-full" data-node-id="3153:155">
-                    <h4 class="font-['Cairo'] font-bold text-[16px] text-[#012383]" data-i18n="assignment.tipsTitle" data-node-id="3153:156">
-                      نصائح إبداعية
-                    </h4>
-                    <p class="font-['Cairo'] font-medium text-[12px] text-[#475569]" data-i18n="assignment.tipsDesc" data-node-id="3153:157">
-                      استخدم هذه النصائح لتحسين مهارات الاستماع والتمييز السمعي.
-                    </p>
-                  </div>
-
-                  <!-- Tips Cards -->
-                  <div class="space-y-2 w-full">
-                    
-                    <!-- Tip 1 -->
-                    <div class="bg-[#FAFCFF] border border-[#DEE8F7] rounded-[10px] p-2.5 flex items-center gap-3 w-full hover:bg-[#EAF1FB]/40 transition-colors" data-node-id="3153:158">
-                      <div class="size-[42px] shrink-0 rounded-lg overflow-hidden" data-node-id="3155:196">
-                        <img src="/assets/images/tip-1.png" alt="" class="size-full object-cover pointer-events-none" />
-                      </div>
-                      <p class="font-['Cairo'] font-bold text-[12px] text-[#152D4D] text-start flex-1" data-i18n="assignment.tip1" data-node-id="3153:161">
-                        استمع بتركيز إلى نبرة الكلمة
-                      </p>
-                    </div>
-
-                    <!-- Tip 2 -->
-                    <div class="bg-[#FAFCFF] border border-[#DEE8F7] rounded-[10px] p-2.5 flex items-center gap-3 w-full hover:bg-[#EAF1FB]/40 transition-colors" data-node-id="3153:162">
-                      <div class="size-[42px] shrink-0 rounded-lg overflow-hidden" data-node-id="3155:197">
-                        <img src="/assets/images/tip-2.png" alt="" class="size-full object-cover pointer-events-none" />
-                      </div>
-                      <p class="font-['Cairo'] font-bold text-[12px] text-[#152D4D] text-start flex-1" data-i18n="assignment.tip2" data-node-id="3153:165">
-                        اجعل الصوت واضحًا عند التسجيل
-                      </p>
-                    </div>
-
-                    <!-- Tip 3 -->
-                    <div class="bg-[#FAFCFF] border border-[#DEE8F7] rounded-[10px] p-2.5 flex items-center gap-3 w-full hover:bg-[#EAF1FB]/40 transition-colors" data-node-id="3153:166">
-                      <div class="size-[42px] shrink-0 rounded-lg overflow-hidden" data-node-id="3155:198">
-                        <img src="/assets/images/tip-3.png" alt="" class="size-full object-cover pointer-events-none" />
-                      </div>
-                      <p class="font-['Cairo'] font-bold text-[12px] text-[#152D4D] text-start flex-1" data-i18n="assignment.tip3" data-node-id="3153:169">
-                        كرر الكلمة مرتين قبل إرسالها
-                      </p>
-                    </div>
-
-                    <!-- Tip 4 -->
-                    <div class="bg-[#FAFCFF] border border-[#DEE8F7] rounded-[10px] p-2.5 flex items-center gap-3 w-full hover:bg-[#EAF1FB]/40 transition-colors" data-node-id="3153:170">
-                      <div class="size-[42px] shrink-0 rounded-lg overflow-hidden" data-node-id="3155:199">
-                        <img src="/assets/images/tip-4.png" alt="" class="size-full object-cover pointer-events-none" />
-                      </div>
-                      <p class="font-['Cairo'] font-bold text-[12px] text-[#152D4D] text-start flex-1" data-i18n="assignment.tip4" data-node-id="3153:173">
-                        استمع إلى التسجيل قبل إرساله
-                      </p>
-                    </div>
-
-                    <!-- Tip 5 -->
-                    <div class="bg-[#FAFCFF] border border-[#DEE8F7] rounded-[10px] p-2.5 flex items-center gap-3 w-full hover:bg-[#EAF1FB]/40 transition-colors" data-node-id="3153:174">
-                      <div class="size-[42px] shrink-0 rounded-lg overflow-hidden" data-node-id="3155:200">
-                        <img src="/assets/images/tip-5.png" alt="" class="size-full object-cover pointer-events-none" />
-                      </div>
-                      <p class="font-['Cairo'] font-bold text-[12px] text-[#152D4D] text-start flex-1" data-i18n="assignment.tip5" data-node-id="3153:177">
-                        اختر كلمات جديدة لتحسين التمييز
-                      </p>
-                    </div>
-
-                    <!-- Tip 6 -->
-                    <div class="bg-[#FAFCFF] border border-[#DEE8F7] rounded-[10px] p-2.5 flex items-center gap-3 w-full hover:bg-[#EAF1FB]/40 transition-colors" data-node-id="3153:178">
-                      <div class="size-[42px] shrink-0 rounded-lg overflow-hidden" data-node-id="3155:201">
-                        <img src="/assets/images/tip-6.png" alt="" class="size-full object-cover pointer-events-none" />
-                      </div>
-                      <p class="font-['Cairo'] font-bold text-[12px] text-[#152D4D] text-start flex-1" data-i18n="assignment.tip6" data-node-id="3153:181">
-                        تدرب بانتظام لتحسين الاستماع
-                      </p>
-                    </div>
-
-                  </div>
-
-                </div>
-
-              </div>
-
-            </div>
-
-          </div>
-
         </div>
 
+        @if(session('success'))
+        <div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm font-bold flex items-center gap-3">
+            <svg class="size-5 shrink-0 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            <span>{{ session('success') }}</span>
+        </div>
+        @endif
+
+        @if($errors->any())
+        <div class="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-sm font-bold flex items-center gap-3">
+            <svg class="size-5 shrink-0 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            <span>{{ $errors->first() }}</span>
+        </div>
+        @endif
+
+        <!-- Submission Context Banner -->
+        <div class="bg-gradient-to-l from-[#EAF1FB] via-[#F4F8FD] to-white border border-[#DEE8F7] rounded-[16px] p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 w-full shadow-xs">
+            <div class="flex items-center gap-[14px]">
+                <div class="size-[32px] rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center shrink-0">
+                    <svg class="size-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                </div>
+                <div class="flex flex-col gap-[2px] items-start text-start">
+                    <p class="font-['Cairo'] font-bold text-[15px] leading-[1.6] text-[#012383]">
+                        {{ __('التدريب السريري التفاعلي') }}
+                    </p>
+                    <p class="font-['Cairo'] font-medium text-[12px] sm:text-[13px] text-[#475569]">
+                        {{ __('سجّل صوتك مباشرة عبر المايكروفون أو ارفع ملفك الصوتي لتقييم مخارج الحروف سريرياً') }}
+                    </p>
+                </div>
+            </div>
+
+            <a
+                href="{{ route('lessons.show') }}"
+                class="bg-white border border-[#DEE8F7] hover:border-[#0b2a8f]/40 hover:bg-[#EAF1FB] rounded-[10px] h-[44px] px-[18px] flex items-center justify-center font-['Cairo'] font-bold text-[13px] text-[#0B2A8F] transition-all shrink-0 shadow-2xs"
+            >
+                {{ __('العودة إلى الدرس والفيديوهات') }}
+            </a>
+        </div>
+
+        @if($submission)
+        <!-- Previous Submission Evaluation Card -->
+        <div class="bg-white border border-[#DEE8F7] rounded-[20px] p-6 sm:p-7 shadow-sm flex flex-col gap-5">
+            <div class="flex items-center justify-between border-b border-[#DEE8F7]/70 pb-4">
+                <div class="flex items-center gap-3">
+                    <div class="size-10 rounded-2xl {{ $submission->status === 'graded' ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600' }} flex items-center justify-center font-bold">
+                        @if($submission->status === 'graded')
+                            <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        @else
+                            <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        @endif
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-lg text-[#012383]">
+                            {{ $submission->status === 'graded' ? __('نتيجة وتقييم المهمة السريرية') : __('تم تسليم المهمة • بانتظار التقييم السريري') }}
+                        </h3>
+                        <p class="text-xs text-slate-400">
+                            {{ __('تاريخ التسليم:') }} {{ $submission->created_at?->format('d/m/Y h:i A') }}
+                        </p>
+                    </div>
+                </div>
+
+                @if($submission->status === 'graded')
+                    <div class="text-center px-4 py-2 rounded-2xl bg-emerald-50 border border-emerald-200">
+                        <span class="text-xs font-bold text-emerald-600 block">{{ __('الدرجة السريرية') }}</span>
+                        <span class="text-2xl font-black text-emerald-700">{{ $submission->score }} / 100</span>
+                    </div>
+                @else
+                    <span class="px-3.5 py-1.5 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200">
+                        {{ __('قيد المراجعة بواسطة أخصائي التخاطب') }}
+                    </span>
+                @endif
+            </div>
+
+            <!-- Audio Recording Review -->
+            @if($submission->audio_recording_path)
+            <div class="bg-slate-50 border border-[#DEE8F7] rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                    <span class="text-xs font-bold text-slate-700">🎙️ {{ __('التسجيل الصوتي المرفق:') }}</span>
+                    <audio controls class="h-8 max-w-[280px]">
+                        <source src="{{ asset('storage/' . $submission->audio_recording_path) }}">
+                    </audio>
+                </div>
+                @if($submission->student_notes)
+                    <div class="text-xs text-slate-500 max-w-sm">
+                        <span class="font-bold text-slate-700">{{ __('ملاحظتك:') }}</span> {{ $submission->student_notes }}
+                    </div>
+                @endif
+            </div>
+            @endif
+
+            <!-- Supervisor Feedback -->
+            @if($submission->clinical_feedback)
+            <div class="p-4 rounded-xl bg-blue-50/70 border border-blue-200 flex flex-col gap-1.5">
+                <span class="text-xs font-bold text-[#0B2A8F]">📝 {{ __('ملاحظات وتوجيهات المشرف السريري:') }}</span>
+                <p class="text-xs sm:text-sm text-slate-700 leading-relaxed font-medium">
+                    {{ $submission->clinical_feedback }}
+                </p>
+                @if($submission->graded_at)
+                    <span class="text-[10px] text-slate-400 mt-1">{{ __('تم التقييم بتاريخ:') }} {{ $submission->graded_at->format('d/m/Y') }}</span>
+                @endif
+            </div>
+            @endif
+        </div>
+        @endif
+
+        <!-- Assignment Form & Recorder Grid -->
+        <div class="flex flex-col lg:flex-row gap-[24px] items-start w-full">
+            
+            <!-- Main Interactive Recorder & Upload Form -->
+            <div class="flex-1 min-w-0 flex flex-col gap-[20px] w-full">
+                
+                <!-- Task Instructions Card -->
+                <div class="bg-white border border-[#DEE8F7] rounded-[16px] p-6 sm:p-7 flex flex-col gap-[16px] text-start w-full shadow-xs">
+                    <div class="flex items-center justify-between border-b border-[#DEE8F7]/60 pb-3">
+                        <h2 class="font-['Cairo'] font-bold text-[20px] leading-[1.4] text-[#012383]">
+                            {{ __('المطلوب في هذه المهمة السريرية') }}
+                        </h2>
+                        <span class="text-xs font-bold text-[#0B2A8F] bg-[#EAF1FB] px-2.5 py-0.5 rounded-full font-['Cairo']">
+                            {{ __('تسجيل صوتي مباشر') }}
+                        </span>
+                    </div>
+                    
+                    <p class="font-['Cairo'] font-medium text-[14px] leading-[1.8] text-[#475569]">
+                        {{ $task?->instructions ?? __('قم بتسجيل مقطع صوتي واضح لمدة دقيقة واحدة تنطق فيه الكلمات التدريبية وتطبيق قواعد التمييز السمعي لنطق أصوات الحروف اللثوية والصفيرية.') }}
+                    </p>
+                </div>
+
+                @if($task)
+                <!-- Interactive Voice Studio Form -->
+                <form method="POST" action="{{ route('assignments.submit', $task->id) }}" enctype="multipart/form-data" class="bg-white border border-[#DEE8F7] rounded-[16px] p-6 sm:p-7 flex flex-col gap-[20px] text-start w-full shadow-xs">
+                    @csrf
+                    
+                    <div class="flex items-center justify-between w-full border-b border-[#DEE8F7]/60 pb-3">
+                        <h3 class="font-['Cairo'] font-bold text-[18px] sm:text-[19px] leading-[1.6] text-[#012383]">
+                            {{ __('ستوديو التسجيل الصوتي المباشر') }}
+                        </h3>
+                        <div class="bg-[#EEF7F3] border border-[#D1EADB] rounded-full px-3 py-1 flex items-center gap-1.5">
+                            <span class="size-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                            <span class="font-['Cairo'] font-bold text-[12px] text-emerald-800 whitespace-nowrap">
+                                {{ __('جاهز للتسجيل') }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Web Audio API / MediaRecorder Box -->
+                    <div class="p-6 rounded-2xl bg-gradient-to-br from-[#FAFCFF] to-[#F1F6FC] border-2 border-dashed border-[#CFDBEA] flex flex-col items-center justify-center gap-4 text-center">
+                        <div id="recorder-icon-container" class="size-16 rounded-full bg-[#EAF1FB] text-[#0B2A8F] flex items-center justify-center transition-all shadow-xs">
+                            <svg class="size-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg>
+                        </div>
+
+                        <div class="flex flex-col items-center gap-1">
+                            <h4 id="recorder-status-text" class="font-bold text-base text-[#012383]">
+                                {{ __('انقر على زر البدء لتسجيل صوتك الآن') }}
+                            </h4>
+                            <p id="recorder-timer" class="text-xs font-mono font-bold text-slate-500 hidden">
+                                00:00
+                            </p>
+                        </div>
+
+                        <!-- Recording Controls -->
+                        <div class="flex items-center gap-3">
+                            <button
+                                type="button"
+                                id="btn-start-record"
+                                onclick="startRecording()"
+                                class="px-5 h-11 rounded-xl bg-[#012383] text-white hover:bg-[#0B2A8F] font-bold text-xs flex items-center gap-2 shadow-sm cursor-pointer transition-all"
+                            >
+                                <span class="size-2.5 rounded-full bg-rose-500 animate-ping"></span>
+                                <span>{{ __('بدء التسجيل المباشر') }}</span>
+                            </button>
+
+                            <button
+                                type="button"
+                                id="btn-stop-record"
+                                onclick="stopRecording()"
+                                class="px-5 h-11 rounded-xl bg-rose-600 text-white hover:bg-rose-700 font-bold text-xs flex items-center gap-2 shadow-sm cursor-pointer hidden transition-all"
+                            >
+                                <svg class="size-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1V8a1 1 0 00-1-1H8z" clip-rule="evenodd"/></svg>
+                                <span>{{ __('إيقاف وحفظ التسجيل') }}</span>
+                            </button>
+                        </div>
+
+                        <!-- Audio Preview Player -->
+                        <div id="audio-preview-box" class="w-full max-w-md hidden flex flex-col gap-2 pt-2">
+                            <span class="text-xs font-bold text-emerald-700">✓ {{ __('تم التسجيل! يمكنك الاستماع لتسجيلك قبل الإرسال:') }}</span>
+                            <audio id="audio-preview-player" controls class="w-full h-10"></audio>
+                        </div>
+
+                        <!-- Hidden Base64 Recording Payload -->
+                        <input type="hidden" name="audio_data" id="audio-data-payload">
+                    </div>
+
+                    <!-- Alternative: File Upload -->
+                    <div class="flex flex-col gap-2">
+                        <label class="font-['Cairo'] font-bold text-[14px] text-[#012383]">
+                            {{ __('أو يمكنك رفع ملف صوتي جاهز من جهازك (MP3, WAV, M4A, WEBM):') }}
+                        </label>
+                        <input
+                            type="file"
+                            name="audio_file"
+                            id="audio-file-input"
+                            accept="audio/*,.mp3,.wav,.m4a,.webm,.ogg"
+                            class="block w-full text-xs text-slate-500 file:me-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-[#EAF1FB] file:text-[#0B2A8F] hover:file:bg-[#DEE8F7] cursor-pointer"
+                        />
+                    </div>
+
+                    <!-- Student Notes -->
+                    <div class="flex flex-col gap-2">
+                        <label class="font-['Cairo'] font-bold text-[14px] text-[#012383]">
+                            {{ __('ملاحظتك للمشرف السريري (اختياري):') }}
+                        </label>
+                        <textarea
+                            name="student_notes"
+                            rows="3"
+                            placeholder="{{ __('اذكر أي ملاحظات أو صعوبات واجهتها أثناء نطق التمارين...') }}"
+                            class="bg-white border border-[#DEE8F7] rounded-[10px] p-3.5 w-full font-['Cairo'] font-medium text-[13px] text-[#475569] outline-none focus:border-[#0B2A8F] focus:ring-1 focus:ring-[#0B2A8F] transition-all resize-none"
+                        ></textarea>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="flex items-center justify-end pt-2 border-t border-[#DEE8F7]/60">
+                        <button
+                            type="submit"
+                            class="bg-[#0B2A8F] hover:bg-[#012383] text-white rounded-[10px] h-[48px] px-8 flex items-center justify-center font-['Cairo'] font-bold text-[15px] shadow-sm hover:shadow transition-all cursor-pointer"
+                        >
+                            {{ __('إرسال التسجيل السريري للمراجعة') }}
+                        </button>
+                    </div>
+                </form>
+                @endif
+
+            </div>
+
+            <!-- Sidebar Info & Clinical Tips -->
+            <div class="w-full lg:w-[320px] shrink-0 flex flex-col gap-[16px]">
+                <div class="bg-white border border-[#DEE8F7] rounded-[16px] p-5 sm:p-6 flex flex-col gap-4 w-full shadow-xs">
+                    <h3 class="font-['Cairo'] font-bold text-[17px] leading-[1.4] text-[#012383]">
+                        {{ __('إرشادات التسجيل الصوتي') }}
+                    </h3>
+
+                    <div class="space-y-3 text-xs text-slate-600 leading-relaxed">
+                        <div class="flex items-start gap-2.5">
+                            <span class="text-[#0B2A8F] font-bold">١.</span>
+                            <span>{{ __('اختر مكاناً هادئاً بعيداً عن الصدى والضوضاء الخارجية.') }}</span>
+                        </div>
+                        <div class="flex items-start gap-2.5">
+                            <span class="text-[#0B2A8F] font-bold">٢.</span>
+                            <span>{{ __('تحدث بنبرة طبيعية وبمسافة ١٥ سم من المايكروفون.') }}</span>
+                        </div>
+                        <div class="flex items-start gap-2.5">
+                            <span class="text-[#0B2A8F] font-bold">٣.</span>
+                            <span>{{ __('احرص على وضوح الحروف ومخارج الأصوات المطلوب تدريبها.') }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Web Audio API MediaRecorder Script -->
+    <script>
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let timerInterval = null;
+        let secondsElapsed = 0;
+
+        async function startRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+
+                mediaRecorder.ondataavailable = event => {
+                    if (event.data.size > 0) {
+                        audioChunks.push(event.data);
+                    }
+                };
+
+                mediaRecorder.onstop = () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                    const audioUrl = URL.createObjectURL(audioBlob);
+
+                    const previewPlayer = document.getElementById('audio-preview-player');
+                    previewPlayer.src = audioUrl;
+                    document.getElementById('audio-preview-box').classList.remove('hidden');
+
+                    // Convert blob to base64
+                    const reader = new FileReader();
+                    reader.readAsDataURL(audioBlob);
+                    reader.onloadend = () => {
+                        document.getElementById('audio-data-payload').value = reader.result;
+                    };
+
+                    // Stop all microphone tracks
+                    stream.getTracks().forEach(track => track.stop());
+                };
+
+                mediaRecorder.start();
+
+                // UI adjustments
+                document.getElementById('btn-start-record').classList.add('hidden');
+                document.getElementById('btn-stop-record').classList.remove('hidden');
+                document.getElementById('recorder-status-text').textContent = '{{ __('جاري التسجيل الصوتي الآن...') }}';
+                
+                const iconContainer = document.getElementById('recorder-icon-container');
+                iconContainer.classList.add('animate-pulse', 'bg-rose-100', 'text-rose-600');
+
+                // Timer
+                secondsElapsed = 0;
+                const timerEl = document.getElementById('recorder-timer');
+                timerEl.classList.remove('hidden');
+                timerInterval = setInterval(() => {
+                    secondsElapsed++;
+                    const mins = String(Math.floor(secondsElapsed / 60)).padStart(2, '0');
+                    const secs = String(secondsElapsed % 60).padStart(2, '0');
+                    timerEl.textContent = `${mins}:${secs}`;
+                }, 1000);
+
+            } catch (err) {
+                alert('{{ __('تعذر الوصول إلى المايكروفون. يرجى السماح بالوصول في إعدادات المتصفح أو رفع ملف صوتي جاهز.') }}');
+            }
+        }
+
+        function stopRecording() {
+            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                mediaRecorder.stop();
+                clearInterval(timerInterval);
+
+                document.getElementById('btn-start-record').classList.remove('hidden');
+                document.getElementById('btn-stop-record').classList.add('hidden');
+                document.getElementById('recorder-status-text').textContent = '{{ __('تم الانتهاء من التسجيل الصوتي بنجاح!') }}';
+
+                const iconContainer = document.getElementById('recorder-icon-container');
+                iconContainer.classList.remove('animate-pulse', 'bg-rose-100', 'text-rose-600');
+            }
+        }
+    </script>
 </x-layouts::app>

@@ -1,263 +1,198 @@
 <x-layouts::app :title="__('شهاداتي المعتمدة')">
-    <!-- ============================================== -->
-        <!-- 3. PAGE BODY CONTENT (Node 1155:19072)         -->
-        <!-- ============================================== -->
-        <div class="px-4 sm:px-6 lg:px-[40px] pt-6 lg:pt-[30px] pb-[40px] flex-1 flex flex-col gap-[24px]" data-node-id="1155:19072">
-          
-          <!-- Page Introduction (Node 1155:19073) -->
-          <div class="flex flex-col gap-[4px] items-start text-start w-full" data-node-id="1155:19073">
-            <p class="font-['Cairo'] font-semibold text-[12px] leading-[1.8] text-[#0B2A8F] w-full text-start" data-i18n="certificates.breadcrumb" data-node-id="1155:19074">
-              مساحة التعلّم  /  شهاداتي
+    <div class="px-4 sm:px-6 lg:px-[40px] pt-6 lg:pt-[30px] pb-[40px] flex-1 flex flex-col gap-[24px]">
+        
+        <!-- Page Introduction -->
+        <div class="flex flex-col gap-[4px] items-start text-start w-full">
+            <p class="font-['Cairo'] font-semibold text-[12px] leading-[1.8] text-[#0B2A8F] w-full text-start">
+                {{ __('مساحة التعلّم / شهاداتي المعتمدة') }}
             </p>
-            <h1 class="font-['Cairo'] font-extrabold text-[26px] sm:text-[30px] md:text-[34px] leading-[1.3] text-[#012383] w-full text-start" data-i18n="certificates.pageTitle" data-node-id="1155:19075">
-              شهاداتي
+            <h1 class="font-['Cairo'] font-extrabold text-[26px] sm:text-[30px] md:text-[34px] leading-[1.3] text-[#012383] w-full text-start">
+                {{ __('سجل الشهادات الأكاديمية') }}
             </h1>
-            <p class="font-['Cairo'] font-medium text-[13px] md:text-[14px] leading-[1.8] text-[#475569] w-full text-start" data-i18n="certificates.pageDesc" data-node-id="1155:19076">
-              كل خطوة في التعلّم تقرّبك من إتمام كورسك. تابع أهليتك للشهادة هنا.
+            <p class="font-['Cairo'] font-medium text-[13px] md:text-[14px] leading-[1.8] text-[#475569] w-full text-start">
+                {{ __('تُمنح الشهادة آلياً وفورياً عند بلوغ ٩٥٪ من إجمالي مشاهدة فيديوهات الكورس.') }}
             </p>
-          </div>
-
-          <!-- ============================================== -->
-          <!-- Exact Certificate Eligibility Rule (Node 1155:19077) -->
-          <!-- ============================================== -->
-          <div class="bg-gradient-to-l from-[#012383] to-[#0B2A8F] border border-[#0B2A8F]/40 flex flex-col md:flex-row gap-6 md:gap-[32px] items-start md:items-center p-6 md:p-[32px] rounded-[16px] md:rounded-[20px] shadow-[0px_12px_32px_rgba(1,35,131,0.18)] w-full overflow-hidden" data-node-id="1155:19077">
-            
-            <!-- Award Icon (Node 1155:19593 - Right in RTL, Left in LTR) -->
-            <div class="size-[52px] md:size-[56px] shrink-0 relative order-1 rtl:order-1 ltr:order-3" data-node-id="1155:19593">
-              <img src="/assets/images/icon-award-white.svg" alt="" class="size-full" />
-            </div>
-
-            <!-- Eligibility Explanation (Node 1155:19081 - Middle) -->
-            <div class="flex flex-1 flex-col gap-[8px] items-start min-w-0 text-start order-2" data-node-id="1155:19081">
-              <h2 class="font-['Cairo'] font-bold text-[22px] md:text-[26px] leading-[1.35] text-white w-full text-start" data-i18n="certificates.ruleTitle" data-node-id="1155:19082">
-                شهادة إتمام عند إنجاز ٩٥٪ من الكورس
-              </h2>
-              <p class="font-['Cairo'] font-normal text-[14px] md:text-[15px] leading-[1.7] text-[#DEE8F7] w-full text-start" data-i18n="certificates.ruleDesc" data-node-id="1155:19083">
-                تُحتسب النسبة من مدّة مشاهدة فيديوهات الكورس. أهلية الشهادة مستقلة عن درجات المهام، ولا تشترط إكمال ١٠٠٪ أو درجة نجاح إضافية.
-              </p>
-            </div>
-
-            <!-- Eligibility Threshold (Node 1155:19078 - Left in RTL, Right in LTR) -->
-            <div class="flex flex-col gap-[4px] items-start md:items-center text-start md:text-center w-auto md:w-[200px] shrink-0 order-3 rtl:order-3 ltr:order-1" data-node-id="1155:19078">
-              <p class="font-['Cairo'] font-extrabold text-[48px] md:text-[64px] leading-none text-white tracking-tight" data-i18n="certificates.ruleThreshold" data-node-id="1155:19079">
-                ٩٥٪
-              </p>
-              <p class="font-['Cairo'] font-semibold text-[14px] leading-[1.6] text-[#DEE8F7]" data-i18n="certificates.ruleThresholdLabel" data-node-id="1155:19080">
-                حد إكمال الكورس
-              </p>
-            </div>
-
-          </div>
-
-          <!-- ============================================== -->
-          <!-- Eligible Language Course Certificate (Node 1155:19085) -->
-          <!-- ============================================== -->
-          <div class="bg-white border border-[#DEE8F7] rounded-[16px] md:rounded-[20px] p-5 md:p-[24px] flex flex-col lg:flex-row gap-6 lg:gap-[32px] items-start lg:items-center w-full shadow-sm" data-node-id="1155:19085">
-            
-            <!-- Certificate Information & Actions (Node 1155:19094 - Left in RTL, Right in LTR) -->
-            <div class="flex flex-1 flex-col gap-[14px] items-start min-w-0 text-start w-full order-2 rtl:order-2 ltr:order-1" data-node-id="1155:19094">
-              
-              <!-- Status Badge (Node 1155:19095) -->
-              <div class="bg-[#EEF7F3] px-[12px] py-[4px] rounded-full shrink-0" data-node-id="1155:19095">
-                <span class="font-['Cairo'] font-bold text-[12px] leading-[1.8] text-[#216350] whitespace-nowrap block" data-i18n="certificates.statusEligible" data-node-id="1155:19096">
-                  مؤهل • الشهادة متاحة ✦
-                </span>
-              </div>
-
-              <!-- Course Title (Node 1155:19097) -->
-              <h3 class="font-['Cairo'] font-bold text-[22px] md:text-[26px] leading-[1.35] text-[#012383] text-start w-full" data-i18n="certificates.readyCourseTitle" data-node-id="1155:19097">
-                استراتيجيات تنمية اللغة
-              </h3>
-
-              <!-- Course Meta Description (Node 1155:19098) -->
-              <p class="font-['Cairo'] font-medium text-[13px] md:text-[14px] leading-[1.8] text-[#475569] text-start w-full" data-i18n="certificates.eligibleSubtitle" data-node-id="1155:19098">
-                أتممت ١٩ من ٢٠ فيديو متساوية المدّة؛ نسبة الإكمال ٩٥٪.
-              </p>
-
-              <!-- Watched Progress Bar (Node 1155:19099) -->
-              <div class="bg-[#DEE8F7] h-[8px] rounded-full w-full overflow-hidden relative shrink-0" data-node-id="1155:19099">
-                <div class="bg-[#0B2A8F] h-full rounded-full w-[95%]" data-node-id="1155:19100"></div>
-              </div>
-
-              <!-- Eligibility Note (Node 1155:19101) -->
-              <p class="font-['Cairo'] font-semibold text-[13px] leading-[1.8] text-[#216350] text-start w-full" data-i18n="certificates.eligibleNotice" data-node-id="1155:19101">
-                وصلت إلى حد الأهلية. يمكنك الآن عرض شهادة إتمام الكورس وتنزيلها.
-              </p>
-
-              <!-- Actions (Node 1155:19102) -->
-              <div class="flex flex-wrap gap-[12px] items-center pt-[4px] shrink-0" data-node-id="1155:19102">
-                <!-- عرض الشهادة (Primary Blue Button - Node 1155:19118) -->
-                <a
-                  href="{{ route('certificates.show') }}"
-                  class="bg-[#0B2A8F] border border-[#0B2A8F] rounded-[10px] h-[44px] px-[20px] py-[8px] text-white font-['Cairo'] font-bold text-[14px] leading-[1.5] flex items-center justify-center hover:bg-[#012383] transition-colors shadow-sm cursor-pointer whitespace-nowrap"
-                  data-i18n="certificates.btnViewCert"
-                  data-node-id="1155:19118"
-                >
-                  عرض الشهادة
-                </a>
-
-                <!-- تنزيل PDF (Secondary Outlined Button - Node 1155:19103) -->
-                <button
-                  type="button"
-                  onclick="window.print()"
-                  class="bg-white border border-[#DEE8F7] rounded-[10px] h-[44px] px-[20px] py-[8px] text-[#0B2A8F] font-['Cairo'] font-bold text-[14px] leading-[1.5] flex items-center justify-center hover:bg-[#EAF1FB] transition-colors cursor-pointer whitespace-nowrap"
-                  data-i18n="certificates.btnDownloadPdf"
-                  data-node-id="1155:19103"
-                >
-                  تنزيل PDF
-                </button>
-              </div>
-
-            </div>
-
-            <!-- Certificate Thumbnail Preview (Node 1155:19087 - Right in RTL, Left in LTR) -->
-            <div class="bg-[#FAFCFF] border border-[#CFDBEA] rounded-[12px] h-[220px] md:h-[230px] w-full max-w-[320px] lg:w-[300px] p-[12px] flex items-center justify-center shrink-0 overflow-hidden order-1 rtl:order-1 ltr:order-2 shadow-inner" data-node-id="1155:19087">
-              <div class="size-full rounded-[6px] overflow-hidden shadow-sm relative" data-node-id="3122:169">
-                <img src="/assets/images/certificate-preview.png" alt="شهادة إتمام - استراتيجيات تنمية اللغة" class="size-full object-cover pointer-events-none rounded-[6px]" />
-              </div>
-            </div>
-
-          </div>
-
-          <!-- ============================================== -->
-          <!-- Section Heading (Node 1155:19133)              -->
-          <!-- ============================================== -->
-          <div class="flex items-center justify-between w-full shrink-0 pt-2" data-node-id="1155:19133">
-            <!-- Count of Inactive Certificates (Left in RTL, Right in LTR) -->
-            <p class="font-['Cairo'] font-medium text-[13px] leading-[1.8] text-[#475569] whitespace-nowrap order-2 rtl:order-2 ltr:order-2" data-i18n="certificates.pendingCount" data-node-id="1155:19134">
-              شهادتان غير متاحتين بعد
-            </p>
-            <!-- Title (Right in RTL, Left in LTR) -->
-            <h3 class="font-['Cairo'] font-bold text-[20px] md:text-[22px] leading-[1.4] text-[#012383] order-1 rtl:order-1 ltr:order-1" data-i18n="certificates.pendingHeading" data-node-id="1155:19135">
-              كورساتك قيد الإكمال
-            </h3>
-          </div>
-
-          <!-- ============================================== -->
-          <!-- Locked Certificate Eligibility Grid (Node 1155:19136) -->
-          <!-- ============================================== -->
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-[20px] w-full" data-node-id="1155:19136">
-            
-            <!-- Card 1: تطبيقات مخارج الحروف (75% - Node 1155:19137) -->
-            <div class="bg-white border border-[#DEE8F7] rounded-[16px] p-[24px] flex flex-col gap-[16px] shadow-sm overflow-clip" data-node-id="1155:19137">
-              
-              <!-- Eligibility Status Row (Node 1155:19138) -->
-              <div class="flex items-center justify-between w-full shrink-0" data-node-id="1155:19138">
-                <!-- Status Badge (Node 1155:19139 - Left in RTL, Right in LTR) -->
-                <div class="bg-[#FAFCFF] border border-[#DEE8F7] px-[10px] py-[3px] rounded-[100px] shrink-0 order-2 rtl:order-2 ltr:order-2" data-node-id="1155:19139">
-                  <span class="font-['Cairo'] font-bold text-[12px] leading-[1.8] text-[#475569] whitespace-nowrap block" data-i18n="certificates.statusNotEligible" data-node-id="1155:19140">
-                    غير مؤهل بعد
-                  </span>
-                </div>
-                <!-- Lock Icon (Node 1155:19596 - Right in RTL, Left in LTR) -->
-                <div class="size-[24px] shrink-0 relative order-1 rtl:order-1 ltr:order-1" data-node-id="1155:19596">
-                  <img src="/assets/images/icon-lock-keyhole.svg" alt="" class="size-full" />
-                </div>
-              </div>
-
-              <!-- Course Title (Node 1155:19142) -->
-              <h4 class="font-['Cairo'] font-bold text-[20px] md:text-[22px] leading-[1.4] text-[#012383] text-start w-full" data-i18n="certificates.course1Title" data-node-id="1155:19142">
-                تطبيقات مخارج الحروف
-              </h4>
-
-              <!-- Threshold Progress Label (Node 1155:19143) -->
-              <div class="flex items-start justify-between w-full font-['Cairo'] text-start shrink-0" data-node-id="1155:19143">
-                <p class="font-['Cairo'] font-bold text-[20px] text-[#012383] order-2 rtl:order-2 ltr:order-2" data-i18n="certificates.course1Percent" data-node-id="1155:19144">
-                  ٧٥٪
-                </p>
-                <p class="font-['Cairo'] font-medium text-[13px] text-[#475569] order-1 rtl:order-1 ltr:order-1" data-i18n="certificates.watchProgressLabel" data-node-id="1155:19145">
-                  نسبة إكمال المشاهدة
-                </p>
-              </div>
-
-              <!-- Watched Progress Bar (Node 1155:19146) -->
-              <div class="bg-[#DEE8F7] h-[7px] rounded-[100px] w-full overflow-hidden relative shrink-0" data-node-id="1155:19146">
-                <div class="bg-[#0B2A8F] h-full rounded-[100px] w-[75%]" data-node-id="1155:19147"></div>
-              </div>
-
-              <!-- Progress Meta Text (Node 1155:19148) -->
-              <p class="font-['Cairo'] font-medium text-[13px] leading-[1.8] text-[#475569] text-start w-full" data-i18n="certificates.course1ProgressText" data-node-id="1155:19148">
-                تقدّمك الحالي ٧٥٪، وحد الأهلية ٩٥٪.
-              </p>
-
-              <!-- Progress Callout Box (Node 1155:19149) -->
-              <div class="bg-[#EAF1FB] rounded-[10px] p-[16px] flex flex-col gap-[4px] text-start w-full shrink-0" data-node-id="1155:19149">
-                <p class="font-['Cairo'] font-bold text-[14px] leading-[1.8] text-[#012383] w-full text-start" data-i18n="certificates.course1CalloutTitle" data-node-id="1155:19150">
-                  تبقّت ٢٠ نقطة مئوية للوصول إلى ٩٥٪
-                </p>
-                <p class="font-['Cairo'] font-medium text-[12px] leading-[1.8] text-[#475569] w-full text-start" data-i18n="certificates.course1CalloutDesc" data-node-id="1155:19151">
-                  ستتاح الشهادة عند بلوغ الحد، ولا يلزم الوصول إلى ١٠٠٪.
-                </p>
-              </div>
-
-              <!-- Ineligible Note (Node 1155:19152) -->
-              <p class="font-['Cairo'] font-medium text-[12px] leading-[1.8] text-[#475569] text-start w-full" data-i18n="certificates.course1FooterNote" data-node-id="1155:19152">
-                عرض الشهادة وتنزيلها غير متاحين لهذا الكورس بعد.
-              </p>
-
-            </div>
-
-            <!-- Card 2: أساسيات التخاطب (42% - Node 1155:19153) -->
-            <div class="bg-white border border-[#DEE8F7] rounded-[16px] p-[24px] flex flex-col gap-[16px] shadow-sm overflow-clip" data-node-id="1155:19153">
-              
-              <!-- Eligibility Status Row (Node 1155:19154) -->
-              <div class="flex items-center justify-between w-full shrink-0" data-node-id="1155:19154">
-                <!-- Status Badge (Node 1155:19155 - Left in RTL, Right in LTR) -->
-                <div class="bg-[#FAFCFF] border border-[#DEE8F7] px-[10px] py-[3px] rounded-[100px] shrink-0 order-2 rtl:order-2 ltr:order-2" data-node-id="1155:19155">
-                  <span class="font-['Cairo'] font-bold text-[12px] leading-[1.8] text-[#475569] whitespace-nowrap block" data-i18n="certificates.statusNotEligible" data-node-id="1155:19156">
-                    غير مؤهل بعد
-                  </span>
-                </div>
-                <!-- Lock Icon (Node 1155:19599 - Right in RTL, Left in LTR) -->
-                <div class="size-[24px] shrink-0 relative order-1 rtl:order-1 ltr:order-1" data-node-id="1155:19599">
-                  <img src="/assets/images/icon-lock-keyhole.svg" alt="" class="size-full" />
-                </div>
-              </div>
-
-              <!-- Course Title (Node 1155:19158) -->
-              <h4 class="font-['Cairo'] font-bold text-[20px] md:text-[22px] leading-[1.4] text-[#012383] text-start w-full" data-i18n="certificates.course2Title" data-node-id="1155:19158">
-                أساسيات التخاطب
-              </h4>
-
-              <!-- Threshold Progress Label (Node 1155:19159) -->
-              <div class="flex items-start justify-between w-full font-['Cairo'] text-start shrink-0" data-node-id="1155:19159">
-                <p class="font-['Cairo'] font-bold text-[20px] text-[#012383] order-2 rtl:order-2 ltr:order-2" data-i18n="certificates.course2Percent" data-node-id="1155:19160">
-                  ٤٢٪
-                </p>
-                <p class="font-['Cairo'] font-medium text-[13px] text-[#475569] order-1 rtl:order-1 ltr:order-1" data-i18n="certificates.watchProgressLabel" data-node-id="1155:19161">
-                  نسبة إكمال المشاهدة
-                </p>
-              </div>
-
-              <!-- Watched Progress Bar (Node 1155:19162) -->
-              <div class="bg-[#DEE8F7] h-[7px] rounded-[100px] w-full overflow-hidden relative shrink-0" data-node-id="1155:19162">
-                <div class="bg-[#0B2A8F] h-full rounded-[100px] w-[42%]" data-node-id="1155:19163"></div>
-              </div>
-
-              <!-- Progress Meta Text (Node 1155:19164) -->
-              <p class="font-['Cairo'] font-medium text-[13px] leading-[1.8] text-[#475569] text-start w-full" data-i18n="certificates.course2ProgressText" data-node-id="1155:19164">
-                ١٦٨ من ٤٠٠ دقيقة مشاهدة • ٨ فيديوهات مكتملة ودرس قيد المشاهدة.
-              </p>
-
-              <!-- Progress Callout Box (Node 1155:19165) -->
-              <div class="bg-[#EAF1FB] rounded-[10px] p-[16px] flex flex-col gap-[4px] text-start w-full shrink-0" data-node-id="1155:19165">
-                <p class="font-['Cairo'] font-bold text-[14px] leading-[1.8] text-[#012383] w-full text-start" data-i18n="certificates.course2CalloutTitle" data-node-id="1155:19166">
-                  تبقّت ٥٣ نقطة مئوية للوصول إلى ٩٥٪
-                </p>
-                <p class="font-['Cairo'] font-medium text-[12px] leading-[1.8] text-[#475569] w-full text-start" data-i18n="certificates.course2CalloutDesc" data-node-id="1155:19167">
-                  ستتاح الشهادة عند بلوغ الحد، ولا يلزم الوصول إلى ١٠٠٪.
-                </p>
-              </div>
-
-              <!-- Ineligible Note (Node 1155:19168) -->
-              <p class="font-['Cairo'] font-medium text-[12px] leading-[1.8] text-[#475569] text-start w-full" data-i18n="certificates.course2FooterNote" data-node-id="1155:19168">
-                عرض الشهادة وتنزيلها غير متاحين لهذا الكورس بعد.
-              </p>
-
-            </div>
-
-          </div>
-
         </div>
 
+        @if(session('info'))
+        <div class="p-4 rounded-2xl bg-blue-50 border border-blue-200 text-[#012383] text-sm font-bold flex items-center gap-3">
+            <svg class="size-5 shrink-0 text-[#0B2A8F]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <span>{{ session('info') }}</span>
+        </div>
+        @endif
+
+        <!-- Strict 95% Eligibility Explanation Card -->
+        <div class="bg-gradient-to-l from-[#012383] to-[#0B2A8F] border border-[#0B2A8F]/40 flex flex-col md:flex-row gap-6 md:gap-[32px] items-start md:items-center p-6 md:p-[32px] rounded-[16px] md:rounded-[20px] shadow-[0px_12px_32px_rgba(1,35,131,0.18)] w-full overflow-hidden">
+            <div class="size-[52px] md:size-[56px] shrink-0 relative">
+                <img src="/assets/images/icon-award-white.svg" alt="" class="size-full" />
+            </div>
+
+            <div class="flex flex-1 flex-col gap-[8px] items-start min-w-0 text-start">
+                <h2 class="font-['Cairo'] font-bold text-[22px] md:text-[26px] leading-[1.35] text-white w-full text-start">
+                    {{ __('شهادة إتمام معتمدة عند إنجاز ٩٥٪ من مشاهدة الكورس') }}
+                </h2>
+                <p class="font-['Cairo'] font-normal text-[14px] md:text-[15px] leading-[1.7] text-[#DEE8F7] w-full text-start">
+                    {{ __('تُحتسب نسبة الإكمال بدقة عبر منصة الفيديوهات الآمنة. بمجرد وصول مجموع ساعات المشاهدة إلى ٩٥٪ يصدر النظام شهادتك المزودة برمز QR فريد وكود تحقق رقمي رسمي.') }}
+                </p>
+            </div>
+
+            <div class="flex flex-col gap-[4px] items-start md:items-center text-start md:text-center w-auto md:w-[200px] shrink-0">
+                <p class="font-['Cairo'] font-extrabold text-[48px] md:text-[64px] leading-none text-white tracking-tight">
+                    ٩٥٪
+                </p>
+                <p class="font-['Cairo'] font-semibold text-[14px] leading-[1.6] text-[#DEE8F7]">
+                    {{ __('حد إكمال المشاهدة') }}
+                </p>
+            </div>
+        </div>
+
+        @php
+            $eligibleList = collect($courseProgressData)->filter(fn($i) => $i['is_eligible']);
+            $pendingList = collect($courseProgressData)->filter(fn($i) => ! $i['is_eligible']);
+        @endphp
+
+        <!-- 1. Eligible / Issued Certificates Section -->
+        @if($eligibleList->count() > 0)
+        <div class="space-y-4">
+            <h3 class="font-['Cairo'] font-bold text-[20px] md:text-[22px] leading-[1.4] text-[#012383]">
+                {{ __('الشهادات المتاحة والمعتمدة') }} ({{ $eligibleList->count() }})
+            </h3>
+
+            <div class="grid grid-cols-1 gap-4">
+                @foreach($eligibleList as $item)
+                <div class="bg-white border border-[#DEE8F7] rounded-[16px] md:rounded-[20px] p-5 md:p-[24px] flex flex-col lg:flex-row gap-6 lg:gap-[32px] items-start lg:items-center w-full shadow-sm">
+                    <div class="flex flex-1 flex-col gap-[14px] items-start min-w-0 text-start w-full">
+                        <div class="bg-[#EEF7F3] px-[12px] py-[4px] rounded-full shrink-0">
+                            <span class="font-['Cairo'] font-bold text-[12px] leading-[1.8] text-[#216350] whitespace-nowrap block">
+                                {{ __('مؤهل • الشهادة جاهزة ومعتمدة ✦') }}
+                            </span>
+                        </div>
+
+                        <h3 class="font-['Cairo'] font-bold text-[22px] md:text-[26px] leading-[1.35] text-[#012383] text-start w-full">
+                            {{ $item['course']->title }}
+                        </h3>
+
+                        <p class="font-['Cairo'] font-medium text-[13px] md:text-[14px] leading-[1.8] text-[#475569] text-start w-full">
+                            {{ __('أتممت نسبة :pct% من فيديوهات هذا الكورس بنجاح.', ['pct' => round($item['progress'], 1)]) }}
+                        </p>
+
+                        <div class="bg-[#DEE8F7] h-[8px] rounded-full w-full overflow-hidden relative shrink-0">
+                            <div class="bg-emerald-600 h-full rounded-full" style="width: {{ min(100, $item['progress']) }}%"></div>
+                        </div>
+
+                        <div class="flex flex-wrap gap-[12px] items-center pt-[4px] shrink-0">
+                            <a
+                                href="{{ route('certificates.show', $item['certificate']?->id) }}"
+                                class="bg-[#0B2A8F] border border-[#0B2A8F] rounded-[10px] h-[44px] px-[20px] py-[8px] text-white font-['Cairo'] font-bold text-[14px] leading-[1.5] flex items-center justify-center hover:bg-[#012383] transition-colors shadow-sm cursor-pointer whitespace-nowrap"
+                            >
+                                {{ __('عرض الشهادة والـ QR كود') }}
+                            </a>
+                            <a
+                                href="{{ route('certificates.show', $item['certificate']?->id) }}"
+                                class="bg-white border border-[#DEE8F7] rounded-[10px] h-[44px] px-[20px] py-[8px] text-[#0B2A8F] font-['Cairo'] font-bold text-[14px] leading-[1.5] flex items-center justify-center hover:bg-[#EAF1FB] transition-colors cursor-pointer whitespace-nowrap"
+                            >
+                                {{ __('طباعة / تنزيل PDF ⭳') }}
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="bg-[#FAFCFF] border border-[#CFDBEA] rounded-[12px] h-[180px] w-full max-w-[280px] p-3 flex flex-col items-center justify-center shrink-0 shadow-inner text-center">
+                        <div class="size-16 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold mb-2">
+                            🎓
+                        </div>
+                        <span class="font-bold text-xs text-[#012383]">{{ $item['certificate']?->certificate_code ?? __('شهادة إتمام') }}</span>
+                        <span class="text-[11px] text-slate-400 mt-1">{{ __('معتمدة برمجياً بنسبة :pct%', ['pct' => round($item['progress'], 1)]) }}</span>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+        </div>
+        @endif
+
+        <!-- 2. Pending Courses Section -->
+        @if($pendingList->count() > 0)
+        <div class="space-y-4 pt-2">
+            <div class="flex items-center justify-between w-full">
+                <h3 class="font-['Cairo'] font-bold text-[20px] md:text-[22px] leading-[1.4] text-[#012383]">
+                    {{ __('كورساتك قيد التعلّم والإكمال') }} ({{ $pendingList->count() }})
+                </h3>
+                <span class="text-xs text-slate-500 font-medium">
+                    {{ __('تحتاج إلى ٩٥٪ لفتح شهادة كل كورس') }}
+                </span>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-[20px] w-full">
+                @foreach($pendingList as $item)
+                @php
+                    $pct = round($item['progress'], 1);
+                    $rem = max(0, 95 - $pct);
+                @endphp
+                <div class="bg-white border border-[#DEE8F7] rounded-[16px] p-[24px] flex flex-col gap-[16px] shadow-sm">
+                    <div class="flex items-center justify-between w-full">
+                        <div class="size-[24px] text-slate-400 shrink-0">
+                            <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                        </div>
+                        <div class="bg-[#FAFCFF] border border-[#DEE8F7] px-[10px] py-[3px] rounded-full">
+                            <span class="font-['Cairo'] font-bold text-[12px] leading-[1.8] text-[#475569] whitespace-nowrap">
+                                {{ __('غير مؤهل بعد') }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <h4 class="font-['Cairo'] font-bold text-[20px] md:text-[22px] leading-[1.4] text-[#012383] text-start">
+                        {{ $item['course']->title }}
+                    </h4>
+
+                    <div class="flex items-start justify-between w-full font-['Cairo']">
+                        <p class="font-['Cairo'] font-medium text-[13px] text-[#475569]">
+                            {{ __('نسبة إكمال المشاهدة') }}
+                        </p>
+                        <p class="font-['Cairo'] font-bold text-[20px] text-[#012383]">
+                            {{ $pct }}%
+                        </p>
+                    </div>
+
+                    <div class="bg-[#DEE8F7] h-[8px] rounded-full w-full overflow-hidden">
+                        <div class="bg-[#0B2A8F] h-full rounded-full transition-all" style="width: {{ $pct }}%"></div>
+                    </div>
+
+                    <div class="bg-[#EAF1FB] rounded-[10px] p-[16px] flex flex-col gap-[4px] text-start">
+                        <p class="font-['Cairo'] font-bold text-[14px] text-[#012383]">
+                            {{ __('متبقي :rem% فقط للوصول إلى شرط الشهادة (٩٥٪)', ['rem' => $rem]) }}
+                        </p>
+                        <p class="font-['Cairo'] font-medium text-[12px] text-[#475569]">
+                            {{ __('تابع مشاهدة الدروس المتبقية لتفعيل زر طباعة الشهادة آلياً.') }}
+                        </p>
+                    </div>
+
+                    <div class="pt-2">
+                        <a
+                            href="{{ route('lessons.show', ['course' => $item['course']->id]) }}"
+                            class="inline-flex items-center justify-center w-full h-11 rounded-xl bg-slate-50 border border-[#DEE8F7] hover:bg-[#EAF1FB] text-[#0B2A8F] font-bold text-xs transition-colors"
+                        >
+                            {{ __('متابعة مشاهدة الكورس ◀') }}
+                        </a>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+        </div>
+        @endif
+
+        @if(count($courseProgressData) === 0)
+        <div class="bg-white border border-[#DEE8F7] rounded-3xl p-12 text-center flex flex-col items-center justify-center gap-4">
+            <div class="size-16 rounded-full bg-blue-50 text-[#0B2A8F] flex items-center justify-center font-bold text-2xl">
+                📚
+            </div>
+            <h3 class="font-bold text-lg text-[#012383]">{{ __('أنت غير مسجل في أي كورس بعد') }}</h3>
+            <p class="text-xs text-slate-500 max-w-md">
+                {{ __('تصفح دليل الكورسات المتاحة وسجل الآن للبدء في رحلتك التعليمية والحصول على الشهادات المعتمدة.') }}
+            </p>
+            <a href="{{ route('courses.index') }}" class="px-6 h-11 rounded-xl bg-[#012383] text-white hover:bg-[#0B2A8F] font-bold text-xs flex items-center justify-center transition-colors shadow-sm">
+                {{ __('استعراض الكورسات المتاحة') }}
+            </a>
+        </div>
+        @endif
+
+    </div>
 </x-layouts::app>

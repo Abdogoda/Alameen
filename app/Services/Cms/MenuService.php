@@ -22,18 +22,29 @@ class MenuService
     {
         $cacheKey = self::CACHE_PREFIX.$location;
 
-        return Cache::remember($cacheKey, 3600, function () use ($location) {
-            $menu = Menu::query()->where('location', $location)->first();
-
-            if (! $menu) {
-                return new Collection;
+        try {
+            $cached = Cache::get($cacheKey);
+            if ($cached instanceof Collection) {
+                return $cached;
             }
+        } catch (\Throwable) {
+            // In case of cache serialization or deserialization errors
+        }
 
-            return $menu->items()
+        Cache::forget($cacheKey);
+
+        $menu = Menu::query()->where('location', $location)->first();
+
+        $items = $menu
+            ? $menu->items()
                 ->where('is_active', true)
                 ->orderBy('sort_order')
-                ->get();
-        });
+                ->get()
+            : new Collection;
+
+        Cache::put($cacheKey, $items, 3600);
+
+        return $items;
     }
 
     /**

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Auth\EmailVerificationController;
+use App\Http\Controllers\Api\Auth\FirebaseApiController;
 use App\Http\Controllers\Api\Auth\PasskeyController;
 use App\Http\Controllers\Api\Auth\PasswordController;
 use App\Http\Controllers\Api\Auth\TokenController;
@@ -27,6 +28,7 @@ Route::prefix('v1/auth')->group(function () {
     Route::middleware('throttle:login')->group(function () {
         Route::post('/login', [AuthController::class, 'login']);
         Route::post('/register', [AuthController::class, 'register']);
+        Route::post('/firebase', [FirebaseApiController::class, 'authenticate'])->name('api.v1.auth.firebase');
         Route::post('/2fa/challenge', [TwoFactorController::class, 'challenge']);
         Route::post('/password/forgot', [PasswordController::class, 'forgot']);
         Route::post('/password/reset', [PasswordController::class, 'reset']);

@@ -2,6 +2,7 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
     <head>
         @include('partials.head')
+        @include('partials.firebase-config')
     </head>
     <body class="bg-[#fafcff] dark:bg-[#0B1120] min-h-screen text-[#475569] dark:text-slate-200 font-['Cairo'] antialiased flex flex-col justify-center items-center selection:bg-[#0b2a8f]/10 selection:text-[#0b2a8f] relative px-4 sm:px-6 lg:px-10 py-6">
         

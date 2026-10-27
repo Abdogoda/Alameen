@@ -31,6 +31,7 @@ use Laravel\Sanctum\HasApiTokens;
  * @property Carbon|null $email_verified_at
  * @property string|null $password
  * @property string|null $google_id
+ * @property string|null $firebase_uid
  * @property string|null $avatar
  * @property string|null $two_factor_secret
  * @property string|null $two_factor_recovery_codes
@@ -49,6 +50,7 @@ use Laravel\Sanctum\HasApiTokens;
     'address',
     'status',
     'google_id',
+    'firebase_uid',
     'avatar',
     'email_verified_at',
     'password',

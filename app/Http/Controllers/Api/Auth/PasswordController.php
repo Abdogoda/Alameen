@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\ForgotPasswordRequest;
 use App\Http\Requests\Api\ResetPasswordRequest;
 use App\Http\Requests\Api\UpdatePasswordRequest;
+use App\Http\Requests\Api\VerifyOtpRequest;
 use App\Http\Responses\ApiResponse;
 use App\Services\Auth\PasswordSecurityService;
 use Illuminate\Http\JsonResponse;
@@ -35,19 +36,38 @@ class PasswordController extends Controller
     }
 
     /**
-     * Send password reset link to user's email.
+     * Send password reset OTP code to user's email.
      */
     public function forgot(ForgotPasswordRequest $request): JsonResponse
     {
-        $this->passwordService->sendResetLink($request->string('email')->toString());
+        $this->passwordService->sendResetOtp($request->string('email')->toString());
 
         return ApiResponse::success(
-            message: __('Password reset link sent to your email.')
+            message: __('A password reset code has been sent to your email.')
         );
     }
 
     /**
-     * Reset password using token from email.
+     * Verify password reset OTP code.
+     */
+    public function verifyOtp(VerifyOtpRequest $request): JsonResponse
+    {
+        $email = $request->string('email')->toString();
+        $otp = $request->string('otp')->toString();
+
+        $this->passwordService->verifyOtp($email, $otp);
+
+        return ApiResponse::success(
+            data: [
+                'email' => $email,
+                'verified' => true,
+            ],
+            message: __('Verification code is valid.')
+        );
+    }
+
+    /**
+     * Reset password using OTP code from email.
      */
     public function reset(ResetPasswordRequest $request): JsonResponse
     {

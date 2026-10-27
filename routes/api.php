@@ -31,6 +31,7 @@ Route::prefix('v1/auth')->group(function () {
         Route::post('/firebase', [FirebaseApiController::class, 'authenticate'])->name('api.v1.auth.firebase');
         Route::post('/2fa/challenge', [TwoFactorController::class, 'challenge']);
         Route::post('/password/forgot', [PasswordController::class, 'forgot']);
+        Route::post('/password/verify-otp', [PasswordController::class, 'verifyOtp']);
         Route::post('/password/reset', [PasswordController::class, 'reset']);
     });
 

@@ -51,4 +51,15 @@ return [
     'Or continue with email' => 'Or continue with email',
     'Authenticating...' => 'Authenticating...',
 
+    // OTP Password Reset strings
+    'otp' => 'Verification Code (OTP)',
+    'otp_sent' => 'A password reset code has been sent to your email.',
+    'otp_verified' => 'Verification code is valid.',
+    'invalid_otp' => 'The provided verification code is invalid.',
+    'otp_expired' => 'The verification code has expired. Please request a new one.',
+    'password_reset_success' => 'Your password has been reset successfully.',
+    'enter_otp' => 'Please enter the 6-digit verification code.',
+    'resend_otp' => 'Resend Code',
+    'mail_transport_error' => 'Unable to send email right now. Please try again later.',
+
 ];

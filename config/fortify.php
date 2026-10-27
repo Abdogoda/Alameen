@@ -162,7 +162,7 @@ return [
 
     'features' => [
         Features::registration(),
-        Features::resetPasswords(),
+        // Features::resetPasswords(), // Handled via 6-digit OTP in routes/web.php and routes/api.php
         Features::emailVerification(),
         Features::twoFactorAuthentication([
             'confirm' => true,

@@ -5,7 +5,7 @@
                 {{ __('نسيت كلمة المرور؟') }}
             </h1>
             <p class="font-normal text-[15px] text-[#475569] w-full">
-                {{ __('أدخل بريدك الإلكتروني لإرسال رابط إعادة تعيين كلمة المرور.') }}
+                {{ __('أدخل بريدك الإلكتروني لتلقي رمز التحقق (OTP) المكون من 6 أرقام لإعادة تعيين كلمة المرور.') }}
             </p>
         </div>
 
@@ -39,9 +39,9 @@
                 type="submit"
                 class="w-full h-14 rounded-2xl bg-[#0B2A8F] hover:bg-[#012383] !text-white font-['Cairo'] font-bold text-base shadow-md hover:shadow-lg transition-all duration-200 cursor-pointer active:scale-[0.99] flex items-center justify-center mt-2 text-white"
                 style="color: #ffffff !important;"
-                data-test="email-password-reset-link-button"
+                data-test="email-password-reset-otp-button"
             >
-                <span class="text-white" style="color: #ffffff !important;">{{ __('إرسال رابط إعادة التعيين') }}</span>
+                <span class="text-white" style="color: #ffffff !important;">{{ __('إرسال رمز التحقق (OTP)') }}</span>
             </button>
         </form>
 

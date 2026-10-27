@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\FirebaseAuthController;
 use App\Http\Controllers\Auth\GoogleAuthController;
+use App\Http\Controllers\Auth\PasswordResetOtpController;
 use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\StudentCourseController;
 use App\Livewire\Notifications\NotificationInbox;
@@ -11,7 +12,7 @@ use Illuminate\Support\Facades\Route;
 Route::match(['get', 'post'], 'locale/{locale}', [LocaleController::class, 'switch'])->name('locale.switch');
 
 // -------------------------------------------------------------
-// Google Social Authentication (Login & Signup)
+// Google Social Authentication & Password Reset (Guest)
 // -------------------------------------------------------------
 Route::middleware('guest')->group(function () {
     // Socialite fallback routes
@@ -21,6 +22,12 @@ Route::middleware('guest')->group(function () {
     // Firebase Google Authentication routes
     Route::post('auth/google/firebase', [FirebaseAuthController::class, 'authenticate'])->name('auth.google.firebase');
     Route::post('auth/firebase', [FirebaseAuthController::class, 'authenticate'])->name('auth.firebase');
+
+    // Password Reset via 6-Digit OTP
+    Route::get('forgot-password', [PasswordResetOtpController::class, 'showForgotForm'])->name('password.request');
+    Route::post('forgot-password', [PasswordResetOtpController::class, 'sendOtp'])->name('password.email');
+    Route::get('reset-password/{token?}', [PasswordResetOtpController::class, 'showResetForm'])->name('password.reset');
+    Route::post('reset-password', [PasswordResetOtpController::class, 'reset'])->name('password.update');
 });
 
 // -------------------------------------------------------------

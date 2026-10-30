@@ -25,7 +25,7 @@
                 
                 <!-- Brand Logo with soft badge -->
                 <a href="{{ route('home') }}" class="flex gap-3 items-center group w-fit">
-                    <div class="size-11 rounded-2xl bg-white p-1.5 flex items-center justify-center shadow-md shadow-blue-950/50 group-hover:scale-105 transition-transform">
+                    <div class="size-11 rounded-2xl flex items-center justify-center group-hover:scale-105 transition-transform">
                         <img src="/assets/images/logo.png" alt="{{ $siteName }}" class="size-full object-contain" />
                     </div>
                     <div class="flex flex-col text-start">

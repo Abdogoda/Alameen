@@ -5,20 +5,25 @@
 
 @php
     $locales = config('localization.locales', [
-        'en' => ['name' => 'English', 'native' => 'English', 'dir' => 'ltr', 'flag' => '🇺🇸'],
-        'ar' => ['name' => 'Arabic', 'native' => 'العربية', 'dir' => 'rtl', 'flag' => '🇸🇦'],
+        'en' => ['name' => 'English', 'native' => 'English', 'dir' => 'ltr', 'flag' => '🇺🇸', 'flag_svg' => '/assets/images/flags/us.svg'],
+        'ar' => ['name' => 'Arabic', 'native' => 'العربية', 'dir' => 'rtl', 'flag' => '🇪🇬', 'flag_svg' => '/assets/images/flags/eg.svg'],
     ]);
     $current = app()->getLocale();
+    $currentFlag = $locales[$current]['flag_svg'] ?? ($current === 'ar' ? '/assets/images/flags/eg.svg' : '/assets/images/flags/us.svg');
 @endphp
 
 @if ($variant === 'pill')
     <div {{ $attributes->merge(['class' => 'inline-flex items-center gap-1 rounded-full border border-[#D7E3F5] bg-[#EAF1FB] p-1 text-xs shadow-xs']) }}>
         @foreach ($locales as $code => $locale)
+            @php
+                $itemFlag = $locale['flag_svg'] ?? ($code === 'ar' ? '/assets/images/flags/eg.svg' : '/assets/images/flags/us.svg');
+            @endphp
             <a
                 href="{{ route('locale.switch', $code) }}"
                 class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold transition-all {{ $current === $code ? 'bg-white text-[#0B2A8F] shadow-sm' : 'text-[#475569] hover:text-[#012383]' }}"
                 title="{{ $locale['name'] }}"
             >
+                <img src="{{ $itemFlag }}" alt="{{ $locale['name'] }}" class="w-4 h-2.5 rounded-[2px] object-cover shadow-xs border border-slate-200/80 dark:border-slate-700 shrink-0" />
                 <span>{{ $locale['native'] }}</span>
             </a>
         @endforeach
@@ -26,11 +31,14 @@
 @elseif ($variant === 'inline')
     <div {{ $attributes->merge(['class' => 'flex items-center gap-2 text-sm']) }}>
         @foreach ($locales as $code => $locale)
+            @php
+                $itemFlag = $locale['flag_svg'] ?? ($code === 'ar' ? '/assets/images/flags/eg.svg' : '/assets/images/flags/us.svg');
+            @endphp
             <a
                 href="{{ route('locale.switch', $code) }}"
-                class="inline-flex items-center gap-1 transition-colors {{ $current === $code ? 'font-semibold text-zinc-900 dark:text-white underline underline-offset-4' : 'text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white' }}"
+                class="inline-flex items-center gap-1.5 transition-colors {{ $current === $code ? 'font-semibold text-zinc-900 dark:text-white underline underline-offset-4' : 'text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white' }}"
             >
-                <span>{{ $locale['flag'] }}</span>
+                <img src="{{ $itemFlag }}" alt="{{ $locale['name'] }}" class="w-4.5 h-3 rounded-[2px] object-cover shadow-xs border border-slate-200/80 dark:border-slate-700 shrink-0" />
                 <span>{{ $locale['native'] }}</span>
             </a>
             @if (! $loop->last)
@@ -50,10 +58,10 @@
         <button
             type="button"
             @click="open = !open"
-            class="h-9 sm:h-10 px-3 rounded-full bg-white dark:bg-slate-800 border border-[#DEE8F7] dark:border-slate-700 hover:bg-[#EAF1FB] dark:hover:bg-slate-700/80 text-[#012383] dark:text-slate-200 transition-all cursor-pointer shadow-xs flex items-center gap-1.5 group text-xs sm:text-sm font-bold font-['Cairo']"
+            class="h-9 sm:h-10 px-3 rounded-full bg-white dark:bg-slate-800 border border-[#DEE8F7] dark:border-slate-700 hover:bg-[#EAF1FB] dark:hover:bg-slate-700/80 text-[#012383] dark:text-slate-200 transition-all cursor-pointer shadow-xs flex items-center gap-2 group text-xs sm:text-sm font-bold font-['Cairo']"
             aria-label="{{ __('اللغة') }}"
         >
-            <span class="text-sm">{{ $locales[$current]['flag'] ?? '🌐' }}</span>
+            <img src="{{ $currentFlag }}" alt="{{ $locales[$current]['name'] ?? $current }}" class="w-5 h-3.5 rounded-[3px] object-cover shadow-xs border border-slate-200/80 dark:border-slate-700 shrink-0" />
             <span>{{ $locales[$current]['native'] ?? strtoupper($current) }}</span>
             <svg class="size-3 text-slate-400 group-hover:text-[#012383] dark:group-hover:text-white transition-transform duration-200" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
@@ -76,12 +84,15 @@
             </div>
 
             @foreach ($locales as $code => $locale)
+                @php
+                    $itemFlag = $locale['flag_svg'] ?? ($code === 'ar' ? '/assets/images/flags/eg.svg' : '/assets/images/flags/us.svg');
+                @endphp
                 <a
                     href="{{ route('locale.switch', $code) }}"
                     class="flex items-center justify-between w-full px-3 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer {{ $current === $code ? 'bg-[#EAF1FB] dark:bg-slate-800 text-[#0B2A8F] dark:text-blue-400' : 'text-[#475569] dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/60' }}"
                 >
                     <div class="flex items-center gap-2">
-                        <span class="text-sm">{{ $locale['flag'] }}</span>
+                        <img src="{{ $itemFlag }}" alt="{{ $locale['name'] }}" class="w-5 h-3.5 rounded-[3px] object-cover shadow-xs border border-slate-200/80 dark:border-slate-700 shrink-0" />
                         <span>{{ $locale['native'] }}</span>
                     </div>
                     @if ($current === $code)

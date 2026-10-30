@@ -36,12 +36,6 @@
         background: #FFFFFF !important;
         box-shadow: 0 16px 36px -6px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.2) !important;
     }
-    html.dark header#main-header a div:first-child,
-    html.dark header a div:has(img[src*="logo.png"]) {
-        background-color: #FFFFFF !important;
-        border-radius: 9999px !important;
-        padding: 4px !important;
-    }
     html.dark .alameen-voice-wave,
     [data-theme="dark"] .alameen-voice-wave {
         border-color: rgba(96, 165, 250, 0.25) !important;

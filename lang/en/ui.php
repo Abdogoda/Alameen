@@ -148,6 +148,7 @@ return [
     'نسيت كلمة المرور؟' => 'Forgot password?',
     'ليس لديك حساب؟' => 'Don\'t have an account?',
     'إنشاء حساب' => 'Create Account',
+    'حساب جديد' => 'Create Account',
     'إنشاء حساب جديد' => 'Create a New Account',
     'ابدأ رحلتك اليوم' => 'Start Your Journey Today',
     'خطوتك الأولى نحو تعلّم أساليب التخاطب.' => 'Your first step towards learning speech therapy techniques.',

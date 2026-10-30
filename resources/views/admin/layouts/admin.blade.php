@@ -47,7 +47,7 @@
                     <!-- Platform Brand & Role Badge -->
                     <div class="flex items-center justify-between border-b border-[#DEE8F7] dark:border-slate-800 pb-4">
                         <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 cursor-pointer">
-                            <div class="size-11 rounded-xl bg-[#EAF1FB] dark:bg-white flex items-center justify-center p-2 shrink-0 border border-[#DEE8F7] dark:border-transparent shadow-xs">
+                            <div class="size-11 rounded-xl bg-[#EAF1FB] dark:bg-slate-800 flex items-center justify-center p-2 shrink-0 border border-[#DEE8F7] dark:border-slate-700 shadow-xs">
                                 <img src="/assets/images/logo.png" alt="منصة الأمين" class="size-full object-contain pointer-events-none" />
                             </div>
                             <div>

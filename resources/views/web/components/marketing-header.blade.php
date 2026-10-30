@@ -7,7 +7,7 @@
     
     <!-- Brand Identity -->
     <a href="{{ route('home') }}" class="flex gap-2 sm:gap-3 items-center shrink-0 cursor-pointer">
-        <div class="size-8 sm:size-10 lg:size-12 shrink-0 relative dark:bg-white dark:rounded-full dark:p-1 dark:shadow-xs flex items-center justify-center transition-all">
+        <div class="size-8 sm:size-10 lg:size-12 shrink-0 relative flex items-center justify-center transition-all">
             <img src="/assets/images/logo.png" alt="{{ config('app.name', 'منصة مركز الأمين') }}" class="size-full object-contain pointer-events-none" />
         </div>
         <span class="font-['Baloo_Bhaijaan_2'] font-extrabold text-lg sm:text-2xl lg:text-3xl leading-tight text-[#012383] dark:text-white whitespace-nowrap tracking-tight">

@@ -36,8 +36,8 @@
             <div class="flex flex-1 flex-col items-center justify-center w-full max-w-[480px] shrink-0 px-2 sm:px-0">
                 <!-- Brand Logo (Top of Form) -->
                 <a href="{{ route('home') }}" class="flex items-center gap-3 mb-6 self-start group transition-transform hover:scale-[1.01]" wire:navigate>
-                    <div class="size-11 sm:size-12 shrink-0 relative bg-white rounded-2xl p-2 border border-[#dee8f7] dark:border-white/20 shadow-xs flex items-center justify-center group-hover:shadow-sm transition-all" style="background-color: #FFFFFF !important;">
-                        <img src="/assets/images/logo.png" alt="{{ __('brand.name') }}" class="size-full object-contain pointer-events-none drop-shadow-xs" />
+                    <div class="size-11 sm:size-12 shrink-0 relative flex items-center justify-center transition-all">
+                        <img src="/assets/images/logo.png" alt="{{ __('brand.name') }}" class="size-full object-contain pointer-events-none" />
                     </div>
                     <span class="font-['Baloo_Bhaijaan_2'] font-extrabold text-2xl sm:text-[26px] leading-tight text-[#012383] dark:text-white group-hover:text-[#0b2a8f] transition-colors">
                         {{ __('brand.name') }}

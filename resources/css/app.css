@@ -413,21 +413,22 @@ html.dark .alameen-eq-bar,
     background: linear-gradient(180deg, #60A5FA 0%, #34D399 100%) !important;
 }
 
-/* Logo White Background in Dark Theme */
+/* Logo Transparent in Dark & Light Themes */
+header#main-header a div:first-child,
+header a div:has(img[src*="logo.png"]),
+header img[src*="logo.png"],
+nav img[src*="logo.png"],
+aside div:has(img[src*="logo.png"]),
+footer div:has(img[src*="logo.png"]),
 html.dark header#main-header a div:first-child,
 html.dark header a div:has(img[src*="logo.png"]),
 html.dark header img[src*="logo.png"],
 html.dark nav img[src*="logo.png"],
-html.dark aside div:has(img[src*="logo.png"]).bg-white,
 html.dark aside div:has(img[src*="logo.png"]),
-html.dark footer div:has(img[src*="logo.png"]).bg-white {
-    background-color: #FFFFFF !important;
-}
-
-html.dark header#main-header a div:first-child {
-    border-radius: 9999px !important;
-    padding: 4px !important;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25) !important;
+html.dark footer div:has(img[src*="logo.png"]) {
+    background-color: transparent !important;
+    background: transparent !important;
+    box-shadow: none !important;
 }
 
 /* ========================================================

@@ -20,8 +20,8 @@ class LocalizationService
     {
         /** @var array<string, array{name: string, native: string, dir: string, flag: string, code: string, regional: string}> $locales */
         $locales = config('localization.locales', [
-            'en' => ['name' => 'English', 'native' => 'English', 'dir' => 'ltr', 'flag' => '🇺🇸', 'code' => 'en', 'regional' => 'en_US'],
-            'ar' => ['name' => 'Arabic', 'native' => 'العربية', 'dir' => 'rtl', 'flag' => '🇸🇦', 'code' => 'ar', 'regional' => 'ar_SA'],
+            'en' => ['name' => 'English', 'native' => 'English', 'dir' => 'ltr', 'flag' => '🇺🇸', 'flag_svg' => '/assets/images/flags/us.svg', 'code' => 'en', 'regional' => 'en_US'],
+            'ar' => ['name' => 'Arabic', 'native' => 'العربية', 'dir' => 'rtl', 'flag' => '🇪🇬', 'flag_svg' => '/assets/images/flags/eg.svg', 'code' => 'ar', 'regional' => 'ar_EG'],
         ]);
 
         return $locales;

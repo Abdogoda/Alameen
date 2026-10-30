@@ -1,0 +1,13 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Prevent direct access to sensitive files
+    <FilesMatch "^\.(env|git|gitignore|editorconfig)">
+        Order allow,deny
+        Deny from all
+    </FilesMatch>
+
+    # Rewrite all traffic to the public directory
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
+

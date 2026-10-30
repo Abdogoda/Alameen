@@ -38,3 +38,12 @@ yarn-error.log
 /boost.json
 /opencode.json
 /opencode.jsonc
+
+# SSH Keys
+hostinger_deploy*
+id_ed25519*
+id_rsa*
+*.pub
+*.key
+*.pem
+.ssh/

@@ -14,13 +14,15 @@
         "laravel/fortify": "^1.37.2",
         "laravel/framework": "^13.17",
         "laravel/sanctum": "^4.0",
-        "laravel/socialite": "*",
+        "laravel/socialite": "^5.31",
         "laravel/tinker": "^3.0",
         "livewire/blaze": "^1.0",
         "livewire/flux": "^2.13.1",
-        "livewire/livewire": "^4.1"
+        "livewire/livewire": "^4.1",
+        "opcodesio/log-viewer": "^3.24"
     },
     "require-dev": {
+        "composer/semver": "^3.6",
         "fakerphp/faker": "^1.24",
         "larastan/larastan": "^3.9",
         "laravel/pail": "^1.2.5",
@@ -62,6 +64,13 @@
         "lint:check": [
             "pint --parallel --test"
         ],
+        "check:platform": [
+            "@php scripts/check-platform.php"
+        ],
+        "pre-commit": [
+            "@php scripts/check-platform.php",
+            "@lint:check"
+        ],
         "ci:check": [
             "Composer\\Config::disableProcessTimeout",
             "@test"
@@ -77,7 +86,8 @@
         ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
-            "@php artisan package:discover --ansi"
+            "@php artisan package:discover --ansi",
+            "@php -r \"if (is_dir('.git')) { exec('git config core.hooksPath .githooks'); }\""
         ],
         "post-update-cmd": [
             "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
@@ -104,6 +114,9 @@
         }
     },
     "config": {
+        "platform": {
+            "php": "8.3.0"
+        },
         "optimize-autoloader": true,
         "preferred-install": "dist",
         "sort-packages": true,

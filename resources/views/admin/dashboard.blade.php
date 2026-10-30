@@ -32,10 +32,16 @@
                         <svg class="size-4 text-[#0B2A8F]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
                         <span>{{ __('إرسال إشعار جماعي للطلاب') }}</span>
                     </a>
-                    <a href="{{ route('dashboard') }}" target="_blank" class="h-11 px-5 rounded-xl bg-white/20 hover:bg-white/30 text-white font-bold text-xs border border-white/20 transition-all flex items-center justify-center gap-2">
-                        <span>{{ __('معاينة بوابة الطالب') }}</span>
-                        <svg class="size-4 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-                    </a>
+                    <div class="flex items-center gap-2">
+                        <a href="{{ route('log-viewer.index') }}" target="_blank" class="flex-1 h-11 px-4 rounded-xl bg-white/20 hover:bg-white/30 text-white font-bold text-xs border border-white/20 transition-all flex items-center justify-center gap-2">
+                            <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                            <span>{{ __('سجلات النظام (Logs)') }}</span>
+                        </a>
+                        <a href="{{ route('dashboard') }}" target="_blank" class="h-11 px-4 rounded-xl bg-white/20 hover:bg-white/30 text-white font-bold text-xs border border-white/20 transition-all flex items-center justify-center gap-1.5" title="{{ __('معاينة بوابة الطالب') }}">
+                            <span>{{ __('بوابة الطالب') }}</span>
+                            <svg class="size-4 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -74,7 +80,7 @@
                     </div>
                 </div>
                 <div>
-                    <h3 class="text-3xl font-black text-[#012383] font-['Cairo'] tracking-tight">١,٢٤٠</h3>
+                    <h3 class="text-3xl font-black text-[#012383] font-['Cairo'] tracking-tight">{{ number_format(\App\Models\User::count()) }}</h3>
                     <p class="text-xs text-slate-500 mt-1 flex items-center gap-1.5 font-medium">
                         <span class="text-emerald-600 font-bold flex items-center gap-0.5">
                             <svg class="size-3.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12 7a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0V8.414l-4.293 4.293a1 1 0 01-1.414 0L8 10.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 011.414 0L11 10.586 14.586 7H12z" clip-rule="evenodd"/></svg>
@@ -94,7 +100,7 @@
                     </div>
                 </div>
                 <div>
-                    <h3 class="text-3xl font-black text-amber-600 font-['Cairo'] tracking-tight">١٢</h3>
+                    <h3 class="text-3xl font-black text-amber-600 font-['Cairo'] tracking-tight">{{ $pendingReceiptsCount ?? 0 }}</h3>
                     <p class="text-xs text-slate-500 mt-1 flex items-center gap-1.5 font-medium">
                         <span class="size-2 rounded-full bg-amber-500 animate-pulse"></span>
                         {{ __('بانتظار مراجعة الإدارة وتفعيل الوصول') }}
@@ -111,9 +117,9 @@
                     </div>
                 </div>
                 <div>
-                    <h3 class="text-3xl font-black text-[#012383] font-['Cairo'] tracking-tight">٢٨</h3>
+                    <h3 class="text-3xl font-black text-[#012383] font-['Cairo'] tracking-tight">{{ $pendingTasksCount ?? 0 }}</h3>
                     <p class="text-xs text-slate-500 mt-1 flex items-center gap-1.5 font-medium">
-                        <span class="text-blue-600 font-bold">٢٨ مهمة</span>
+                        <span class="text-blue-600 font-bold">{{ $pendingTasksCount ?? 0 }}</span>
                         {{ __('تسجيل صوتي وتطبيق سريري') }}
                     </p>
                 </div>
@@ -203,6 +209,19 @@
                             </div>
                         </div>
                         <span class="text-xs text-indigo-600 font-bold">←</span>
+                    </a>
+
+                    <a href="{{ route('log-viewer.index') }}" target="_blank" class="flex items-center justify-between p-3 rounded-xl border border-[#DEE8F7] hover:border-amber-400 hover:bg-amber-50/40 transition-colors">
+                        <div class="flex items-center gap-3">
+                            <div class="size-9 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center">
+                                <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="font-bold text-xs text-[#012383]">{{ __('سجلات النظام (Log Viewer)') }}</span>
+                                <span class="text-[10px] text-slate-400">{{ __('فحص وتتبع أخطاء النظام وسجلات التشغيل') }}</span>
+                            </div>
+                        </div>
+                        <span class="text-xs text-amber-600 font-bold">↗</span>
                     </a>
                 </div>
             </div>

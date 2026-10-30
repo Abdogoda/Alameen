@@ -5,6 +5,24 @@
     <!-- ============================================== -->
     <div class="flex flex-col gap-6 w-full text-start">
         
+        @if(auth('admin')->check())
+            <div class="bg-gradient-to-r from-[#012383] to-[#0B2A8F] text-white p-4 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-sm border border-blue-900">
+                <div class="flex items-center gap-3">
+                    <span class="px-2.5 py-1 bg-[#F2AE2E] text-slate-900 font-extrabold text-xs rounded-lg">{{ __('وضع المسؤول') }}</span>
+                    <span class="text-xs sm:text-sm font-semibold text-white/90">{{ __('أنت مسجّل كمسؤول في النظام.') }}</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <a href="{{ route('log-viewer.index') }}" target="_blank" class="px-3.5 py-2 bg-white/20 hover:bg-white/30 rounded-xl text-xs font-bold text-white transition-colors flex items-center gap-1.5 border border-white/20">
+                        <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                        <span>{{ __('سجلات النظام (Log Viewer)') }} ↗</span>
+                    </a>
+                    <a href="{{ route('admin.dashboard') }}" class="px-3.5 py-2 bg-white text-[#012383] hover:bg-slate-50 rounded-xl text-xs font-bold transition-colors">
+                        {{ __('لوحة الإدارة') }}
+                    </a>
+                </div>
+            </div>
+        @endif
+
         <!-- Page Introduction -->
         <div class="flex flex-col gap-1 items-start text-start w-full">
             <p class="font-semibold text-xs text-[#0B2A8F]">

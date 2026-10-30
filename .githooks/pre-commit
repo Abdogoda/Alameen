@@ -1,0 +1,13 @@
+#!/usr/bin/env sh
+
+# Abort commit on error
+set -e
+
+echo "==> [Pre-commit] Checking PHP platform compatibility..."
+php scripts/check-platform.php
+
+echo "==> [Pre-commit] Checking code style (Pint)..."
+composer lint:check
+
+echo "✓ All pre-commit checks passed."
+

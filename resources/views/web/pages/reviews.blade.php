@@ -130,12 +130,13 @@
             <button
               type="button"
               id="open-review-modal-btn"
-              class="mt-6 w-full py-3 px-4 bg-white text-[#012383] font-bold text-sm rounded-xl hover:bg-blue-50 transition-all flex items-center justify-center gap-2 shadow-xs cursor-pointer"
+              class="mt-6 w-full py-3 px-4 bg-white !text-[#012383] font-bold text-sm rounded-xl hover:bg-blue-50 transition-all flex items-center justify-center gap-2 shadow-xs cursor-pointer"
+              style="color: #012383 !important;"
             >
-              <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="size-4 !text-[#012383]" style="color: #012383 !important;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
               </svg>
-              <span data-i18n="reviews.addReviewBtn">أضف تقييمك الآن</span>
+              <span data-i18n="reviews.addReviewBtn" class="!text-[#012383]" style="color: #012383 !important;">{{ __('reviews.addReviewBtn') }}</span>
             </button>
           </div>
 

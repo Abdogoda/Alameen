@@ -121,20 +121,23 @@
                 </div>
 
                 <!-- Bottom User Actions & Sign Out -->
-                <div class="border-t border-[#DEE8F7] pt-4 flex flex-col gap-2">
-                    <a href="{{ route('home') }}" class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 hover:bg-[#EAF1FB] text-[#012383] text-xs font-bold transition-colors">
+                <div class="border-t border-[#DEE8F7] dark:border-slate-800 pt-4 flex flex-col gap-2">
+                    <a href="{{ route('home') }}" class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 hover:bg-[#EAF1FB] text-[#012383] text-xs font-bold transition-all duration-200 border border-slate-100 hover:border-[#DEE8F7] dark:bg-slate-800/80 dark:hover:bg-slate-700 dark:text-blue-300 dark:border-slate-700 group">
                         <span class="flex items-center gap-2">
-                            <svg class="size-4 text-[#0B2A8F]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
-                            {{ __('الصفحة الرئيسية') }}
+                            <svg class="size-4 text-[#0B2A8F] dark:text-blue-400 group-hover:scale-105 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                            <span>{{ __('الصفحة الرئيسية') }}</span>
                         </span>
-                        <span class="text-[10px] text-slate-400">فتح ↗</span>
+                        <span class="text-[10px] text-slate-400 group-hover:text-[#0B2A8F] bg-white group-hover:bg-[#DEE8F7]/60 dark:bg-slate-700/80 dark:text-slate-300 px-1.5 py-0.5 rounded-md border border-slate-200/60 group-hover:border-[#C5D7F2] dark:border-slate-600 transition-colors font-medium">فتح ↗</span>
                     </a>
 
                     <form method="POST" action="{{ route('logout') }}" class="w-full">
                         @csrf
-                        <button type="submit" class="w-full flex items-center gap-2 px-3 py-2 text-xs font-bold text-rose-600 hover:bg-rose-50 rounded-xl transition-colors cursor-pointer">
-                            <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
-                            <span>{{ __('تسجيل الخروج') }}</span>
+                        <button type="submit" class="w-full flex items-center justify-between p-2.5 rounded-xl bg-rose-50/70 hover:bg-rose-100/90 text-rose-600 hover:text-rose-700 border border-rose-100/90 hover:border-rose-200 text-xs font-bold transition-all duration-200 cursor-pointer group shadow-2xs dark:bg-rose-950/25 dark:hover:bg-rose-950/50 dark:text-rose-400 dark:hover:text-rose-300 dark:border-rose-900/40 dark:hover:border-rose-800/60">
+                            <span class="flex items-center gap-2">
+                                <svg class="size-4 text-rose-500 group-hover:text-rose-600 rtl:rotate-180 transition-transform group-hover:-translate-x-0.5 dark:text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                                <span>{{ __('تسجيل الخروج') }}</span>
+                            </span>
+                            <span class="text-[10px] text-rose-500 group-hover:text-rose-700 bg-white group-hover:bg-rose-200/70 dark:bg-rose-950/60 dark:text-rose-300 px-1.5 py-0.5 rounded-md border border-rose-200/70 group-hover:border-rose-300 dark:border-rose-900/60 transition-colors font-semibold">خروج ↵</span>
                         </button>
                     </form>
                 </div>
@@ -233,9 +236,12 @@
 
                                 <form method="POST" action="{{ route('logout') }}" class="w-full">
                                     @csrf
-                                    <button type="submit" class="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer text-start">
-                                        <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
-                                        <span>{{ __('تسجيل الخروج') }}</span>
+                                    <button type="submit" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold text-rose-600 hover:bg-rose-50 hover:text-rose-700 transition-colors cursor-pointer text-start group">
+                                        <span class="flex items-center gap-2">
+                                            <svg class="size-4 rtl:rotate-180 text-rose-500 group-hover:text-rose-600 transition-transform group-hover:-translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                                            <span>{{ __('تسجيل الخروج') }}</span>
+                                        </span>
+                                        <span class="text-[10px] text-rose-400 group-hover:text-rose-600 transition-colors font-semibold">↵</span>
                                     </button>
                                 </form>
                             </div>

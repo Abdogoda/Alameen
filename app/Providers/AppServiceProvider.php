@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Translation\Translator;
 use Illuminate\Validation\Rules\Password;
+use Opcodes\LogViewer\Facades\LogViewer;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -57,6 +58,20 @@ class AppServiceProvider extends ServiceProvider
 
                 return $user->hasPermission($ability) ? true : null;
             }
+        });
+
+        Gate::define('viewLogViewer', function ($user = null) {
+            $admin = auth('admin')->user() ?? ($user instanceof Admin ? $user : null);
+
+            return $admin instanceof Admin;
+        });
+
+        LogViewer::auth(function ($request) {
+            $admin = auth('admin')->user()
+                ?? ($request->user('admin') instanceof Admin ? $request->user('admin') : null)
+                ?? ($request->user() instanceof Admin ? $request->user() : null);
+
+            return $admin instanceof Admin;
         });
     }
 

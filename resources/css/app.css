@@ -61,10 +61,22 @@ a[class*="bg-[#012383]"],
 a[class*="bg-[#0B2A8F]"],
 a[class*="bg-[#0b2a8f]"],
 button.text-white,
-a.text-white,
-button.text-white *,
-a.text-white * {
+a.text-white {
     color: #ffffff !important;
+}
+
+/* Ensure nested plain text in white links/buttons defaults to white, without overriding badges/pills */
+button.text-white > *:not([class*="bg-"]):not([class*="text-"]):not([class*="badge"]),
+a.text-white > *:not([class*="bg-"]):not([class*="text-"]):not([class*="badge"]) {
+    color: #ffffff !important;
+}
+
+/* Preserve badge and pill colors inside active links or buttons */
+a [class*="badge"],
+button [class*="badge"],
+a span[class*="bg-"][class*="text-"],
+button span[class*="bg-"][class*="text-"] {
+    color: inherit;
 }
 
 @layer base {
@@ -290,6 +302,26 @@ html.dark a.text-white *,
 .text-white,
 html.dark .text-white {
     color: #FFFFFF !important;
+}
+
+/* Ensure review modal trigger button retains high-contrast text */
+#open-review-modal-btn,
+#open-review-modal-btn * {
+    color: #012383 !important;
+}
+
+#open-review-modal-btn:hover,
+#open-review-modal-btn:hover * {
+    color: #0B2A8F !important;
+}
+
+html.dark #open-review-modal-btn {
+    background-color: #1E293B !important;
+}
+
+html.dark #open-review-modal-btn,
+html.dark #open-review-modal-btn * {
+    color: #93C5FD !important;
 }
 
 /* Alpine x-cloak helper */

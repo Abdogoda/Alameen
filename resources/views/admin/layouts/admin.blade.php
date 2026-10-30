@@ -14,6 +14,10 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="bg-[#F8FAFC] text-[#334155] min-h-screen flex flex-col font-['Cairo'] antialiased selection:bg-[#EAF1FB] selection:text-[#0B2A8F]" x-data="{ adminSidebarOpen: false }">
+        @php
+            $pendingReceiptsCount = isset($pendingReceiptsCount) ? (int)$pendingReceiptsCount : (\Illuminate\Support\Facades\Schema::hasTable('payment_receipts') ? \App\Models\PaymentReceipt::where('status', 'pending')->count() : 0);
+            $pendingTasksCount = isset($pendingTasksCount) ? (int)$pendingTasksCount : (\Illuminate\Support\Facades\Schema::hasTable('task_submissions') ? \App\Models\TaskSubmission::where('status', 'pending')->count() : 0);
+        @endphp
         
         <!-- Mobile Sidebar Overlay -->
         <div
@@ -72,21 +76,24 @@
                         <a href="{{ route('admin.courses.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-sm transition-colors {{ request()->routeIs('admin.courses.*') ? 'bg-[#012383] text-white font-bold' : 'text-slate-600 hover:bg-[#EAF1FB]/60 hover:text-[#012383]' }}">
                             <svg class="size-5 shrink-0 {{ request()->routeIs('admin.courses.*') ? 'text-white' : 'text-slate-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
                             <span class="flex-1 text-start">{{ __('المستويات والدروس') }}</span>
-                            <span class="px-2 py-0.5 text-[11px] font-bold bg-blue-50 text-[#0B2A8F] rounded-md">{{ __('ديناميك') }}</span>
                         </a>
 
                         <!-- إيصالات الدفع والتحويلات -->
                         <a href="{{ route('admin.receipts.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-sm transition-colors {{ request()->routeIs('admin.receipts.*') ? 'bg-[#012383] text-white font-bold' : 'text-slate-600 hover:bg-[#EAF1FB]/60 hover:text-[#012383]' }}">
                             <svg class="size-5 shrink-0 {{ request()->routeIs('admin.receipts.*') ? 'text-white' : 'text-slate-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                             <span class="flex-1 text-start">{{ __('إيصالات الدفع') }}</span>
-                            <span class="px-2 py-0.5 text-[11px] font-bold bg-amber-100 text-amber-800 rounded-full animate-pulse">{{ __('١٢ معلق') }}</span>
+                            @if(($pendingReceiptsCount ?? 0) > 0)
+                                <span class="min-w-5 h-5 px-1.5 flex items-center justify-center text-[11px] font-black rounded-full animate-pulse shrink-0 transition-colors {{ request()->routeIs('admin.receipts.*') ? 'bg-[#FEF3C7] shadow-xs' : 'bg-amber-100' }}" style="color: #78350f !important; background-color: #FEF3C7 !important;">{{ $pendingReceiptsCount }}</span>
+                            @endif
                         </a>
 
                         <!-- تصحيح المهام والتاسكات -->
                         <a href="{{ route('admin.tasks.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-sm transition-colors {{ request()->routeIs('admin.tasks.*') ? 'bg-[#012383] text-white font-bold' : 'text-slate-600 hover:bg-[#EAF1FB]/60 hover:text-[#012383]' }}">
                             <svg class="size-5 shrink-0 {{ request()->routeIs('admin.tasks.*') ? 'text-white' : 'text-slate-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
                             <span class="flex-1 text-start">{{ __('تصحيح المهام') }}</span>
-                            <span class="px-2 py-0.5 text-[11px] font-bold bg-blue-100 text-[#0B2A8F] rounded-full">{{ __('٢٨ مهمة') }}</span>
+                            @if(($pendingTasksCount ?? 0) > 0)
+                                <span class="min-w-5 h-5 px-1.5 flex items-center justify-center text-[11px] font-black rounded-full shrink-0 transition-colors {{ request()->routeIs('admin.tasks.*') ? 'bg-white/20 text-white border border-white/30' : 'bg-blue-100 text-[#0B2A8F]' }}">{{ $pendingTasksCount }}</span>
+                            @endif
                         </a>
 
                         <!-- إدارة الإشعارات المركزية -->
@@ -102,7 +109,6 @@
                         <a href="{{ route('admin.certificates.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-sm transition-colors {{ request()->routeIs('admin.certificates.*') ? 'bg-[#012383] text-white font-bold' : 'text-slate-600 hover:bg-[#EAF1FB]/60 hover:text-[#012383]' }}">
                             <svg class="size-5 shrink-0 {{ request()->routeIs('admin.certificates.*') ? 'text-white' : 'text-slate-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
                             <span class="flex-1 text-start">{{ __('الشهادات المعتمدة') }}</span>
-                            <span class="px-1.5 py-0.5 text-[10px] font-bold bg-emerald-100 text-emerald-800 rounded">٩٥٪</span>
                         </a>
 
                         <!-- شؤون الطلاب والمسجلين -->
@@ -116,24 +122,37 @@
                             <svg class="size-5 shrink-0 {{ request()->routeIs('admin.settings.*') ? 'text-white' : 'text-slate-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                             <span class="flex-1 text-start">{{ __('إعدادات المنصة') }}</span>
                         </a>
+
+                        <!-- سجلات النظام والـ Logs -->
+                        <a
+                            href="{{ route('log-viewer.index') }}"
+                            target="_blank"
+                            class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-sm transition-colors {{ request()->routeIs('log-viewer.*') ? 'bg-[#012383] text-white font-bold' : 'text-slate-600 hover:bg-[#EAF1FB]/60 hover:text-[#012383]' }}"
+                        >
+                            <svg class="size-5 shrink-0 {{ request()->routeIs('log-viewer.*') ? 'text-white' : 'text-slate-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                            <span class="flex-1 text-start">{{ __('سجلات النظام (Logs)') }}</span>
+                        </a>
                     </nav>
                 </div>
 
                 <!-- Bottom Actions (Preview Student LMS / Sign Out) -->
-                <div class="border-t border-[#DEE8F7] pt-4 flex flex-col gap-2">
-                    <a href="{{ route('dashboard') }}" target="_blank" class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 hover:bg-[#EAF1FB] text-[#012383] text-xs font-bold transition-colors">
+                <div class="border-t border-[#DEE8F7] dark:border-slate-800 pt-4 flex flex-col gap-2">
+                    <a href="{{ route('dashboard') }}" target="_blank" class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 hover:bg-[#EAF1FB] text-[#012383] text-xs font-bold transition-all duration-200 border border-slate-100 hover:border-[#DEE8F7] dark:bg-slate-800/80 dark:hover:bg-slate-700 dark:text-blue-300 dark:border-slate-700 group">
                         <span class="flex items-center gap-2">
-                            <svg class="size-4 text-[#0B2A8F]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
-                            {{ __('معاينة بوابة الطالب') }}
+                            <svg class="size-4 text-[#0B2A8F] dark:text-blue-400 group-hover:scale-105 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                            <span>{{ __('معاينة بوابة الطالب') }}</span>
                         </span>
-                        <span class="text-[10px] text-slate-400">{{ __('فتح ↗') }}</span>
+                        <span class="text-[10px] text-slate-400 group-hover:text-[#0B2A8F] bg-white group-hover:bg-[#DEE8F7]/60 dark:bg-slate-700/80 dark:text-slate-300 px-1.5 py-0.5 rounded-md border border-slate-200/60 group-hover:border-[#C5D7F2] dark:border-slate-600 transition-colors font-medium">{{ __('فتح ↗') }}</span>
                     </a>
 
                     <form method="POST" action="{{ route('admin.logout') }}" class="w-full">
                         @csrf
-                        <button type="submit" class="w-full flex items-center gap-2 px-3 py-2 text-xs font-bold text-rose-600 hover:bg-rose-50 rounded-xl transition-colors cursor-pointer">
-                            <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
-                            {{ __('تسجيل خروج الإدارة') }}
+                        <button type="submit" class="w-full flex items-center justify-between p-2.5 rounded-xl bg-rose-50/70 hover:bg-rose-100/90 text-rose-600 hover:text-rose-700 border border-rose-100/90 hover:border-rose-200 text-xs font-bold transition-all duration-200 cursor-pointer group shadow-2xs dark:bg-rose-950/25 dark:hover:bg-rose-950/50 dark:text-rose-400 dark:hover:text-rose-300 dark:border-rose-900/40 dark:hover:border-rose-800/60">
+                            <span class="flex items-center gap-2">
+                                <svg class="size-4 text-rose-500 group-hover:text-rose-600 rtl:rotate-180 transition-transform group-hover:-translate-x-0.5 dark:text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                                <span>{{ __('تسجيل خروج الإدارة') }}</span>
+                            </span>
+                            <span class="text-[10px] text-rose-500 group-hover:text-rose-700 bg-white group-hover:bg-rose-200/70 dark:bg-rose-950/60 dark:text-rose-300 px-1.5 py-0.5 rounded-md border border-rose-200/70 group-hover:border-rose-300 dark:border-rose-900/60 transition-colors font-semibold">{{ __('خروج') }} ↵</span>
                         </button>
                     </form>
                 </div>
@@ -215,16 +234,17 @@
                 </div>
 
                 {{ $modals ?? '' }}
-
-                <!-- Admin Footer -->
-                <footer class="h-14 border-t border-[#DEE8F7] bg-white px-4 sm:px-8 flex items-center justify-between text-xs text-slate-500">
-                    <span>{{ __('منصة الأمين التعليمية • لوحة التحكم المركزية v2.0') }}</span>
-                    <span class="hidden sm:inline">{{ __('نظام الفيديوهات المتزامنة والتقييم السريري') }}</span>
-                </footer>
             </main>
 
         </div>
 
+        @persist('toast')
+            <flux:toast.group>
+                <flux:toast />
+            </flux:toast.group>
+        @endpersist
+
+        @fluxScripts
         <script type="module" src="/assets/js/admin.js"></script>
     </body>
 </html>

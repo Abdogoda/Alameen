@@ -23,6 +23,29 @@
 
             window.addEventListener('passkeys:ready', () => this.updateSupport(), { once: true });
         },
+        resolveError(e) {
+            if (window.translatePasskeyError) {
+                return window.translatePasskeyError(e);
+            }
+            const name = e?.name || e?.constructor?.name || '';
+            const msg = (e?.message || '').toLowerCase();
+            if (name === 'UserCancelledError' || name === 'NotAllowedError' || name === 'AbortError' || msg.includes('cancelled') || msg.includes('canceled')) {
+                return '{{ __('The passkey operation was cancelled.') }}';
+            }
+            if (name === 'NotSupportedError' || msg.includes('not supported')) {
+                return '{{ __('Passkeys are not supported in this browser.') }}';
+            }
+            if (msg.includes('challenge expired') || msg.includes('expired')) {
+                return '{{ __('Passkey verification challenge expired or is invalid. Please try again.') }}';
+            }
+            if (msg.includes('not recognized') || msg.includes('removed from your account')) {
+                return '{{ __('Passkey not recognized. It may have been removed from your account.') }}';
+            }
+            if (msg.includes('credentials do not match')) {
+                return '{{ __('auth.failed') }}';
+            }
+            return '{{ __('Passkey error occurred. Please try again.') }}';
+        },
         async verify() {
             this.loading = true;
             this.error = null;
@@ -35,9 +58,7 @@
                 });
                 Livewire.navigate(response.redirect || '/dashboard');
             } catch (e) {
-                if (e.constructor?.name !== 'UserCancelledError') {
-                    this.error = e.message;
-                }
+                this.error = this.resolveError(e);
             } finally {
                 this.loading = false;
             }

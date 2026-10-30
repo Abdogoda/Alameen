@@ -47,4 +47,21 @@ return [
     'Register passkey' => 'Register passkey',
     'Registering...' => 'Registering...',
 
+    // Passkey Error Messages
+    'The passkey operation was cancelled.' => 'The passkey operation was cancelled.',
+    'This device is already registered as a passkey.' => 'This device is already registered as a passkey.',
+    'Passkeys can\'t be used on this domain.' => 'Passkeys cannot be used on this domain.',
+    'Passkey verification challenge expired or is invalid. Please try again.' => 'Passkey verification challenge expired or is invalid. Please try again.',
+    'Passkey not recognized. It may have been removed from your account.' => 'Passkey not recognized. It may have been removed from your account.',
+    'Unable to verify passkey. Please try again.' => 'Unable to verify passkey. Please try again.',
+    'Unable to verify passkey: :message' => 'Unable to verify passkey: :message',
+    'Unable to register passkey. Please try again.' => 'Unable to register passkey. Please try again.',
+    'Unable to register this passkey.' => 'Unable to register this passkey.',
+    'Unable to register passkey: :message' => 'Unable to register passkey: :message',
+    'Unable to sign in with this account.' => 'Unable to sign in with this account.',
+    'Passkey not found or does not belong to the user.' => 'Passkey not found or does not belong to the user.',
+    'An unknown error occurred.' => 'An unexpected error occurred during passkey operation.',
+    'Passkey error occurred. Please try again.' => 'Passkey error occurred. Please try again.',
+    'Authentication cancelled.' => 'Authentication cancelled.',
+    'The passkey operation timed out or was not allowed.' => 'The passkey operation timed out or was not allowed.',
 ];

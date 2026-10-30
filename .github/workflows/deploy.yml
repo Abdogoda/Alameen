@@ -98,7 +98,7 @@ jobs:
           key: ${{ secrets.HOSTINGER_SSH_KEY }}
           password: ${{ secrets.HOSTINGER_SSH_PASSWORD }}
           source: 'public/build/*'
-          target: '${{ secrets.HOSTINGER_APP_PATH || '\''domains/moyassar.online/public_html'\'' }}/public/build'
+          target: "${{ secrets.HOSTINGER_APP_PATH || 'domains/moyassar.online/public_html' }}/public/build"
           strip_components: 2
 
       - name: Finish Deployment (Composer, Migrations & Caches)

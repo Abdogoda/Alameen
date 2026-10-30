@@ -104,15 +104,41 @@ window.signInWithFirebaseGoogle = async function (targetRole = 'user', buttonEle
         }
     } catch (error) {
         if (error.code === 'auth/popup-closed-by-user') {
-            showAuthAlert('تم إلغاء نافذة تسجيل الدخول عبر Google.', 'info');
+            showAuthAlert(getFirebaseErrorMessage(error), 'info');
         } else if (error.code === 'auth/cancelled-popup-request') {
             // Ignored when multiple popups triggered
         } else {
-            showAuthAlert(error.message || 'حدث خطأ غير متوقع أثناء تسجيل الدخول عبر Google.', 'error');
+            showAuthAlert(getFirebaseErrorMessage(error), 'error');
         }
         resetButton(buttonElement, originalContent);
     }
 };
+
+function getFirebaseErrorMessage(error) {
+    const isEn = (document.documentElement.lang || 'ar').toLowerCase().startsWith('en');
+    const code = error?.code || '';
+
+    const arErrors = {
+        'auth/popup-closed-by-user': 'تم إلغاء نافذة تسجيل الدخول عبر Google.',
+        'auth/popup-blocked': 'تم حظر النافذة المنبثقة من قبل المتصفح. يرجى السماح بالنوافذ المنبثقة لمنصة الأمين.',
+        'auth/network-request-failed': 'تعذر الاتصال بالخادم. يرجى التحقق من اتصالك بالإنترنت والمحاولة مجدداً.',
+        'auth/unauthorized-domain': 'نطاق هذا الموقع غير مصرح به في إعدادات Google Firebase. يرجى مراجعة إعدادات الخادم.',
+        'auth/operation-not-allowed': 'خدمة تسجيل الدخول عبر Google غير مفعلة حالياً في إعدادات المشروع.',
+        'auth/user-disabled': 'تم تعطيل هذا الحساب. يرجى التواصل مع الدعم الفني.',
+        'auth/account-exists-with-different-credential': 'يوجد حساب مسجل بالفعل بنفس البريد الإلكتروني ولكن بطريقة تسجيل دخول مختلفة.',
+        'auth/invalid-credential': 'بيانات الاعتماد غير صالحة أو انتهت مدتها. يرجى المحاولة مرة أخرى.',
+    };
+
+    if (!isEn && arErrors[code]) {
+        return arErrors[code];
+    }
+    if (!isEn) {
+        return error?.message && /[\u0600-\u06FF]/.test(error.message)
+            ? error.message
+            : 'حدث خطأ غير متوقع أثناء تسجيل الدخول عبر Google. يرجى المحاولة مرة أخرى.';
+    }
+    return error?.message || 'An unexpected error occurred during Google Sign-in.';
+}
 
 function resetButton(buttonElement, originalContent) {
     if (buttonElement && originalContent) {

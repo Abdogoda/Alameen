@@ -39,6 +39,26 @@
 
             window.addEventListener('passkeys:ready', () => this.updateSupport(), { once: true });
         },
+        resolveError(e) {
+            if (window.translatePasskeyError) {
+                return window.translatePasskeyError(e);
+            }
+            const name = e?.name || e?.constructor?.name || '';
+            const msg = (e?.message || '').toLowerCase();
+            if (name === 'UserCancelledError' || name === 'NotAllowedError' || name === 'AbortError' || msg.includes('cancelled') || msg.includes('canceled')) {
+                return '{{ __('The passkey operation was cancelled.') }}';
+            }
+            if (name === 'NotSupportedError' || msg.includes('not supported')) {
+                return '{{ __('Passkeys are not supported in this browser.') }}';
+            }
+            if (name === 'PasskeyExistsError' || msg.includes('already registered')) {
+                return '{{ __('This device is already registered as a passkey.') }}';
+            }
+            if (msg.includes('unable to register')) {
+                return '{{ __('Unable to register passkey. Please try again.') }}';
+            }
+            return '{{ __('Passkey error occurred. Please try again.') }}';
+        },
         async register() {
             if (!this.name.trim()) return;
 
@@ -51,9 +71,7 @@
                 this.showForm = false;
                 await $wire.loadPasskeys();
             } catch (e) {
-                if (e.constructor?.name !== 'UserCancelledError') {
-                    this.error = e.message;
-                }
+                this.error = this.resolveError(e);
             } finally {
                 this.loading = false;
             }

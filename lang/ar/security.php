@@ -47,4 +47,21 @@ return [
     'Register passkey' => 'تسجيل مفتاح المرور',
     'Registering...' => 'جاري التسجيل...',
 
+    // Passkey Error Messages
+    'The passkey operation was cancelled.' => 'تم إلغاء عملية مفتاح المرور.',
+    'This device is already registered as a passkey.' => 'هذا الجهاز مسجل بالفعل كمفتاح مرور.',
+    'Passkeys can\'t be used on this domain.' => 'لا يمكن استخدام مفاتيح المرور على هذا النطاق.',
+    'Passkey verification challenge expired or is invalid. Please try again.' => 'انتهت صلاحية جلسة التحقق من مفتاح المرور. يرجى المحاولة مرة أخرى.',
+    'Passkey not recognized. It may have been removed from your account.' => 'لم يتم التعرف على مفتاح المرور. قد يكون قد تم حذفه من حسابك.',
+    'Unable to verify passkey. Please try again.' => 'تعذر التحقق من مفتاح المرور. يرجى المحاولة مرة أخرى.',
+    'Unable to verify passkey: :message' => 'تعذر التحقق من مفتاح المرور: :message',
+    'Unable to register passkey. Please try again.' => 'تعذر تسجيل مفتاح المرور. يرجى المحاولة مرة أخرى.',
+    'Unable to register this passkey.' => 'تعذر تسجيل مفتاح المرور هذا.',
+    'Unable to register passkey: :message' => 'تعذر تسجيل مفتاح المرور: :message',
+    'Unable to sign in with this account.' => 'تعذر تسجيل الدخول بهذا الحساب.',
+    'Passkey not found or does not belong to the user.' => 'مفتاح المرور غير موجود أو لا يتبع هذا الحساب.',
+    'An unknown error occurred.' => 'حدث خطأ غير متوقع أثناء معالجة مفتاح المرور.',
+    'Passkey error occurred. Please try again.' => 'حدث خطأ أثناء استخدام مفتاح المرور. يرجى المحاولة مرة أخرى.',
+    'Authentication cancelled.' => 'تم إلغاء عملية المصادقة.',
+    'The passkey operation timed out or was not allowed.' => 'انتهت مهلة التحقق من مفتاح المرور أو تم رفض العملية.',
 ];

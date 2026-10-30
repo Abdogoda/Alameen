@@ -1,5 +1,5 @@
 <x-layouts::app :title="__('تسليم المهمة السريرية والتدريب الصوتي')">
-    <div class="px-4 sm:px-6 lg:px-[40px] pt-[24px] lg:pt-[30px] pb-[40px] flex flex-col gap-[24px] w-full">
+    <div class="flex flex-col gap-6 w-full text-start">
         
         <!-- Page Introduction -->
         <div class="flex flex-col gap-[4px] items-start text-start w-full">

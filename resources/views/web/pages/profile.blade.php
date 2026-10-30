@@ -1,8 +1,8 @@
 <x-layouts::app :title="__('الملف الشخصي')">
     <!-- ============================================== -->
-        <!-- 3. PAGE BODY CONTENT                           -->
-        <!-- ============================================== -->
-        <div class="px-[40px] pt-[30px] pb-[40px] flex-1 flex flex-col gap-[24px]">
+    <!-- 3. PAGE BODY CONTENT                           -->
+    <!-- ============================================== -->
+    <div class="flex flex-col gap-6 w-full text-start">
           
           <!-- Page Introduction -->
           <div class="flex flex-col gap-[2px] items-start text-start w-full overflow-clip">

@@ -1,8 +1,8 @@
 <x-layouts::app :title="__('مشاهدة الدرس')">
     <!-- ============================================== -->
-        <!-- 3. PAGE BODY CONTENT (Node 1155:18352)         -->
-        <!-- ============================================== -->
-        <div class="px-4 sm:px-6 lg:px-[40px] pt-6 lg:pt-[32px] pb-[40px] flex-1 flex flex-col gap-[24px]" data-node-id="1155:18352">
+    <!-- 3. PAGE BODY CONTENT (Node 1155:18352)         -->
+    <!-- ============================================== -->
+    <div class="flex flex-col gap-6 w-full text-start" data-node-id="1155:18352">
           
           <!-- Page Introduction (Node 1155:18353) -->
           <div class="flex flex-col gap-[4px] items-start text-start w-full" data-node-id="1155:18353">
@@ -47,8 +47,9 @@
                   </div>
                 </div>
               @else
-                <!-- Dynamic Bunny.net Stream Player with Dynamic Watermark Canvas Overlay -->
+                <!-- Dynamic MUX / Stream Video Player with Dynamic Watermark Canvas Overlay -->
                 <x-video-watermark-player 
+                  :video="$video"
                   :embed-url="$embedUrl" 
                   :student="auth()->user()" 
                 />

@@ -1,6 +1,6 @@
 <x-layouts::app :title="__('نتيجة التقييم')">
     <!-- Result Content (Node 1155:18694) -->
-        <div class="px-4 sm:px-6 lg:px-10 py-6 md:py-8 flex-1 flex flex-col gap-6">
+    <div class="flex flex-col gap-6 w-full text-start">
           
           <div>
             <div class="flex items-center gap-2 text-xs text-[#94A3B8] mb-1 font-semibold font-['Cairo']">

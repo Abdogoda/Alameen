@@ -1,5 +1,6 @@
 @props([
     'embedUrl' => '',
+    'video' => null,
     'student' => null,
     'aspectRatio' => '16/9',
 ])
@@ -11,6 +12,10 @@
         'id' => $student?->id ?? auth()->id() ?? 'STD-001',
         'ip' => request()->ip() ?? '127.0.0.1',
     ];
+
+    $muxPlaybackId = $video?->mux_playback_id;
+    $videoSource = $video?->video_source ?? (!empty($embedUrl) ? 'bunny' : null);
+    $videoUrl = $video?->video_url ?? $embedUrl;
 @endphp
 
 <div 
@@ -19,8 +24,47 @@
     class="relative w-full overflow-hidden rounded-2xl bg-black shadow-2xl border border-slate-800"
     style="aspect-ratio: {{ $aspectRatio }};"
 >
-    {{-- Bunny.net Stream Video Iframe --}}
-    @if(!empty($embedUrl))
+    {{-- 1. MUX Stream Player --}}
+    @if(!empty($muxPlaybackId))
+        <mux-player 
+            playback-id="{{ $muxPlaybackId }}" 
+            stream-type="on-demand" 
+            controls 
+            autoplay="false"
+            preload="auto"
+            class="w-full h-full absolute inset-0 z-10"
+        ></mux-player>
+
+    {{-- 2. YouTube Embed --}}
+    @elseif(!empty($videoUrl) && (str_contains($videoUrl, 'youtube.com') || str_contains($videoUrl, 'youtu.be')))
+        @php
+            preg_match('#(?:youtube\.com/(?:watch\?v=|embed/)|youtu\.be/)([a-zA-Z0-9_\-]+)#i', $videoUrl, $ytMatches);
+            $ytId = $ytMatches[1] ?? '';
+        @endphp
+        <iframe 
+            src="https://www.youtube.com/embed/{{ $ytId }}" 
+            loading="lazy" 
+            class="w-full h-full border-0 absolute inset-0 z-10" 
+            allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture;" 
+            allowfullscreen="true"
+        ></iframe>
+
+    {{-- 3. Vimeo Embed --}}
+    @elseif(!empty($videoUrl) && str_contains($videoUrl, 'vimeo.com'))
+        @php
+            preg_match('#vimeo\.com/(?:video/)?([0-9]+)#i', $videoUrl, $vmMatches);
+            $vmId = $vmMatches[1] ?? '';
+        @endphp
+        <iframe 
+            src="https://player.vimeo.com/video/{{ $vmId }}" 
+            loading="lazy" 
+            class="w-full h-full border-0 absolute inset-0 z-10" 
+            allow="autoplay; fullscreen; picture-in-picture" 
+            allowfullscreen="true"
+        ></iframe>
+
+    {{-- 4. Bunny.net / Generic Embed URL --}}
+    @elseif(!empty($embedUrl) && str_contains($embedUrl, 'iframe'))
         <iframe 
             src="{{ $embedUrl }}" 
             loading="lazy" 
@@ -28,6 +72,16 @@
             allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture;" 
             allowfullscreen="true"
         ></iframe>
+
+    {{-- 5. Direct MP4 / HLS Video --}}
+    @elseif(!empty($videoUrl))
+        <video 
+            src="{{ $videoUrl }}" 
+            controls 
+            preload="metadata"
+            class="w-full h-full object-contain absolute inset-0 z-10"
+        ></video>
+
     @else
         <div class="flex items-center justify-center h-full text-slate-500 text-sm">
             {{ __('يرجى تحديد رابط الفيديو الآمن') }}
@@ -98,25 +152,10 @@
                     this.ctx.save();
                     this.ctx.font = '500 12px "Noto Sans Arabic", Inter, sans-serif';
                     this.ctx.fillStyle = 'rgba(255, 255, 255, 0.40)';
-                    this.ctx.shadowColor = 'rgba(0, 0, 0, 0.6)';
-                    this.ctx.shadowBlur = 4;
-
-                    this.ctx.fillText(
-                        `${this.student.name} • ID: #${this.student.id}`,
-                        this.posX,
-                        this.posY
-                    );
-                    this.ctx.fillText(
-                        `هاتف: ${this.student.phone} | IP: ${this.student.ip}`,
-                        this.posX,
-                        this.posY + 16
-                    );
-                    this.ctx.fillText(
-                        `ترخيص منصة الأمين: ${timeStr}`,
-                        this.posX,
-                        this.posY + 32
-                    );
-
+                    this.ctx.fillText(`${this.student.name} • ${this.student.phone}`, this.posX, this.posY);
+                    this.ctx.font = '400 10px monospace';
+                    this.ctx.fillStyle = 'rgba(255, 255, 255, 0.28)';
+                    this.ctx.fillText(`IP: ${this.student.ip} • ID: ${this.student.id} • ${timeStr}`, this.posX, this.posY + 16);
                     this.ctx.restore();
 
                     this.animId = requestAnimationFrame(render);

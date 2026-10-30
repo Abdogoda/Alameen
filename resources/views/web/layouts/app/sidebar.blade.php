@@ -8,9 +8,30 @@
     <head>
         @include('partials.head')
         <title>{{ filled($title ?? null) ? $title . ' | ' . config('app.name', 'منصة الأمين') : config('app.name', 'منصة الأمين') }}</title>
-        <link rel="stylesheet" href="/assets/css/admin.css" />
     </head>
-    <body class="bg-[#F8FAFC] text-[#334155] min-h-screen flex flex-col font-['Cairo'] antialiased selection:bg-[#EAF1FB] selection:text-[#0B2A8F] overflow-x-clip w-full max-w-full relative" x-data="{ mobileSidebarOpen: false }" @keydown.window.escape="mobileSidebarOpen = false" :class="{ 'overflow-hidden': mobileSidebarOpen }">
+    <body
+        class="bg-[#F8FAFC] text-[#334155] min-h-screen flex flex-col font-['Cairo'] antialiased selection:bg-[#EAF1FB] selection:text-[#0B2A8F] overflow-x-clip w-full max-w-full relative"
+        x-data="{
+            mobileSidebarOpen: false,
+            desktopSidebarOpen: !document.documentElement.classList.contains('sidebar-collapsed'),
+            toggleSidebar() {
+                if (window.innerWidth < 1024) {
+                    this.mobileSidebarOpen = !this.mobileSidebarOpen;
+                } else {
+                    this.desktopSidebarOpen = !this.desktopSidebarOpen;
+                    if (!this.desktopSidebarOpen) {
+                        document.documentElement.classList.add('sidebar-collapsed');
+                        try { localStorage.setItem('student_sidebar_collapsed', 'true'); } catch (e) {}
+                    } else {
+                        document.documentElement.classList.remove('sidebar-collapsed');
+                        try { localStorage.removeItem('student_sidebar_collapsed'); } catch (e) {}
+                    }
+                }
+            }
+        }"
+        @keydown.window.escape="mobileSidebarOpen = false"
+        :class="{ 'overflow-hidden': mobileSidebarOpen }"
+    >
         
         <!-- Top-Level Pre-Rendered Themed Loader (At the top of everything from 0ms) -->
         <x-alameen-loader />
@@ -37,7 +58,10 @@
             <!-- STUDENT SIDEBAR NAVIGATION                     -->
             <!-- ============================================== -->
             <aside
-                :class="{ 'is-open': mobileSidebarOpen }"
+                :class="{
+                    'is-open': mobileSidebarOpen,
+                    'is-collapsed': !desktopSidebarOpen
+                }"
                 class="student-sidebar-drawer z-50 bg-white dark:bg-slate-900 border-e border-[#DEE8F7] dark:border-slate-800 flex flex-col p-4 sm:p-5 shrink-0 shadow-xl lg:shadow-none overflow-y-auto overscroll-contain scrollbar-thin"
             >
                 <div class="flex flex-col gap-5 sm:gap-6 shrink-0">
@@ -177,87 +201,116 @@
             <main class="flex-1 flex flex-col min-w-0 w-full max-w-full overflow-x-clip bg-[#F8FAFC]">
                 
                 <!-- Top Admin/User Header -->
-                <header class="h-16 sm:h-20 bg-white/95 backdrop-blur-md border-b border-[#DEE8F7] px-3 sm:px-8 flex items-center justify-between gap-2 sm:gap-4 sticky top-0 z-30 w-full max-w-full">
+                <header class="h-16 sm:h-18 lg:h-18 bg-white/95 backdrop-blur-md border-b border-[#DEE8F7] px-3 sm:px-6 lg:px-8 flex items-center justify-between gap-2 sm:gap-4 sticky top-0 z-30 w-full max-w-full">
                     
-                    <!-- Right: Mobile Menu Toggle -->
-                    <div class="flex items-center gap-2">
-                        <button type="button" @click="mobileSidebarOpen = true" class="lg:hidden p-2 rounded-xl text-slate-600 hover:bg-slate-100 cursor-pointer shrink-0" aria-label="{{ __('القائمة') }}">
-                            <svg class="size-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                    <!-- Sidebar Toggle Button (Mobile + Desktop) -->
+                    <div class="flex items-center gap-2 shrink-0">
+                        <button
+                            type="button"
+                            @click="toggleSidebar()"
+                            class="size-8 sm:size-10 rounded-xl border border-[#DEE8F7] bg-white hover:bg-[#EAF1FB] dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white flex items-center justify-center text-slate-600 hover:text-[#012383] transition-all duration-200 cursor-pointer shadow-xs shrink-0 group"
+                            :title="desktopSidebarOpen ? '{{ __('طي / إخفاء القائمة الجانبية') }}' : '{{ __('إظهار القائمة الجانبية') }}'"
+                            aria-label="{{ __('تبديل القائمة الجانبية') }}"
+                        >
+                            <svg class="size-4 sm:size-5 text-slate-600 group-hover:text-[#012383] dark:text-slate-300 dark:group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                            </svg>
                         </button>
                     </div>
 
-                    <!-- Left: Quick Actions, Notification Bell, Theme Switcher, Language, Profile -->
+                    <!-- Left: Quick Actions, Language, Theme Switcher, Notification Bell, Profile -->
                     <div class="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
                         
+                        <!-- Language Switcher Dropdown -->
+                        <x-language-switcher />
+
                         <!-- Theme Switcher (Light / Dark / Device) -->
                         <x-theme-switcher />
 
                         <!-- Notifications Bell (Livewire Component) -->
                         <livewire:notifications.notification-bell />
 
-                        <!-- Language Switcher Dropdown -->
-                        <x-language-switcher />
+                        <!-- Vertical Divider -->
+                        <div class="h-6 sm:h-7 w-px bg-[#DEE8F7] dark:bg-slate-700 mx-0.5 sm:mx-1 shrink-0" aria-hidden="true"></div>
 
                         <!-- User Profile Summary & Dropdown -->
-                        <div class="relative" x-data="{ userMenuOpen: false }">
+                        <div class="relative" x-data="{ userMenuOpen: false }" @click.outside="userMenuOpen = false" @keydown.escape.window="userMenuOpen = false">
                             <button
                                 type="button"
                                 @click="userMenuOpen = !userMenuOpen"
-                                class="flex items-center gap-1.5 sm:gap-3 pe-0.5 sm:pe-1 border-s border-[#DEE8F7] ps-2 sm:ps-3 cursor-pointer group"
+                                class="flex items-center gap-2 sm:gap-2.5 p-1 sm:pe-3 sm:ps-1.5 rounded-2xl border transition-all duration-200 cursor-pointer group shrink-0 select-none !transform-none"
+                                :class="userMenuOpen 
+                                    ? 'bg-[#EAF1FB] dark:bg-slate-800 border-[#C5D7F2] dark:border-slate-700 shadow-xs ring-2 ring-[#012383]/10 dark:ring-blue-500/20' 
+                                    : 'border-transparent hover:border-[#DEE8F7] dark:hover:border-slate-700 hover:bg-[#EAF1FB]/60 dark:hover:bg-slate-800/60'"
                                 aria-label="{{ __('حسابي') }}"
+                                :aria-expanded="userMenuOpen"
                             >
-                                <div class="size-8 sm:size-10 rounded-xl bg-gradient-to-tr from-[#012383] to-[#0B2A8F] flex items-center justify-center text-white font-bold text-xs sm:text-sm shadow-xs group-hover:scale-105 transition-transform shrink-0">
+                                <div 
+                                    class="size-8 sm:size-9 rounded-xl bg-gradient-to-tr from-[#012383] to-[#0B2A8F] flex items-center justify-center text-white font-bold text-xs sm:text-sm shadow-xs transition-transform duration-200 shrink-0"
+                                    :class="userMenuOpen ? 'scale-105 ring-2 ring-white dark:ring-slate-900 shadow-sm' : 'group-hover:scale-105'"
+                                >
                                     {{ auth()->user()?->initials() ?? 'ط' }}
                                 </div>
                                 <div class="text-start hidden xl:block">
-                                    <p class="font-bold text-xs text-[#012383] leading-tight">{{ auth()->user()?->name ?? __('طالب متدرب') }}</p>
-                                    <p class="text-[11px] text-slate-400 font-medium">
+                                    <p 
+                                        class="font-bold text-xs leading-tight transition-colors duration-200"
+                                        :class="userMenuOpen ? 'text-[#012383] dark:text-blue-300 font-extrabold' : 'text-[#012383] dark:text-slate-200'"
+                                    >
+                                        {{ auth()->user()?->name ?? __('طالب متدرب') }}
+                                    </p>
+                                    <p class="text-[11px] text-slate-400 dark:text-slate-400 font-medium">
                                         {{ __('طالب مسجل') }}
                                     </p>
                                 </div>
-                                <svg class="size-3 text-slate-400 transition-transform group-hover:text-[#012383] hidden sm:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                <svg 
+                                    class="size-3 text-slate-400 transition-transform duration-200 hidden sm:block" 
+                                    :class="userMenuOpen ? 'rotate-180 text-[#012383] dark:text-blue-300' : 'group-hover:text-[#012383] dark:group-hover:text-white'"
+                                    fill="none" 
+                                    stroke="currentColor" 
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
                                 </svg>
                             </button>
 
                             <!-- User Dropdown Menu -->
                             <div
                                 x-show="userMenuOpen"
-                                @click.outside="userMenuOpen = false"
+                                x-cloak
                                 x-transition:enter="transition ease-out duration-150"
-                                x-transition:enter-start="opacity-0 scale-95"
-                                x-transition:enter-end="opacity-100 scale-100"
+                                x-transition:enter-start="opacity-0 scale-95 -translate-y-1"
+                                x-transition:enter-end="opacity-100 scale-100 translate-y-0"
                                 x-transition:leave="transition ease-in duration-100"
-                                x-transition:leave-start="opacity-100 scale-100"
-                                x-transition:leave-end="opacity-0 scale-95"
-                                class="absolute end-0 mt-2 w-52 sm:w-56 rounded-2xl bg-white border border-[#DEE8F7] shadow-xl p-1.5 z-50 flex flex-col gap-1"
+                                x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+                                x-transition:leave-end="opacity-0 scale-95 -translate-y-1"
+                                class="absolute end-0 mt-2 w-56 sm:w-60 rounded-2xl bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 shadow-xl p-1.5 z-50 flex flex-col gap-1 font-['Cairo']"
                                 style="display: none;"
                             >
-                                <div class="px-3 py-2 border-b border-[#DEE8F7] mb-1">
-                                    <p class="font-bold text-xs text-[#012383]">{{ auth()->user()?->name ?? __('طالب متدرب') }}</p>
-                                    <p class="text-[11px] text-slate-400 truncate">{{ auth()->user()?->email ?? '' }}</p>
+                                <div class="px-3 py-2.5 border-b border-[#DEE8F7] dark:border-slate-800 mb-1">
+                                    <p class="font-bold text-xs text-[#012383] dark:text-white">{{ auth()->user()?->name ?? __('طالب متدرب') }}</p>
+                                    <p class="text-[11px] text-slate-400 dark:text-slate-400 truncate">{{ auth()->user()?->email ?? '' }}</p>
                                 </div>
 
-                                <a href="{{ route('profile.edit') }}" class="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-[#EAF1FB] hover:text-[#012383] transition-colors" wire:navigate>
-                                    <svg class="size-4 text-[#0B2A8F]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                <a href="{{ route('profile.edit') }}" class="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-[#EAF1FB] hover:text-[#012383] dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white transition-colors" wire:navigate>
+                                    <svg class="size-4 text-[#0B2A8F] dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                                     <span>{{ __('الملف الشخصي والإعدادات') }}</span>
                                 </a>
 
-                                <a href="{{ route('appearance.edit') }}" class="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-[#EAF1FB] hover:text-[#012383] transition-colors" wire:navigate>
-                                    <svg class="size-4 text-[#0B2A8F]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+                                <a href="{{ route('appearance.edit') }}" class="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-[#EAF1FB] hover:text-[#012383] dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white transition-colors" wire:navigate>
+                                    <svg class="size-4 text-[#0B2A8F] dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
                                     <span>{{ __('المظهر والموضوع') }}</span>
                                 </a>
 
-                                <a href="{{ route('security.edit') }}" class="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-[#EAF1FB] hover:text-[#012383] transition-colors" wire:navigate>
-                                    <svg class="size-4 text-[#0B2A8F]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                                <a href="{{ route('security.edit') }}" class="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-[#EAF1FB] hover:text-[#012383] dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white transition-colors" wire:navigate>
+                                    <svg class="size-4 text-[#0B2A8F] dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
                                     <span>{{ __('الأمان وكلمة المرور') }}</span>
                                 </a>
 
-                                <div class="border-t border-[#DEE8F7] my-1"></div>
+                                <div class="border-t border-[#DEE8F7] dark:border-slate-800 my-1"></div>
 
                                 <form method="POST" action="{{ route('logout') }}" class="w-full">
                                     @csrf
-                                    <button type="submit" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold text-rose-600 hover:bg-rose-50 hover:text-rose-700 transition-colors cursor-pointer text-start group">
+                                    <button type="submit" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold text-rose-600 hover:bg-rose-50 hover:text-rose-700 dark:text-rose-400 dark:hover:bg-rose-950/40 dark:hover:text-rose-300 transition-colors cursor-pointer text-start group">
                                         <span class="flex items-center gap-2">
                                             <svg class="size-4 rtl:rotate-180 text-rose-500 group-hover:text-rose-600 transition-transform group-hover:-translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
                                             <span>{{ __('تسجيل الخروج') }}</span>
@@ -273,7 +326,7 @@
                 </header>
 
                 <!-- Page Body Container -->
-                <div class="p-3.5 sm:p-8 flex flex-col gap-6 sm:gap-8 max-w-[1600px] w-full mx-auto">
+                <div class="px-3.5 sm:px-6 lg:px-8 pt-4 sm:pt-6 pb-8 flex flex-col gap-6 max-w-[1600px] w-full mx-auto">
                     {{ $slot }}
                 </div>
 

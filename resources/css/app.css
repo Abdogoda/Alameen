@@ -550,6 +550,20 @@ body.overflow-hidden {
 }
 
 @media (min-width: 1024px) {
+    .student-sidebar-drawer.is-collapsed,
+    html.sidebar-collapsed .student-sidebar-drawer {
+        display: none !important;
+        width: 0 !important;
+        min-width: 0 !important;
+        max-width: 0 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        border: none !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+        overflow: hidden !important;
+    }
+
     .admin-sidebar-drawer,
     .student-sidebar-drawer {
         position: sticky !important;
@@ -816,4 +830,18 @@ html.dark .scrollbar-thin::-webkit-scrollbar-thumb:hover {
 html.dark .scrollbar-thin {
     scrollbar-color: #334155 transparent;
 }
+
+/* Settings Workspace Responsive Split Layout */
+@media (min-width: 768px) {
+    .settings-nav-col {
+        width: 240px !important;
+        flex: 0 0 240px !important;
+        max-width: 240px !important;
+    }
+    .settings-content-col {
+        flex: 1 1 0% !important;
+        min-width: 0 !important;
+    }
+}
+
 

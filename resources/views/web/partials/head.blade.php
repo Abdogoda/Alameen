@@ -19,6 +19,9 @@
                 root.style.colorScheme = 'light';
             }
             root.setAttribute('data-theme', stored);
+            if (localStorage.getItem('student_sidebar_collapsed') === 'true' && window.innerWidth >= 1024) {
+                root.classList.add('sidebar-collapsed');
+            }
         } catch (e) {}
     })();
 </script>
@@ -138,6 +141,8 @@
 @fonts
 
 @include('partials.firebase-config')
+<script src="https://cdn.jsdelivr.net/npm/@mux/mux-player" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest" defer></script>
 @vite(['resources/css/app.css', 'resources/js/app.js'])
 @fluxAppearance
 

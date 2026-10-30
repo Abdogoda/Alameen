@@ -7,6 +7,7 @@ namespace Database\Seeders;
 use App\Models\ClinicalTask;
 use App\Models\ContentBlock;
 use App\Models\Course;
+use App\Models\Level;
 use App\Models\Menu;
 use App\Models\MenuItem;
 use App\Models\Setting;
@@ -264,47 +265,148 @@ class CmsAndSettingsSeeder extends Seeder
                 'description_ar' => 'البرنامج التدريبي المتكامل لتأهيل أخصائيي التخاطب وأولياء الأمور مع نظام المهام بعد كل درس ونظام القفل المتسلسل.',
                 'description_en' => 'The comprehensive training program for qualifying speech therapists with sequential video locking and verified certification.',
                 'price' => 1200.00,
+                'original_price' => 1800.00,
                 'access_duration_days' => 365,
                 'thumbnail' => '/assets/images/course-topic-basics.png',
+                'promo_video_source' => 'mux',
+                'mux_playback_id' => 'DS00Spx1CV902MCtP7ToneAwBpR00uoJq',
+                'promo_video_url' => 'https://stream.mux.com/DS00Spx1CV902MCtP7ToneAwBpR00uoJq.m3u8',
                 'is_published' => true,
                 'sort_order' => 1,
             ]
         );
 
-        $videos = [
+        $defaultCourse->update([
+            'original_price' => 1800.00,
+            'promo_video_source' => 'mux',
+            'mux_playback_id' => 'DS00Spx1CV902MCtP7ToneAwBpR00uoJq',
+            'promo_video_url' => 'https://stream.mux.com/DS00Spx1CV902MCtP7ToneAwBpR00uoJq.m3u8',
+        ]);
+
+        // Dynamic Levels Hierarchy
+        $level1 = Level::query()->updateOrCreate(
+            ['course_id' => $defaultCourse->id, 'sort_order' => 1],
             [
-                'title_ar' => 'المحاضرة الأولى: مقدمة في تشريح الجهاز الصوتي والنطقي',
-                'title_en' => 'Lecture 1: Anatomy of Speech & Vocal Mechanism',
-                'slug' => 'anatomy-speech-mechanism',
+                'title_ar' => 'المستوى الأول: مدخل إلى علوم التخاطب والتواصل',
+                'title_en' => 'Level 1: Introduction to Speech & Communication Sciences',
+                'description_ar' => 'أساسيات عملية التواصل، التشريح الصوتي، وتصنيف اضطرابات النطق',
+                'description_en' => 'Fundamentals of communication, vocal anatomy, and articulation classification.',
+            ]
+        );
+
+        $level2 = Level::query()->updateOrCreate(
+            ['course_id' => $defaultCourse->id, 'sort_order' => 2],
+            [
+                'title_ar' => 'المستوى الثاني: مهارات الصوت والاستماع والتمييز',
+                'title_en' => 'Level 2: Vocal Skills, Auditory Listening & Discrimination',
+                'description_ar' => 'الوعي الصوتي، التمييز السمعي للأصوات، وبناء الأنشطة المنزلية',
+                'description_en' => 'Phonological awareness, auditory discrimination, and home activity design.',
+            ]
+        );
+
+        $level3 = Level::query()->updateOrCreate(
+            ['course_id' => $defaultCourse->id, 'sort_order' => 3],
+            [
+                'title_ar' => 'المستوى الثالث: مخارج الحروف وتصحيح اللدغات والتشويه',
+                'title_en' => 'Level 3: Articulation Points & Lisp Correction Protocols',
+                'description_ar' => 'تصحيح نطق الراء والسين والكاف والتمارين العضلية المصاحبة',
+                'description_en' => 'Articulatory corrections for /r/, /s/, /k/ sounds and accompanying motor drills.',
+            ]
+        );
+
+        $level4 = Level::query()->updateOrCreate(
+            ['course_id' => $defaultCourse->id, 'sort_order' => 4],
+            [
+                'title_ar' => 'المستوى الرابع: التطبيقات السريرية ودراسة الحالات والتقييم النهائي',
+                'title_en' => 'Level 4: Clinical Applications, Case Studies & Final Evaluation',
+                'description_ar' => 'دراسة حالات واقعية، كتابة الخطة العلاجية الفردية، وتأهيل شهادة الـ ٩٥٪',
+                'description_en' => 'Real-world case analysis, individualized treatment planning, and 95% qualification.',
+            ]
+        );
+
+        $videos = [
+            // Level 1 Lessons
+            [
+                'level_id' => $level1->id,
+                'title_ar' => 'الدرس ١: مدخل إلى عملية التواصل البشري',
+                'title_en' => 'Lesson 1: Introduction to Human Communication Process',
+                'slug' => 'intro-human-communication',
+                'video_source' => 'mux',
+                'mux_playback_id' => 'DS00Spx1CV902MCtP7ToneAwBpR00uoJq',
+                'video_url' => 'https://stream.mux.com/DS00Spx1CV902MCtP7ToneAwBpR00uoJq.m3u8',
                 'bunny_video_id' => 'sample-bunny-video-01',
-                'duration_seconds' => 1800,
+                'duration_seconds' => 1200, // 20 mins
                 'min_completion_percentage' => 80,
                 'sort_order' => 1,
                 'is_free_preview' => true,
+                'task_title' => 'مخطط أركان التواصل',
             ],
             [
-                'title_ar' => 'المحاضرة الثانية: اضطرابات النطق الوظيفية والعضوية',
-                'title_en' => 'Lecture 2: Functional & Organic Articulation Disorders',
-                'slug' => 'articulation-disorders-assessment',
+                'level_id' => $level1->id,
+                'title_ar' => 'الدرس ٢: مكونات عملية التواصل وعناصر الرسالة',
+                'title_en' => 'Lesson 2: Communication Components & Message Channels',
+                'slug' => 'communication-components-message',
+                'video_source' => 'mux',
+                'mux_playback_id' => 'DS00Spx1CV902MCtP7ToneAwBpR00uoJq',
+                'video_url' => 'https://stream.mux.com/DS00Spx1CV902MCtP7ToneAwBpR00uoJq.m3u8',
                 'bunny_video_id' => 'sample-bunny-video-02',
-                'duration_seconds' => 2400,
+                'duration_seconds' => 1200,
                 'min_completion_percentage' => 80,
                 'sort_order' => 2,
                 'is_free_preview' => false,
+                'task_title' => 'تحليل تشويش الرسالة السريرية',
             ],
             [
-                'title_ar' => 'المحاضرة الثالثة: بروتوكول التدخل العلاجي للتأتأة والتلعثم',
-                'title_en' => 'Lecture 3: Clinical Intervention Protocol for Stuttering',
-                'slug' => 'clinical-stuttering-protocol',
+                'level_id' => $level1->id,
+                'title_ar' => 'الدرس ٣: مراحل النمو اللغوي عند الأطفال',
+                'title_en' => 'Lesson 3: Child Language Development Stages',
+                'slug' => 'child-language-development-stages',
+                'video_source' => 'link',
+                'video_url' => 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
                 'bunny_video_id' => 'sample-bunny-video-03',
-                'duration_seconds' => 3000,
-                'min_completion_percentage' => 85,
+                'duration_seconds' => 1200,
+                'min_completion_percentage' => 80,
                 'sort_order' => 3,
                 'is_free_preview' => false,
+                'task_title' => 'جدول مقارنة المعالم اللغوية',
+            ],
+            // Level 2 Lessons
+            [
+                'level_id' => $level2->id,
+                'title_ar' => 'الدرس ٨: مهارات التمييز السمعي للأصوات المتشابهة',
+                'title_en' => 'Lesson 8: Auditory Discrimination for Minimal Word Pairs',
+                'slug' => 'auditory-discrimination-minimal-pairs',
+                'video_source' => 'mux',
+                'mux_playback_id' => 'DS00Spx1CV902MCtP7ToneAwBpR00uoJq',
+                'video_url' => 'https://stream.mux.com/DS00Spx1CV902MCtP7ToneAwBpR00uoJq.m3u8',
+                'bunny_video_id' => 'sample-bunny-video-04',
+                'duration_seconds' => 1200,
+                'min_completion_percentage' => 80,
+                'sort_order' => 4,
+                'is_free_preview' => false,
+                'task_title' => 'ورقة نشاط التمييز الصوتي (٦ أزواج)',
+            ],
+            [
+                'level_id' => $level2->id,
+                'title_ar' => 'الدرس ٩: تدريبات الوعي الصوتي والتقطيع',
+                'title_en' => 'Lesson 9: Phonological Awareness & Syllable Segmentation',
+                'slug' => 'phonological-awareness-segmentation',
+                'video_source' => 'mux',
+                'mux_playback_id' => 'DS00Spx1CV902MCtP7ToneAwBpR00uoJq',
+                'video_url' => 'https://stream.mux.com/DS00Spx1CV902MCtP7ToneAwBpR00uoJq.m3u8',
+                'bunny_video_id' => 'sample-bunny-video-05',
+                'duration_seconds' => 1200,
+                'min_completion_percentage' => 85,
+                'sort_order' => 5,
+                'is_free_preview' => false,
+                'task_title' => 'استراتيجية التقطيع الصوتي للكلمات',
             ],
         ];
 
         foreach ($videos as $v) {
+            $taskTitle = $v['task_title'];
+            unset($v['task_title']);
+
             $videoModel = Video::query()->updateOrCreate(
                 ['course_id' => $defaultCourse->id, 'slug' => $v['slug']],
                 $v
@@ -316,10 +418,10 @@ class CmsAndSettingsSeeder extends Seeder
                     'video_id' => $videoModel->id,
                 ],
                 [
-                    'title_ar' => "المهمة السريرية: {$v['title_ar']}",
+                    'title_ar' => "مهمة مرتبطة: {$taskTitle}",
                     'title_en' => "Clinical Task: {$v['title_en']}",
-                    'instructions_ar' => 'قم بتسجيل مقطع صوتي واضح مدته لا تتجاوز دقيقتين توضح فيه خطوات التطبيق السريري الموضحة في المحاضرة.',
-                    'instructions_en' => 'Record a clear audio clip (up to 2 minutes) demonstrating the clinical application steps explained in this lecture.',
+                    'instructions_ar' => 'قم بإعداد وتسجيل التطبيق العملي للدرس وفق المعايير السريرية المحددة.',
+                    'instructions_en' => 'Record a clear clinical audio demonstration according to specified criteria.',
                     'max_score' => 100,
                 ]
             );

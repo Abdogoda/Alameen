@@ -29,7 +29,7 @@
         }
     </style>
 
-    <div class="px-4 sm:px-6 lg:px-10 py-6 md:py-8 flex-1 flex flex-col gap-6">
+    <div class="flex flex-col gap-6 w-full text-start">
         
         <!-- Page Introduction (Hidden on Print) -->
         <div class="print:hidden">

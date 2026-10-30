@@ -51,4 +51,9 @@ return [
         'measurement_id' => env('FIREBASE_MEASUREMENT_ID'),
     ],
 
+    'mux' => [
+        'token_id' => env('MUX_TOKEN_ID'),
+        'token_secret' => env('MUX_TOKEN_SECRET'),
+    ],
+
 ];

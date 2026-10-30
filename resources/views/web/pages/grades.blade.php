@@ -1,6 +1,6 @@
 <x-layouts::app :title="__('درجاتي وتقييماتي')">
     <!-- Page Content (Node 1155:18886) -->
-        <div class="px-4 sm:px-6 lg:px-[40px] pt-[24px] lg:pt-[30px] pb-[40px] flex flex-col gap-[24px] w-full" data-node-id="1155:18886">
+    <div class="flex flex-col gap-6 w-full text-start" data-node-id="1155:18886">
           
           <!-- Page Introduction (Node 1155:18887) -->
           <div class="flex flex-col gap-[4px] items-start text-start w-full" data-node-id="1155:18887">

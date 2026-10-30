@@ -84,6 +84,8 @@
 </style>
 
 @include('partials.firebase-config')
+<script src="https://cdn.jsdelivr.net/npm/@mux/mux-player" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest" defer></script>
 @vite(['resources/css/app.css', 'resources/js/app.js'])
 @fluxAppearance
 

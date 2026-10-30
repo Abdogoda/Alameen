@@ -43,7 +43,24 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Curriculum, Levels & Video Management
         Route::get('courses', [CourseController::class, 'index'])->name('courses.index');
         Route::post('courses', [CourseController::class, 'store'])->name('courses.store');
+        Route::get('courses/{course}', [CourseController::class, 'show'])->name('courses.show');
+        Route::get('courses/{course}/edit', [CourseController::class, 'edit'])->name('courses.edit');
+        Route::put('courses/{course}', [CourseController::class, 'update'])->name('courses.update');
+        Route::delete('courses/{course}', [CourseController::class, 'destroy'])->name('courses.destroy');
+        Route::post('courses/{course}/price', [CourseController::class, 'updatePrice'])->name('courses.price.update');
+
+        // Dynamic Levels Hierarchy
+        Route::post('courses/{course}/levels', [CourseController::class, 'storeLevel'])->name('courses.levels.store');
+        Route::put('courses/{course}/levels/{level}', [CourseController::class, 'updateLevel'])->name('courses.levels.update');
+        Route::delete('courses/{course}/levels/{level}', [CourseController::class, 'destroyLevel'])->name('courses.levels.destroy');
+
+        // Video & Lessons Management with MUX & Multi-Source Support
         Route::post('courses/{course}/videos', [CourseController::class, 'storeVideo'])->name('courses.videos.store');
+        Route::put('courses/{course}/videos/{video}', [CourseController::class, 'updateVideo'])->name('courses.videos.update');
+        Route::delete('courses/{course}/videos/{video}', [CourseController::class, 'destroyVideo'])->name('courses.videos.destroy');
+
+        // Mux Direct Upload Endpoint
+        Route::post('mux/direct-upload', [CourseController::class, 'createMuxDirectUpload'])->name('mux.direct-upload');
 
         // Clinical Tasks Evaluation & Voice Grading
         Route::get('tasks', [ClinicalTaskController::class, 'index'])->name('tasks.index');

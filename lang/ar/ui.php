@@ -303,4 +303,5 @@ return [
     'Delete' => 'حذف',
     'Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.' => 'بمجرد حذف حسابك، سيتم حذف جميع موارده وبياناته نهائياً. يرجى إدخال كلمة المرور لتأكيد رغبتك في حذف حسابك نهائياً.',
     'Are you sure you want to delete your account?' => 'هل أنت متأكد أنك تريد حذف حسابك؟',
+    'تسجيل الدخول عبر Google' => 'تسجيل الدخول عبر Google',
 ];

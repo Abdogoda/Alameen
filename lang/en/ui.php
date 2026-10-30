@@ -314,4 +314,5 @@ return [
     'Delete' => 'Delete',
     'Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.' => 'Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.',
     'Are you sure you want to delete your account?' => 'Are you sure you want to delete your account?',
+    'تسجيل الدخول عبر Google' => 'Sign in with Google',
 ];

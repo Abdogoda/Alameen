@@ -33,7 +33,7 @@
 >
     @if ($variant === 'segmented')
         {{-- Segmented Cards for Admin Settings Page --}}
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
             <!-- Light Theme Card -->
             <button
                 type="button"
@@ -121,14 +121,14 @@
         <button
             type="button"
             @click="open = !open"
-            class="size-10 rounded-xl bg-slate-50 dark:bg-slate-800/90 border border-[#DEE8F7] dark:border-slate-700/80 hover:bg-[#EAF1FB] dark:hover:bg-slate-700/80 flex items-center justify-center text-[#012383] dark:text-slate-200 transition-colors relative cursor-pointer shadow-xs group"
+            class="size-9 sm:size-10 rounded-xl bg-slate-50 dark:bg-slate-800/90 border border-[#DEE8F7] dark:border-slate-700/80 hover:bg-[#EAF1FB] dark:hover:bg-slate-700/80 flex items-center justify-center text-[#012383] dark:text-slate-200 transition-colors relative cursor-pointer shadow-xs group shrink-0"
             :title="'{{ __('theme.theme') }}: ' + (theme === 'light' ? '{{ __('theme.light') }}' : (theme === 'dark' ? '{{ __('theme.dark') }}' : '{{ __('theme.device') }}'))"
             aria-label="{{ __('theme.theme') }}"
         >
             <!-- Sun Icon (Light) -->
             <svg
                 x-show="theme === 'light'"
-                class="size-5 text-amber-500 transition-transform group-hover:rotate-45 duration-300"
+                class="size-4 sm:size-5 text-amber-500 transition-transform group-hover:rotate-45 duration-300"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -140,7 +140,7 @@
             <svg
                 x-show="theme === 'dark'"
                 x-cloak
-                class="size-5 text-indigo-400 transition-transform group-hover:-rotate-12 duration-300"
+                class="size-4 sm:size-5 text-indigo-400 transition-transform group-hover:-rotate-12 duration-300"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -152,7 +152,7 @@
             <svg
                 x-show="theme === 'system'"
                 x-cloak
-                class="size-5 text-[#0B2A8F] dark:text-blue-400 transition-transform group-hover:scale-110 duration-300"
+                class="size-4 sm:size-5 text-[#0B2A8F] dark:text-blue-400 transition-transform group-hover:scale-110 duration-300"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"

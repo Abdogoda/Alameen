@@ -1,12 +1,13 @@
 <x-admin-layout::admin
     :title="__('إيصالات الدفع اليدوي والتحويلات')"
     :description="__('فحص صور الإيصالات المرفوعة، التحقق من المبالغ، وتفعيل وصول الطلاب للكورس')"
-    contentClass="p-4 sm:p-8 flex flex-col gap-6 max-w-[1500px] w-full mx-auto"
+    contentClass="p-3.5 sm:p-6 lg:p-8 flex flex-col gap-5 sm:gap-6 max-w-[1500px] w-full mx-auto min-w-0"
 >
     <x-slot:actions>
-        <span class="text-xs font-bold text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 px-3 py-1.5 rounded-xl flex items-center gap-1.5">
+        <span class="text-xs font-bold text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 px-3 py-1.5 rounded-xl flex items-center gap-1.5 shrink-0">
             <span class="size-2 rounded-full bg-amber-500 animate-ping"></span>
-            {{ __(':count إيصال معلق بانتظار الاعتماد', ['count' => $counts['pending'] ?? 0]) }}
+            <span class="hidden sm:inline">{{ __(':count إيصال معلق بانتظار الاعتماد', ['count' => $counts['pending'] ?? 0]) }}</span>
+            <span class="sm:hidden">{{ __(':count معلق', ['count' => $counts['pending'] ?? 0]) }}</span>
         </span>
     </x-slot:actions>
 
@@ -25,43 +26,45 @@
     @endif
 
     <!-- Filters & Search Toolbar -->
-    <div class="bg-white border border-[#DEE8F7] rounded-3xl p-4 sm:p-6 shadow-xs flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
+    <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 sm:gap-4 min-w-0">
         
         <!-- Filter Pills -->
-        <div class="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
-            <a href="{{ route('admin.receipts.index', ['status' => 'all']) }}" class="px-4 py-2 rounded-xl text-xs font-bold transition-all {{ ($status ?? 'all') === 'all' ? 'bg-[#012383] text-white' : 'bg-slate-100 hover:bg-[#EAF1FB] text-slate-700' }}">
-                {{ __('جميع الإيصالات (:count)', ['count' => $counts['all'] ?? 0]) }}
+        <div class="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-none whitespace-nowrap">
+            <a href="{{ route('admin.receipts.index', ['status' => 'all']) }}" class="px-3 sm:px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 {{ ($status ?? 'all') === 'all' ? 'bg-[#012383] text-white' : 'bg-slate-100 dark:bg-slate-800 hover:bg-[#EAF1FB] text-slate-700 dark:text-slate-300' }}">
+                {{ __('الكل') }} ({{ $counts['all'] ?? 0 }})
             </a>
-            <a href="{{ route('admin.receipts.index', ['status' => 'pending']) }}" class="px-4 py-2 rounded-xl text-xs font-bold transition-all {{ ($status ?? '') === 'pending' ? 'bg-[#012383] text-white' : 'bg-slate-100 hover:bg-[#EAF1FB] text-slate-700' }}">
-                {{ __('بانتظار الاعتماد (:count)', ['count' => $counts['pending'] ?? 0]) }}
+            <a href="{{ route('admin.receipts.index', ['status' => 'pending']) }}" class="px-3 sm:px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 {{ ($status ?? '') === 'pending' ? 'bg-[#012383] text-white' : 'bg-slate-100 dark:bg-slate-800 hover:bg-[#EAF1FB] text-slate-700 dark:text-slate-300' }}">
+                {{ __('بانتظار الاعتماد') }} ({{ $counts['pending'] ?? 0 }})
             </a>
-            <a href="{{ route('admin.receipts.index', ['status' => 'approved']) }}" class="px-4 py-2 rounded-xl text-xs font-bold transition-all {{ ($status ?? '') === 'approved' ? 'bg-[#012383] text-white' : 'bg-slate-100 hover:bg-[#EAF1FB] text-slate-700' }}">
-                {{ __('معتمدة ومفعلة (:count)', ['count' => $counts['approved'] ?? 0]) }}
+            <a href="{{ route('admin.receipts.index', ['status' => 'approved']) }}" class="px-3 sm:px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 {{ ($status ?? '') === 'approved' ? 'bg-[#012383] text-white' : 'bg-slate-100 dark:bg-slate-800 hover:bg-[#EAF1FB] text-slate-700 dark:text-slate-300' }}">
+                {{ __('معتمدة') }} ({{ $counts['approved'] ?? 0 }})
             </a>
-            <a href="{{ route('admin.receipts.index', ['status' => 'rejected']) }}" class="px-4 py-2 rounded-xl text-xs font-bold transition-all {{ ($status ?? '') === 'rejected' ? 'bg-[#012383] text-white' : 'bg-slate-100 hover:bg-[#EAF1FB] text-slate-700' }}">
-                {{ __('مرفوضة (:count)', ['count' => $counts['rejected'] ?? 0]) }}
+            <a href="{{ route('admin.receipts.index', ['status' => 'rejected']) }}" class="px-3 sm:px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 {{ ($status ?? '') === 'rejected' ? 'bg-[#012383] text-white' : 'bg-slate-100 dark:bg-slate-800 hover:bg-[#EAF1FB] text-slate-700 dark:text-slate-300' }}">
+                {{ __('مرفوضة') }} ({{ $counts['rejected'] ?? 0 }})
             </a>
         </div>
 
         <!-- Search Input -->
-        <form method="GET" action="{{ route('admin.receipts.index') }}" class="relative w-full sm:w-72">
+        <form method="GET" action="{{ route('admin.receipts.index') }}" class="relative w-full md:w-72">
             @if(!empty($status) && $status !== 'all')
                 <input type="hidden" name="status" value="{{ $status }}">
             @endif
-            <input type="text" name="search" value="{{ $search ?? '' }}" placeholder="{{ __('ابحث باسم الطالب أو رقم الهاتف...') }}" class="w-full h-11 ps-4 pe-10 rounded-xl border border-[#DEE8F7] text-xs font-medium text-slate-700 outline-none focus:border-[#0B2A8F] bg-slate-50/50" />
-            <button type="submit" class="size-7 text-slate-400 absolute end-2 top-1/2 -translate-y-1/2 flex items-center justify-center hover:text-[#012383]">
+            <input type="text" name="search" value="{{ $search ?? '' }}" placeholder="{{ __('ابحث باسم الطالب أو رقم الهاتف...') }}" class="w-full h-11 ps-4 pe-10 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-medium text-slate-700 dark:text-slate-200 outline-none focus:border-[#0B2A8F] bg-slate-50/50 dark:bg-slate-800/50" />
+            <button type="submit" class="size-7 text-slate-400 absolute end-2 top-1/2 -translate-y-1/2 flex items-center justify-center hover:text-[#012383] dark:hover:text-blue-400">
                 <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
             </button>
         </form>
 
     </div>
 
-    <!-- Receipts Data Table -->
-    <div class="bg-white border border-[#DEE8F7] rounded-3xl overflow-hidden shadow-xs">
-        <div class="overflow-x-auto">
-            <table class="w-full text-right border-collapse">
+    <!-- Receipts Content Wrapper -->
+    <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-2xl sm:rounded-3xl overflow-hidden shadow-xs min-w-0">
+        
+        <!-- Desktop Table View (Tablets & Desktops >= 768px) -->
+        <div class="hidden md:block overflow-x-auto">
+            <table class="w-full text-right border-collapse min-w-[850px]">
                 <thead>
-                    <tr class="bg-slate-50/80 border-b border-[#DEE8F7] text-[12px] font-bold text-slate-500">
+                    <tr class="bg-slate-50/80 dark:bg-slate-800/50 border-b border-[#DEE8F7] dark:border-slate-800 text-[12px] font-bold text-slate-500 dark:text-slate-400">
                         <th class="py-4 px-5">{{ __('الطالب وبياناته') }}</th>
                         <th class="py-4 px-4">{{ __('وسيلة التحويل') }}</th>
                         <th class="py-4 px-4">{{ __('المبلغ والكورس') }}</th>
@@ -71,46 +74,46 @@
                         <th class="py-4 px-5 text-center">{{ __('الإجراء الإداري') }}</th>
                     </tr>
                 </thead>
-                <tbody id="receipts-table-body" class="divide-y divide-[#DEE8F7]/70 text-xs">
+                <tbody id="receipts-table-body" class="divide-y divide-[#DEE8F7]/70 dark:divide-slate-800 text-xs">
                     @forelse($receipts as $receipt)
-                        <tr id="receipt-row-{{ $receipt->id }}" data-status="{{ $receipt->status }}" class="hover:bg-slate-50/60 transition-colors">
+                        <tr id="receipt-row-{{ $receipt->id }}" data-status="{{ $receipt->status }}" class="hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition-colors">
                             <td class="py-4 px-5">
-                                <div class="font-bold text-sm text-[#012383]">{{ $receipt->user?->name ?? __('مستخدم محذوف') }}</div>
-                                <div class="text-[11px] text-slate-500 font-mono">{{ $receipt->user?->phone ?? $receipt->sender_account ?? '—' }} • {{ $receipt->user?->email }}</div>
+                                <div class="font-bold text-sm text-[#012383] dark:text-blue-400">{{ $receipt->user?->name ?? __('مستخدم محذوف') }}</div>
+                                <div class="text-[11px] text-slate-500 dark:text-slate-400 font-mono">{{ $receipt->user?->phone ?? $receipt->sender_account ?? '—' }} • {{ $receipt->user?->email }}</div>
                             </td>
                             <td class="py-4 px-4">
-                                <span class="font-bold text-slate-700">{{ $receipt->paymentMethodLabel() }}</span>
+                                <span class="font-bold text-slate-700 dark:text-slate-200">{{ $receipt->paymentMethodLabel() }}</span>
                                 <div class="text-[10px] text-slate-400 font-mono">{{ $receipt->sender_account }}</div>
                             </td>
                             <td class="py-4 px-4">
-                                <span class="font-bold text-sm text-[#0B2A8F]">{{ number_format((float) $receipt->amount, 2) }} {{ __('ج.م') }}</span>
-                                <span class="text-[11px] text-slate-600 block">{{ $receipt->course?->title ?? __('دورة غير محددة') }}</span>
+                                <span class="font-bold text-sm text-[#0B2A8F] dark:text-blue-300">{{ number_format((float) $receipt->amount, 2) }} {{ __('ج.م') }}</span>
+                                <span class="text-[11px] text-slate-600 dark:text-slate-400 block">{{ $receipt->course?->title ?? __('دورة غير محددة') }}</span>
                             </td>
                             <td class="py-4 px-4">
-                                <span class="font-mono text-slate-700 font-semibold">{{ $receipt->transaction_reference ?? '—' }}</span>
+                                <span class="font-mono text-slate-700 dark:text-slate-200 font-semibold">{{ $receipt->transaction_reference ?? '—' }}</span>
                                 <div class="text-[11px] text-slate-400">{{ $receipt->created_at?->diffForHumans() }}</div>
                             </td>
                             <td class="py-4 px-4 text-center">
                                 @php
                                     $imgSrc = $receipt->receipt_image_path ? (str_starts_with($receipt->receipt_image_path, 'http') ? $receipt->receipt_image_path : asset('storage/' . $receipt->receipt_image_path)) : asset('assets/images/certificate-preview.png');
                                 @endphp
-                                <a href="{{ $imgSrc }}" target="_blank" class="size-11 mx-auto rounded-xl border border-[#DEE8F7] p-1 bg-white hover:border-[#0B2A8F] cursor-pointer overflow-hidden block shadow-2xs">
+                                <a href="{{ $imgSrc }}" target="_blank" class="size-11 mx-auto rounded-xl border border-[#DEE8F7] dark:border-slate-700 p-1 bg-white dark:bg-slate-800 hover:border-[#0B2A8F] cursor-pointer overflow-hidden block shadow-2xs">
                                     <img src="{{ $imgSrc }}" alt="إيصال" class="size-full object-cover rounded-md hover:scale-105 transition-transform" />
                                 </a>
                             </td>
                             <td class="py-4 px-4 text-center">
                                 @if($receipt->isPending())
-                                    <span class="px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200 inline-flex items-center gap-1.5">
+                                    <span class="px-3 py-1 rounded-full text-xs font-bold bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800 inline-flex items-center gap-1.5">
                                         <span class="size-1.5 rounded-full bg-amber-500"></span>
                                         <span>{{ __('قيد المراجعة') }}</span>
                                     </span>
                                 @elseif($receipt->isApproved())
-                                    <span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 inline-flex items-center gap-1.5">
+                                    <span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 inline-flex items-center gap-1.5">
                                         <span class="size-1.5 rounded-full bg-emerald-500"></span>
                                         <span>{{ __('معتمد ومفعل') }}</span>
                                     </span>
                                 @else
-                                    <span class="px-3 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200 inline-flex items-center gap-1.5">
+                                    <span class="px-3 py-1 rounded-full text-xs font-bold bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-400 border border-rose-200 dark:border-rose-800 inline-flex items-center gap-1.5">
                                         <span class="size-1.5 rounded-full bg-rose-500"></span>
                                         <span>{{ __('مرفوض') }}</span>
                                     </span>
@@ -126,7 +129,7 @@
                                                 <span>{{ __('اعتماد فوري') }}</span>
                                             </button>
                                         </form>
-                                        <button type="button" onclick="openRejectReceiptModalWithId({{ $receipt->id }})" class="px-3 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs border border-rose-200 transition-colors cursor-pointer">
+                                        <button type="button" onclick="openRejectReceiptModalWithId({{ $receipt->id }})" class="px-3 py-1.5 rounded-xl bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 text-rose-700 dark:text-rose-300 font-bold text-xs border border-rose-200 dark:border-rose-800 transition-colors cursor-pointer">
                                             {{ __('رفض') }}
                                         </button>
                                     @else
@@ -146,12 +149,97 @@
             </table>
         </div>
 
+        <!-- Mobile Cards List View (Phones & Small Tablets < 768px) -->
+        <div class="block md:hidden divide-y divide-[#DEE8F7]/70 dark:divide-slate-800 p-3 sm:p-4 space-y-3.5">
+            @forelse($receipts as $receipt)
+                @php
+                    $imgSrc = $receipt->receipt_image_path ? (str_starts_with($receipt->receipt_image_path, 'http') ? $receipt->receipt_image_path : asset('storage/' . $receipt->receipt_image_path)) : asset('assets/images/certificate-preview.png');
+                @endphp
+                <div id="receipt-card-{{ $receipt->id }}" class="bg-white dark:bg-slate-850 border border-[#DEE8F7] dark:border-slate-800 rounded-2xl p-4 shadow-xs space-y-3">
+                    <div class="flex items-start justify-between gap-3">
+                        <div class="min-w-0">
+                            <h4 class="font-bold text-sm text-[#012383] dark:text-blue-400 truncate">{{ $receipt->user?->name ?? __('مستخدم محذوف') }}</h4>
+                            <p class="text-[11px] text-slate-500 dark:text-slate-400 font-mono mt-0.5 truncate">{{ $receipt->user?->phone ?? $receipt->sender_account ?? '—' }}</p>
+                        </div>
+                        <div>
+                            @if($receipt->isPending())
+                                <span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800 inline-flex items-center gap-1">
+                                    <span class="size-1.5 rounded-full bg-amber-500"></span>
+                                    <span>{{ __('قيد المراجعة') }}</span>
+                                </span>
+                            @elseif($receipt->isApproved())
+                                <span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 inline-flex items-center gap-1">
+                                    <span class="size-1.5 rounded-full bg-emerald-500"></span>
+                                    <span>{{ __('معتمد') }}</span>
+                                </span>
+                            @else
+                                <span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-400 border border-rose-200 dark:border-rose-800 inline-flex items-center gap-1">
+                                    <span class="size-1.5 rounded-full bg-rose-500"></span>
+                                    <span>{{ __('مرفوض') }}</span>
+                                </span>
+                            @endif
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2 text-xs bg-slate-50 dark:bg-slate-800/50 p-3 rounded-xl border border-[#DEE8F7]/60 dark:border-slate-800">
+                        <div>
+                            <span class="text-slate-400 text-[10px] block">{{ __('المبلغ المطلوب') }}</span>
+                            <span class="font-bold text-[#0B2A8F] dark:text-blue-300 text-sm">{{ number_format((float) $receipt->amount, 2) }} {{ __('ج.م') }}</span>
+                        </div>
+                        <div>
+                            <span class="text-slate-400 text-[10px] block">{{ __('طريقة التحويل') }}</span>
+                            <span class="font-bold text-slate-700 dark:text-slate-200">{{ $receipt->paymentMethodLabel() }}</span>
+                        </div>
+                        <div>
+                            <span class="text-slate-400 text-[10px] block">{{ __('رقم العملية') }}</span>
+                            <span class="font-mono text-slate-700 dark:text-slate-300 text-[11px] truncate block">{{ $receipt->transaction_reference ?? '—' }}</span>
+                        </div>
+                        <div>
+                            <span class="text-slate-400 text-[10px] block">{{ __('التاريخ') }}</span>
+                            <span class="text-slate-500 dark:text-slate-400 text-[11px] block">{{ $receipt->created_at?->diffForHumans() }}</span>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-1">
+                        <a href="{{ $imgSrc }}" target="_blank" class="flex items-center gap-2 text-xs font-bold text-[#0B2A8F] dark:text-blue-400 hover:underline">
+                            <span class="size-8 rounded-lg border border-[#DEE8F7] dark:border-slate-700 overflow-hidden shrink-0 inline-block bg-white dark:bg-slate-800 p-0.5">
+                                <img src="{{ $imgSrc }}" alt="إيصال" class="size-full object-cover rounded" />
+                            </span>
+                            <span>{{ __('معاينة صورة الإيصال ↗') }}</span>
+                        </a>
+
+                        <div class="flex items-center gap-2">
+                            @if($receipt->isPending())
+                                <form method="POST" action="{{ route('admin.receipts.approve', $receipt->id) }}" class="flex-1 sm:flex-initial">
+                                    @csrf
+                                    <button type="submit" class="w-full sm:w-auto px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-2xs transition-colors cursor-pointer flex items-center justify-center gap-1">
+                                        <svg class="size-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                        <span>{{ __('اعتماد') }}</span>
+                                    </button>
+                                </form>
+                                <button type="button" onclick="openRejectReceiptModalWithId({{ $receipt->id }})" class="flex-1 sm:flex-initial px-4 py-2 rounded-xl bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 text-rose-700 dark:text-rose-300 font-bold text-xs border border-rose-200 dark:border-rose-800 transition-colors cursor-pointer text-center">
+                                    {{ __('رفض') }}
+                                </button>
+                            @else
+                                <span class="text-xs text-slate-400 font-medium">{{ __('تمت المعالجة') }}</span>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            @empty
+                <div class="py-8 text-center text-slate-400 text-xs">
+                    {{ __('لا توجد إيصالات مسجلة حالياً ضمن الفلتر المختار.') }}
+                </div>
+            @endforelse
+        </div>
+
         @if($receipts->hasPages())
-            <div class="p-4 bg-slate-50/70 border-t border-[#DEE8F7]">
+            <div class="p-4 bg-slate-50/70 dark:bg-slate-800/40 border-t border-[#DEE8F7] dark:border-slate-800">
                 {{ $receipts->links() }}
             </div>
         @endif
     </div>
+
 
     <!-- Reject Receipt Modal Script Support -->
     <div id="modal-reject-receipt" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs hidden">

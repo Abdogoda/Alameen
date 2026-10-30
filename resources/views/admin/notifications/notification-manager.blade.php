@@ -1,25 +1,25 @@
-<div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 space-y-8">
+<div class="max-w-7xl mx-auto py-3 sm:py-6 px-3 sm:px-6 lg:px-8 space-y-6 sm:space-y-8 min-w-0">
     {{-- Header --}}
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-6 border-b border-[#DEE8F7]">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-5 sm:pb-6 border-b border-[#DEE8F7] dark:border-slate-800">
         <div>
             <div class="flex items-center gap-2.5">
-                <span class="inline-flex items-center justify-center size-9 rounded-xl bg-[#EAF1FB] text-[#0B2A8F] font-bold">
+                <span class="inline-flex items-center justify-center size-9 rounded-xl bg-[#EAF1FB] dark:bg-slate-800 text-[#0B2A8F] dark:text-blue-400 font-bold shrink-0">
                     <flux:icon.bell class="size-5" />
                 </span>
-                <h1 class="text-2xl font-bold font-['Baloo_Bhaijaan_2'] text-[#012383]">
+                <h1 class="text-xl sm:text-2xl font-bold font-['Baloo_Bhaijaan_2'] text-[#012383] dark:text-blue-400">
                     {{ __('notifications.admin.title') }}
                 </h1>
             </div>
-            <p class="text-xs sm:text-sm text-slate-500 mt-1">
+            <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
                 {{ __('notifications.admin.subtitle') }}
             </p>
         </div>
 
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-2 w-full sm:w-auto">
             <a
                 href="{{ route('notifications.index') }}"
                 wire:navigate
-                class="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold rounded-xl bg-[#EAF1FB] hover:bg-[#DEE8F7] text-[#0B2A8F] transition shadow-xs cursor-pointer"
+                class="inline-flex items-center justify-center gap-1.5 w-full sm:w-auto px-4 py-2 text-xs font-bold rounded-xl bg-[#EAF1FB] dark:bg-slate-800 hover:bg-[#DEE8F7] dark:hover:bg-slate-700 text-[#0B2A8F] dark:text-blue-400 transition shadow-xs cursor-pointer text-center"
             >
                 <flux:icon.inbox class="size-4" />
                 {{ __('notifications.notification_center') }}
@@ -28,59 +28,59 @@
     </div>
 
     {{-- Stats Cards --}}
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="p-5 rounded-2xl bg-white border border-[#DEE8F7] shadow-xs hover:shadow-card transition-all">
-            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <div class="p-3.5 sm:p-5 rounded-2xl bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 shadow-xs hover:shadow-card transition-all">
+            <span class="text-[11px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider block truncate">
                 {{ __('notifications.admin.stats.total_sent') }}
             </span>
-            <div class="mt-2 flex items-baseline justify-between">
-                <span class="text-2xl font-black text-[#012383]">
+            <div class="mt-2 flex items-baseline justify-between gap-1">
+                <span class="text-xl sm:text-2xl font-black text-[#012383] dark:text-blue-400">
                     {{ number_format($stats['total']) }}
                 </span>
-                <div class="size-8 rounded-lg bg-blue-50 text-[#0B2A8F] flex items-center justify-center">
-                    <flux:icon.paper-airplane class="size-4" />
+                <div class="size-7 sm:size-8 rounded-lg bg-blue-50 dark:bg-slate-800 text-[#0B2A8F] dark:text-blue-400 flex items-center justify-center shrink-0">
+                    <flux:icon.paper-airplane class="size-3.5 sm:size-4" />
                 </div>
             </div>
         </div>
 
-        <div class="p-5 rounded-2xl bg-white border border-[#DEE8F7] shadow-xs hover:shadow-card transition-all">
-            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">
+        <div class="p-3.5 sm:p-5 rounded-2xl bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 shadow-xs hover:shadow-card transition-all">
+            <span class="text-[11px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider block truncate">
                 {{ __('notifications.admin.stats.unread') }}
             </span>
-            <div class="mt-2 flex items-baseline justify-between">
-                <span class="text-2xl font-black text-amber-600">
+            <div class="mt-2 flex items-baseline justify-between gap-1">
+                <span class="text-xl sm:text-2xl font-black text-amber-600">
                     {{ number_format($stats['unread']) }}
                 </span>
-                <div class="size-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center">
-                    <flux:icon.envelope class="size-4" />
+                <div class="size-7 sm:size-8 rounded-lg bg-amber-50 dark:bg-amber-950/40 text-amber-600 flex items-center justify-center shrink-0">
+                    <flux:icon.envelope class="size-3.5 sm:size-4" />
                 </div>
             </div>
         </div>
 
-        <div class="p-5 rounded-2xl bg-white border border-[#DEE8F7] shadow-xs hover:shadow-card transition-all">
-            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">
+        <div class="p-3.5 sm:p-5 rounded-2xl bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 shadow-xs hover:shadow-card transition-all">
+            <span class="text-[11px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider block truncate">
                 {{ __('notifications.admin.stats.read') }}
             </span>
-            <div class="mt-2 flex items-baseline justify-between">
-                <span class="text-2xl font-black text-emerald-600">
+            <div class="mt-2 flex items-baseline justify-between gap-1">
+                <span class="text-xl sm:text-2xl font-black text-emerald-600">
                     {{ number_format($stats['read']) }}
                 </span>
-                <div class="size-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
-                    <flux:icon.envelope-open class="size-4" />
+                <div class="size-7 sm:size-8 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 flex items-center justify-center shrink-0">
+                    <flux:icon.envelope-open class="size-3.5 sm:size-4" />
                 </div>
             </div>
         </div>
 
-        <div class="p-5 rounded-2xl bg-white border border-[#DEE8F7] shadow-xs hover:shadow-card transition-all">
-            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">
+        <div class="p-3.5 sm:p-5 rounded-2xl bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 shadow-xs hover:shadow-card transition-all">
+            <span class="text-[11px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider block truncate">
                 {{ __('notifications.admin.stats.recipients_reached') }}
             </span>
-            <div class="mt-2 flex items-baseline justify-between">
-                <span class="text-2xl font-black text-[#0B2A8F]">
+            <div class="mt-2 flex items-baseline justify-between gap-1">
+                <span class="text-xl sm:text-2xl font-black text-[#0B2A8F] dark:text-blue-400">
                     {{ number_format($stats['recipients_count']) }}
                 </span>
-                <div class="size-8 rounded-lg bg-indigo-50 text-[#0B2A8F] flex items-center justify-center">
-                    <flux:icon.users class="size-4" />
+                <div class="size-7 sm:size-8 rounded-lg bg-indigo-50 dark:bg-indigo-950/40 text-[#0B2A8F] dark:text-indigo-400 flex items-center justify-center shrink-0">
+                    <flux:icon.users class="size-3.5 sm:size-4" />
                 </div>
             </div>
         </div>
@@ -89,28 +89,28 @@
     @if ($feedbackMessage)
         <div class="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 text-sm flex items-center justify-between">
             <div class="flex items-center gap-2">
-                <flux:icon.check-circle class="size-5 text-emerald-600 dark:text-emerald-400" />
+                <flux:icon.check-circle class="size-5 text-emerald-600 dark:text-emerald-400 shrink-0" />
                 <span>{{ $feedbackMessage }}</span>
             </div>
-            <button type="button" wire:click="$set('feedbackMessage', null)" class="text-emerald-600 hover:text-emerald-800">&times;</button>
+            <button type="button" wire:click="$set('feedbackMessage', null)" class="text-emerald-600 hover:text-emerald-800 p-1">&times;</button>
         </div>
     @endif
 
     {{-- Send Notification Panel --}}
-    <div class="p-6 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-sm">
+    <div class="p-4 sm:p-6 rounded-2xl bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 shadow-sm">
         <h2 class="text-base font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2 mb-4">
             <flux:icon.paper-airplane class="size-5 text-accent" />
             {{ __('notifications.admin.send_new') }}
         </h2>
 
-        <form wire:submit="sendNotification" class="space-y-6">
+        <form wire:submit="sendNotification" class="space-y-5 sm:space-y-6">
             {{-- Target & Recipient --}}
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
                         {{ __('notifications.admin.recipient') }}
                     </label>
-                    <div class="flex gap-4">
+                    <div class="flex flex-wrap gap-4">
                         <label class="flex items-center gap-2 text-sm text-zinc-700 dark:text-zinc-300 cursor-pointer">
                             <input type="radio" wire:model.live="target" value="all" class="text-accent focus:ring-accent" />
                             <span>{{ __('notifications.admin.all_users') }}</span>
@@ -147,7 +147,7 @@
                     <label class="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
                         {{ __('notifications.admin.channels') }}
                     </label>
-                    <div class="flex gap-4">
+                    <div class="flex flex-wrap gap-4">
                         <label class="flex items-center gap-2 text-sm text-zinc-700 dark:text-zinc-300 cursor-pointer">
                             <input type="checkbox" wire:model="channels" value="database" class="rounded text-accent focus:ring-accent" />
                             <span>{{ __('notifications.channels.database') }}</span>
@@ -239,8 +239,8 @@
             </div>
 
             {{-- Optional Action Link & Text --}}
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2 border-t border-zinc-100 dark:border-zinc-800">
-                <div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 pt-2 border-t border-zinc-100 dark:border-zinc-800">
+                <div class="sm:col-span-2 md:col-span-1">
                     <label class="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1">
                         {{ __('notifications.admin.action_url') }}
                     </label>
@@ -283,7 +283,7 @@
                 <button
                     type="submit"
                     wire:loading.attr="disabled"
-                    class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 font-semibold text-sm hover:opacity-90 transition shadow-sm"
+                    class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 font-semibold text-sm hover:opacity-90 transition shadow-sm cursor-pointer"
                 >
                     <span wire:loading.remove>{{ __('notifications.admin.send_button') }}</span>
                     <span wire:loading>{{ __('notifications.admin.sending') }}</span>
@@ -292,17 +292,17 @@
         </form>
     </div>
 
-    {{-- Notification History Table --}}
+    {{-- Notification History Table & Mobile Cards --}}
     <div class="rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-sm overflow-hidden">
-        <div class="p-5 border-b border-zinc-200 dark:border-zinc-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div class="p-4 sm:p-5 border-b border-zinc-200 dark:border-zinc-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <h3 class="text-base font-bold text-zinc-900 dark:text-zinc-100">
                 {{ __('notifications.admin.history') }}
             </h3>
 
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-3 w-full sm:w-auto">
                 <select
                     wire:model.live="filterType"
-                    class="rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 px-3 py-1.5 text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none"
+                    class="w-full sm:w-auto rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 px-3 py-1.5 text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none"
                 >
                     <option value="all">{{ __('notifications.admin.all_types') }}</option>
                     <option value="info">{{ __('notifications.types.info') }}</option>
@@ -315,8 +315,9 @@
             </div>
         </div>
 
-        <div class="overflow-x-auto">
-            <table class="w-full text-start text-xs">
+        <!-- Desktop Table View -->
+        <div class="hidden md:block overflow-x-auto min-w-0">
+            <table class="w-full text-start text-xs min-w-[620px]">
                 <thead class="bg-zinc-50 dark:bg-zinc-800/50 border-b border-zinc-200 dark:border-zinc-800 text-zinc-500 uppercase tracking-wider font-semibold">
                     <tr>
                         <th class="px-5 py-3 text-start">{{ __('notifications.admin.recipient') }}</th>
@@ -379,7 +380,7 @@
                                     type="button"
                                     wire:click="deleteNotification('{{ $item->id }}')"
                                     wire:confirm="{{ __('notifications.admin.delete_confirm') }}"
-                                    class="p-1.5 rounded-lg text-zinc-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition"
+                                    class="p-1.5 rounded-lg text-zinc-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition cursor-pointer"
                                     title="{{ __('Delete') }}"
                                 >
                                     <flux:icon.trash class="size-4" />
@@ -396,6 +397,78 @@
                 </tbody>
             </table>
         </div>
+
+        <!-- Mobile Cards View -->
+        <div class="block md:hidden divide-y divide-zinc-100 dark:divide-zinc-800">
+            @forelse ($history as $item)
+                @php
+                    $user = $item->notifiable;
+                    $data = $item->data;
+                    $type = $data['type'] ?? 'info';
+                    $title = $data['title'] ?? '-';
+                    $typeColors = match($type) {
+                        'success' => 'bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400',
+                        'warning' => 'bg-amber-50 text-amber-600 dark:bg-amber-950/40 dark:text-amber-400',
+                        'error' => 'bg-rose-50 text-rose-600 dark:bg-rose-950/40 dark:text-rose-400',
+                        'security' => 'bg-indigo-50 text-indigo-600 dark:bg-indigo-950/40 dark:text-indigo-400',
+                        'system' => 'bg-purple-50 text-purple-600 dark:bg-purple-950/40 dark:text-purple-400',
+                        default => 'bg-blue-50 text-blue-600 dark:bg-blue-950/40 dark:text-blue-400',
+                    };
+                @endphp
+                <div class="p-4 flex flex-col gap-2.5">
+                    <div class="flex items-start justify-between gap-2">
+                        <div class="min-w-0">
+                            @if ($user)
+                                <div class="font-semibold text-sm text-zinc-900 dark:text-zinc-100 truncate">{{ $user->name }}</div>
+                                <div class="text-[11px] text-zinc-400 truncate">{{ $user->email }}</div>
+                            @else
+                                <span class="text-zinc-400 text-xs">#{{ $item->notifiable_id }}</span>
+                            @endif
+                        </div>
+                        <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold shrink-0 {{ $typeColors }}">
+                            {{ __('notifications.types.' . $type) }}
+                        </span>
+                    </div>
+
+                    <div class="text-xs font-medium text-zinc-800 dark:text-zinc-200">
+                        {{ $title }}
+                    </div>
+
+                    <div class="flex items-center justify-between text-xs pt-1 border-t border-zinc-100 dark:border-zinc-800">
+                        <div class="flex items-center gap-2">
+                            @if ($item->read_at)
+                                <span class="text-[11px] text-emerald-600 dark:text-emerald-400">✓ {{ __('notifications.admin.stats.read') }}</span>
+                            @else
+                                <span class="text-[11px] text-amber-600 dark:text-amber-400 font-medium">&bull; {{ __('notifications.admin.stats.unread') }}</span>
+                            @endif
+                            <span class="text-zinc-400 text-[10px]">• {{ $item->created_at->diffForHumans() }}</span>
+                        </div>
+
+                        <button
+                            type="button"
+                            wire:click="deleteNotification('{{ $item->id }}')"
+                            wire:confirm="{{ __('notifications.admin.delete_confirm') }}"
+                            class="p-1.5 rounded-lg text-zinc-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition cursor-pointer"
+                            title="{{ __('Delete') }}"
+                        >
+                            <flux:icon.trash class="size-4" />
+                        </button>
+                    </div>
+                </div>
+            @empty
+                <div class="p-8 text-center text-zinc-400 text-xs">
+                    {{ __('notifications.no_notifications') }}
+                </div>
+            @endforelse
+        </div>
+
+        @if ($history->hasPages())
+            <div class="p-4 border-t border-zinc-200 dark:border-zinc-800">
+                {{ $history->links() }}
+            </div>
+        @endif
+    </div>
+</div>
 
         @if ($history->hasPages())
             <div class="p-4 border-t border-zinc-200 dark:border-zinc-800">

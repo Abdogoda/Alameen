@@ -44,11 +44,11 @@
         <button
             type="button"
             @click="open = !open"
-            class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border border-[#DEE8F7] dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700/80 text-xs font-bold text-[#012383] dark:text-slate-200 transition-all cursor-pointer shadow-xs"
+            class="inline-flex items-center gap-1.5 px-2.5 sm:px-3 h-9 sm:h-10 rounded-xl border border-[#DEE8F7] dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700/80 text-xs font-bold text-[#012383] dark:text-slate-200 transition-all cursor-pointer shadow-xs shrink-0"
         >
-            <span>{{ $locales[$current]['flag'] ?? '🌐' }}</span>
-            <span>{{ $locales[$current]['native'] ?? strtoupper($current) }}</span>
-            <svg class="w-3.5 h-3.5 text-slate-400 transition-transform" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <span class="text-sm leading-none">{{ $locales[$current]['flag'] ?? '🌐' }}</span>
+            <span class="hidden sm:inline">{{ $locales[$current]['native'] ?? strtoupper($current) }}</span>
+            <svg class="w-3.5 h-3.5 text-slate-400 transition-transform shrink-0" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
             </svg>
         </button>
@@ -62,7 +62,7 @@
             x-transition:leave="transition ease-in duration-75"
             x-transition:leave-start="transform opacity-100 scale-100"
             x-transition:leave-end="transform opacity-0 scale-95"
-            class="absolute {{ $align === 'end' ? 'ltr:right-0 rtl:left-0' : 'ltr:left-0 rtl:right-0' }} z-50 mt-2 w-36 origin-top-right rounded-xl border border-[#DEE8F7] dark:border-slate-700 bg-white dark:bg-slate-900 p-1.5 shadow-xl"
+            class="absolute {{ $align === 'end' ? 'end-0' : 'start-0' }} z-50 mt-2 w-36 origin-top-right rounded-xl border border-[#DEE8F7] dark:border-slate-700 bg-white dark:bg-slate-900 p-1.5 shadow-xl"
         >
             @foreach ($locales as $code => $locale)
                 <a

@@ -461,10 +461,26 @@ html.dark header#main-header a div:first-child {
     .admin-sidebar-drawer {
         position: sticky !important;
         top: 0 !important;
+        height: 100vh !important;
+        height: 100dvh !important;
         transform: translateX(0) !important;
-        z-index: 20 !important;
+        z-index: 45 !important;
         max-width: none !important;
+        overflow-y: auto !important;
     }
+}
+
+/* Sticky Admin Top Header */
+.admin-sticky-header {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 40 !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+}
+
+html, body {
+    overflow-x: clip;
 }
 
 /* Custom scrollbars for responsive tables & filter bars */

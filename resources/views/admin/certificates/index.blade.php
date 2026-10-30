@@ -1,18 +1,18 @@
 <x-admin-layout::admin
     :title="__('سجل الشهادات المعتمدة ومعيار الـ 95%')"
     :description="__('إدارة إصدار الشهادات الرقمية المؤتمتة وفق شرط إكمال مشاهدة ٩٥٪ من فيديوهات الكورس')"
-    contentClass="p-4 sm:p-8 flex flex-col gap-6 max-w-[1500px] w-full mx-auto"
+    contentClass="p-3.5 sm:p-6 lg:p-8 flex flex-col gap-5 sm:gap-6 max-w-[1500px] w-full mx-auto min-w-0"
 >
     <!-- Strict 95% Rule Banner -->
-    <div class="bg-gradient-to-r from-emerald-900 via-[#0B2A8F] to-[#012383] rounded-3xl p-6 sm:p-7 text-white shadow-card flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
-        <div class="space-y-1 text-right">
-            <div class="flex items-center gap-2">
+    <div class="bg-gradient-to-r from-emerald-900 via-[#0B2A8F] to-[#012383] rounded-3xl p-5 sm:p-7 text-white shadow-card flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
+        <div class="space-y-1 text-right min-w-0">
+            <div class="flex flex-wrap items-center gap-2">
                 <span class="px-3 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-xs font-bold">
                     {{ __('قاعدة الأمان الأكاديمي الصارمة') }}
                 </span>
                 <span class="text-xs text-white/70">• {{ __('إكمال ٩٥٪ كحد أدنى') }}</span>
             </div>
-            <h3 class="font-['Baloo_Bhaijaan_2'] font-bold text-xl sm:text-2xl text-white">
+            <h3 class="font-['Baloo_Bhaijaan_2'] font-bold text-lg sm:text-2xl text-white">
                 {{ __('شرط إتمام المشاهدة الإلزامي (Strict 95% Video Completion Gate)') }}
             </h3>
             <p class="text-xs sm:text-sm text-white/80 max-w-2xl leading-relaxed">
@@ -21,13 +21,13 @@
         </div>
         <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-4 text-center shrink-0 w-full sm:w-auto">
             <span class="text-xs text-white/70 block">{{ __('الشهادات المصدرة حتى الآن') }}</span>
-            <span class="text-3xl font-black text-white block mt-0.5">{{ $totalCertificatesCount ?? 0 }} {{ __('شهادة') }}</span>
+            <span class="text-2xl sm:text-3xl font-black text-white block mt-0.5">{{ $totalCertificatesCount ?? 0 }} {{ __('شهادة') }}</span>
             <span class="text-[11px] text-emerald-300 block">✦ {{ __('جميعها تحققت برمجياً') }}</span>
         </div>
     </div>
 
     <!-- Search & Filter Toolbar -->
-    <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-3xl p-4 sm:p-6 shadow-xs flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
+    <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-3xl p-3 sm:p-4 shadow-xs flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4">
         <form method="GET" action="{{ route('admin.certificates.index') }}" class="relative w-full sm:w-96">
             <input type="text" name="search" value="{{ $search }}" placeholder="{{ __('ابحث برقم الشهادة، اسم الطالب أو الكورس...') }}" class="w-full h-11 ps-4 pe-10 rounded-xl border border-[#DEE8F7] dark:border-slate-800 text-xs font-medium text-slate-700 dark:text-slate-200 outline-none focus:border-[#0B2A8F] bg-slate-50/50 dark:bg-slate-800/50" />
             <button type="submit" class="absolute end-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#0B2A8F]">
@@ -36,17 +36,18 @@
         </form>
     </div>
 
-    <!-- Certificates Table -->
+    <!-- Certificates Table / Cards Container -->
     <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-3xl overflow-hidden shadow-xs">
-        <div class="p-5 border-b border-[#DEE8F7] dark:border-slate-800 flex items-center justify-between">
+        <div class="p-4 sm:p-5 border-b border-[#DEE8F7] dark:border-slate-800 flex items-center justify-between">
             <div>
-                <h4 class="font-bold text-base text-[#012383] dark:text-blue-400">{{ __('سجل الطلاب المؤهلين والحاصلين على الشهادة') }}</h4>
+                <h4 class="font-bold text-sm sm:text-base text-[#012383] dark:text-blue-400">{{ __('سجل الطلاب المؤهلين والحاصلين على الشهادة') }}</h4>
                 <p class="text-xs text-slate-400">{{ __('تحقق من بيانات الاعتماد، كود التوثيق، وتاريخ الإصدار') }}</p>
             </div>
         </div>
 
-        <div class="overflow-x-auto">
-            <table class="w-full text-right border-collapse text-xs">
+        <!-- Desktop Table View -->
+        <div class="hidden md:block overflow-x-auto min-w-0">
+            <table class="w-full text-right border-collapse text-xs min-w-[780px]">
                 <thead>
                     <tr class="bg-slate-50/80 dark:bg-slate-800/50 border-b border-[#DEE8F7] dark:border-slate-800 text-[12px] font-bold text-slate-500">
                         <th class="py-4 px-5">{{ __('اسم الخريج / الطالب') }}</th>
@@ -58,7 +59,6 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-[#DEE8F7]/70 dark:divide-slate-800">
-                    
                     @forelse ($certificates as $cert)
                     <tr class="hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition-colors">
                         <td class="py-4 px-5">
@@ -74,7 +74,7 @@
                             </span>
                         </td>
                         <td class="py-4 px-4 text-center">
-                            <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                            <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800">
                                 {{ round($cert->completion_percentage, 1) }}%
                             </span>
                         </td>
@@ -94,7 +94,7 @@
                                 <a
                                     href="{{ route('certificates.show', $cert->id) }}"
                                     target="_blank"
-                                    class="px-3 py-1.5 rounded-xl border border-[#DEE8F7] dark:border-slate-800 text-[#0B2A8F] dark:text-blue-400 hover:bg-[#EAF1FB] font-bold text-xs transition-colors"
+                                    class="px-3 py-1.5 rounded-xl border border-[#DEE8F7] dark:border-slate-800 text-[#0B2A8F] dark:text-blue-400 hover:bg-[#EAF1FB] dark:hover:bg-slate-800 font-bold text-xs transition-colors"
                                 >
                                     {{ __('طباعة A4 🖨️') }}
                                 </a>
@@ -108,9 +108,62 @@
                         </td>
                     </tr>
                     @endforelse
-
                 </tbody>
             </table>
+        </div>
+
+        <!-- Mobile Card View -->
+        <div class="block md:hidden divide-y divide-[#DEE8F7]/70 dark:divide-slate-800">
+            @forelse ($certificates as $cert)
+            <div class="p-4 flex flex-col gap-3">
+                <div class="flex items-start justify-between gap-2">
+                    <div class="min-w-0">
+                        <div class="font-bold text-sm text-[#012383] dark:text-blue-400 truncate">{{ $cert->user?->name ?? '—' }}</div>
+                        <div class="text-[11px] text-slate-400 font-mono truncate">{{ $cert->user?->email }}</div>
+                    </div>
+                    <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800 shrink-0">
+                        {{ round($cert->completion_percentage, 1) }}%
+                    </span>
+                </div>
+
+                <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 flex flex-col gap-2">
+                    <div class="flex items-center justify-between gap-2">
+                        <span class="text-xs text-slate-400">{{ __('كود الاعتماد:') }}</span>
+                        <span class="font-mono text-xs font-bold text-[#0B2A8F] dark:text-blue-400 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-2 py-0.5 rounded">
+                            {{ $cert->certificate_code }}
+                        </span>
+                    </div>
+                    <div class="text-xs font-bold text-slate-800 dark:text-slate-200">
+                        {{ $cert->course?->title ?? '—' }}
+                    </div>
+                    <div class="text-[11px] text-slate-400 flex items-center justify-between">
+                        <span>{{ __('تاريخ الإصدار:') }} {{ $cert->issued_at?->format('d/m/Y') }}</span>
+                        <span>{{ $cert->issued_at?->diffForHumans() }}</span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2 pt-1">
+                    <a
+                        href="{{ route('certificates.verify', $cert->certificate_code) }}"
+                        target="_blank"
+                        class="px-3 py-2 rounded-xl bg-[#012383] text-white hover:bg-[#0B2A8F] font-bold text-xs text-center transition-colors shadow-2xs"
+                    >
+                        {{ __('صفحة التحقق ↗') }}
+                    </a>
+                    <a
+                        href="{{ route('certificates.show', $cert->id) }}"
+                        target="_blank"
+                        class="px-3 py-2 rounded-xl border border-[#DEE8F7] dark:border-slate-800 text-[#0B2A8F] dark:text-blue-400 hover:bg-[#EAF1FB] dark:hover:bg-slate-800 font-bold text-xs text-center transition-colors"
+                    >
+                        {{ __('طباعة A4 🖨️') }}
+                    </a>
+                </div>
+            </div>
+            @empty
+            <div class="text-center py-12 text-slate-400 text-xs">
+                {{ __('لا توجد شهادات صادرة تطابق خيارات البحث.') }}
+            </div>
+            @endforelse
         </div>
 
         @if($certificates->hasPages())

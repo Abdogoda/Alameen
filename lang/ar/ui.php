@@ -290,4 +290,17 @@ return [
     'لا توجد إشعارات غير مقروءة' => 'لا توجد إشعارات غير مقروءة',
     'تمييز الكل كمقروء' => 'تمييز الكل كمقروء',
     'حذف المقروء' => 'حذف المقروء',
+
+    // Additional UI Strings
+    'الإعدادات' => 'الإعدادات',
+    'Authentication code' => 'رمز المصادقة',
+    'Enter the authentication code provided by your authenticator application.' => 'أدخل رمز المصادقة المقدم من تطبيق المصادقة الخاص بك.',
+    'Recovery code' => 'رمز الاسترداد',
+    'Please confirm access to your account by entering one of your emergency recovery codes.' => 'يرجى تأكيد الوصول إلى حسابك عن طريق إدخال أحد رموز الاسترداد الخاصة بك.',
+    'or you can' => 'أو يمكنك',
+    'login using a recovery code' => 'تسجيل الدخول باستخدام رمز الاسترداد',
+    'login using an authentication code' => 'تسجيل الدخول باستخدام رمز المصادقة',
+    'Delete' => 'حذف',
+    'Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.' => 'بمجرد حذف حسابك، سيتم حذف جميع موارده وبياناته نهائياً. يرجى إدخال كلمة المرور لتأكيد رغبتك في حذف حسابك نهائياً.',
+    'Are you sure you want to delete your account?' => 'هل أنت متأكد أنك تريد حذف حسابك؟',
 ];

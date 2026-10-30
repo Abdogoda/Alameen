@@ -13,9 +13,13 @@ return [
     'catBehavior' => 'Behavior Modification',
     'catLearning' => 'Learning Difficulties',
     'catEarly' => 'Early Intervention',
+    'categorySpeech' => 'Speech & Articulation',
+    'categoryClinical' => 'Clinical Practice',
     'levelBeginner' => 'Beginner',
     'levelIntermediate' => 'Intermediate',
     'levelAdvanced' => 'Advanced',
+    'intermediate' => 'Intermediate',
+    'advanced' => 'Advanced',
     'specialized' => 'Specialized',
     'clinicalPractice' => 'Clinical Practice',
     'scientificBasics' => 'Scientific Basics',
@@ -26,6 +30,11 @@ return [
     'viewCourseDetails' => 'View Course Details',
     'noCoursesFound' => 'No courses match your selected search criteria.',
     'pathBadge' => 'Clinical Speech Track for Students',
+
+    // Courses 1, 2, 3
+    'course1Title' => 'Language Development and Sentence Formation',
+    'course2Title' => 'Correction of Common Speech Defects',
+    'course3Title' => 'Basics of Clinical Speech Therapy',
 
     // Courses 4, 5, 6
     'course4Title' => 'Stuttering Management & Fluency Enhancement',

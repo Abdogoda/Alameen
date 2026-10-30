@@ -84,7 +84,6 @@
                 <button
                     type="button"
                     data-firebase-auth="admin"
-                    onclick="window.signInWithFirebaseGoogle('admin', this)"
                     class="w-full py-3.5 px-4 rounded-2xl border border-[#DEE8F7] dark:border-slate-700 hover:border-[#012383]/40 dark:hover:border-blue-400/40 bg-[#FAFCFF] dark:bg-slate-800 hover:bg-white dark:hover:bg-slate-700 text-[#1E293B] dark:text-slate-100 font-bold text-sm shadow-xs transition-all flex items-center justify-center gap-3 cursor-pointer group active:scale-[0.99]"
                     title="{{ __('تسجيل الدخول السريع باستخدام حساب Google للمشرفين') }}"
                 >

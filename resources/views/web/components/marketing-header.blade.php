@@ -6,11 +6,11 @@
 <header class="w-full bg-[#FAFCFF]/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-[#D7E3F5] dark:border-slate-800 flex items-center justify-between px-3.5 sm:px-6 lg:px-12 xl:px-20 2xl:px-28 py-2.5 sm:py-3.5 shrink-0 sticky top-0 z-50 shadow-xs transition-colors" id="main-header" x-data="{ mobileNavOpen: false }">
     
     <!-- Brand Identity -->
-    <a href="{{ route('home') }}" class="flex gap-2 sm:gap-3 items-center shrink-0 cursor-pointer">
-        <div class="size-8 sm:size-10 lg:size-12 shrink-0 relative flex items-center justify-center transition-all">
+    <a href="{{ route('home') }}" class="flex gap-2 sm:gap-2.5 items-center shrink-0 cursor-pointer">
+        <div class="size-8 sm:size-9 lg:size-10 shrink-0 relative flex items-center justify-center transition-all">
             <img src="/assets/images/logo.png" alt="{{ config('app.name', 'منصة مركز الأمين') }}" class="size-full object-contain pointer-events-none" />
         </div>
-        <span class="font-['Baloo_Bhaijaan_2'] font-extrabold text-lg sm:text-2xl lg:text-3xl leading-tight text-[#012383] dark:text-white whitespace-nowrap tracking-tight">
+        <span class="font-['Baloo_Bhaijaan_2'] font-bold text-base sm:text-lg lg:text-[21px] leading-tight text-[#012383] dark:text-white whitespace-nowrap tracking-tight">
             {{ __('brand.name') }}
         </span>
     </a>
@@ -20,32 +20,32 @@
 @endphp
 
     <!-- Main Navigation Links (Desktop) -->
-    <nav class="hidden lg:flex gap-[6px] xl:gap-[12px] items-center shrink-0">
+    <nav class="hidden lg:flex gap-[4px] xl:gap-[8px] items-center shrink-0">
         @if($headerMenuItems->isNotEmpty())
             @foreach($headerMenuItems as $item)
                 <a
                     href="{{ $item->resolved_url }}"
                     target="{{ $item->target }}"
-                    class="px-3.5 py-2 text-[16px] xl:text-[18px] font-bold font-['Cairo'] rounded-[14px] whitespace-nowrap transition-colors text-[#012383] dark:text-slate-300 hover:text-[#0B2A8F] hover:bg-[#EAF1FB]/50 dark:hover:bg-slate-800/60"
+                    class="px-3 py-1.5 text-[14px] xl:text-[15px] font-semibold font-['Cairo'] rounded-[12px] whitespace-nowrap transition-colors text-[#012383] dark:text-slate-300 hover:text-[#0B2A8F] hover:bg-[#EAF1FB]/50 dark:hover:bg-slate-800/60"
                 >
                     {{ $item->title }}
                 </a>
             @endforeach
         @else
             <!-- Fallback Static Nav Links -->
-            <a href="{{ route('home') }}#home" class="px-4 py-2 text-[16px] xl:text-[18px] font-bold font-['Cairo'] rounded-[14px] text-[#012383] dark:text-slate-300 hover:text-[#0B2A8F]">
+            <a href="{{ route('home') }}#home" class="px-3 py-1.5 text-[14px] xl:text-[15px] font-semibold font-['Cairo'] rounded-[12px] text-[#012383] dark:text-slate-300 hover:text-[#0B2A8F]">
                 {{ __('landing.navHome') }}
             </a>
-            <a href="{{ route('courses.index') }}" class="px-3.5 py-2 text-[16px] xl:text-[18px] font-bold font-['Cairo'] rounded-[14px] text-[#012383] dark:text-slate-300 hover:text-[#0B2A8F]">
+            <a href="{{ route('courses.index') }}" class="px-3 py-1.5 text-[14px] xl:text-[15px] font-semibold font-['Cairo'] rounded-[12px] text-[#012383] dark:text-slate-300 hover:text-[#0B2A8F]">
                 {{ __('landing.navCourses') }}
             </a>
-            <a href="{{ route('home') }}#about" class="px-3.5 py-2 text-[16px] xl:text-[18px] font-bold font-['Cairo'] rounded-[14px] text-[#012383] dark:text-slate-300 hover:text-[#0B2A8F]">
+            <a href="{{ route('home') }}#about" class="px-3 py-1.5 text-[14px] xl:text-[15px] font-semibold font-['Cairo'] rounded-[12px] text-[#012383] dark:text-slate-300 hover:text-[#0B2A8F]">
                 {{ __('landing.navAbout') }}
             </a>
-            <a href="{{ route('reviews.index') }}" class="px-3.5 py-2 text-[16px] xl:text-[18px] font-bold font-['Cairo'] rounded-[14px] text-[#012383] dark:text-slate-300 hover:text-[#0B2A8F]">
+            <a href="{{ route('reviews.index') }}" class="px-3 py-1.5 text-[14px] xl:text-[15px] font-semibold font-['Cairo'] rounded-[12px] text-[#012383] dark:text-slate-300 hover:text-[#0B2A8F]">
                 {{ __('landing.navTestimonials') }}
             </a>
-            <a href="{{ route('contact') }}" class="px-3.5 py-2 text-[16px] xl:text-[18px] font-bold font-['Cairo'] rounded-[14px] text-[#012383] dark:text-slate-300 hover:text-[#0B2A8F]">
+            <a href="{{ route('contact') }}" class="px-3 py-1.5 text-[14px] xl:text-[15px] font-semibold font-['Cairo'] rounded-[12px] text-[#012383] dark:text-slate-300 hover:text-[#0B2A8F]">
                 {{ __('landing.navContact') }}
             </a>
         @endif

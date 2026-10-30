@@ -7,6 +7,7 @@ return [
     'navTestimonials' => 'Reviews',
     'navContact' => 'Contact',
     'loginBtn' => 'Sign In',
+    'createAccount' => 'Create Account',
     'eyebrow' => 'Learning Begins with a Step',
     'heroTitle' => 'Educational Platform for Speech Therapy',
     'heroDesc' => 'Providing comprehensive training tracks to master speech therapy methods with a flexible and seamless learning experience.',

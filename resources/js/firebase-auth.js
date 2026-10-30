@@ -1,10 +1,17 @@
 import { initializeApp, getApps, getApp } from 'firebase/app';
-import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult } from 'firebase/auth';
+
+let cachedInstance = null;
+let isAuthInProgress = false;
 
 /**
  * Retrieve or initialize the Firebase app instance using configuration from the window.
  */
 export function getFirebaseInstance() {
+    if (cachedInstance) {
+        return cachedInstance;
+    }
+
     const config = window.__firebaseConfig || {};
     if (!config.projectId && !config.apiKey) {
         return null;
@@ -23,7 +30,8 @@ export function getFirebaseInstance() {
           });
 
     const auth = getAuth(app);
-    return { app, auth };
+    cachedInstance = { app, auth };
+    return cachedInstance;
 }
 
 /**
@@ -33,6 +41,11 @@ export function getFirebaseInstance() {
  * @param {HTMLElement|null} buttonElement
  */
 window.signInWithFirebaseGoogle = async function (targetRole = 'user', buttonElement = null) {
+    if (isAuthInProgress) {
+        console.warn('[Firebase Auth] Sign-in operation already in progress, ignoring duplicate call.');
+        return;
+    }
+
     const fb = getFirebaseInstance();
     if (!fb || !window.__firebaseConfig?.projectId) {
         showAuthAlert(
@@ -42,7 +55,9 @@ window.signInWithFirebaseGoogle = async function (targetRole = 'user', buttonEle
         return;
     }
 
+    isAuthInProgress = true;
     const originalContent = buttonElement ? buttonElement.innerHTML : null;
+
     if (buttonElement) {
         buttonElement.disabled = true;
         buttonElement.classList.add('opacity-75', 'cursor-wait');
@@ -58,51 +73,47 @@ window.signInWithFirebaseGoogle = async function (targetRole = 'user', buttonEle
         `;
     }
 
+    let unhandledHandler = null;
+    let timeoutId = null;
+
     try {
         const provider = new GoogleAuthProvider();
         provider.setCustomParameters({ prompt: 'select_account' });
 
-        const result = await signInWithPopup(fb.auth, provider);
-        const idToken = await result.user.getIdToken();
-
-        const endpoint = targetRole === 'admin'
-            ? '/admin/auth/google/firebase'
-            : '/auth/google/firebase';
-
-        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
-            || document.querySelector('input[name="_token"]')?.value;
-
-        const response = await fetch(endpoint, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'X-CSRF-TOKEN': csrfToken || '',
-            },
-            body: JSON.stringify({
-                id_token: idToken,
-                remember: true,
-            }),
+        // Safety timeout (60s) to guarantee the button never spins infinitely if the browser or popup hangs
+        const timeoutPromise = new Promise((_, reject) => {
+            timeoutId = setTimeout(() => {
+                const timeoutErr = new Error('AUTH_TIMEOUT');
+                timeoutErr.code = 'auth/timeout';
+                reject(timeoutErr);
+            }, 60000);
         });
 
-        const data = await response.json();
+        // Intercept unhandled assertion errors thrown inside Firebase popup event handlers
+        const assertionPromise = new Promise((_, reject) => {
+            unhandledHandler = (event) => {
+                const msg = event?.reason?.message || String(event?.reason || '');
+                if (msg.includes('Pending promise was never set') || msg.includes('INTERNAL ASSERTION')) {
+                    event.preventDefault();
+                    console.warn('[Firebase Auth] Intercepted internal popup assertion error:', msg);
+                    const assertionErr = new Error('INTERNAL_ASSERTION_RACE');
+                    assertionErr.code = 'auth/internal-assertion';
+                    reject(assertionErr);
+                }
+            };
+            window.addEventListener('unhandledrejection', unhandledHandler);
+        });
 
-        if (response.ok && data.success) {
-            if (buttonElement) {
-                buttonElement.innerHTML = `
-                    <svg class="size-5 shrink-0 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                    </svg>
-                    <span>تم الدخول بنجاح! جاري التوجيه...</span>
-                `;
-            }
-            window.location.href = data.redirect || (targetRole === 'admin' ? '/admin/dashboard' : '/dashboard');
-        } else {
-            const errorMessage = data.message || 'فشل تسجيل الدخول. يرجى المحاولة مرة أخرى.';
-            showAuthAlert(errorMessage, 'error');
-            resetButton(buttonElement, originalContent);
-        }
+        const result = await Promise.race([
+            signInWithPopup(fb.auth, provider),
+            timeoutPromise,
+            assertionPromise,
+        ]);
+
+        const idToken = await result.user.getIdToken();
+        await postTokenToBackend(idToken, targetRole, buttonElement, originalContent);
     } catch (error) {
+        console.error('[Firebase Auth Error]', error);
         if (error.code === 'auth/popup-closed-by-user') {
             showAuthAlert(getFirebaseErrorMessage(error), 'info');
         } else if (error.code === 'auth/cancelled-popup-request') {
@@ -111,33 +122,103 @@ window.signInWithFirebaseGoogle = async function (targetRole = 'user', buttonEle
             showAuthAlert(getFirebaseErrorMessage(error), 'error');
         }
         resetButton(buttonElement, originalContent);
+    } finally {
+        if (timeoutId) {
+            clearTimeout(timeoutId);
+        }
+        if (unhandledHandler) {
+            window.removeEventListener('unhandledrejection', unhandledHandler);
+        }
+        isAuthInProgress = false;
     }
 };
+
+/**
+ * Send verified Firebase ID token to the Laravel session endpoint.
+ */
+async function postTokenToBackend(idToken, targetRole, buttonElement, originalContent) {
+    const endpoint = targetRole === 'admin'
+        ? '/admin/auth/google/firebase'
+        : '/auth/google/firebase';
+
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
+        || document.querySelector('input[name="_token"]')?.value;
+
+    const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'X-CSRF-TOKEN': csrfToken || '',
+        },
+        body: JSON.stringify({
+            id_token: idToken,
+            remember: true,
+        }),
+    });
+
+    const data = await response.json();
+
+    if (response.ok && data.success) {
+        if (buttonElement) {
+            buttonElement.innerHTML = `
+                <svg class="size-5 shrink-0 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                </svg>
+                <span>تم الدخول بنجاح! جاري التوجيه...</span>
+            `;
+        }
+        window.location.href = data.redirect || (targetRole === 'admin' ? '/admin/dashboard' : '/dashboard');
+    } else {
+        const errorMessage = data.message || 'فشل تسجيل الدخول. يرجى المحاولة مرة أخرى.';
+        showAuthAlert(errorMessage, 'error');
+        resetButton(buttonElement, originalContent);
+    }
+}
 
 function getFirebaseErrorMessage(error) {
     const isEn = (document.documentElement.lang || 'ar').toLowerCase().startsWith('en');
     const code = error?.code || '';
+    const message = error?.message || '';
 
     const arErrors = {
-        'auth/popup-closed-by-user': 'تم إلغاء نافذة تسجيل الدخول عبر Google.',
+        'auth/popup-closed-by-user': 'تم إغلاق نافذة تسجيل الدخول عبر Google.',
         'auth/popup-blocked': 'تم حظر النافذة المنبثقة من قبل المتصفح. يرجى السماح بالنوافذ المنبثقة لمنصة الأمين.',
         'auth/network-request-failed': 'تعذر الاتصال بالخادم. يرجى التحقق من اتصالك بالإنترنت والمحاولة مجدداً.',
-        'auth/unauthorized-domain': 'نطاق هذا الموقع غير مصرح به في إعدادات Google Firebase. يرجى مراجعة إعدادات الخادم.',
+        'auth/unauthorized-domain': 'نطاق هذا الموقع غير مصرح به في إعدادات Google Firebase. يرجى إضافته إلى النطاقات المصرح بها (Authorized Domains) في Firebase Console.',
         'auth/operation-not-allowed': 'خدمة تسجيل الدخول عبر Google غير مفعلة حالياً في إعدادات المشروع.',
         'auth/user-disabled': 'تم تعطيل هذا الحساب. يرجى التواصل مع الدعم الفني.',
         'auth/account-exists-with-different-credential': 'يوجد حساب مسجل بالفعل بنفس البريد الإلكتروني ولكن بطريقة تسجيل دخول مختلفة.',
         'auth/invalid-credential': 'بيانات الاعتماد غير صالحة أو انتهت مدتها. يرجى المحاولة مرة أخرى.',
+        'auth/timeout': 'استغرقت عملية تسجيل الدخول وقتاً أطول من المتوقع. يرجى إعادة المحاولة.',
+        'auth/internal-assertion': 'حدث تعارض في نافذة تسجيل الدخول المنبثقة. يرجى إعادة المحاولة.',
     };
 
+    const enErrors = {
+        'auth/popup-closed-by-user': 'Google sign-in popup was closed.',
+        'auth/popup-blocked': 'Popup was blocked by your browser. Please allow popups for this site.',
+        'auth/network-request-failed': 'Network connection failed. Please check your internet connection.',
+        'auth/unauthorized-domain': 'This domain is not authorized in Firebase Console settings.',
+        'auth/operation-not-allowed': 'Google sign-in is not enabled in Firebase Console.',
+        'auth/user-disabled': 'This account has been disabled.',
+        'auth/account-exists-with-different-credential': 'An account already exists with the same email address but different sign-in credentials.',
+        'auth/invalid-credential': 'Invalid or expired credentials. Please try again.',
+        'auth/timeout': 'Sign-in operation timed out. Please try again.',
+        'auth/internal-assertion': 'A popup conflict occurred. Please try again.',
+    };
+
+    if (isEn && enErrors[code]) {
+        return enErrors[code];
+    }
     if (!isEn && arErrors[code]) {
         return arErrors[code];
     }
     if (!isEn) {
-        return error?.message && /[\u0600-\u06FF]/.test(error.message)
-            ? error.message
-            : 'حدث خطأ غير متوقع أثناء تسجيل الدخول عبر Google. يرجى المحاولة مرة أخرى.';
+        return message && /[\u0600-\u06FF]/.test(message)
+            ? message
+            : 'حدث خطأ أثناء تسجيل الدخول عبر Google. يرجى إعادة المحاولة.';
     }
-    return error?.message || 'An unexpected error occurred during Google Sign-in.';
+    return message || 'An unexpected error occurred during Google Sign-in.';
 }
 
 function resetButton(buttonElement, originalContent) {
@@ -188,8 +269,12 @@ function showAuthAlert(message, type = 'error') {
 }
 
 // Auto-bind to elements with data-firebase-auth attribute on DOM ready
-document.addEventListener('DOMContentLoaded', () => {
+function initFirebaseAuthButtons() {
     document.querySelectorAll('[data-firebase-auth]').forEach((btn) => {
+        if (btn.dataset.firebaseBound === 'true') {
+            return;
+        }
+        btn.dataset.firebaseBound = 'true';
         btn.addEventListener('click', (e) => {
             const role = btn.getAttribute('data-firebase-auth') || 'user';
             // Only intercept if Firebase project id is present
@@ -199,4 +284,31 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
-});
+}
+
+// Check for redirect result on page load (if user was redirected)
+async function checkRedirectResult() {
+    try {
+        const fb = getFirebaseInstance();
+        if (!fb?.auth) return;
+        const result = await getRedirectResult(fb.auth);
+        if (result && result.user) {
+            const idToken = await result.user.getIdToken();
+            const targetRole = sessionStorage.getItem('firebase_auth_role') || 'user';
+            sessionStorage.removeItem('firebase_auth_role');
+            await postTokenToBackend(idToken, targetRole, null, null);
+        }
+    } catch (err) {
+        console.warn('[Firebase Auth] Redirect result check:', err);
+    }
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        initFirebaseAuthButtons();
+        checkRedirectResult();
+    });
+} else {
+    initFirebaseAuthButtons();
+    checkRedirectResult();
+}

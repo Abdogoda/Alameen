@@ -28,7 +28,7 @@
               </div>
 
               <div class="flex flex-col gap-2.5 sm:gap-4 items-center lg:items-start w-full">
-                <h1 class="slide-title font-['Baloo_Bhaijaan_2'] font-bold text-[26px] xs:text-[30px] sm:text-[44px] lg:text-[56px] xl:text-[60px] leading-[1.2] text-[#012383] w-full tracking-tight">
+                <h1 class="slide-title font-['Baloo_Bhaijaan_2'] font-bold text-[24px] xs:text-[28px] sm:text-[36px] lg:text-[44px] xl:text-[48px] leading-[1.2] text-[#012383] w-full tracking-tight">
                     {{ $heroBlock?->title ?: __('landing.slide1Title') }}
                 </h1>
 
@@ -112,7 +112,7 @@
               </div>
 
               <div class="flex flex-col gap-2.5 sm:gap-4 items-center lg:items-start w-full">
-                <h2 class="slide-title font-['Baloo_Bhaijaan_2'] font-bold text-[26px] xs:text-[30px] sm:text-[44px] lg:text-[56px] xl:text-[60px] leading-[1.2] text-[#012383] w-full tracking-tight">{{ __('landing.slide2Title') }}</h2>
+                <h2 class="slide-title font-['Baloo_Bhaijaan_2'] font-bold text-[24px] xs:text-[28px] sm:text-[36px] lg:text-[44px] xl:text-[48px] leading-[1.2] text-[#012383] w-full tracking-tight">{{ __('landing.slide2Title') }}</h2>
 
                 <p class="slide-desc font-['Cairo'] font-semibold text-[14px] sm:text-[17px] lg:text-[20px] leading-[1.7] text-[#1E293B] dark:text-slate-300 w-full max-w-[580px]">{{ __('landing.slide2Desc') }}</p>
               </div>
@@ -195,7 +195,7 @@
               </div>
 
               <div class="flex flex-col gap-2.5 sm:gap-4 items-center lg:items-start w-full">
-                <h2 class="slide-title font-['Baloo_Bhaijaan_2'] font-bold text-[26px] xs:text-[30px] sm:text-[44px] lg:text-[56px] xl:text-[60px] leading-[1.2] text-[#012383] w-full tracking-tight">{{ __('landing.slide3Title') }}</h2>
+                <h2 class="slide-title font-['Baloo_Bhaijaan_2'] font-bold text-[24px] xs:text-[28px] sm:text-[36px] lg:text-[44px] xl:text-[48px] leading-[1.2] text-[#012383] w-full tracking-tight">{{ __('landing.slide3Title') }}</h2>
 
                 <p class="slide-desc font-['Cairo'] font-semibold text-[14px] sm:text-[17px] lg:text-[20px] leading-[1.7] text-[#1E293B] dark:text-slate-300 w-full max-w-[580px]">{{ __('landing.slide3Desc') }}</p>
               </div>

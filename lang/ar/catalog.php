@@ -13,9 +13,13 @@ return [
     'catBehavior' => 'تعديل سلوك',
     'catLearning' => 'صعوبات تعلّم',
     'catEarly' => 'التدخل المبكر',
+    'categorySpeech' => 'تخاطب ونطق',
+    'categoryClinical' => 'ممارسة سريرية',
     'levelBeginner' => 'مبتدئ',
     'levelIntermediate' => 'متوسط',
     'levelAdvanced' => 'متقدم',
+    'intermediate' => 'متوسط',
+    'advanced' => 'متقدم',
     'specialized' => 'تخصصي',
     'clinicalPractice' => 'ممارسة سريرية',
     'scientificBasics' => 'أساسيات علمية',
@@ -26,6 +30,11 @@ return [
     'viewCourseDetails' => 'عرض تفاصيل الكورس',
     'noCoursesFound' => 'لا توجد كورسات تطابق معايير البحث الحالية.',
     'pathBadge' => 'مسار التخاطب السريري للطلاب',
+
+    // Courses 1, 2, 3
+    'course1Title' => 'تنمية المهارات اللغوية وبناء الجمل',
+    'course2Title' => 'تصحيح عيوب النطق ومخارج الحروف',
+    'course3Title' => 'أساسيات التدخل المبكر وجلسات التخاطب',
 
     // Courses 4, 5, 6
     'course4Title' => 'إدارة التأتأة وتعزيز الطلاقة الكلامية',

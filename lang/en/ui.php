@@ -301,4 +301,17 @@ return [
     'لا توجد إشعارات غير مقروءة' => 'No unread notifications',
     'تمييز الكل كمقروء' => 'Mark all as read',
     'حذف المقروء' => 'Clear read',
+
+    // Additional UI Strings
+    'الإعدادات' => 'Settings',
+    'Authentication code' => 'Authentication code',
+    'Enter the authentication code provided by your authenticator application.' => 'Enter the authentication code provided by your authenticator application.',
+    'Recovery code' => 'Recovery code',
+    'Please confirm access to your account by entering one of your emergency recovery codes.' => 'Please confirm access to your account by entering one of your emergency recovery codes.',
+    'or you can' => 'or you can',
+    'login using a recovery code' => 'login using a recovery code',
+    'login using an authentication code' => 'login using an authentication code',
+    'Delete' => 'Delete',
+    'Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.' => 'Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.',
+    'Are you sure you want to delete your account?' => 'Are you sure you want to delete your account?',
 ];

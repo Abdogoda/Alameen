@@ -35,7 +35,7 @@ return [
     // Admin
     'admin' => [
         'title' => 'Notification Management',
-        'subtitle' => 'Send and monitor notifications across Web, Email, and API.',
+        'subtitle' => 'Send and monitor notifications across Web and Email.',
         'send_new' => 'Send New Notification',
         'recipient' => 'Recipient',
         'recipients' => 'Recipients',

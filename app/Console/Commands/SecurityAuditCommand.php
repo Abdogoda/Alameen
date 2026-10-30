@@ -23,7 +23,7 @@ class SecurityAuditCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Audit authentication, two-factor, passkeys, and API security health across the application';
+    protected $description = 'Audit authentication, two-factor, and passkeys security health across the application';
 
     /**
      * Execute the console command.
@@ -55,7 +55,6 @@ class SecurityAuditCommand extends Command
                     ['Two-Factor Enabled', $profile['security']['two_factor_enabled'] ? 'YES' : 'NO'],
                     ['Two-Factor Confirmed At', $profile['security']['two_factor_confirmed_at'] ?? 'N/A'],
                     ['Registered Passkeys', $profile['security']['passkeys_count']],
-                    ['Active API Tokens', $profile['security']['api_tokens_count']],
                 ]
             );
 
@@ -75,13 +74,6 @@ class SecurityAuditCommand extends Command
             // table might not exist
         }
 
-        $tokensCount = 0;
-        try {
-            $tokensCount = DB::table('personal_access_tokens')->count();
-        } catch (\Throwable) {
-            // table might not exist
-        }
-
         $usersWithPasskeys = User::whereHas('passkeys')->count();
 
         $this->table(
@@ -92,7 +84,6 @@ class SecurityAuditCommand extends Command
                 ['2FA Enabled & Confirmed', $twoFactorUsers, $totalUsers > 0 ? round(($twoFactorUsers / $totalUsers) * 100, 1).'%' : '0%'],
                 ['Users with Passkeys', $usersWithPasskeys, $totalUsers > 0 ? round(($usersWithPasskeys / $totalUsers) * 100, 1).'%' : '0%'],
                 ['Total Passkeys Registered', $passkeysCount, '-'],
-                ['Total Active API Tokens', $tokensCount, '-'],
             ]
         );
 

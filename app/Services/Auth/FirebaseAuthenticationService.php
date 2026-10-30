@@ -23,7 +23,6 @@ class FirebaseAuthenticationService
      *
      * @return array{
      *     user: User,
-     *     token?: string,
      *     redirect?: string
      * }
      *
@@ -31,9 +30,7 @@ class FirebaseAuthenticationService
      */
     public function authenticateUser(
         string $idToken,
-        bool $remember = true,
-        bool $isApi = false,
-        ?string $deviceName = 'Firebase Token'
+        bool $remember = true
     ): array {
         try {
             $claims = $this->tokenVerifier->verify($idToken);
@@ -111,15 +108,6 @@ class FirebaseAuthenticationService
             ]);
         }
 
-        if ($isApi) {
-            $token = $user->createToken($deviceName ?? 'firebase_auth_token')->plainTextToken;
-
-            return [
-                'user' => $user,
-                'token' => $token,
-            ];
-        }
-
         Auth::guard('web')->login($user, $remember);
         if (request()->hasSession()) {
             request()->session()->regenerate();
@@ -136,7 +124,6 @@ class FirebaseAuthenticationService
      *
      * @return array{
      *     admin: Admin,
-     *     token?: string,
      *     redirect?: string
      * }
      *
@@ -144,9 +131,7 @@ class FirebaseAuthenticationService
      */
     public function authenticateAdmin(
         string $idToken,
-        bool $remember = true,
-        bool $isApi = false,
-        ?string $deviceName = 'Admin Firebase Token'
+        bool $remember = true
     ): array {
         try {
             $claims = $this->tokenVerifier->verify($idToken);
@@ -201,15 +186,6 @@ class FirebaseAuthenticationService
 
         if (! empty($updates)) {
             $admin->forceFill($updates)->save();
-        }
-
-        if ($isApi) {
-            $token = $admin->createToken($deviceName ?? 'admin_firebase_token')->plainTextToken;
-
-            return [
-                'admin' => $admin,
-                'token' => $token,
-            ];
         }
 
         Auth::guard('admin')->login($admin, $remember);

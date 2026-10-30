@@ -6,16 +6,11 @@ namespace App\Services\Auth;
 
 use App\Models\User;
 use Exception;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Str;
-use Illuminate\Validation\ValidationException;
 use Laravel\Fortify\Actions\ConfirmTwoFactorAuthentication;
 use Laravel\Fortify\Actions\DisableTwoFactorAuthentication;
 use Laravel\Fortify\Actions\EnableTwoFactorAuthentication;
 use Laravel\Fortify\Actions\GenerateNewRecoveryCodes;
 use Laravel\Fortify\Contracts\TwoFactorAuthenticationProvider;
-use Laravel\Fortify\Events\TwoFactorAuthenticationFailed;
-use Laravel\Fortify\Events\ValidTwoFactorAuthenticationCodeProvided;
 use Laravel\Fortify\Fortify;
 
 class TwoFactorService
@@ -139,69 +134,5 @@ class TwoFactorService
         }
 
         return false;
-    }
-
-    /**
-     * Create a short-lived challenge token for 2FA login (used by API).
-     */
-    public function createTwoFactorChallenge(User $user, int $ttlSeconds = 300): string
-    {
-        $challengeToken = Str::random(64);
-
-        Cache::put("2fa_challenge:{$challengeToken}", $user->id, now()->addSeconds($ttlSeconds));
-
-        return $challengeToken;
-    }
-
-    /**
-     * Verify a 2FA challenge via token and either TOTP code or recovery code.
-     * Consumes the challenge upon success.
-     *
-     * @throws ValidationException
-     */
-    public function verifyTwoFactorChallenge(
-        string $challengeToken,
-        ?string $code = null,
-        ?string $recoveryCode = null
-    ): User {
-        $userId = Cache::get("2fa_challenge:{$challengeToken}");
-
-        if (! $userId) {
-            throw ValidationException::withMessages([
-                'challenge_token' => [__('The two-factor authentication challenge has expired or is invalid.')],
-            ]);
-        }
-
-        /** @var User|null $user */
-        $user = User::where('id', $userId)->first();
-
-        if (! $user) {
-            Cache::forget("2fa_challenge:{$challengeToken}");
-            throw ValidationException::withMessages([
-                'challenge_token' => [__('User not found.')],
-            ]);
-        }
-
-        $isValid = false;
-
-        if (! empty($code)) {
-            $isValid = $this->verifyCode($user, $code);
-        } elseif (! empty($recoveryCode)) {
-            $isValid = $this->verifyRecoveryCode($user, $recoveryCode);
-        }
-
-        if (! $isValid) {
-            event(new TwoFactorAuthenticationFailed($user));
-
-            throw ValidationException::withMessages([
-                'code' => [__('The provided two-factor authentication code or recovery code was invalid.')],
-            ]);
-        }
-
-        event(new ValidTwoFactorAuthenticationCodeProvided($user));
-
-        Cache::forget("2fa_challenge:{$challengeToken}");
-
-        return $user;
     }
 }

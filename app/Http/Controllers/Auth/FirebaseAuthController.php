@@ -38,8 +38,7 @@ class FirebaseAuthController extends Controller
         try {
             $result = $this->authService->authenticateUser(
                 idToken: $validated['id_token'],
-                remember: (bool) ($validated['remember'] ?? true),
-                isApi: false
+                remember: (bool) ($validated['remember'] ?? true)
             );
 
             return response()->json([

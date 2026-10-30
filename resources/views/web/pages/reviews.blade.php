@@ -149,7 +149,7 @@
             <button
               type="button"
               data-filter="all"
-              class="filter-pill active px-4 py-1.5 rounded-full text-xs font-bold transition-all bg-[#012383] text-white cursor-pointer"
+              class="filter-pill active px-4 py-1.5 rounded-full text-xs font-bold transition-all bg-[#012383] text-white hover:bg-[#0B2A8F] cursor-pointer"
               data-i18n="reviews.filterAll"
             >
               الكل
@@ -188,6 +188,14 @@
             </button>
             <button
               type="button"
+              data-filter="stuttering"
+              class="filter-pill px-4 py-1.5 rounded-full text-xs font-bold transition-all bg-[#EAF1FB] text-[#0B2A8F] hover:bg-[#DEE8F7] cursor-pointer"
+              data-i18n="reviews.filterStuttering"
+            >
+              التأتأة
+            </button>
+            <button
+              type="button"
               data-filter="parent"
               class="filter-pill px-4 py-1.5 rounded-full text-xs font-bold transition-all bg-[#EAF1FB] text-[#0B2A8F] hover:bg-[#DEE8F7] cursor-pointer"
               data-i18n="reviews.filterParentTraining"
@@ -212,7 +220,7 @@
         </section>
 
         <!-- 4. SPOTLIGHT CASE STUDY CARD (WorkDo Featured Card) -->
-        <section class="bg-gradient-to-r from-white via-white to-[#FAFCFF] border-2 border-[#10B77F]/30 rounded-[20px] p-6 lg:p-8 shadow-card flex flex-col md:flex-row items-center gap-8 relative overflow-hidden">
+        <section id="spotlight-card" class="bg-gradient-to-r from-white via-white to-[#FAFCFF] border-2 border-[#10B77F]/30 rounded-[20px] p-6 lg:p-8 shadow-card flex flex-col md:flex-row items-center gap-8 relative overflow-hidden transition-all duration-300" data-category="speech" data-rating="5" data-cert="true">
           <div class="size-24 rounded-2xl bg-[#EEF7F3] border border-[#10B77F]/20 flex items-center justify-center shrink-0 overflow-hidden relative shadow-xs">
             <img src="/assets/images/tip-1.png" alt="د. ريم القحطاني" class="size-full object-cover" />
           </div>
@@ -255,7 +263,7 @@
         <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="reviews-grid">
           
           <!-- Card 1 -->
-          <article class="review-card bg-white border border-[#DEE8F7] rounded-[20px] p-6 shadow-xs flex flex-col justify-between hover:shadow-card hover:-translate-y-1 transition-all" data-category="speech" data-rating="5" data-cert="true" data-helpful="24">
+          <article class="review-card bg-white border border-[#DEE8F7] rounded-[20px] p-6 shadow-xs flex flex-col justify-between hover:shadow-card hover:-translate-y-1 transition-all" data-category="speech" data-rating="5" data-cert="true" data-helpful="24" data-order="1">
             <div class="flex flex-col gap-3">
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-3">
@@ -292,7 +300,7 @@
           </article>
 
           <!-- Card 2 -->
-          <article class="review-card bg-white border border-[#DEE8F7] rounded-[20px] p-6 shadow-xs flex flex-col justify-between hover:shadow-card hover:-translate-y-1 transition-all" data-category="articulation" data-rating="5" data-cert="true" data-helpful="18">
+          <article class="review-card bg-white border border-[#DEE8F7] rounded-[20px] p-6 shadow-xs flex flex-col justify-between hover:shadow-card hover:-translate-y-1 transition-all" data-category="articulation" data-rating="5" data-cert="true" data-helpful="18" data-order="2">
             <div class="flex flex-col gap-3">
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-3">
@@ -328,7 +336,7 @@
           </article>
 
           <!-- Card 3 -->
-          <article class="review-card bg-white border border-[#DEE8F7] rounded-[20px] p-6 shadow-xs flex flex-col justify-between hover:shadow-card hover:-translate-y-1 transition-all" data-category="parent" data-rating="5" data-cert="false" data-helpful="31">
+          <article class="review-card bg-white border border-[#DEE8F7] rounded-[20px] p-6 shadow-xs flex flex-col justify-between hover:shadow-card hover:-translate-y-1 transition-all" data-category="parent" data-rating="5" data-cert="false" data-helpful="31" data-order="3">
             <div class="flex flex-col gap-3">
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-3">
@@ -364,7 +372,7 @@
           </article>
 
           <!-- Card 4 -->
-          <article class="review-card bg-white border border-[#DEE8F7] rounded-[20px] p-6 shadow-xs flex flex-col justify-between hover:shadow-card hover:-translate-y-1 transition-all" data-category="stuttering" data-rating="4" data-cert="true" data-helpful="14">
+          <article class="review-card bg-white border border-[#DEE8F7] rounded-[20px] p-6 shadow-xs flex flex-col justify-between hover:shadow-card hover:-translate-y-1 transition-all" data-category="stuttering" data-rating="4" data-cert="true" data-helpful="14" data-order="4">
             <div class="flex flex-col gap-3">
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-3">
@@ -400,7 +408,7 @@
           </article>
 
           <!-- Card 5 -->
-          <article class="review-card bg-white border border-[#DEE8F7] rounded-[20px] p-6 shadow-xs flex flex-col justify-between hover:shadow-card hover:-translate-y-1 transition-all" data-category="speech" data-rating="5" data-cert="true" data-helpful="20">
+          <article class="review-card bg-white border border-[#DEE8F7] rounded-[20px] p-6 shadow-xs flex flex-col justify-between hover:shadow-card hover:-translate-y-1 transition-all" data-category="speech" data-rating="5" data-cert="true" data-helpful="20" data-order="5">
             <div class="flex flex-col gap-3">
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-3">
@@ -436,7 +444,7 @@
           </article>
 
           <!-- Card 6 -->
-          <article class="review-card bg-white border border-[#DEE8F7] rounded-[20px] p-6 shadow-xs flex flex-col justify-between hover:shadow-card hover:-translate-y-1 transition-all" data-category="speech" data-rating="5" data-cert="true" data-helpful="28">
+          <article class="review-card bg-white border border-[#DEE8F7] rounded-[20px] p-6 shadow-xs flex flex-col justify-between hover:shadow-card hover:-translate-y-1 transition-all" data-category="speech" data-rating="5" data-cert="true" data-helpful="28" data-order="6">
             <div class="flex flex-col gap-3">
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-3">
@@ -471,92 +479,115 @@
             </div>
           </article>
 
+          <!-- Empty State -->
+          <div id="reviews-empty" class="col-span-full hidden py-16 flex flex-col items-center justify-center text-center">
+            <div class="size-16 rounded-full bg-[#EAF1FB] flex items-center justify-center text-[#0B2A8F] mb-4 shadow-xs">
+              <svg class="size-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h3 class="text-base font-bold text-[#012383] mb-1">لا توجد تقييمات مطابقة</h3>
+            <p class="text-xs text-[#475569]">جرب اختيار تصنيف آخر لعرض آراء الطلاب</p>
+          </div>
+
         </section>
     </div>
 
     <x-slot:modals>
-<div id="review-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-xs p-4">
-        <div class="bg-white rounded-[24px] max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-[#DEE8F7] relative flex flex-col gap-5 max-h-[90vh] overflow-y-auto">
+      <div id="review-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 backdrop-blur-xs p-4 overflow-y-auto">
+        <div class="bg-white rounded-[24px] max-w-lg w-full shadow-2xl border border-[#DEE8F7] relative flex flex-col my-auto overflow-hidden animate-in fade-in zoom-in-95 duration-200">
           
-          <!-- Modal Header -->
-          <div class="flex items-start justify-between">
+          <!-- Modal Header (Fixed) -->
+          <div class="flex items-center justify-between px-6 py-4 border-b border-[#DEE8F7] shrink-0 bg-white">
             <div>
-              <h3 class="font-['Baloo_Bhaijaan_2'] font-bold text-2xl text-[#012383]" data-i18n="reviews.modalTitle">إضافة تقييم جديد</h3>
+              <h3 class="font-['Baloo_Bhaijaan_2'] font-bold text-xl sm:text-2xl text-[#012383]" data-i18n="reviews.modalTitle">إضافة تقييم جديد</h3>
               <p class="text-xs text-[#475569] font-medium" data-i18n="reviews.modalSubtitle">شارك تجربتك وانطباعك عن الدورة التدريبية</p>
             </div>
             <button
               type="button"
               id="close-review-modal-btn"
-              class="size-8 rounded-full bg-[#EAF1FB] hover:bg-[#DEE8F7] text-[#012383] flex items-center justify-center font-bold text-lg transition-colors cursor-pointer"
+              class="size-8 rounded-full bg-[#EAF1FB] hover:bg-[#DEE8F7] text-[#012383] flex items-center justify-center font-bold text-base transition-colors cursor-pointer shrink-0"
             >
               ✕
             </button>
           </div>
 
-          <!-- Interactive Star Picker -->
-          <div class="flex flex-col gap-2">
-            <label class="text-xs font-bold text-[#012383]" data-i18n="reviews.modalRatingLabel">تقييمك العام للدورة</label>
-            <div class="flex items-center gap-2 text-3xl cursor-pointer" id="modal-star-group">
-              <span class="star-item text-amber-400" data-val="1">★</span>
-              <span class="star-item text-amber-400" data-val="2">★</span>
-              <span class="star-item text-amber-400" data-val="3">★</span>
-              <span class="star-item text-amber-400" data-val="4">★</span>
-              <span class="star-item text-amber-400" data-val="5">★</span>
+          <!-- Modal Body (Compact & Scrollable if needed) -->
+          <div class="px-6 py-4 flex flex-col gap-3.5 overflow-y-auto max-h-[calc(85vh-130px)] [scrollbar-width:thin] [scrollbar-color:#DEE8F7_transparent]">
+            
+            <!-- Interactive Star Picker -->
+            <div class="flex flex-col gap-1">
+              <label class="text-xs font-bold text-[#012383]" data-i18n="reviews.modalRatingLabel">تقييمك العام للدورة</label>
+              <div class="flex items-center gap-1.5 text-2xl cursor-pointer" id="modal-star-group">
+                <span class="star-item text-amber-400 select-none hover:scale-110 transition-transform" data-val="1">★</span>
+                <span class="star-item text-amber-400 select-none hover:scale-110 transition-transform" data-val="2">★</span>
+                <span class="star-item text-amber-400 select-none hover:scale-110 transition-transform" data-val="3">★</span>
+                <span class="star-item text-amber-400 select-none hover:scale-110 transition-transform" data-val="4">★</span>
+                <span class="star-item text-amber-400 select-none hover:scale-110 transition-transform" data-val="5">★</span>
+              </div>
+              <input type="hidden" id="modal-rating-value" value="5" />
             </div>
-            <input type="hidden" id="modal-rating-value" value="5" />
-          </div>
 
-          <!-- Course Selector -->
-          <div class="flex flex-col gap-1.5">
-            <label class="text-xs font-bold text-[#012383]" data-i18n="reviews.modalCourseLabel">الدورة التي حضرتها</label>
-            <select id="modal-course-select" class="bg-[#FAFCFF] border border-[#DEE8F7] rounded-xl px-3.5 py-2.5 text-xs font-medium text-[#012383] outline-none focus:border-[#0B2A8F]">
-              <option value="lang-dev">دورة استراتيجيات تنمية اللغة</option>
-              <option value="articulation">دورة تطبيقات مخارج الحروف</option>
-              <option value="basics">دورة أساسيات التخاطب</option>
-              <option value="stuttering">دورة إدارة التأتأة والطلاقة</option>
-            </select>
-          </div>
-
-          <!-- Review Headline -->
-          <div class="flex flex-col gap-1.5">
-            <label class="text-xs font-bold text-[#012383]" data-i18n="reviews.modalTitleLabel">عنوان التقييم</label>
-            <input
-              type="text"
-              id="modal-review-title"
-              placeholder="مثال: تجربة رائعة وتمارين عملية فعالة"
-              data-i18n-placeholder="reviews.modalTitlePlaceholder"
-              class="bg-[#FAFCFF] border border-[#DEE8F7] rounded-xl px-3.5 py-2.5 text-xs text-[#012383] placeholder-slate-400 outline-none focus:border-[#0B2A8F]"
-            />
-          </div>
-
-          <!-- Feedback Details -->
-          <div class="flex flex-col gap-1.5">
-            <label class="text-xs font-bold text-[#012383]" data-i18n="reviews.modalFeedbackLabel">تفاصيل تجربتك والنتائج التي حققتها</label>
-            <textarea
-              id="modal-review-text"
-              rows="3"
-              placeholder="اكتب رأيك بالتفصيل هنا وكيف أثرت الدورة في تعلّمك..."
-              data-i18n-placeholder="reviews.modalFeedbackPlaceholder"
-              class="bg-[#FAFCFF] border border-[#DEE8F7] rounded-xl p-3 text-xs text-[#012383] placeholder-slate-400 outline-none focus:border-[#0B2A8F] resize-none"
-            ></textarea>
-          </div>
-
-          <!-- File Upload Dropzone -->
-          <div class="flex flex-col gap-1.5">
-            <label class="text-xs font-bold text-[#012383]" data-i18n="reviews.modalUploadLabel">إرفاق إثبات أو شهادة (اختياري)</label>
-            <div class="border-2 border-dashed border-[#DEE8F7] hover:border-[#0B2A8F] rounded-xl p-4 text-center cursor-pointer transition-colors bg-[#FAFCFF]">
-              <p class="text-[11px] text-[#475569] font-medium" data-i18n="reviews.modalUploadHint">
-                اسحب الملف هنا أو انقر للتصفح (PNG, JPG, PDF حتى 5MB)
-              </p>
+            <!-- Course Selector -->
+            <div class="flex flex-col gap-1">
+              <label class="text-xs font-bold text-[#012383]" data-i18n="reviews.modalCourseLabel">الدورة التي حضرتها</label>
+              <select id="modal-course-select" class="w-full bg-[#FAFCFF] border border-[#DEE8F7] rounded-xl px-3.5 py-2 text-xs font-medium text-[#012383] outline-none focus:border-[#0B2A8F]">
+                <option value="lang-dev">دورة استراتيجيات تنمية اللغة</option>
+                <option value="articulation">دورة تطبيقات مخارج الحروف</option>
+                <option value="basics">دورة أساسيات التخاطب</option>
+                <option value="stuttering">دورة إدارة التأتأة والطلاقة</option>
+              </select>
             </div>
+
+            <!-- Review Headline -->
+            <div class="flex flex-col gap-1">
+              <label class="text-xs font-bold text-[#012383]" data-i18n="reviews.modalTitleLabel">عنوان التقييم</label>
+              <input
+                type="text"
+                id="modal-review-title"
+                placeholder="مثال: تجربة رائعة وتمارين عملية فعالة"
+                data-i18n-placeholder="reviews.modalTitlePlaceholder"
+                class="w-full bg-[#FAFCFF] border border-[#DEE8F7] rounded-xl px-3.5 py-2 text-xs text-[#012383] placeholder-slate-400 outline-none focus:border-[#0B2A8F]"
+              />
+            </div>
+
+            <!-- Feedback Details -->
+            <div class="flex flex-col gap-1">
+              <label class="text-xs font-bold text-[#012383]" data-i18n="reviews.modalFeedbackLabel">تفاصيل تجربتك والنتائج التي حققتها</label>
+              <textarea
+                id="modal-review-text"
+                rows="2"
+                placeholder="اكتب رأيك بالتفصيل هنا وكيف أثرت الدورة في تعلّمك..."
+                data-i18n-placeholder="reviews.modalFeedbackPlaceholder"
+                class="w-full bg-[#FAFCFF] border border-[#DEE8F7] rounded-xl p-2.5 text-xs text-[#012383] placeholder-slate-400 outline-none focus:border-[#0B2A8F] resize-none"
+              ></textarea>
+            </div>
+
+            <!-- File Upload Dropzone -->
+            <div class="flex flex-col gap-1">
+              <label class="text-xs font-bold text-[#012383]" data-i18n="reviews.modalUploadLabel">إرفاق إثبات أو شهادة (اختياري)</label>
+              <input type="file" id="modal-file-input" accept="image/*,.pdf" class="hidden" />
+              <div
+                id="modal-upload-box"
+                class="border-2 border-dashed border-[#DEE8F7] hover:border-[#0B2A8F] rounded-xl p-2.5 text-center cursor-pointer transition-colors bg-[#FAFCFF] flex items-center justify-center gap-2"
+              >
+                <svg class="size-4 text-[#0B2A8F] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                </svg>
+                <p id="modal-upload-filename" class="text-[11px] text-[#475569] font-medium" data-i18n="reviews.modalUploadHint">
+                  انقر لاختيار ملف أو اسحبه هنا (PNG, JPG, PDF حتى 5MB)
+                </p>
+              </div>
+            </div>
+
           </div>
 
-          <!-- Action Buttons -->
-          <div class="flex items-center justify-end gap-3 pt-2">
+          <!-- Modal Footer (Docked / Always Visible) -->
+          <div class="flex items-center justify-end gap-3 px-6 py-3.5 bg-slate-50 border-t border-[#DEE8F7] shrink-0 rounded-b-[24px]">
             <button
               type="button"
               id="cancel-review-btn"
-              class="px-4 py-2 rounded-xl text-xs font-bold text-[#475569] hover:bg-slate-100 transition-colors cursor-pointer"
+              class="px-4 py-2 rounded-xl text-xs font-bold text-[#475569] hover:bg-slate-200/60 transition-colors cursor-pointer"
               data-i18n="reviews.modalCancelBtn"
             >
               إلغاء
@@ -578,6 +609,328 @@
     </x-slot:modals>
 
     <x-slot:scripts>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        // ----------------------------------------------------
+        // 1. FILTERING & SORTING LOGIC
+        // ----------------------------------------------------
+        const filterPills = document.querySelectorAll('.filter-pill');
+        const sortSelect = document.getElementById('sort-select');
+        const grid = document.getElementById('reviews-grid');
+        const spotlightCard = document.getElementById('spotlight-card');
+        const emptyState = document.getElementById('reviews-empty');
 
+        let activeFilter = 'all';
+
+        function applyFilter() {
+          const cards = document.querySelectorAll('.review-card');
+          let visibleCount = 0;
+
+          cards.forEach(card => {
+            const cat = card.getAttribute('data-category');
+            const rating = card.getAttribute('data-rating');
+            const cert = card.getAttribute('data-cert');
+
+            let matches = false;
+            if (activeFilter === 'all') {
+              matches = true;
+            } else if (activeFilter === '5star') {
+              matches = (rating === '5');
+            } else if (activeFilter === 'cert') {
+              matches = (cert === 'true');
+            } else {
+              matches = (cat === activeFilter);
+            }
+
+            if (matches) {
+              card.style.display = 'flex';
+              visibleCount++;
+            } else {
+              card.style.display = 'none';
+            }
+          });
+
+          // Spotlight featured card filtering
+          if (spotlightCard) {
+            const spotCat = spotlightCard.getAttribute('data-category') || 'speech';
+            const spotRating = spotlightCard.getAttribute('data-rating') || '5';
+            const spotCert = spotlightCard.getAttribute('data-cert') || 'true';
+
+            let showSpotlight = false;
+            if (activeFilter === 'all') {
+              showSpotlight = true;
+            } else if (activeFilter === '5star') {
+              showSpotlight = (spotRating === '5');
+            } else if (activeFilter === 'cert') {
+              showSpotlight = (spotCert === 'true');
+            } else {
+              showSpotlight = (spotCat === activeFilter);
+            }
+
+            spotlightCard.style.display = showSpotlight ? 'flex' : 'none';
+          }
+
+          // Empty state visibility
+          if (emptyState) {
+            if (visibleCount === 0) {
+              emptyState.classList.remove('hidden');
+              emptyState.classList.add('flex');
+            } else {
+              emptyState.classList.add('hidden');
+              emptyState.classList.remove('flex');
+            }
+          }
+        }
+
+        function sortCards(criteria) {
+          if (!grid) return;
+          const cardsArray = Array.from(grid.querySelectorAll('.review-card'));
+
+          cardsArray.sort((a, b) => {
+            if (criteria === 'highest') {
+              const rA = parseInt(a.getAttribute('data-rating') || '0', 10);
+              const rB = parseInt(b.getAttribute('data-rating') || '0', 10);
+              if (rB !== rA) return rB - rA;
+              return (parseInt(a.getAttribute('data-order') || '0', 10)) - (parseInt(b.getAttribute('data-order') || '0', 10));
+            } else if (criteria === 'helpful') {
+              const hA = parseInt(a.getAttribute('data-helpful') || '0', 10);
+              const hB = parseInt(b.getAttribute('data-helpful') || '0', 10);
+              if (hB !== hA) return hB - hA;
+              return (parseInt(a.getAttribute('data-order') || '0', 10)) - (parseInt(b.getAttribute('data-order') || '0', 10));
+            } else {
+              // 'recent'
+              const oA = parseInt(a.getAttribute('data-order') || '0', 10);
+              const oB = parseInt(b.getAttribute('data-order') || '0', 10);
+              return oA - oB;
+            }
+          });
+
+          cardsArray.forEach(card => {
+            if (emptyState) {
+              grid.insertBefore(card, emptyState);
+            } else {
+              grid.appendChild(card);
+            }
+          });
+        }
+
+        filterPills.forEach(pill => {
+          pill.addEventListener('click', () => {
+            filterPills.forEach(p => {
+              p.classList.remove('active', 'bg-[#012383]', 'text-white', 'hover:bg-[#0B2A8F]');
+              p.classList.add('bg-[#EAF1FB]', 'text-[#0B2A8F]', 'hover:bg-[#DEE8F7]');
+            });
+            pill.classList.add('active', 'bg-[#012383]', 'text-white', 'hover:bg-[#0B2A8F]');
+            pill.classList.remove('bg-[#EAF1FB]', 'text-[#0B2A8F]', 'hover:bg-[#DEE8F7]');
+
+            activeFilter = pill.getAttribute('data-filter') || 'all';
+            applyFilter();
+          });
+        });
+
+        sortSelect?.addEventListener('change', () => {
+          sortCards(sortSelect.value);
+        });
+
+        // ----------------------------------------------------
+        // 2. HELPFUL VOTE COUNTERS
+        // ----------------------------------------------------
+        function attachHelpfulHandlers() {
+          const helpfulBtns = document.querySelectorAll('.helpful-btn');
+          helpfulBtns.forEach(btn => {
+            if (btn.dataset.initialized) return;
+            btn.dataset.initialized = 'true';
+            let clicked = false;
+            btn.addEventListener('click', (e) => {
+              e.preventDefault();
+              if (!clicked) {
+                const countEl = btn.querySelector('.helpful-count');
+                const card = btn.closest('.review-card');
+                let count = parseInt(countEl?.textContent || '0', 10);
+                count += 1;
+                if (countEl) countEl.textContent = count;
+                if (card) card.setAttribute('data-helpful', count);
+                btn.classList.add('text-[#0B2A8F]', 'font-bold');
+                clicked = true;
+              }
+            });
+          });
+        }
+        attachHelpfulHandlers();
+
+        // ----------------------------------------------------
+        // 3. REVIEW MODAL & SUBMISSION
+        // ----------------------------------------------------
+        const modal = document.getElementById('review-modal');
+        const openBtn = document.getElementById('open-review-modal-btn');
+        const closeBtn = document.getElementById('close-review-modal-btn');
+        const cancelBtn = document.getElementById('cancel-review-btn');
+        const submitBtn = document.getElementById('submit-review-btn');
+        const toast = document.getElementById('toast');
+        const toastMessage = document.getElementById('toast-message');
+
+        // File dropzone click & preview
+        const uploadBox = document.getElementById('modal-upload-box');
+        const fileInput = document.getElementById('modal-file-input');
+        const uploadFilename = document.getElementById('modal-upload-filename');
+
+        uploadBox?.addEventListener('click', () => {
+          fileInput?.click();
+        });
+
+        fileInput?.addEventListener('change', () => {
+          if (fileInput.files && fileInput.files[0] && uploadFilename) {
+            uploadFilename.textContent = fileInput.files[0].name;
+            uploadBox?.classList.add('border-[#0B2A8F]', 'bg-blue-50/60');
+          }
+        });
+
+        const resetModalForm = () => {
+          const titleInput = document.getElementById('modal-review-title');
+          const textInput = document.getElementById('modal-review-text');
+          if (titleInput) titleInput.value = '';
+          if (textInput) textInput.value = '';
+          if (fileInput) fileInput.value = '';
+          if (uploadFilename) {
+            uploadFilename.textContent = document.documentElement.lang === 'en'
+              ? 'Click to browse or drop file here (PNG, JPG, PDF up to 5MB)'
+              : 'انقر لاختيار ملف أو اسحبه هنا (PNG, JPG, PDF حتى 5MB)';
+          }
+          uploadBox?.classList.remove('border-[#0B2A8F]', 'bg-blue-50/60');
+        };
+
+        const showModal = () => {
+          modal?.classList.remove('hidden');
+          modal?.classList.add('flex');
+        };
+
+        const hideModal = () => {
+          modal?.classList.add('hidden');
+          modal?.classList.remove('flex');
+          resetModalForm();
+        };
+
+        openBtn?.addEventListener('click', showModal);
+        closeBtn?.addEventListener('click', hideModal);
+        cancelBtn?.addEventListener('click', hideModal);
+
+        modal?.addEventListener('click', (e) => {
+          if (e.target === modal) hideModal();
+        });
+
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape' && modal && !modal.classList.contains('hidden')) {
+            hideModal();
+          }
+        });
+
+        // Star picker in modal
+        const starItems = document.querySelectorAll('.star-item');
+        const ratingVal = document.getElementById('modal-rating-value');
+        starItems.forEach(star => {
+          star.addEventListener('click', () => {
+            const val = parseInt(star.getAttribute('data-val'), 10);
+            if (ratingVal) ratingVal.value = val;
+            starItems.forEach(s => {
+              const sVal = parseInt(s.getAttribute('data-val'), 10);
+              if (sVal <= val) {
+                s.classList.add('text-amber-400');
+                s.classList.remove('text-slate-300');
+              } else {
+                s.classList.remove('text-amber-400');
+                s.classList.add('text-slate-300');
+              }
+            });
+          });
+        });
+
+        // Submit review
+        submitBtn?.addEventListener('click', () => {
+          const titleInput = document.getElementById('modal-review-title');
+          const textInput = document.getElementById('modal-review-text');
+          const courseSelect = document.getElementById('modal-course-select');
+          const rating = ratingVal ? parseInt(ratingVal.value, 10) : 5;
+
+          const title = titleInput?.value.trim() || '';
+          const text = textInput?.value.trim() || '';
+
+          if (!title || !text) {
+            alert(document.documentElement.lang === 'en' ? 'Please fill in the review title and details.' : 'يرجى كتابة عنوان التقييم والتفاصيل.');
+            return;
+          }
+
+          const courseMap = {
+            'lang-dev': { cat: 'speech', name: 'استراتيجيات تنمية اللغة' },
+            'articulation': { cat: 'articulation', name: 'تطبيقات مخارج الحروف' },
+            'basics': { cat: 'speech', name: 'أساسيات التخاطب' },
+            'stuttering': { cat: 'stuttering', name: 'إدارة التأتأة والطلاقة' }
+          };
+          const selectedCourse = courseMap[courseSelect?.value] || { cat: 'speech', name: 'دورة تدريبية' };
+          const starString = '★'.repeat(rating) + '☆'.repeat(5 - rating);
+
+          const newCard = document.createElement('article');
+          newCard.className = 'review-card bg-white border border-[#DEE8F7] rounded-[20px] p-6 shadow-xs flex flex-col justify-between hover:shadow-card hover:-translate-y-1 transition-all';
+          newCard.setAttribute('data-category', selectedCourse.cat);
+          newCard.setAttribute('data-rating', rating);
+          newCard.setAttribute('data-cert', 'true');
+          newCard.setAttribute('data-helpful', '0');
+          newCard.setAttribute('data-order', '0');
+
+          newCard.innerHTML = `
+            <div class="flex flex-col gap-3">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div class="size-10 rounded-full bg-[#EAF1FB] flex items-center justify-center font-bold text-sm text-[#0B2A8F]">
+                    أ
+                  </div>
+                  <div>
+                    <h4 class="text-sm font-bold text-[#012383]">${document.documentElement.lang === 'en' ? 'Verified Student' : 'طالب موثق'}</h4>
+                    <span class="text-[11px] text-[#475569]">${document.documentElement.lang === 'en' ? 'Just now' : 'الآن'}</span>
+                  </div>
+                </div>
+                <div class="flex text-[#F59E0B] text-xs">${starString}</div>
+              </div>
+
+              <div class="flex flex-wrap gap-1.5 items-center">
+                <span class="px-2 py-0.5 rounded bg-[#EEF7F3] text-emerald-700 text-[10px] font-bold">طالب موثق</span>
+                <span class="px-2 py-0.5 rounded bg-[#EAF1FB] text-[#0B2A8F] text-[10px] font-bold">${selectedCourse.name}</span>
+                <span class="px-2 py-0.5 rounded bg-blue-50 text-blue-700 text-[10px] font-bold">شهادة معتمدة</span>
+              </div>
+
+              <h5 class="text-xs font-bold text-[#012383] mt-1">«${title}»</h5>
+              <p class="text-xs text-[#475569] font-medium leading-relaxed">${text}</p>
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-[#DEE8F7] flex items-center justify-between text-xs">
+              <span class="text-[11px] text-emerald-600 font-bold">طالب معتمد</span>
+              <button type="button" class="helpful-btn flex items-center gap-1.5 text-[#475569] hover:text-[#0B2A8F] font-semibold cursor-pointer">
+                <span>👍</span>
+                <span class="helpful-count">0</span>
+              </button>
+            </div>
+          `;
+
+          if (grid) {
+            grid.insertBefore(newCard, grid.firstChild);
+          }
+          attachHelpfulHandlers();
+
+          hideModal();
+          if (titleInput) titleInput.value = '';
+          if (textInput) textInput.value = '';
+
+          applyFilter();
+
+          if (toast && toastMessage) {
+            const isEn = document.documentElement.lang === 'en';
+            toastMessage.textContent = isEn ? 'Your review has been submitted successfully!' : 'تم نشر تقييمك بنجاح! شكراً لمشاركتك.';
+            toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+            setTimeout(() => {
+              toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+            }, 3500);
+          }
+        });
+      });
+    </script>
     </x-slot:scripts>
 </x-layouts::marketing>

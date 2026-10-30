@@ -38,8 +38,7 @@ class AdminFirebaseAuthController extends Controller
         try {
             $result = $this->authService->authenticateAdmin(
                 idToken: $validated['id_token'],
-                remember: (bool) ($validated['remember'] ?? true),
-                isApi: false
+                remember: (bool) ($validated['remember'] ?? true)
             );
 
             return response()->json([

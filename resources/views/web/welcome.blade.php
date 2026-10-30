@@ -806,13 +806,13 @@
               </div>
               <h3 class="font-bold text-lg sm:text-xl text-[#012383]">{{ __('contact.channelTechTitle') }}</h3>
               <p class="text-xs sm:text-sm text-[#475569] leading-relaxed">
-                تواصل مباشر عبر البريد الإلكتروني للاستفسارات الأكاديمية عن الكورس ومتابعة حسابك وشهادتك.
+                {{ __('contact.channelTechDesc') }}
               </p>
             </div>
             <div class="mt-5 sm:mt-6 pt-4 border-t border-[#DEE8F7] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <span class="text-xs sm:text-sm font-bold text-[#0B2A8F] dir-ltr break-all">support@alameen.edu.sa</span>
               <a href="mailto:support@alameen.edu.sa" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 sm:py-2 rounded-xl bg-[#EAF1FB] hover:bg-[#DEE8F7] text-xs font-bold text-[#012383] hover:text-[#0B2A8F] transition-all">
-                <span>مراسلة عبر البريد</span>
+                <span>{{ __('contact.channelTechBtn') }}</span>
                 <span class="text-xs">←</span>
               </a>
             </div>
@@ -826,13 +826,13 @@
               </div>
               <h3 class="font-bold text-lg sm:text-xl text-[#012383]">{{ __('contact.channelWhatsAppTitle') }}</h3>
               <p class="text-xs sm:text-sm text-[#475569] leading-relaxed">
-                تواصل فوري وسريع مع فريق خدمة الطلاب للرد على استفساراتك وتأكيد التسجيل في كورس التخاطب.
+                {{ __('contact.channelWhatsAppDesc') }}
               </p>
             </div>
             <div class="mt-5 sm:mt-6 pt-4 border-t border-[#DEE8F7] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <span class="text-xs sm:text-sm font-bold text-[#10B77F] dir-ltr">+966 50 123 4567</span>
               <a href="https://wa.me/966501234567" target="_blank" rel="noopener" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 sm:py-2 rounded-xl bg-[#EEF7F3] hover:bg-[#DEE8F7] text-xs font-bold text-emerald-700 hover:text-emerald-800 transition-all">
-                <span>فتح محادثة واتساب</span>
+                <span>{{ __('contact.channelWhatsAppBtn') }}</span>
                 <span class="text-xs">←</span>
               </a>
             </div>
@@ -851,7 +851,7 @@
             </div>
 
             <div class="flex flex-col gap-2">
-              <label class="text-xs font-bold text-[#012383]">موضوع الاستفسار</label>
+              <label class="text-xs font-bold text-[#012383]">{{ __('contact.topicLabel') }}</label>
               <div class="flex flex-wrap gap-2" id="topic-pills">
                 <button
                   type="button"
@@ -913,15 +913,15 @@
           <!-- Info Companion (4 Cols) -->
           <div class="lg:col-span-4 flex flex-col gap-6">
             <div class="bg-white border border-[#DEE8F7] rounded-[22px] p-6 shadow-xs flex flex-col gap-5">
-              <h4 class="font-bold text-[#012383] text-base">ساعات العمل والرد</h4>
+              <h4 class="font-bold text-[#012383] text-base">{{ __('contact.workingHoursTitle') }}</h4>
               
               <div class="flex items-start gap-3">
                 <div class="size-8 rounded-xl bg-[#EAF1FB] text-[#0B2A8F] flex items-center justify-center text-sm shrink-0">
                   🕒
                 </div>
                 <div class="flex flex-col text-xs">
-                  <span class="font-bold text-[#012383]">الأحد - الخميس</span>
-                  <span class="text-[#475569] mt-0.5">من ٩:٠٠ صباحاً حتى ٦:٠٠ مساءً</span>
+                  <span class="font-bold text-[#012383]">{{ __('contact.workingDays') }}</span>
+                  <span class="text-[#475569] mt-0.5">{{ __('contact.workingHoursTime') }}</span>
                 </div>
               </div>
 
@@ -930,8 +930,8 @@
                   📍
                 </div>
                 <div class="flex flex-col text-xs">
-                  <span class="font-bold text-[#012383]">المقر الرئيسي</span>
-                  <span class="text-[#475569] mt-0.5">المملكة العربية السعودية • الرياض</span>
+                  <span class="font-bold text-[#012383]">{{ __('contact.headquartersTitle') }}</span>
+                  <span class="text-[#475569] mt-0.5">{{ __('contact.headquartersAddress') }}</span>
                 </div>
               </div>
             </div>

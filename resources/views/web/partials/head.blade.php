@@ -68,7 +68,8 @@
     body.content-ready .alameen-content-wrap,
     #alameen-loader.loader-hidden ~ .alameen-content-wrap {
         opacity: 1 !important;
-        transform: translateY(0) !important;
+        transform: none !important;
+        will-change: auto !important;
     }
     html.dark #alameen-loader,
     [data-theme="dark"] #alameen-loader {

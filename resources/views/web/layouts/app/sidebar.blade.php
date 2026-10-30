@@ -15,29 +15,30 @@
         <!-- Top-Level Pre-Rendered Themed Loader (At the top of everything from 0ms) -->
         <x-alameen-loader />
 
-        <!-- Mobile Sidebar Overlay -->
-        <div
-            x-show="mobileSidebarOpen"
-            x-transition:enter="transition-opacity ease-linear duration-300"
-            x-transition:enter-start="opacity-0"
-            x-transition:enter-end="opacity-100"
-            x-transition:leave="transition-opacity ease-linear duration-300"
-            x-transition:leave-start="opacity-100"
-            x-transition:leave-end="opacity-0"
-            @click="mobileSidebarOpen = false"
-            @touchmove.prevent
-            class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-40 lg:hidden"
-            style="display: none;"
-        ></div>
-
         <div class="flex-1 flex flex-row min-h-screen w-full max-w-full overflow-x-clip relative alameen-content-wrap">
             
+            <!-- Mobile Sidebar Overlay (z-40 so it stays beneath the z-50 drawer) -->
+            <div
+                x-show="mobileSidebarOpen"
+                x-cloak
+                x-transition:enter="transition-opacity ease-linear duration-300"
+                x-transition:enter-start="opacity-0"
+                x-transition:enter-end="opacity-100"
+                x-transition:leave="transition-opacity ease-linear duration-300"
+                x-transition:leave-start="opacity-100"
+                x-transition:leave-end="opacity-0"
+                @click="mobileSidebarOpen = false"
+                @touchmove.prevent
+                class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-40 lg:hidden"
+                style="display: none;"
+            ></div>
+
             <!-- ============================================== -->
             <!-- STUDENT SIDEBAR NAVIGATION                     -->
             <!-- ============================================== -->
             <aside
                 :class="{ 'is-open': mobileSidebarOpen }"
-                class="student-sidebar-drawer bg-white dark:bg-slate-900 border-e border-[#DEE8F7] dark:border-slate-800 flex flex-col p-4 sm:p-5 shrink-0 shadow-xl lg:shadow-none overflow-y-auto overscroll-contain scrollbar-thin"
+                class="student-sidebar-drawer z-50 bg-white dark:bg-slate-900 border-e border-[#DEE8F7] dark:border-slate-800 flex flex-col p-4 sm:p-5 shrink-0 shadow-xl lg:shadow-none overflow-y-auto overscroll-contain scrollbar-thin"
             >
                 <div class="flex flex-col gap-5 sm:gap-6 shrink-0">
                     <!-- Platform Brand & Role Badge -->

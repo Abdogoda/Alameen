@@ -8,9 +8,11 @@ use App\Models\User;
 use App\Services\Notification\NotificationService;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithPagination;
 
+#[Title('مركز الإشعارات')]
 #[Layout('layouts.app')]
 class NotificationInbox extends Component
 {

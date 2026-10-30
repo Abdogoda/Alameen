@@ -5,6 +5,9 @@
     </head>
     <body class="bg-[#fafcff] dark:bg-[#0B1120] min-h-screen text-[#475569] dark:text-slate-200 font-['Cairo'] antialiased flex flex-col justify-center items-center selection:bg-[#0b2a8f]/10 selection:text-[#0b2a8f] relative px-4 sm:px-6 lg:px-10 py-6">
         
+        <!-- Top-Level Pre-Rendered Themed Loader (At the top of everything from 0ms) -->
+        <x-alameen-loader />
+
         <!-- Subtle Top-Corner Controls (Language Switcher & Return to Home) -->
         <div class="fixed top-3 sm:top-6 end-3 sm:end-8 z-30 flex items-center gap-2 sm:gap-3">
             <x-language-switcher variant="pill" />
@@ -30,7 +33,7 @@
         @endphp
 
         <!-- Main Authentication Content Container -->
-        <main class="flex flex-col lg:flex-row gap-8 lg:gap-16 xl:gap-24 items-center justify-center w-full max-w-[1360px] mx-auto my-auto pt-14 pb-8 sm:py-10 px-3 sm:px-6 lg:px-8">
+        <main class="flex flex-col lg:flex-row gap-8 lg:gap-16 xl:gap-24 items-center justify-center w-full max-w-[1360px] mx-auto my-auto pt-14 pb-8 sm:py-10 px-3 sm:px-6 lg:px-8 alameen-content-wrap">
             
             <!-- Auth Form Card Area -->
             <div class="flex flex-1 flex-col items-center justify-center w-full max-w-[480px] shrink-0 px-2 sm:px-0">

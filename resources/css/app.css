@@ -343,6 +343,69 @@ html.dark #open-review-modal-btn * {
     z-index: 30 !important;
 }
 
+/* ========================================================
+   Al-Ameen Top-Level Themed Loader & Smooth Content Reveal
+   ======================================================== */
+#alameen-loader {
+    position: fixed !important;
+    inset: 0 !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    z-index: 999999 !important;
+    background: radial-gradient(circle at center, #FFFFFF 0%, #FAFCFF 60%, #EAF1FB 100%);
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transition: opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+                visibility 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+                filter 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform, filter;
+}
+
+#alameen-loader.loader-hidden {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    transform: scale(1.03) !important;
+    filter: blur(4px) !important;
+}
+
+/* Smooth Content Entrance when Loader Dissolves */
+.alameen-content-wrap {
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
+}
+
+body.content-ready .alameen-content-wrap,
+body:not(:has(#alameen-loader:not(.loader-hidden))) .alameen-content-wrap,
+#alameen-loader.loader-hidden ~ .alameen-content-wrap {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+}
+
+@keyframes alameenContentFallback {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+.alameen-content-wrap {
+    animation: alameenContentFallback 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.85s forwards;
+}
+
 /* Dark Mode Themed Loader */
 html.dark #alameen-loader,
 [data-theme="dark"] #alameen-loader,
@@ -432,42 +495,77 @@ html.dark footer div:has(img[src*="logo.png"]) {
 }
 
 /* ========================================================
-   Admin Dashboard Responsive Enhancements
+   Admin & Student Dashboard Responsive Enhancements
    ======================================================== */
-.admin-sidebar-drawer {
+body.overflow-hidden {
+    overflow: hidden !important;
+    overscroll-behavior: none !important;
+}
+
+.admin-sidebar-drawer,
+.student-sidebar-drawer {
     position: fixed;
     top: 0;
+    bottom: 0;
+    inset-block: 0;
     inset-inline-start: 0;
     z-index: 50;
     width: 280px;
     max-width: 85vw;
     height: 100vh;
     height: 100dvh;
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    max-height: 100vh;
+    max-height: 100dvh;
+    overflow-y: auto !important;
+    overscroll-behavior: contain !important;
+    -webkit-overflow-scrolling: touch !important;
+    touch-action: pan-y;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-[dir="ltr"] .admin-sidebar-drawer:not(.is-open) {
+[dir="ltr"] .admin-sidebar-drawer:not(.is-open),
+[dir="ltr"] .student-sidebar-drawer:not(.is-open) {
     transform: translateX(-100%);
 }
 
-[dir="rtl"] .admin-sidebar-drawer:not(.is-open) {
+[dir="rtl"] .admin-sidebar-drawer:not(.is-open),
+[dir="rtl"] .student-sidebar-drawer:not(.is-open) {
     transform: translateX(100%);
 }
 
-.admin-sidebar-drawer.is-open {
+.admin-sidebar-drawer.is-open,
+.student-sidebar-drawer.is-open {
     transform: translateX(0) !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+}
+
+@media (max-width: 1023.98px) {
+    .admin-sidebar-drawer:not(.is-open),
+    .student-sidebar-drawer:not(.is-open) {
+        visibility: hidden;
+        pointer-events: none !important;
+    }
 }
 
 @media (min-width: 1024px) {
-    .admin-sidebar-drawer {
+    .admin-sidebar-drawer,
+    .student-sidebar-drawer {
         position: sticky !important;
         top: 0 !important;
+        bottom: 0 !important;
+        inset-block: 0 !important;
         height: 100vh !important;
         height: 100dvh !important;
+        max-height: 100vh !important;
+        max-height: 100dvh !important;
         transform: translateX(0) !important;
+        visibility: visible !important;
+        pointer-events: auto !important;
         z-index: 45 !important;
         max-width: none !important;
         overflow-y: auto !important;
+        overscroll-behavior: contain !important;
     }
 }
 
@@ -489,12 +587,12 @@ html, body {
    ======================================================== */
 
 /* 1. Global Spring Physics for all interactive buttons and actionable controls */
-button,
-a[role="button"],
-.btn,
-button[type="button"],
-button[type="submit"],
-input[type="submit"] {
+button:not(.absolute):not([class*="absolute"]):not([class*="fixed"]),
+a[role="button"]:not(.absolute):not([class*="absolute"]):not([class*="fixed"]),
+.btn:not(.absolute):not([class*="absolute"]):not([class*="fixed"]),
+button[type="button"]:not(.absolute):not([class*="absolute"]):not([class*="fixed"]),
+button[type="submit"]:not(.absolute):not([class*="absolute"]):not([class*="fixed"]),
+input[type="submit"]:not(.absolute):not([class*="absolute"]):not([class*="fixed"]) {
     position: relative;
     transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1),
                 box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1),
@@ -504,6 +602,16 @@ input[type="submit"] {
                 filter 0.2s ease !important;
     will-change: transform;
     cursor: pointer;
+}
+
+button.absolute,
+button[class*="absolute"] {
+    position: absolute !important;
+}
+
+button.fixed,
+button[class*="fixed"] {
+    position: fixed !important;
 }
 
 /* Mechanical Click Tactile Feedback */
@@ -681,13 +789,30 @@ button[aria-label*="إشعار"]:hover svg {
 }
 
 .scrollbar-thin::-webkit-scrollbar {
+    width: 5px;
     height: 5px;
+}
+.scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
 }
 .scrollbar-thin::-webkit-scrollbar-thumb {
     background-color: #CBD5E1;
     border-radius: 9999px;
 }
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background-color: #94A3B8;
+}
 html.dark .scrollbar-thin::-webkit-scrollbar-thumb {
     background-color: #334155;
+}
+html.dark .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background-color: #475569;
+}
+.scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: #CBD5E1 transparent;
+}
+html.dark .scrollbar-thin {
+    scrollbar-color: #334155 transparent;
 }
 

@@ -148,7 +148,7 @@
         <button
             type="button"
             @click="open = !open"
-            class="h-9 sm:h-10 px-2.5 sm:px-3 rounded-full bg-white dark:bg-slate-800 border border-[#DEE8F7] dark:border-slate-700 hover:bg-[#EAF1FB] dark:hover:bg-slate-700/80 text-[#012383] dark:text-slate-200 transition-all cursor-pointer shadow-xs flex items-center gap-1.5 group font-['Cairo']"
+            class="h-8 sm:h-10 px-2 sm:px-3 rounded-full bg-white dark:bg-slate-800 border border-[#DEE8F7] dark:border-slate-700 hover:bg-[#EAF1FB] dark:hover:bg-slate-700/80 text-[#012383] dark:text-slate-200 transition-all cursor-pointer shadow-xs flex items-center gap-1 sm:gap-1.5 group font-['Cairo'] shrink-0"
             :title="'{{ __('theme.theme') }}: ' + (theme === 'light' ? '{{ __('theme.light') }}' : (theme === 'dark' ? '{{ __('theme.dark') }}' : '{{ __('theme.device') }}'))"
             aria-label="{{ __('theme.theme') }}"
         >

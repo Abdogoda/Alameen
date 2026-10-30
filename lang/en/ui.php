@@ -263,4 +263,42 @@ return [
     'Passkey not recognized. It may have been removed from your account.' => 'Passkey not recognized. It may have been removed from your account.',
     'Passkey error occurred. Please try again.' => 'Passkey error occurred. Please try again.',
     'المركز التقني في مصر' => 'Technical Center in Egypt',
+
+    // Navigation & Layout UI
+    'إغلاق القائمة' => 'Close Menu',
+    'القائمة' => 'Menu',
+    'درجاتي وتقييماتي' => 'My Grades & Evaluations',
+    'المظهر والموضوع' => 'Appearance & Theme',
+    'المستويات والدروس' => 'Levels & Lessons',
+    'شؤون الطلاب' => 'Student Affairs',
+    'إعدادات المنصة' => 'Platform Settings',
+    'سجلات النظام (Logs)' => 'System Logs',
+    'فتح' => 'Open',
+    'خروج' => 'Exit',
+    'فتح القائمة الجانبية' => 'Open Sidebar Menu',
+    'مشرف' => 'Supervisor',
+
+    // Themed Loader & Brand
+    'جاري تحميل منصة الأمين' => 'Loading Al-Ameen Platform...',
+    'المنصة التعليمية المتخصصة في التخاطب وعلاج النطق' => 'Specialized Educational Platform in Speech & Phonetics',
+
+    // Password Reset & Auth
+    'أدخل رمز التحقق (OTP) المرسل إلى بريدك الإلكتروني مع كلمة المرور الجديدة.' => 'Enter the verification OTP sent to your email along with your new password.',
+    'مكون من 6 أرقام' => '6-digit code',
+    'أنشئ كلمة مرور جديدة' => 'Create a new password',
+    'تأكيد كلمة المرور الجديدة' => 'Confirm new password',
+    'أعد إدخال كلمة المرور الجديدة' => 'Re-enter your new password',
+    'لم يصلك الرمز؟ أعد الإرسال' => "Didn't receive the code? Resend",
+    'العودة لتسجيل الدخول' => 'Back to Login',
+    'Toggle password visibility' => 'Toggle password visibility',
+
+    // Notifications Center & Inbox
+    'مركز الإشعارات' => 'Notification Center',
+    'كافة الإشعارات' => 'All Notifications',
+    'إشعارات غير مقروءة' => 'Unread Notifications',
+    'أمان' => 'Security',
+    'لا توجد لديك إشعارات حالياً' => 'You have no notifications currently',
+    'لا توجد إشعارات غير مقروءة' => 'No unread notifications',
+    'تمييز الكل كمقروء' => 'Mark all as read',
+    'حذف المقروء' => 'Clear read',
 ];

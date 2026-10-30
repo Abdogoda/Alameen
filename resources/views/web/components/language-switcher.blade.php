@@ -58,12 +58,12 @@
         <button
             type="button"
             @click="open = !open"
-            class="h-9 sm:h-10 px-3 rounded-full bg-white dark:bg-slate-800 border border-[#DEE8F7] dark:border-slate-700 hover:bg-[#EAF1FB] dark:hover:bg-slate-700/80 text-[#012383] dark:text-slate-200 transition-all cursor-pointer shadow-xs flex items-center gap-2 group text-xs sm:text-sm font-bold font-['Cairo']"
+            class="h-8 sm:h-10 px-2 sm:px-3 rounded-full bg-white dark:bg-slate-800 border border-[#DEE8F7] dark:border-slate-700 hover:bg-[#EAF1FB] dark:hover:bg-slate-700/80 text-[#012383] dark:text-slate-200 transition-all cursor-pointer shadow-xs flex items-center gap-1.5 sm:gap-2 group text-xs sm:text-sm font-bold font-['Cairo'] shrink-0"
             aria-label="{{ __('اللغة') }}"
         >
-            <img src="{{ $currentFlag }}" alt="{{ $locales[$current]['name'] ?? $current }}" class="w-5 h-3.5 rounded-[3px] object-cover shadow-xs border border-slate-200/80 dark:border-slate-700 shrink-0" />
-            <span>{{ $locales[$current]['native'] ?? strtoupper($current) }}</span>
-            <svg class="size-3 text-slate-400 group-hover:text-[#012383] dark:group-hover:text-white transition-transform duration-200" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <img src="{{ $currentFlag }}" alt="{{ $locales[$current]['name'] ?? $current }}" class="w-4.5 sm:w-5 h-3 sm:h-3.5 rounded-[3px] object-cover shadow-xs border border-slate-200/80 dark:border-slate-700 shrink-0" />
+            <span class="hidden sm:inline">{{ $locales[$current]['native'] ?? strtoupper($current) }}</span>
+            <svg class="size-2.5 sm:size-3 text-slate-400 group-hover:text-[#012383] dark:group-hover:text-white transition-transform duration-200" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
             </svg>
         </button>

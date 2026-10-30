@@ -1,9 +1,9 @@
-<div class="max-w-4xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+<div class="w-full max-w-4xl mx-auto flex flex-col gap-5 sm:gap-6">
     {{-- Header --}}
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-6 border-b border-[#DEE8F7]">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 pb-4 sm:pb-6 border-b border-[#DEE8F7]">
         <div>
-            <div class="flex items-center gap-3">
-                <h1 class="text-2xl font-bold font-['Baloo_Bhaijaan_2'] text-[#012383]">
+            <div class="flex items-center gap-2.5 sm:gap-3 flex-wrap">
+                <h1 class="text-xl sm:text-2xl font-bold font-['Baloo_Bhaijaan_2'] text-[#012383]">
                     {{ __('notifications.notification_center') }}
                 </h1>
                 @if ($unreadCount > 0)
@@ -12,7 +12,7 @@
                     </span>
                 @endif
             </div>
-            <p class="text-xs sm:text-sm text-slate-500 mt-1">
+            <p class="text-xs sm:text-sm text-slate-500 mt-0.5 sm:mt-1">
                 {{ __('notifications.all_notifications') }}
             </p>
         </div>
@@ -22,7 +22,7 @@
                 <button
                     type="button"
                     wire:click="markAllAsRead"
-                    class="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold rounded-xl bg-[#EAF1FB] hover:bg-[#DEE8F7] text-[#0B2A8F] transition shadow-xs cursor-pointer"
+                    class="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-2 text-xs font-bold rounded-xl bg-[#EAF1FB] hover:bg-[#DEE8F7] text-[#0B2A8F] transition shadow-xs cursor-pointer"
                 >
                     <flux:icon.check class="size-4" />
                     {{ __('notifications.mark_all_as_read') }}
@@ -32,7 +32,7 @@
     </div>
 
     {{-- Filter Tabs --}}
-    <div class="flex items-center gap-2 overflow-x-auto py-4 border-b border-[#DEE8F7] scrollbar-none">
+    <div class="flex items-center gap-1.5 sm:gap-2 overflow-x-auto py-3 border-b border-[#DEE8F7] scrollbar-none w-full max-w-full touch-pan-x">
         @php
             $tabs = [
                 'all' => __('notifications.all_notifications'),
@@ -48,7 +48,7 @@
             <button
                 type="button"
                 wire:click="setFilter('{{ $key }}')"
-                class="px-3.5 py-1.5 text-xs font-bold rounded-xl whitespace-nowrap transition cursor-pointer {{ $filter === $key ? 'bg-[#012383] text-white shadow-xs' : 'bg-white border border-[#DEE8F7] text-slate-600 hover:bg-[#EAF1FB] hover:text-[#012383]' }}"
+                class="shrink-0 px-3 sm:px-3.5 py-1.5 text-xs font-bold rounded-xl whitespace-nowrap transition cursor-pointer {{ $filter === $key ? 'bg-[#012383] text-white shadow-xs' : 'bg-white border border-[#DEE8F7] text-slate-600 hover:bg-[#EAF1FB] hover:text-[#012383]' }}"
             >
                 {{ $label }}
             </button>
@@ -56,7 +56,7 @@
     </div>
 
     {{-- Notifications List --}}
-    <div class="mt-6 divide-y divide-[#DEE8F7] rounded-3xl bg-white border border-[#DEE8F7] shadow-xs overflow-hidden">
+    <div class="divide-y divide-[#DEE8F7] rounded-2xl sm:rounded-3xl bg-white border border-[#DEE8F7] shadow-xs overflow-hidden w-full">
         @forelse ($notifications as $notification)
             @php
                 $isUnread = $notification->read_at === null;
@@ -74,9 +74,9 @@
                     default => 'bg-blue-50 text-blue-600 dark:bg-blue-950/40 dark:text-blue-400',
                 };
             @endphp
-            <div class="p-5 flex flex-col sm:flex-row sm:items-start gap-4 transition hover:bg-zinc-50/60 dark:hover:bg-zinc-800/40 {{ $isUnread ? 'bg-zinc-50/40 dark:bg-zinc-800/20' : '' }}">
+            <div class="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-start gap-3 sm:gap-4 transition hover:bg-zinc-50/60 dark:hover:bg-zinc-800/40 {{ $isUnread ? 'bg-zinc-50/40 dark:bg-zinc-800/20' : '' }}">
                 <div class="shrink-0">
-                    <span class="inline-flex size-11 items-center justify-center rounded-2xl {{ $typeColors }}">
+                    <span class="inline-flex size-10 sm:size-11 items-center justify-center rounded-2xl {{ $typeColors }}">
                         @if ($type === 'security')
                             <flux:icon.shield-check class="size-5" />
                         @elseif ($type === 'success')
@@ -94,7 +94,7 @@
                 </div>
 
                 <div class="flex-1 min-w-0">
-                    <div class="flex items-center gap-2">
+                    <div class="flex items-center gap-2 flex-wrap">
                         <span class="text-xs uppercase font-semibold tracking-wider text-zinc-400 dark:text-zinc-500">
                             {{ __('notifications.types.' . $type) }}
                         </span>
@@ -109,11 +109,11 @@
                         @endif
                     </div>
 
-                    <h2 class="text-sm font-semibold text-zinc-900 dark:text-zinc-100 mt-1">
+                    <h2 class="text-sm font-semibold text-zinc-900 dark:text-zinc-100 mt-1 break-words">
                         {{ $title }}
                     </h2>
 
-                    <p class="text-sm text-zinc-600 dark:text-zinc-400 mt-1 leading-relaxed">
+                    <p class="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 mt-1 leading-relaxed break-words">
                         {{ $body }}
                     </p>
 
@@ -153,14 +153,14 @@
                 </div>
             </div>
         @empty
-            <div class="py-16 text-center px-4">
-                <div class="size-14 mx-auto rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-400 dark:text-zinc-500 mb-4">
-                    <flux:icon.bell-slash class="size-7" />
+            <div class="py-12 sm:py-16 text-center px-4 w-full">
+                <div class="size-12 sm:size-14 mx-auto rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-400 dark:text-zinc-500 mb-3 sm:mb-4">
+                    <flux:icon.bell-slash class="size-6 sm:size-7" />
                 </div>
-                <h3 class="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                <h3 class="text-sm sm:text-base font-semibold text-zinc-900 dark:text-zinc-100">
                     {{ __('notifications.no_notifications') }}
                 </h3>
-                <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-1 max-w-sm mx-auto">
+                <p class="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 mt-1 max-w-sm mx-auto">
                     {{ __('notifications.no_unread_notifications') }}
                 </p>
             </div>
@@ -169,7 +169,7 @@
 
     {{-- Pagination --}}
     @if ($notifications->hasPages())
-        <div class="mt-6">
+        <div class="mt-4 sm:mt-6">
             {{ $notifications->links() }}
         </div>
     @endif

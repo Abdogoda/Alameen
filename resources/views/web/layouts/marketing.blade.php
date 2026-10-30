@@ -13,6 +13,9 @@
     </head>
     <body class="bg-[#FAFCFF] dark:bg-slate-950 min-h-screen text-[#334155] dark:text-slate-100 font-body antialiased selection:bg-[#EAF1FB] selection:text-[#0B2A8F] overflow-x-hidden relative transition-colors">
         
+        <!-- Top-Level Pre-Rendered Themed Loader (At the top of everything from 0ms) -->
+        <x-alameen-loader />
+
         <!-- Toast Notification Element -->
         <div
             id="toast"
@@ -24,8 +27,8 @@
             <span id="toast-message" class="text-sm font-semibold"></span>
         </div>
 
-        <!-- Main Full-Width Canvas Container -->
-        <div class="w-full min-h-screen flex flex-col relative bg-[#FAFCFF] dark:bg-slate-950 transition-colors" id="landing-frame">
+        <!-- Main Full-Width Canvas Container with Smooth Reveal -->
+        <div class="w-full min-h-screen flex flex-col relative bg-[#FAFCFF] dark:bg-slate-950 transition-colors alameen-content-wrap" id="landing-frame">
             
             <!-- Master Marketing Header -->
             <x-marketing-header :active="$active" />

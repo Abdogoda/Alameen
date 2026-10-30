@@ -27,6 +27,49 @@
         background-color: #0B1120 !important;
         color-scheme: dark;
     }
+    #alameen-loader {
+        position: fixed !important;
+        inset: 0 !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        height: 100dvh !important;
+        z-index: 999999 !important;
+        background: radial-gradient(circle at center, #FFFFFF 0%, #FAFCFF 60%, #EAF1FB 100%);
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        opacity: 1;
+        visibility: visible;
+        transition: opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+                    visibility 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+                    transform 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+                    filter 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+        will-change: opacity, transform, filter;
+    }
+    #alameen-loader.loader-hidden {
+        opacity: 0 !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+        transform: scale(1.03) !important;
+        filter: blur(4px) !important;
+    }
+    .alameen-content-wrap {
+        opacity: 0;
+        transform: translateY(6px);
+        transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+                    transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+        will-change: opacity, transform;
+    }
+    body.content-ready .alameen-content-wrap,
+    #alameen-loader.loader-hidden ~ .alameen-content-wrap {
+        opacity: 1 !important;
+        transform: translateY(0) !important;
+    }
     html.dark #alameen-loader,
     [data-theme="dark"] #alameen-loader {
         background: radial-gradient(circle at center, #0F172A 0%, #0B1120 70%, #060913 100%) !important;

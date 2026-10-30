@@ -6,14 +6,17 @@
     'modals' => null,
 ])
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}" class="overflow-x-clip">
     <head>
         @include('partials.head')
         <link rel="stylesheet" href="/assets/css/admin.css" />
         <title>{{ filled($title ?? null) ? $title.' - '.config('app.name', 'منصة الأمين') : config('app.name', 'منصة الأمين') }}</title>
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="bg-[#F8FAFC] dark:bg-[#0B1120] text-[#334155] dark:text-slate-200 min-h-screen flex flex-col font-['Cairo'] antialiased selection:bg-[#EAF1FB] selection:text-[#0B2A8F]" x-data="{ adminSidebarOpen: false }" @keydown.window.escape="adminSidebarOpen = false">
+    <body class="bg-[#F8FAFC] dark:bg-[#0B1120] text-[#334155] dark:text-slate-200 min-h-screen flex flex-col font-['Cairo'] antialiased selection:bg-[#EAF1FB] selection:text-[#0B2A8F] overflow-x-clip w-full max-w-full relative" x-data="{ adminSidebarOpen: false }" @keydown.window.escape="adminSidebarOpen = false" :class="{ 'overflow-hidden': adminSidebarOpen }">
+        <!-- Top-Level Pre-Rendered Themed Loader (At the top of everything from 0ms) -->
+        <x-alameen-loader />
+
         @php
             $pendingReceiptsCount = isset($pendingReceiptsCount) ? (int)$pendingReceiptsCount : (\Illuminate\Support\Facades\Schema::hasTable('payment_receipts') ? \App\Models\PaymentReceipt::where('status', 'pending')->count() : 0);
             $pendingTasksCount = isset($pendingTasksCount) ? (int)$pendingTasksCount : (\Illuminate\Support\Facades\Schema::hasTable('task_submissions') ? \App\Models\TaskSubmission::where('status', 'pending')->count() : 0);
@@ -30,20 +33,21 @@
             x-transition:leave-start="opacity-100"
             x-transition:leave-end="opacity-0"
             @click="adminSidebarOpen = false"
+            @touchmove.prevent
             class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-40 lg:hidden"
             style="display: none;"
         ></div>
 
-        <div class="flex-1 flex flex-row min-h-screen w-full relative">
+        <div class="flex-1 flex flex-row min-h-screen w-full max-w-full overflow-x-clip relative alameen-content-wrap">
             
             <!-- ============================================== -->
             <!-- 1. ADMIN SIDEBAR NAVIGATION                    -->
             <!-- ============================================== -->
             <aside
                 :class="{ 'is-open': adminSidebarOpen }"
-                class="admin-sidebar-drawer bg-white dark:bg-slate-900 border-e border-[#DEE8F7] dark:border-slate-800 flex flex-col justify-between p-4 sm:p-5 shrink-0 shadow-xl lg:shadow-none overflow-y-auto"
+                class="admin-sidebar-drawer bg-white dark:bg-slate-900 border-e border-[#DEE8F7] dark:border-slate-800 flex flex-col p-4 sm:p-5 shrink-0 shadow-xl lg:shadow-none overflow-y-auto overscroll-contain scrollbar-thin"
             >
-                <div class="flex flex-col gap-5 sm:gap-6">
+                <div class="flex flex-col gap-5 sm:gap-6 shrink-0">
                     <!-- Platform Brand & Role Badge -->
                     <div class="flex items-center justify-between border-b border-[#DEE8F7] dark:border-slate-800 pb-4">
                         <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 cursor-pointer">
@@ -164,7 +168,7 @@
                 </div>
 
                 <!-- Bottom Actions (Preview Student LMS / Sign Out) -->
-                <div class="border-t border-[#DEE8F7] dark:border-slate-800 pt-4 flex flex-col gap-2">
+                <div class="mt-auto shrink-0 border-t border-[#DEE8F7] dark:border-slate-800 pt-4 flex flex-col gap-2">
                     <a href="{{ route('dashboard') }}" target="_blank" class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 hover:bg-[#EAF1FB] text-[#012383] text-xs font-bold transition-all duration-200 border border-slate-100 hover:border-[#DEE8F7] dark:bg-slate-800/80 dark:hover:bg-slate-700 dark:text-blue-300 dark:border-slate-700 group hover:-translate-y-0.5 hover:shadow-xs active:scale-97">
                         <span class="flex items-center gap-2">
                             <svg class="size-4 text-[#0B2A8F] dark:text-blue-400 group-hover:scale-115 group-hover:rotate-6 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>

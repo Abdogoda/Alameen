@@ -20,62 +20,33 @@
   function initThemedLoader() {
     let loader = document.getElementById('alameen-loader');
     if (!loader) {
-      loader = document.createElement('div');
-      loader.id = 'alameen-loader';
-      if (document.documentElement.classList.contains('dark')) {
-        loader.classList.add('dark');
-      }
-      loader.setAttribute('role', 'status');
-      loader.setAttribute('aria-label', 'جاري تحميل منصة الأمين');
-
-      const logoSrc = getLogoPath();
-
-      loader.innerHTML = `
-        <div class="alameen-loader-resonator">
-          <div class="alameen-voice-wave alameen-voice-wave-1"></div>
-          <div class="alameen-voice-wave alameen-voice-wave-2"></div>
-          <div class="alameen-voice-wave alameen-voice-wave-3"></div>
-          <div class="alameen-loader-logo-capsule">
-            <img src="${logoSrc}" alt="منصة الأمين" onerror="this.src='/assets/images/logo.png'; this.onerror=null;" />
-          </div>
-        </div>
-
-        <div class="alameen-loader-equalizer">
-          <div class="alameen-eq-bar"></div>
-          <div class="alameen-eq-bar"></div>
-          <div class="alameen-eq-bar"></div>
-          <div class="alameen-eq-bar"></div>
-          <div class="alameen-eq-bar"></div>
-        </div>
-
-        <h2 class="alameen-loader-title">منصة الأمين</h2>
-        <p class="alameen-loader-subtitle">المنصة التعليمية المتخصصة في التخاطب وعلاج النطق</p>
-
-        <div class="alameen-loader-track">
-          <div class="alameen-loader-indicator"></div>
-        </div>
-      `;
-
-      if (document.body) {
-        document.body.prepend(loader);
-      } else {
-        document.addEventListener('DOMContentLoaded', () => document.body.prepend(loader));
-      }
+      document.body.classList.add('content-ready');
+      return;
     }
 
-    // Dismiss Loader with smooth ease-out
+    if (document.documentElement.classList.contains('dark') || document.documentElement.getAttribute('data-theme') === 'dark') {
+      loader.classList.add('dark');
+    }
+
+    // Dismiss Loader with smooth ease-out and reveal content
     const startTime = performance.now();
+    let isDismissed = false;
+
     const dismissLoader = () => {
+      if (isDismissed) return;
+      isDismissed = true;
+
       const elapsed = performance.now() - startTime;
-      const minDisplayTime = 380; // Provide pleasant brand impression
+      const minDisplayTime = 300; // Provide pleasant brand impression
       const remaining = Math.max(0, minDisplayTime - elapsed);
 
       setTimeout(() => {
         if (loader) {
+          document.body.classList.add('content-ready');
           loader.classList.add('loader-hidden');
           setTimeout(() => {
             loader.style.display = 'none';
-          }, 480);
+          }, 600);
         }
       }, remaining);
     };
@@ -83,9 +54,9 @@
     if (document.readyState === 'complete') {
       dismissLoader();
     } else {
-      window.addEventListener('load', dismissLoader);
+      window.addEventListener('load', dismissLoader, { once: true });
       // Fallback safeguard so loader never blocks navigation
-      setTimeout(dismissLoader, 1400);
+      setTimeout(dismissLoader, 1200);
     }
   }
 

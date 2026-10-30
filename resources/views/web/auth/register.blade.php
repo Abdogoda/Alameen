@@ -43,7 +43,7 @@
                 <label for="name" class="font-bold text-[15px] text-[#012383] dark:text-blue-300 block">
                     {{ __('الاسم الكامل') }}
                 </label>
-                <div class="w-full relative flex items-center">
+                <div class="w-full relative">
                     <div class="absolute start-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 dark:text-slate-500">
                         <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
@@ -71,7 +71,7 @@
                 <label for="email" class="font-bold text-[15px] text-[#012383] dark:text-blue-300 block">
                     {{ __('البريد الإلكتروني') }}
                 </label>
-                <div class="w-full relative flex items-center">
+                <div class="w-full relative">
                     <div class="absolute start-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 dark:text-slate-500">
                         <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
@@ -98,7 +98,7 @@
                 <label for="password" class="font-bold text-[15px] text-[#012383] dark:text-blue-300 block">
                     {{ __('كلمة المرور') }}
                 </label>
-                <div class="w-full relative flex items-center">
+                <div class="w-full relative">
                     <div class="absolute start-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 dark:text-slate-500">
                         <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
@@ -116,7 +116,7 @@
                     <button
                         type="button"
                         @click="show = !show"
-                        class="absolute end-2.5 top-1/2 -translate-y-1/2 size-9 rounded-lg flex items-center justify-center text-slate-400 hover:text-[#012383] dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-700/60 transition-all cursor-pointer"
+                        class="!absolute end-2.5 top-1/2 -translate-y-1/2 size-9 rounded-lg flex items-center justify-center text-slate-400 hover:text-[#012383] dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-700/60 transition-all cursor-pointer z-10"
                         aria-label="Toggle password visibility"
                     >
                         <svg x-show="!show" class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
@@ -133,7 +133,7 @@
                 <label for="password_confirmation" class="font-bold text-[15px] text-[#012383] dark:text-blue-300 block">
                     {{ __('تأكيد كلمة المرور') }}
                 </label>
-                <div class="w-full relative flex items-center">
+                <div class="w-full relative">
                     <div class="absolute start-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 dark:text-slate-500">
                         <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>

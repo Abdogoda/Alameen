@@ -1,0 +1,349 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Method App\\Http\\Controllers\\StudentCourseController\:\:certificate\(\) should return Illuminate\\View\\View but returns Illuminate\\Http\\RedirectResponse\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Http/Controllers/StudentCourseController.php
+
+		-
+			message: '#^Parameter \$audioFile of method App\\Services\\Clinical\\ClinicalTaskService\:\:submitRecording\(\) expects Illuminate\\Http\\UploadedFile\|string, array\<int, Illuminate\\Http\\UploadedFile\>\|Illuminate\\Http\\UploadedFile\|string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/StudentCourseController.php
+
+		-
+			message: '#^Method App\\Livewire\\Settings\\Appearance\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Settings/Appearance.php
+
+		-
+			message: '#^Method App\\Livewire\\Settings\\DeleteUserForm\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Settings/DeleteUserForm.php
+
+		-
+			message: '#^Method App\\Livewire\\Settings\\Profile\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Settings/Profile.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Admin\|App\\Models\\User\:\:\$two_factor_confirmed_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Livewire/Settings/Security.php
+
+		-
+			message: '#^Call to an undefined method App\\Models\\Admin\|App\\Models\\User\:\:hasEnabledTwoFactorAuthentication\(\)\.$#'
+			identifier: method.notFound
+			count: 3
+			path: app/Livewire/Settings/Security.php
+
+		-
+			message: '#^Call to an undefined method App\\Models\\Admin\|App\\Models\\User\:\:passkeys\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: app/Livewire/Settings/Security.php
+
+		-
+			message: '#^Method App\\Livewire\\Settings\\Security\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Settings/Security.php
+
+		-
+			message: '#^Parameter \#1 \$user of method App\\Services\\Auth\\PasskeyService\:\:deletePasskey\(\) expects App\\Models\\User, App\\Models\\Admin\|App\\Models\\User\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Livewire/Settings/Security.php
+
+		-
+			message: '#^Parameter \#1 \$user of method App\\Services\\Auth\\PasswordSecurityService\:\:updatePassword\(\) expects App\\Models\\User, App\\Models\\Admin\|App\\Models\\User\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Livewire/Settings/Security.php
+
+		-
+			message: '#^Parameter \#1 \$user of method App\\Services\\Auth\\TwoFactorService\:\:confirm\(\) expects App\\Models\\User, App\\Models\\Admin\|App\\Models\\User\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Livewire/Settings/Security.php
+
+		-
+			message: '#^Parameter \#1 \$user of method App\\Services\\Auth\\TwoFactorService\:\:disable\(\) expects App\\Models\\User, App\\Models\\Admin\|App\\Models\\User\|null given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/Livewire/Settings/Security.php
+
+		-
+			message: '#^Parameter \#1 \$user of method App\\Services\\Auth\\TwoFactorService\:\:enable\(\) expects App\\Models\\User, App\\Models\\Admin\|App\\Models\\User\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Livewire/Settings/Security.php
+
+		-
+			message: '#^Call to an undefined method App\\Models\\Admin\|App\\Models\\User\:\:hasEnabledTwoFactorAuthentication\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Livewire/Settings/TwoFactor/RecoveryCodes.php
+
+		-
+			message: '#^Method App\\Livewire\\Settings\\TwoFactor\\RecoveryCodes\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Settings/TwoFactor/RecoveryCodes.php
+
+		-
+			message: '#^Parameter \#1 \$user of method App\\Services\\Auth\\TwoFactorService\:\:getRecoveryCodes\(\) expects App\\Models\\User, App\\Models\\Admin\|App\\Models\\User\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Livewire/Settings/TwoFactor/RecoveryCodes.php
+
+		-
+			message: '#^Parameter \#1 \$user of method App\\Services\\Auth\\TwoFactorService\:\:regenerateRecoveryCodes\(\) expects App\\Models\\User, App\\Models\\Admin\|App\\Models\\User\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Livewire/Settings/TwoFactor/RecoveryCodes.php
+
+		-
+			message: '#^Class App\\Models\\Admin uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Admin.php
+
+		-
+			message: '#^Method App\\Models\\Admin\:\:role\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Admin.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Models/Admin.php
+
+		-
+			message: '#^Class App\\Models\\Certificate uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Certificate.php
+
+		-
+			message: '#^Method App\\Models\\Certificate\:\:course\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Certificate.php
+
+		-
+			message: '#^Method App\\Models\\Certificate\:\:user\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Certificate.php
+
+		-
+			message: '#^Class App\\Models\\ClinicalTask uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/ClinicalTask.php
+
+		-
+			message: '#^Method App\\Models\\ClinicalTask\:\:course\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/ClinicalTask.php
+
+		-
+			message: '#^Method App\\Models\\ClinicalTask\:\:submissionForUser\(\) should return App\\Models\\TaskSubmission\|null but returns Illuminate\\Database\\Eloquent\\Model\|null\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Models/ClinicalTask.php
+
+		-
+			message: '#^Method App\\Models\\ClinicalTask\:\:submissions\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/ClinicalTask.php
+
+		-
+			message: '#^Method App\\Models\\ClinicalTask\:\:video\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/ClinicalTask.php
+
+		-
+			message: '#^Class App\\Models\\ContentBlock uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/ContentBlock.php
+
+		-
+			message: '#^Class App\\Models\\Course uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Course.php
+
+		-
+			message: '#^Class App\\Models\\Menu uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Menu.php
+
+		-
+			message: '#^Class App\\Models\\MenuItem uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/MenuItem.php
+
+		-
+			message: '#^Method App\\Models\\MenuItem\:\:menu\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/MenuItem.php
+
+		-
+			message: '#^Class App\\Models\\PaymentReceipt uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/PaymentReceipt.php
+
+		-
+			message: '#^Method App\\Models\\PaymentReceipt\:\:course\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/PaymentReceipt.php
+
+		-
+			message: '#^Method App\\Models\\PaymentReceipt\:\:reviewer\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/PaymentReceipt.php
+
+		-
+			message: '#^Method App\\Models\\PaymentReceipt\:\:user\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/PaymentReceipt.php
+
+		-
+			message: '#^Call to function is_array\(\) with array\<string\> will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: app/Models/Role.php
+
+		-
+			message: '#^Class App\\Models\\Role uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Role.php
+
+		-
+			message: '#^Method App\\Models\\Role\:\:admins\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Role.php
+
+		-
+			message: '#^Class App\\Models\\Setting uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Setting.php
+
+		-
+			message: '#^Class App\\Models\\TaskSubmission uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/TaskSubmission.php
+
+		-
+			message: '#^Method App\\Models\\TaskSubmission\:\:grader\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/TaskSubmission.php
+
+		-
+			message: '#^Method App\\Models\\TaskSubmission\:\:task\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/TaskSubmission.php
+
+		-
+			message: '#^Method App\\Models\\TaskSubmission\:\:user\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/TaskSubmission.php
+
+		-
+			message: '#^Class App\\Models\\Video uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Video.php
+
+		-
+			message: '#^Class App\\Models\\VideoProgress uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/VideoProgress.php
+
+		-
+			message: '#^Call to function is_array\(\) with non\-empty\-array will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: app/Services/Auth/FirebaseTokenVerifier.php
+
+		-
+			message: '#^PHPDoc tag @throws with type App\\Services\\Auth\\ValidationException is not subtype of Throwable$#'
+			identifier: throws.notThrowable
+			count: 1
+			path: app/Services/Auth/TwoFactorService.php
+
+		-
+			message: '#^Cannot call method update\(\) on class\-string\|object\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Services/Localization/LocalizationService.php
+
+		-
+			message: '#^Call to function is_string\(\) with string will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: app/Services/Localization/PhpFileLoader.php
+
+		-
+			message: '#^Right side of && is always true\.$#'
+			identifier: booleanAnd.rightAlwaysTrue
+			count: 1
+			path: app/Services/Localization/PhpFileLoader.php
+
+		-
+			message: '#^Parameter \$course of method App\\Services\\Course\\CourseEnrollmentService\:\:enroll\(\) expects App\\Models\\Course, Illuminate\\Database\\Eloquent\\Model given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/Payment/PaymentReceiptService.php
+
+		-
+			message: '#^Parameter \$user of method App\\Services\\Course\\CourseEnrollmentService\:\:enroll\(\) expects App\\Models\\User, Illuminate\\Database\\Eloquent\\Model given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/Payment/PaymentReceiptService.php
+
+		-
+			message: '#^Called ''env'' outside of the config directory which returns null when the config is cached, use ''config''\.$#'
+			identifier: larastan.noEnvCallsOutsideOfConfig
+			count: 4
+			path: app/Services/Video/BunnyStreamService.php
+
+		-
+			message: '#^Parameter \#1 \$string of function ucfirst expects string, bool\|string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: config/log-viewer.php
+
+		-
+			message: '#^Parameter \#2 \$string of function explode expects string, string\|true given\.$#'
+			identifier: argument.type
+			count: 1
+			path: config/log-viewer.php

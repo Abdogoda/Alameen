@@ -9,9 +9,9 @@ const FLUX_STORAGE_KEY = 'flux.appearance';
 
 export function getStoredTheme() {
     try {
-        return localStorage.getItem(THEME_STORAGE_KEY) || localStorage.getItem(FLUX_STORAGE_KEY) || 'system';
+        return localStorage.getItem(THEME_STORAGE_KEY) || localStorage.getItem(FLUX_STORAGE_KEY) || 'light';
     } catch {
-        return 'system';
+        return 'light';
     }
 }
 
@@ -23,7 +23,8 @@ export function isDarkActive() {
     const theme = getStoredTheme();
     if (theme === 'dark') return true;
     if (theme === 'light') return false;
-    return isSystemDark();
+    if (theme === 'system') return isSystemDark();
+    return false;
 }
 
 export function applyTheme(theme) {
@@ -90,7 +91,7 @@ export function applyTheme(theme) {
 
 export function setTheme(theme) {
     if (!['light', 'dark', 'system'].includes(theme)) {
-        theme = 'system';
+        theme = 'light';
     }
 
     try {

@@ -70,7 +70,7 @@ class LocalizationService
         $normalized = strtolower($locale);
 
         if (! $this->isSupported($normalized)) {
-            $normalized = (string) config('localization.fallback', 'en');
+            $normalized = (string) config('localization.fallback', 'ar');
         }
 
         App::setLocale($normalized);
@@ -118,7 +118,7 @@ class LocalizationService
                 return strtolower($user->locale);
             }
 
-            return (string) config('localization.default', 'en');
+            return (string) config('localization.default', 'ar');
         }
 
         // Web Requests:
@@ -155,13 +155,7 @@ class LocalizationService
             return strtolower($cookieLocale);
         }
 
-        // 6. Browser Accept-Language header
-        $preferred = $request->getPreferredLanguage(array_keys($this->getSupportedLocales()));
-        if (is_string($preferred) && $this->isSupported($preferred)) {
-            return strtolower($preferred);
-        }
-
-        // 7. Default configured locale
-        return (string) config('localization.default', 'en');
+        // 6. Default configured locale (Primary default: Arabic)
+        return (string) config('localization.default', 'ar');
     }
 }

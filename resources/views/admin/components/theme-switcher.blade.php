@@ -6,7 +6,7 @@
 <div
     x-data="{
         open: false,
-        theme: (window.AlameenTheme ? window.AlameenTheme.getTheme() : (localStorage.getItem('alameen_theme') || 'system')),
+        theme: (window.AlameenTheme ? window.AlameenTheme.getTheme() : (localStorage.getItem('alameen_theme') || 'light')),
         isDark: (window.AlameenTheme ? window.AlameenTheme.isDark() : document.documentElement.classList.contains('dark')),
         setTheme(val) {
             this.theme = val;

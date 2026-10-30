@@ -5,7 +5,7 @@
 <script>
     (function () {
         try {
-            var stored = localStorage.getItem('alameen_theme') || localStorage.getItem('flux.appearance') || 'system';
+            var stored = localStorage.getItem('alameen_theme') || localStorage.getItem('flux.appearance') || 'light';
             var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
             var isDark = stored === 'dark' || (stored === 'system' && prefersDark);
             var root = document.documentElement;

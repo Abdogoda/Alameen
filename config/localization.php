@@ -7,8 +7,8 @@ return [
     | Default & Fallback Locales
     |--------------------------------------------------------------------------
     */
-    'default' => env('APP_LOCALE', 'en'),
-    'fallback' => env('APP_FALLBACK_LOCALE', 'en'),
+    'default' => env('APP_LOCALE', 'ar'),
+    'fallback' => env('APP_FALLBACK_LOCALE', 'ar'),
 
     /*
     |--------------------------------------------------------------------------

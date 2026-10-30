@@ -37,7 +37,7 @@ class LocalizationTest extends TestCase
         $response = $this->get(route('locale.switch', 'invalid_locale'));
 
         $response->assertRedirect();
-        $this->assertEquals('en', app()->getLocale());
+        $this->assertEquals('ar', app()->getLocale());
     }
 
     public function test_web_page_renders_with_arabic_dir_rtl_when_locale_is_ar(): void

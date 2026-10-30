@@ -86,7 +86,7 @@
                     class="bg-[#012383] hover:bg-[#0B2A8F] flex items-center justify-center px-3 sm:px-5 h-[34px] sm:h-[40px] rounded-full !text-white text-xs sm:text-sm font-bold font-['Cairo'] transition-all shadow-sm hover:shadow-md cursor-pointer whitespace-nowrap"
                     style="color: #ffffff !important;"
                 >
-                    <span class="text-white" style="color: #ffffff !important;">{{ __('دخول الطلاب') }}</span>
+                    <span class="text-white" style="color: #ffffff !important;">{{ __('تسجيل الدخول') }}</span>
                 </a>
                 @if (Route::has('register'))
                     <a

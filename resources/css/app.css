@@ -429,3 +429,61 @@ html.dark header#main-header a div:first-child {
     padding: 4px !important;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25) !important;
 }
+
+/* ========================================================
+   Admin Dashboard Responsive Enhancements
+   ======================================================== */
+.admin-sidebar-drawer {
+    position: fixed;
+    top: 0;
+    inset-inline-start: 0;
+    z-index: 50;
+    width: 280px;
+    max-width: 85vw;
+    height: 100vh;
+    height: 100dvh;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[dir="ltr"] .admin-sidebar-drawer:not(.is-open) {
+    transform: translateX(-100%);
+}
+
+[dir="rtl"] .admin-sidebar-drawer:not(.is-open) {
+    transform: translateX(100%);
+}
+
+.admin-sidebar-drawer.is-open {
+    transform: translateX(0) !important;
+}
+
+@media (min-width: 1024px) {
+    .admin-sidebar-drawer {
+        position: sticky !important;
+        top: 0 !important;
+        transform: translateX(0) !important;
+        z-index: 20 !important;
+        max-width: none !important;
+    }
+}
+
+/* Custom scrollbars for responsive tables & filter bars */
+.scrollbar-none::-webkit-scrollbar {
+    display: none;
+}
+.scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+    height: 5px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: #CBD5E1;
+    border-radius: 9999px;
+}
+html.dark .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: #334155;
+}
+

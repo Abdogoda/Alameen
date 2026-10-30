@@ -1,6 +1,7 @@
 <x-layouts::marketing active="home">
 @php
     $heroBlock = \App\Models\ContentBlock::where('section_key', 'hero')->first();
+    $aboutBlock = \App\Models\ContentBlock::where('section_key', 'about')->first();
     $faqBlock = \App\Models\ContentBlock::where('section_key', 'faq')->first();
     $cmsSettings = app(\App\Services\Cms\SettingsService::class);
 @endphp
@@ -54,20 +55,20 @@
               <div class="grid grid-cols-2 gap-2.5 sm:gap-[16px] size-full">
                 
                 <div class="bg-[#DCE8F2] overflow-hidden rounded-full aspect-square w-full relative shadow-sm hover:scale-[1.02] transition-transform">
-                  <img src="/assets/images/photo1.png" alt="التدريب العملي" class="size-full object-cover pointer-events-none" />
+                  <img src="/assets/images/photo1.png" alt="{{ __('landing.slide1ImgAlt1') }}" class="size-full object-cover pointer-events-none" />
                 </div>
 
                 <div class="bg-[#152D4D] overflow-hidden rounded-[16px] sm:rounded-[20px] aspect-square w-full relative shadow-sm group hover:scale-[1.02] transition-transform cursor-pointer">
-                  <img src="/assets/images/photo2.png" alt="تنمية المهارات" class="size-full object-cover pointer-events-none" />
+                  <img src="/assets/images/photo2.png" alt="{{ __('landing.slide1ImgAlt2') }}" class="size-full object-cover pointer-events-none" />
                   <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 size-[42px] sm:size-[56px] rounded-full group-hover:scale-110 transition-transform animate-pulse-glow">
-                    <img src="/assets/images/play.svg" alt="تشغيل" class="size-full" />
+                    <img src="/assets/images/play.svg" alt="{{ __('landing.play') }}" class="size-full" />
                   </div>
                 </div>
 
                 <div class="bg-[#EDF2F7] overflow-hidden rounded-[16px] sm:rounded-[20px] aspect-square w-full relative shadow-sm group hover:scale-[1.02] transition-transform cursor-pointer">
-                  <img src="/assets/images/photo3.png" alt="الجلسات التفاعلية" class="size-full object-cover pointer-events-none" />
+                  <img src="/assets/images/photo3.png" alt="{{ __('landing.slide1ImgAlt3') }}" class="size-full object-cover pointer-events-none" />
                   <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 size-[42px] sm:size-[56px] rounded-full group-hover:scale-110 transition-transform animate-pulse-glow">
-                    <img src="/assets/images/play.svg" alt="تشغيل" class="size-full" />
+                    <img src="/assets/images/play.svg" alt="{{ __('landing.play') }}" class="size-full" />
                   </div>
                 </div>
 
@@ -80,7 +81,7 @@
                       <path d="M4 16C4 7 13 4 28 4C28 19 19 28 4 16Z" fill="#7E95B1"/>
                     </svg>
                   </div>
-                  <img src="/assets/images/photo4.png" alt="الاعتماد الأكاديمي" class="size-full object-cover pointer-events-none relative z-10" />
+                  <img src="/assets/images/photo4.png" alt="{{ __('landing.slide1ImgAlt4') }}" class="size-full object-cover pointer-events-none relative z-10" />
                 </div>
 
               </div>
@@ -135,7 +136,7 @@
               <!-- Video Player Card -->
               <div class="bg-white border-2 border-[#DEE8F7] rounded-[20px] sm:rounded-[24px] p-2.5 sm:p-3 shadow-card relative overflow-hidden group">
                 <div class="h-[190px] sm:h-[260px] w-full rounded-[16px] sm:rounded-[18px] bg-[#0B2A8F] relative overflow-hidden flex items-center justify-center">
-                  <img src="/assets/images/lesson-video-frame.png" alt="فيديو الدرس" class="size-full object-cover pointer-events-none group-hover:scale-105 transition-transform duration-500" />
+                  <img src="/assets/images/lesson-video-frame.png" alt="{{ __('landing.slide2Title') }}" class="size-full object-cover pointer-events-none group-hover:scale-105 transition-transform duration-500" />
                   
                   <a href="./pages/lesson.html" class="absolute size-12 sm:size-16 rounded-full bg-white/95 text-[#012383] flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform animate-pulse-glow">
                     <svg class="size-5 sm:size-6 text-[#012383] translate-x-0.5" fill="currentColor" viewBox="0 0 24 24">
@@ -144,12 +145,12 @@
                   </a>
 
                   <div class="absolute bottom-2.5 end-2.5 sm:bottom-3 sm:end-3 px-2.5 sm:px-3 py-1 rounded-full bg-black/70 backdrop-blur-md text-white text-[11px] sm:text-xs font-bold font-['Cairo'] tabular-nums">
-                    ١٤:٣٠ دقيقة
+                    {{ __('landing.slide2Duration') }}
                   </div>
 
                   <div class="absolute top-2.5 start-2.5 sm:top-3 sm:start-3 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full bg-[#10B77F] text-white text-[11px] sm:text-xs font-bold font-['Cairo'] shadow-sm flex items-center gap-1.5">
                     <span class="size-1.5 rounded-full bg-white animate-ping"></span>
-                    <span>تطبيق عملي</span>
+                    <span>{{ __('landing.slide2Badge') }}</span>
                   </div>
                 </div>
               </div>
@@ -162,7 +163,7 @@
                   </div>
                   <div class="flex flex-col text-start min-w-0">
                     <div class="flex items-center gap-1.5 sm:gap-2">
-                      <span class="text-[11px] sm:text-xs font-bold text-[#012383] truncate">مهمة صوتية: تصحيح مخارج الحروف</span>
+                      <span class="text-[11px] sm:text-xs font-bold text-[#012383] truncate">{{ __('landing.slide2VoiceTaskTitle') }}</span>
                       <div class="hidden xs:flex items-center gap-0.5 h-3.5 sm:h-4 px-1 bg-emerald-50 rounded-md shrink-0">
                         <span class="w-0.5 bg-[#10B77F] rounded-full voice-wave-bar"></span>
                         <span class="w-0.5 bg-[#10B77F] rounded-full voice-wave-bar"></span>
@@ -170,11 +171,11 @@
                         <span class="w-0.5 bg-[#10B77F] rounded-full voice-wave-bar"></span>
                       </div>
                     </div>
-                    <span class="text-[10px] sm:text-[11px] text-emerald-600 font-semibold truncate">تم التقييم بنجاح • ٩٥٪ مستوى متميز</span>
+                    <span class="text-[10px] sm:text-[11px] text-emerald-600 font-semibold truncate">{{ __('landing.slide2VoiceTaskScore') }}</span>
                   </div>
                 </div>
                 <span class="px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full bg-[#EAF1FB] text-[#0B2A8F] text-[10px] sm:text-[11px] font-bold shrink-0">
-                  مُقيّمة
+                  {{ __('landing.slide2VoiceTaskStatus') }}
                 </span>
               </div>
 
@@ -217,11 +218,11 @@
               
               <div class="animate-float-slow bg-white border-2 border-[#DEE8F7] rounded-[20px] sm:rounded-[24px] p-2.5 sm:p-3 shadow-card relative overflow-hidden group hover:scale-[1.02] transition-transform">
                 <div class="h-[190px] sm:h-[280px] w-full rounded-[16px] sm:rounded-[18px] overflow-hidden relative bg-slate-50 flex items-center justify-center">
-                  <img src="/assets/images/certificate-preview.png" alt="معاينة الشهادة" class="size-full object-cover pointer-events-none" />
+                  <img src="/assets/images/certificate-preview.png" alt="{{ __('landing.slide3Title') }}" class="size-full object-cover pointer-events-none" />
                   
                   <div class="absolute inset-0 bg-gradient-to-t from-[#012383]/80 via-transparent to-transparent flex flex-col justify-end p-4 sm:p-5 text-white">
-                    <span class="text-[11px] sm:text-xs font-bold text-blue-200">شهادة معتمدة برقم توثيق رسمي</span>
-                    <h4 class="text-sm sm:text-base font-bold font-['Cairo']">أساسيات التخاطب وتطبيقات النطق</h4>
+                    <span class="text-[11px] sm:text-xs font-bold text-blue-200">{{ __('landing.slide3CertBadge') }}</span>
+                    <h4 class="text-sm sm:text-base font-bold font-['Cairo']">{{ __('landing.slide3CertTitle') }}</h4>
                   </div>
                 </div>
               </div>
@@ -232,12 +233,12 @@
                     🎓
                   </div>
                   <div class="flex flex-col text-start">
-                    <span class="text-[11px] sm:text-xs font-bold text-[#012383]">نسبة إنجاز الدورة: ٩٥٪</span>
-                    <span class="text-[10px] sm:text-[11px] text-emerald-600 font-semibold">مؤهل لإصدار وتحميل الشهادة</span>
+                    <span class="text-[11px] sm:text-xs font-bold text-[#012383]">{{ __('landing.slide3ProgressTitle') }}</span>
+                    <span class="text-[10px] sm:text-[11px] text-emerald-600 font-semibold">{{ __('landing.slide3ProgressDesc') }}</span>
                   </div>
                 </div>
-                <a href="./pages/certificate.html" class="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl bg-[#012383] text-white text-[11px] sm:text-xs font-bold hover:bg-[#0B2A8F] transition-colors shrink-0">
-                  استعراض
+                <a href="{{ route('certificates.index') }}" class="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl bg-[#012383] text-white text-[11px] sm:text-xs font-bold hover:bg-[#0B2A8F] transition-colors shrink-0">
+                  {{ __('landing.slide3PreviewBtn') }}
                 </a>
               </div>
 
@@ -252,7 +253,7 @@
               <button
                 type="button"
                 id="slider-prev"
-                aria-label="السابق"
+                aria-label="{{ __('landing.prev') }}"
                 class="size-9 sm:size-10 rounded-full bg-white border border-[#DEE8F7] text-[#012383] hover:bg-[#EAF1FB] hover:border-[#0B2A8F]/40 flex items-center justify-center transition-all shadow-xs hover:shadow-md cursor-pointer"
               >
                 <svg class="size-4 sm:size-5 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -262,7 +263,7 @@
               <button
                 type="button"
                 id="slider-next"
-                aria-label="التالي"
+                aria-label="{{ __('landing.next') }}"
                 class="size-9 sm:size-10 rounded-full bg-white border border-[#DEE8F7] text-[#012383] hover:bg-[#EAF1FB] hover:border-[#0B2A8F]/40 flex items-center justify-center transition-all shadow-xs hover:shadow-md cursor-pointer"
               >
                 <svg class="size-4 sm:size-5 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -275,13 +276,13 @@
             <a
               href="#courses"
               class="hidden sm:inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/90 border border-[#DEE8F7] hover:border-[#0B2A8F]/40 shadow-xs hover:shadow-sm transition-all cursor-pointer text-[#012383] group"
-              aria-label="الانتقال إلى الدورات"
+              aria-label="{{ __('landing.jumpToCourses') }}"
             >
               <div class="w-3.5 h-5 border-2 border-[#0B2A8F] rounded-full flex justify-center pt-0.5 group-hover:scale-105 transition-transform">
                 <div class="size-1 rounded-full bg-[#0B2A8F] animate-scroll-bounce"></div>
               </div>
               <span class="text-xs font-bold font-['Cairo'] text-[#0B2A8F] group-hover:text-[#012383]">
-                استكشف الدورات بالأسفل
+                {{ __('landing.exploreCoursesBelow') }}
               </span>
               <svg class="size-3.5 text-[#0B2A8F] animate-scroll-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
@@ -290,9 +291,9 @@
 
             <!-- Dot Indicators -->
             <div class="flex items-center gap-2">
-              <button type="button" class="slider-dot h-2 sm:h-2.5 rounded-full transition-all duration-300 w-6 sm:w-8 bg-[#012383] cursor-pointer" aria-label="الشريحة 1"></button>
-              <button type="button" class="slider-dot h-2 sm:h-2.5 rounded-full transition-all duration-300 w-2 sm:w-2.5 bg-[#CBD5E1] hover:bg-[#94A3B8] cursor-pointer" aria-label="الشريحة 2"></button>
-              <button type="button" class="slider-dot h-2 sm:h-2.5 rounded-full transition-all duration-300 w-2 sm:w-2.5 bg-[#CBD5E1] hover:bg-[#94A3B8] cursor-pointer" aria-label="الشريحة 3"></button>
+              <button type="button" class="slider-dot h-2 sm:h-2.5 rounded-full transition-all duration-300 w-6 sm:w-8 bg-[#012383] cursor-pointer" aria-label="{{ __('landing.slide') }} 1"></button>
+              <button type="button" class="slider-dot h-2 sm:h-2.5 rounded-full transition-all duration-300 w-2 sm:w-2.5 bg-[#CBD5E1] hover:bg-[#94A3B8] cursor-pointer" aria-label="{{ __('landing.slide') }} 2"></button>
+              <button type="button" class="slider-dot h-2 sm:h-2.5 rounded-full transition-all duration-300 w-2 sm:w-2.5 bg-[#CBD5E1] hover:bg-[#94A3B8] cursor-pointer" aria-label="{{ __('landing.slide') }} 3"></button>
             </div>
 
           </div>
@@ -374,7 +375,7 @@
               data-cat="all"
               class="catalog-filter active px-4 py-1.5 rounded-full text-xs font-bold transition-all bg-[#012383] text-white cursor-pointer shadow-xs"
             >
-              كورس التخاطب
+              {{ __('landing.courseCategoryAll') }}
             </button>
           </div>
 
@@ -388,40 +389,40 @@
           <div class="reveal-on-scroll course-card bg-white border border-[#DEE8F7] hover:border-[#0B2A8F] rounded-[20px] overflow-hidden shadow-xs hover:shadow-card hover:-translate-y-1.5 transition-all flex flex-col justify-between" data-category="speech" data-title="استراتيجيات تنمية اللغة">
             <div>
               <div class="h-48 w-full bg-[#012383] relative overflow-hidden">
-                <img src="/assets/images/course-topic-strategies.png" alt="استراتيجيات تنمية اللغة" class="size-full object-cover" />
+                <img src="/assets/images/course-topic-strategies.png" alt="{{ __('landing.course1Title') }}" class="size-full object-cover" />
                 <div class="absolute top-3 end-3 flex gap-2">
-                  <span class="px-2.5 py-1 rounded-full bg-[#10B77F] text-white text-[11px] font-bold shadow-xs">الأكثر طلباً</span>
-                  <span class="px-2.5 py-1 rounded-full bg-black/60 text-white text-[11px] font-medium backdrop-blur-xs">٢٠ درساً</span>
+                  <span class="px-2.5 py-1 rounded-full bg-[#10B77F] text-white text-[11px] font-bold shadow-xs">{{ __('landing.mostPopular') }}</span>
+                  <span class="px-2.5 py-1 rounded-full bg-black/60 text-white text-[11px] font-medium backdrop-blur-xs">{{ __('landing.course1Lessons') }}</span>
                 </div>
               </div>
               <div class="p-5 flex flex-col gap-3">
                 <div class="flex items-center justify-between text-xs font-bold">
-                  <span class="text-[#0B2A8F] bg-[#EAF1FB] px-2.5 py-0.5 rounded-md">تخاطب ونطق</span>
+                  <span class="text-[#0B2A8F] bg-[#EAF1FB] px-2.5 py-0.5 rounded-md">{{ __('landing.speechCategory') }}</span>
                   <div class="flex items-center gap-1 text-[#F59E0B]">
                     <span>★ 4.9</span>
                     <span class="text-slate-400 font-normal">(480)</span>
                   </div>
                 </div>
                 <h3 class="font-['Cairo'] font-bold text-[18px] text-[#012383] leading-snug">
-                  استراتيجيات تنمية اللغة والتواصل
+                  {{ __('landing.course1Title') }}
                 </h3>
                 <p class="text-xs text-[#475569] leading-relaxed line-clamp-2">
-                  دليل شامل يركز على التطبيقات السريرية والمنهجية لتطوير الحصيلة اللغوية عند حالات التأخر النمائي.
+                  {{ __('landing.course1Desc') }}
                 </p>
                 <div class="flex items-center gap-2 pt-2 border-t border-[#DEE8F7]/60 text-xs text-[#475569]">
                   <div class="size-6 rounded-full bg-[#EAF1FB] flex items-center justify-center font-bold text-[10px] text-[#0B2A8F]">
                     د
                   </div>
-                  <span>د. عمر القحطاني • محاضر وباحث إكلينيكي</span>
+                  <span>{{ __('landing.course1Instructor') }}</span>
                 </div>
               </div>
             </div>
             <div class="p-5 pt-0 flex items-center justify-between gap-3">
               <span class="text-xs font-bold text-emerald-600 bg-[#EEF7F3] px-2.5 py-1 rounded-lg">
-                مشمول بالاشتراك
+                {{ __('landing.includedInSubscription') }}
               </span>
-              <a href="./pages/course-details.html" class="px-4 py-2 bg-[#012383] hover:bg-[#0B2A8F] text-white text-xs font-bold rounded-xl transition-colors shadow-xs">
-                عرض تفاصيل الكورس
+              <a href="{{ route('courses.show') }}" class="px-4 py-2 bg-[#012383] hover:bg-[#0B2A8F] text-white text-xs font-bold rounded-xl transition-colors shadow-xs">
+                {{ __('landing.viewCourseDetails') }}
               </a>
             </div>
           </div>
@@ -430,40 +431,40 @@
           <div class="reveal-on-scroll course-card bg-white border border-[#DEE8F7] hover:border-[#0B2A8F] rounded-[20px] overflow-hidden shadow-xs hover:shadow-card hover:-translate-y-1.5 transition-all flex flex-col justify-between" style="transition-delay: 150ms;" data-category="speech" data-title="تطبيقات مخارج الحروف">
             <div>
               <div class="h-48 w-full bg-[#0B2A8F] relative overflow-hidden">
-                <img src="/assets/images/course-topic-articulation.png" alt="تطبيقات مخارج الحروف" class="size-full object-cover" />
+                <img src="/assets/images/course-topic-articulation.png" alt="{{ __('landing.course2Title') }}" class="size-full object-cover" />
                 <div class="absolute top-3 end-3 flex gap-2">
-                  <span class="px-2.5 py-1 rounded-full bg-amber-500 text-white text-[11px] font-bold shadow-xs">مميز</span>
-                  <span class="px-2.5 py-1 rounded-full bg-black/60 text-white text-[11px] font-medium backdrop-blur-xs">١٦ درساً</span>
+                  <span class="px-2.5 py-1 rounded-full bg-amber-500 text-white text-[11px] font-bold shadow-xs">{{ __('landing.featured') }}</span>
+                  <span class="px-2.5 py-1 rounded-full bg-black/60 text-white text-[11px] font-medium backdrop-blur-xs">{{ __('landing.course2Lessons') }}</span>
                 </div>
               </div>
               <div class="p-5 flex flex-col gap-3">
                 <div class="flex items-center justify-between text-xs font-bold">
-                  <span class="text-[#0B2A8F] bg-[#EAF1FB] px-2.5 py-0.5 rounded-md">تخاطب ونطق</span>
+                  <span class="text-[#0B2A8F] bg-[#EAF1FB] px-2.5 py-0.5 rounded-md">{{ __('landing.speechCategory') }}</span>
                   <div class="flex items-center gap-1 text-[#F59E0B]">
                     <span>★ 4.8</span>
                     <span class="text-slate-400 font-normal">(310)</span>
                   </div>
                 </div>
                 <h3 class="font-['Cairo'] font-bold text-[18px] text-[#012383] leading-snug">
-                  تطبيقات مخارج الحروف وتصحيح النطق
+                  {{ __('landing.course2Title') }}
                 </h3>
                 <p class="text-xs text-[#475569] leading-relaxed line-clamp-2">
-                  برنامج عملي مركز لتدريب الطلاب على تصحيح إبدال وتشويه الأصوات الكلامية (الراء، السين، الكاف) بالتمارين السريرية.
+                  {{ __('landing.course2Desc') }}
                 </p>
                 <div class="flex items-center gap-2 pt-2 border-t border-[#DEE8F7]/60 text-xs text-[#475569]">
                   <div class="size-6 rounded-full bg-[#EAF1FB] flex items-center justify-center font-bold text-[10px] text-[#0B2A8F]">
                     أ
                   </div>
-                  <span>أ. أحمد السالم • محاضر التخاطب السريري</span>
+                  <span>{{ __('landing.course2Instructor') }}</span>
                 </div>
               </div>
             </div>
             <div class="p-5 pt-0 flex items-center justify-between gap-3">
               <span class="text-xs font-bold text-emerald-600 bg-[#EEF7F3] px-2.5 py-1 rounded-lg">
-                مشمول بالاشتراك
+                {{ __('landing.includedInSubscription') }}
               </span>
-              <a href="./pages/course-details.html" class="px-4 py-2 bg-[#012383] hover:bg-[#0B2A8F] text-white text-xs font-bold rounded-xl transition-colors shadow-xs">
-                عرض تفاصيل الكورس
+              <a href="{{ route('courses.show') }}" class="px-4 py-2 bg-[#012383] hover:bg-[#0B2A8F] text-white text-xs font-bold rounded-xl transition-colors shadow-xs">
+                {{ __('landing.viewCourseDetails') }}
               </a>
             </div>
           </div>
@@ -472,40 +473,40 @@
           <div class="reveal-on-scroll course-card bg-white border border-[#DEE8F7] hover:border-[#0B2A8F] rounded-[20px] overflow-hidden shadow-xs hover:shadow-card hover:-translate-y-1.5 transition-all flex flex-col justify-between" style="transition-delay: 300ms;" data-category="speech" data-title="أساسيات التخاطب">
             <div>
               <div class="h-48 w-full bg-[#152D4D] relative overflow-hidden">
-                <img src="/assets/images/course-topic-basics.png" alt="أساسيات التخاطب" class="size-full object-cover" />
+                <img src="/assets/images/course-topic-basics.png" alt="{{ __('landing.course3Title') }}" class="size-full object-cover" />
                 <div class="absolute top-3 end-3 flex gap-2">
-                  <span class="px-2.5 py-1 rounded-full bg-blue-600 text-white text-[11px] font-bold shadow-xs">أساسي</span>
-                  <span class="px-2.5 py-1 rounded-full bg-black/60 text-white text-[11px] font-medium backdrop-blur-xs">١٢ درساً</span>
+                  <span class="px-2.5 py-1 rounded-full bg-blue-600 text-white text-[11px] font-bold shadow-xs">{{ __('landing.fundamental') }}</span>
+                  <span class="px-2.5 py-1 rounded-full bg-black/60 text-white text-[11px] font-medium backdrop-blur-xs">{{ __('landing.course3Lessons') }}</span>
                 </div>
               </div>
               <div class="p-5 flex flex-col gap-3">
                 <div class="flex items-center justify-between text-xs font-bold">
-                  <span class="text-[#0B2A8F] bg-[#EAF1FB] px-2.5 py-0.5 rounded-md">تخاطب ونطق</span>
+                  <span class="text-[#0B2A8F] bg-[#EAF1FB] px-2.5 py-0.5 rounded-md">{{ __('landing.speechCategory') }}</span>
                   <div class="flex items-center gap-1 text-[#F59E0B]">
                     <span>★ 4.9</span>
                     <span class="text-slate-400 font-normal">(520)</span>
                   </div>
                 </div>
                 <h3 class="font-['Cairo'] font-bold text-[18px] text-[#012383] leading-snug">
-                  أساسيات التخاطب واضطرابات التواصل
+                  {{ __('landing.course3Title') }}
                 </h3>
                 <p class="text-xs text-[#475569] leading-relaxed line-clamp-2">
-                  المدخل الأكاديمي الشامل لطلاب التخاطب لفهم التطور اللغوي الطبيعي وتشخيص الفروق الفردية ومؤشرات التدخل المبكر.
+                  {{ __('landing.course3Desc') }}
                 </p>
                 <div class="flex items-center gap-2 pt-2 border-t border-[#DEE8F7]/60 text-xs text-[#475569]">
                   <div class="size-6 rounded-full bg-[#EAF1FB] flex items-center justify-center font-bold text-[10px] text-[#0B2A8F]">
                     د
                   </div>
-                  <span>د. سامي المنصور • محاضر اضطرابات التواصل</span>
+                  <span>{{ __('landing.course3Instructor') }}</span>
                 </div>
               </div>
             </div>
             <div class="p-5 pt-0 flex items-center justify-between gap-3">
               <span class="text-xs font-bold text-emerald-600 bg-[#EEF7F3] px-2.5 py-1 rounded-lg">
-                مشمول بالاشتراك
+                {{ __('landing.includedInSubscription') }}
               </span>
-              <a href="./pages/course-details.html" class="px-4 py-2 bg-[#012383] hover:bg-[#0B2A8F] text-white text-xs font-bold rounded-xl transition-colors shadow-xs">
-                عرض تفاصيل الكورس
+              <a href="{{ route('courses.show') }}" class="px-4 py-2 bg-[#012383] hover:bg-[#0B2A8F] text-white text-xs font-bold rounded-xl transition-colors shadow-xs">
+                {{ __('landing.viewCourseDetails') }}
               </a>
             </div>
           </div>
@@ -514,11 +515,11 @@
 
         <div class="flex justify-center pt-4">
           <a
-            href="./pages/courses.html"
+            href="{{ route('courses.index') }}"
             class="px-8 py-3.5 bg-[#EAF1FB] hover:bg-[#DEE8F7] text-[#012383] text-sm font-bold rounded-2xl transition-all shadow-xs flex items-center gap-2"
           >
-            <span>استعراض محتوى الكورس في صفحة مستقلة</span>
-            <span class="text-xs">←</span>
+            <span>{{ __('landing.viewAllCourses') }}</span>
+            <span class="text-xs rtl:rotate-180">→</span>
           </a>
         </div>
 
@@ -536,54 +537,67 @@
           </div>
 
           <h2 class="font-['Baloo_Bhaijaan_2'] font-extrabold text-2xl sm:text-4xl lg:text-5xl text-[#012383] tracking-tight leading-tight">
-            منصة مركز الأمين.. شريكك الأول في تأهيل التخاطب والنطق
+            {{ $aboutBlock?->title ?: __('landing.aboutHeading') }}
           </h2>
 
           <p class="text-sm sm:text-base lg:text-lg text-[#475569] max-w-3xl font-medium leading-relaxed">
-            منصة تعليمية متخصصة تجمع بين المعرفة الأكاديمية والتطبيق السريري لتمكين طلاب التخاطب والدارسين من إتقان مهارات التشخيص والعلاج بأعلى معايير الجودة العلمية.
+            {{ $aboutBlock?->subtitle ?: __('landing.aboutSubheading') }}
           </p>
         </div>
+
+        @php
+            $pillars = $aboutBlock?->metadata['pillars'] ?? null;
+            $loc = app()->getLocale();
+        @endphp
 
         <!-- 4 Pillars Grid -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           
           <div class="reveal-on-scroll bg-white border border-[#DEE8F7] rounded-[22px] p-5 sm:p-6 shadow-xs hover:shadow-card hover:-translate-y-1 transition-all flex flex-col gap-3.5">
             <div class="size-12 rounded-2xl bg-[#EAF1FB] text-[#0B2A8F] flex items-center justify-center font-bold text-xl">
-              🎯
+              {{ $pillars[0]['icon'] ?? '🎯' }}
             </div>
-            <h3 class="font-bold text-base sm:text-lg text-[#012383]">مناهج تدريبية معتمدة</h3>
+            <h3 class="font-bold text-base sm:text-lg text-[#012383]">
+              {{ $pillars[0]['title_' . $loc] ?? __('landing.pillar1Title') }}
+            </h3>
             <p class="text-xs text-[#475569] leading-relaxed">
-              مسارات متسلسلة تبدأ من التشخيص الأولي وتمتد إلى جلسات النطق المتقدمة وتعديل السلوك خطوة بخطوة.
+              {{ $pillars[0]['desc_' . $loc] ?? __('landing.pillar1Desc') }}
             </p>
           </div>
 
           <div class="reveal-on-scroll bg-white border border-[#DEE8F7] rounded-[22px] p-5 sm:p-6 shadow-xs hover:shadow-card hover:-translate-y-1 transition-all flex flex-col gap-3.5" style="transition-delay: 100ms;">
             <div class="size-12 rounded-2xl bg-[#EEF7F3] text-emerald-700 flex items-center justify-center font-bold text-xl">
-              🎙️
+              {{ $pillars[1]['icon'] ?? '🎙️' }}
             </div>
-            <h3 class="font-bold text-base sm:text-lg text-[#012383]">مهام صوتية وتقييم مباشر</h3>
+            <h3 class="font-bold text-base sm:text-lg text-[#012383]">
+              {{ $pillars[1]['title_' . $loc] ?? __('landing.pillar2Title') }}
+            </h3>
             <p class="text-xs text-[#475569] leading-relaxed">
-              تطبيق عملي من خلال تسجيل المقاطع الصوتية ومخارج الحروف وتلقي ملاحظات وتوجيهات دقيقة من نخبة المحاضرين.
+              {{ $pillars[1]['desc_' . $loc] ?? __('landing.pillar2Desc') }}
             </p>
           </div>
 
           <div class="reveal-on-scroll bg-white border border-[#DEE8F7] rounded-[22px] p-5 sm:p-6 shadow-xs hover:shadow-card hover:-translate-y-1 transition-all flex flex-col gap-3.5" style="transition-delay: 200ms;">
             <div class="size-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold text-xl">
-              👨‍⚕️
+              {{ $pillars[2]['icon'] ?? '👨‍⚕️' }}
             </div>
-            <h3 class="font-bold text-base sm:text-lg text-[#012383]">أخصائيون واستشاريون موثوقون</h3>
+            <h3 class="font-bold text-base sm:text-lg text-[#012383]">
+              {{ $pillars[2]['title_' . $loc] ?? __('landing.pillar3Title') }}
+            </h3>
             <p class="text-xs text-[#475569] leading-relaxed">
-              فريق متكامل من أطباء ومحاضري التخاطب ذوي الخبرات الطويلة في المستشفيات والمراكز التأهيلية الكبرى.
+              {{ $pillars[2]['desc_' . $loc] ?? __('landing.pillar3Desc') }}
             </p>
           </div>
 
           <div class="reveal-on-scroll bg-white border border-[#DEE8F7] rounded-[22px] p-5 sm:p-6 shadow-xs hover:shadow-card hover:-translate-y-1 transition-all flex flex-col gap-3.5" style="transition-delay: 300ms;">
             <div class="size-12 rounded-2xl bg-indigo-50 text-indigo-700 flex items-center justify-center font-bold text-xl">
-              📜
+              {{ $pillars[3]['icon'] ?? '📜' }}
             </div>
-            <h3 class="font-bold text-base sm:text-lg text-[#012383]">شهادات إتمام موثقة برمز QR</h3>
+            <h3 class="font-bold text-base sm:text-lg text-[#012383]">
+              {{ $pillars[3]['title_' . $loc] ?? __('landing.pillar4Title') }}
+            </h3>
             <p class="text-xs text-[#475569] leading-relaxed">
-              شهادات إنجاز رسمية موثقة برقم مرجعي ورمز استجابة سريعة تثبت كفاءتك وساعاتك التدريبية في التخصص.
+              {{ $pillars[3]['desc_' . $loc] ?? __('landing.pillar4Desc') }}
             </p>
           </div>
 
@@ -593,23 +607,23 @@
         <div class="reveal-on-scroll w-full bg-gradient-to-r from-[#012383] to-[#0B2A8F] rounded-[24px] p-6 sm:p-8 lg:p-12 text-white shadow-card grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
           
           <div class="flex flex-col items-center text-center">
-            <span class="font-['Baloo_Bhaijaan_2'] font-black text-3xl sm:text-4xl lg:text-5xl text-blue-200">+١,٥٠٠</span>
-            <span class="font-['Cairo'] text-xs sm:text-sm lg:text-base font-semibold text-blue-100 mt-1">طالب ودارس معتمد</span>
+            <span class="font-['Baloo_Bhaijaan_2'] font-black text-3xl sm:text-4xl lg:text-5xl text-blue-200">{{ __('landing.metric1Number') }}</span>
+            <span class="font-['Cairo'] text-xs sm:text-sm lg:text-base font-semibold text-blue-100 mt-1">{{ __('landing.metric1Label') }}</span>
           </div>
 
           <div class="flex flex-col items-center text-center">
-            <span class="font-['Baloo_Bhaijaan_2'] font-black text-3xl sm:text-4xl lg:text-5xl text-blue-200">+٢٥</span>
-            <span class="font-['Cairo'] text-xs sm:text-sm lg:text-base font-semibold text-blue-100 mt-1">مسار ودورة تدريبية</span>
+            <span class="font-['Baloo_Bhaijaan_2'] font-black text-3xl sm:text-4xl lg:text-5xl text-blue-200">{{ __('landing.metric2Number') }}</span>
+            <span class="font-['Cairo'] text-xs sm:text-sm lg:text-base font-semibold text-blue-100 mt-1">{{ __('landing.metric2Label') }}</span>
           </div>
 
           <div class="flex flex-col items-center text-center">
-            <span class="font-['Baloo_Bhaijaan_2'] font-black text-3xl sm:text-4xl lg:text-5xl text-emerald-300">٩٨٪</span>
-            <span class="font-['Cairo'] text-xs sm:text-sm lg:text-base font-semibold text-blue-100 mt-1">نسبة الرضا والتحسن</span>
+            <span class="font-['Baloo_Bhaijaan_2'] font-black text-3xl sm:text-4xl lg:text-5xl text-emerald-300">{{ __('landing.metric3Number') }}</span>
+            <span class="font-['Cairo'] text-xs sm:text-sm lg:text-base font-semibold text-blue-100 mt-1">{{ __('landing.metric3Label') }}</span>
           </div>
 
           <div class="flex flex-col items-center text-center">
-            <span class="font-['Baloo_Bhaijaan_2'] font-black text-3xl sm:text-4xl lg:text-5xl text-amber-300">٤.٩ / ٥</span>
-            <span class="font-['Cairo'] text-xs sm:text-sm lg:text-base font-semibold text-blue-100 mt-1">متوسط تقييم الدورات</span>
+            <span class="font-['Baloo_Bhaijaan_2'] font-black text-3xl sm:text-4xl lg:text-5xl text-amber-300">{{ __('landing.metric4Number') }}</span>
+            <span class="font-['Cairo'] text-xs sm:text-sm lg:text-base font-semibold text-blue-100 mt-1">{{ __('landing.metric4Label') }}</span>
           </div>
 
         </div>
@@ -649,28 +663,28 @@
 
             <div class="flex-1 w-full flex flex-col gap-2.5">
               <div class="flex items-center gap-2.5 sm:gap-3 text-xs font-bold">
-                <span class="w-12 sm:w-14 text-end text-[#012383]">٥ نجوم</span>
+                <span class="w-12 sm:w-14 text-end text-[#012383]">{{ __('reviews.star5') }}</span>
                 <div class="flex-1 h-2.5 bg-[#EAF1FB] rounded-full overflow-hidden">
                   <div class="h-full bg-[#10B77F] rounded-full" style="width: 88%"></div>
                 </div>
                 <span class="w-8 sm:w-10 text-start text-[#475569]">88%</span>
               </div>
               <div class="flex items-center gap-2.5 sm:gap-3 text-xs font-bold">
-                <span class="w-12 sm:w-14 text-end text-[#012383]">٤ نجوم</span>
+                <span class="w-12 sm:w-14 text-end text-[#012383]">{{ __('reviews.star4') }}</span>
                 <div class="flex-1 h-2.5 bg-[#EAF1FB] rounded-full overflow-hidden">
                   <div class="h-full bg-[#0B2A8F] rounded-full" style="width: 9%"></div>
                 </div>
                 <span class="w-8 sm:w-10 text-start text-[#475569]">9%</span>
               </div>
               <div class="flex items-center gap-2.5 sm:gap-3 text-xs font-bold">
-                <span class="w-12 sm:w-14 text-end text-[#012383]">٣ نجوم</span>
+                <span class="w-12 sm:w-14 text-end text-[#012383]">{{ __('reviews.star3') }}</span>
                 <div class="flex-1 h-2.5 bg-[#EAF1FB] rounded-full overflow-hidden">
                   <div class="h-full bg-amber-400 rounded-full" style="width: 2%"></div>
                 </div>
                 <span class="w-8 sm:w-10 text-start text-[#475569]">2%</span>
               </div>
               <div class="flex items-center gap-2.5 sm:gap-3 text-xs font-bold">
-                <span class="w-12 sm:w-14 text-end text-[#012383]">نجمتان</span>
+                <span class="w-12 sm:w-14 text-end text-[#012383]">{{ __('reviews.star2') }}</span>
                 <div class="flex-1 h-2.5 bg-[#EAF1FB] rounded-full overflow-hidden">
                   <div class="h-full bg-slate-400 rounded-full" style="width: 1%"></div>
                 </div>
@@ -708,11 +722,11 @@
             <div class="flex flex-col gap-3">
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-1 text-[#F59E0B] text-sm">★★★★★</div>
-                <span class="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">طالب معتمد ✓</span>
+                <span class="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">{{ __('reviews.badgeCertifiedStudent') }}</span>
               </div>
-              <h4 class="font-bold text-[#012383] text-base">تطوّر ملحوظ في التدريب السريري على مخارج الحروف</h4>
+              <h4 class="font-bold text-[#012383] text-base">{{ __('reviews.testimonial1Title') }}</h4>
               <p class="text-xs text-[#475569] leading-relaxed">
-                "الكورس ساعدني جداً كطالب في استيعاب التمارين الحركية النطقية الصحيحة. بعد ٣ أسابيع من الالتزام بتسجيل المهام الصوتية وتلقي توجيهات المحاضر، اكتسبت خبرة سريرية ممتازة."
+                {{ __('reviews.testimonial1Text') }}
               </p>
             </div>
             <div class="flex items-center gap-3 pt-3 border-t border-[#DEE8F7]">
@@ -720,8 +734,8 @@
                 أ
               </div>
               <div class="flex flex-col">
-                <span class="text-xs font-bold text-[#012383]">أحمد الخالدي</span>
-                <span class="text-[11px] text-[#475569]">طالب علوم التخاطب • كورس مخارج الحروف</span>
+                <span class="text-xs font-bold text-[#012383]">{{ __('reviews.testimonial1Author') }}</span>
+                <span class="text-[11px] text-[#475569]">{{ __('reviews.testimonial1Role') }}</span>
               </div>
             </div>
           </div>
@@ -730,11 +744,11 @@
             <div class="flex flex-col gap-3">
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-1 text-[#F59E0B] text-sm">★★★★★</div>
-                <span class="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">أخصائي معتمد ✓</span>
+                <span class="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">{{ __('reviews.badgeCertifiedSpecialist') }}</span>
               </div>
-              <h4 class="font-bold text-[#012383] text-base">محتوى سريري تطبيقي راقٍ جداً</h4>
+              <h4 class="font-bold text-[#012383] text-base">{{ __('reviews.testimonial2Title') }}</h4>
               <p class="text-xs text-[#475569] leading-relaxed">
-                "بصفتي باحث وممارس نطق مبتدئ، الكورس قدّم لي خططاً تدريبية سريرية واضحة وجاهزة للتطبيق. ميزة تسجيل المهام الصوتية وتلقي تقييم المحاضر وفرت علي شهوراً من التجربة."
+                {{ __('reviews.testimonial2Text') }}
               </p>
             </div>
             <div class="flex items-center gap-3 pt-3 border-t border-[#DEE8F7]">
@@ -742,8 +756,8 @@
                 ط
               </div>
               <div class="flex flex-col">
-                <span class="text-xs font-bold text-[#012383]">طارق العمري</span>
-                <span class="text-[11px] text-[#475569]">باحث في اضطرابات التواصل • استراتيجيات تنمية اللغة</span>
+                <span class="text-xs font-bold text-[#012383]">{{ __('reviews.testimonial2Author') }}</span>
+                <span class="text-[11px] text-[#475569]">{{ __('reviews.testimonial2Role') }}</span>
               </div>
             </div>
           </div>
@@ -752,11 +766,11 @@
             <div class="flex flex-col gap-3">
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-1 text-[#F59E0B] text-sm">★★★★★</div>
-                <span class="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">طالب معتمد ✓</span>
+                <span class="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">{{ __('reviews.badgeCertifiedStudent') }}</span>
               </div>
-              <h4 class="font-bold text-[#012383] text-base">سهولة المشاهدة والمرونة الأكاديمية العالية</h4>
+              <h4 class="font-bold text-[#012383] text-base">{{ __('reviews.testimonial3Title') }}</h4>
               <p class="text-xs text-[#475569] leading-relaxed">
-                "أفضل منصة تعليمية عربية لطلاب التخاطب! الدروس مقسمة لوحدات مركزة، واستطعت إنهاء الكورس والحصول على الشهادة الرسمية المعتمَدة بكل سلاسة."
+                {{ __('reviews.testimonial3Text') }}
               </p>
             </div>
             <div class="flex items-center gap-3 pt-3 border-t border-[#DEE8F7]">
@@ -764,8 +778,8 @@
                 ن
               </div>
               <div class="flex flex-col">
-                <span class="text-xs font-bold text-[#012383]">ناصر السبيعي</span>
-                <span class="text-[11px] text-[#475569]">طالب دراسات عليا • أساسيات التخاطب واضطرابات التواصل</span>
+                <span class="text-xs font-bold text-[#012383]">{{ __('reviews.testimonial3Author') }}</span>
+                <span class="text-[11px] text-[#475569]">{{ __('reviews.testimonial3Role') }}</span>
               </div>
             </div>
           </div>
@@ -1000,11 +1014,11 @@
           ✕
         </button>
         <div>
-          <h3 class="font-bold text-xl text-[#012383]">شاركنا تجربتك وتقييمك</h3>
-          <p class="text-xs text-[#475569] mt-1">تقييمك يساعد زملاءك الطلاب في اختيار مسارهم التعليمي.</p>
+          <h3 class="font-bold text-xl text-[#012383]">{{ __('reviews.modalTitle') }}</h3>
+          <p class="text-xs text-[#475569] mt-1">{{ __('reviews.modalSubtitle') }}</p>
         </div>
         <div class="flex flex-col gap-2">
-          <label class="text-xs font-bold text-[#012383]">التقييم العام</label>
+          <label class="text-xs font-bold text-[#012383]">{{ __('reviews.modalRatingLabel') }}</label>
           <div class="flex items-center gap-2 text-2xl text-amber-400 cursor-pointer" id="modal-star-group">
             <span class="modal-star" data-value="1">★</span>
             <span class="modal-star" data-value="2">★</span>
@@ -1014,20 +1028,20 @@
           </div>
         </div>
         <div class="flex flex-col gap-1.5">
-          <label class="text-xs font-bold text-[#012383]">عنوان التقييم</label>
+          <label class="text-xs font-bold text-[#012383]">{{ __('reviews.modalTitleLabel') }}</label>
           <input
             type="text"
             id="modal-review-title"
-            placeholder="{{ __('مثال: دورة ممتازة وتطبيق عملي رائع') }}"
+            placeholder="{{ __('reviews.modalTitlePlaceholder') }}"
             class="h-11 bg-[#FAFCFF] border border-[#DEE8F7] rounded-xl px-4 text-xs text-[#012383] outline-none"
           />
         </div>
         <div class="flex flex-col gap-1.5">
-          <label class="text-xs font-bold text-[#012383]">{{ __('تفاصيل تجربتك') }}</label>
+          <label class="text-xs font-bold text-[#012383]">{{ __('reviews.modalFeedbackLabel') }}</label>
           <textarea
             id="modal-review-text"
             rows="3"
-            placeholder="{{ __('اكتب كيف ساعدتك الدورة في النطق أو التطبيق السريري...') }}"
+            placeholder="{{ __('reviews.modalFeedbackPlaceholder') }}"
             class="bg-[#FAFCFF] border border-[#DEE8F7] rounded-xl p-3 text-xs text-[#012383] outline-none resize-none"
           ></textarea>
         </div>
@@ -1037,14 +1051,14 @@
             id="cancel-review-modal-btn"
             class="px-5 py-2.5 rounded-xl border border-[#DEE8F7] text-xs font-bold text-[#475569] hover:bg-slate-50 transition-colors cursor-pointer"
           >
-            إلغاء
+            {{ __('reviews.modalCancelBtn') }}
           </button>
           <button
             type="button"
             id="submit-review-modal-btn"
             class="px-6 py-2.5 rounded-xl bg-[#012383] hover:bg-[#0B2A8F] text-white text-xs font-bold transition-all shadow-xs cursor-pointer"
           >
-            نشر التقييم
+            {{ __('reviews.modalSubmitBtn') }}
           </button>
         </div>
       </div>

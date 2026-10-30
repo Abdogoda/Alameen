@@ -14,8 +14,12 @@ use Illuminate\Support\Carbon;
  *
  * @property int $id
  * @property string $name
+ * @property string|null $name_ar
+ * @property string|null $name_en
  * @property string $slug
  * @property string|null $description
+ * @property string|null $description_ar
+ * @property string|null $description_en
  * @property array<string> $permissions
  * @property bool $is_system
  * @property Carbon|null $created_at
@@ -29,8 +33,12 @@ class Role extends Model
 
     protected $fillable = [
         'name',
+        'name_ar',
+        'name_en',
         'slug',
         'description',
+        'description_ar',
+        'description_en',
         'permissions',
         'is_system',
     ];
@@ -44,6 +52,42 @@ class Role extends Model
             'permissions' => 'array',
             'is_system' => 'boolean',
         ];
+    }
+
+    /**
+     * Get role name based on active locale.
+     */
+    public function getNameAttribute(): string
+    {
+        $locale = app()->getLocale();
+
+        if ($locale === 'en' && ! empty($this->name_en)) {
+            return $this->name_en;
+        }
+
+        if (! empty($this->name_ar)) {
+            return $this->name_ar;
+        }
+
+        return $this->attributes['name'] ?? '';
+    }
+
+    /**
+     * Get role description based on active locale.
+     */
+    public function getDescriptionAttribute(): ?string
+    {
+        $locale = app()->getLocale();
+
+        if ($locale === 'en' && ! empty($this->description_en)) {
+            return $this->description_en;
+        }
+
+        if (! empty($this->description_ar)) {
+            return $this->description_ar;
+        }
+
+        return $this->attributes['description'] ?? null;
     }
 
     /**

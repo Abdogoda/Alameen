@@ -3,10 +3,15 @@
     'class' => '',
 ])
 
-<a
-    href="{{ route('auth.google.redirect') }}"
+@php
+    $hasSocialite = filled(config('services.google.client_id')) && filled(config('services.google.client_secret'));
+    $hasFirebase = filled(config('services.firebase.project_id')) && filled(config('services.firebase.api_key'));
+@endphp
+
+<button
+    type="button"
     data-firebase-auth="user"
-    onclick="if (window.__firebaseConfig?.projectId && window.signInWithFirebaseGoogle) { event.preventDefault(); window.signInWithFirebaseGoogle('user', this); }"
+    onclick="handleGoogleSignIn(this)"
     class="w-full h-[50px] rounded-xl border border-[#DEE8F7] hover:border-[#0B2A8F]/40 dark:border-slate-700 bg-white hover:bg-[#F8FAFC] dark:bg-slate-800 dark:hover:bg-slate-700/80 text-[#012383] dark:text-white font-bold text-sm shadow-xs hover:shadow-sm active:scale-[0.99] transition-all flex items-center justify-center gap-3 cursor-pointer select-none group {{ $class }}"
     title="{{ $action === 'signup' ? __('التسجيل باستخدام Google') : __('المتابعة باستخدام Google') }}"
 >
@@ -20,4 +25,29 @@
     <span class="font-['Cairo']">
         {{ $action === 'signup' ? __('التسجيل باستخدام Google') : __('المتابعة باستخدام Google') }}
     </span>
-</a>
+</button>
+
+<script>
+    if (typeof window.handleGoogleSignIn !== 'function') {
+        window.handleGoogleSignIn = function(btn) {
+            if (typeof window.signInWithFirebaseGoogle === 'function') {
+                window.signInWithFirebaseGoogle('user', btn);
+            } else if (@json($hasSocialite)) {
+                window.location.href = "{{ route('auth.google.redirect') }}";
+            } else {
+                btn.disabled = true;
+                const timer = setInterval(() => {
+                    if (typeof window.signInWithFirebaseGoogle === 'function') {
+                        clearInterval(timer);
+                        btn.disabled = false;
+                        window.signInWithFirebaseGoogle('user', btn);
+                    }
+                }, 100);
+                setTimeout(() => {
+                    clearInterval(timer);
+                    btn.disabled = false;
+                }, 2500);
+            }
+        };
+    }
+</script>

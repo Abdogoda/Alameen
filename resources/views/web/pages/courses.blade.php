@@ -5,15 +5,15 @@
         <section class="flex flex-col items-center text-center gap-4 max-w-4xl mx-auto w-full">
           
           <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#EAF1FB] border border-[#0B2A8F]/20 text-[#0B2A8F] text-xs font-bold">
-            <span data-i18n="catalog.eyebrow">دليل كورسات التخاطب للطلاب</span>
+            <span data-i18n="catalog.eyebrow">{{ __('catalog.eyebrow') }}</span>
           </div>
 
           <h1 class="font-['Cairo'] font-extrabold text-3xl sm:text-4xl lg:text-5xl text-[#012383] tracking-tight leading-tight" data-i18n="catalog.heroTitle">
-            استكشف كورسات التخاطب للطلاب
+            {{ __('catalog.heroTitle') }}
           </h1>
 
           <p class="text-base sm:text-lg text-[#475569] max-w-2xl font-medium leading-relaxed" data-i18n="catalog.heroDesc">
-            اختر الكورس الأنسب لمسيرتك التعليمية مع مناهج تدريبية معتمدة وتطبيقات عملية شاملة للطلاب.
+            {{ __('catalog.heroDesc') }}
           </p>
 
           <!-- Search Input Bar -->
@@ -21,7 +21,7 @@
             <input
               type="text"
               id="course-search-input"
-              placeholder="ابحث باسم الكورس، المحاضر، أو المهارة..."
+              placeholder="{{ __('catalog.searchPlaceholder') }}"
               data-i18n-placeholder="catalog.searchPlaceholder"
               class="w-full h-13 bg-white border border-[#DEE8F7] focus:border-[#0B2A8F] focus:ring-2 focus:ring-[#0B2A8F]/20 rounded-2xl px-12 text-sm text-[#012383] placeholder-[#475569] outline-none shadow-sm transition-all"
             />
@@ -43,13 +43,13 @@
                 data-cat="all"
                 class="catalog-filter active px-4 py-1.5 rounded-full text-xs font-bold transition-all bg-[#012383] text-white cursor-pointer shadow-xs"
               >
-                كورس التخاطب
+                {{ __('landing.courseCategoryAll') }}
               </button>
             </div>
 
             <!-- Stats Badge -->
             <span class="text-xs font-bold text-[#0B2A8F] bg-[#EAF1FB] px-3.5 py-1.5 rounded-full border border-[#DEE8F7]">
-              مسار التخاطب السريري للطلاب
+              {{ __('catalog.pathBadge') }}
             </span>
           </div>
 
@@ -61,17 +61,17 @@
               <div>
                 <!-- Thumbnail -->
                 <div class="h-48 w-full bg-[#012383] relative overflow-hidden">
-                  <img src="/assets/images/course-topic-strategies.png" alt="استراتيجيات تنمية اللغة" class="size-full object-cover" />
+                  <img src="/assets/images/course-topic-strategies.png" alt="{{ __('landing.course1Title') }}" class="size-full object-cover" />
                   <div class="absolute top-3 end-3 flex gap-2">
-                    <span class="px-2.5 py-1 rounded-full bg-[#10B77F] text-white text-[11px] font-bold shadow-xs">الأكثر طلباً</span>
-                    <span class="px-2.5 py-1 rounded-full bg-black/60 text-white text-[11px] font-medium backdrop-blur-xs">٢٠ درساً</span>
+                    <span class="px-2.5 py-1 rounded-full bg-[#10B77F] text-white text-[11px] font-bold shadow-xs">{{ __('landing.mostPopular') }}</span>
+                    <span class="px-2.5 py-1 rounded-full bg-black/60 text-white text-[11px] font-medium backdrop-blur-xs">{{ __('landing.course1Lessons') }}</span>
                   </div>
                 </div>
 
                 <!-- Body -->
                 <div class="p-5 flex flex-col gap-3">
                   <div class="flex items-center justify-between text-xs font-bold">
-                    <span class="text-[#0B2A8F] bg-[#EAF1FB] px-2.5 py-0.5 rounded-md">تخاطب ونطق</span>
+                    <span class="text-[#0B2A8F] bg-[#EAF1FB] px-2.5 py-0.5 rounded-md">{{ __('landing.speechCategory') }}</span>
                     <div class="flex items-center gap-1 text-[#F59E0B]">
                       <span>★ 4.9</span>
                       <span class="text-slate-400 font-normal">(480)</span>
@@ -79,18 +79,18 @@
                   </div>
 
                   <h3 class="font-['Cairo'] font-bold text-[18px] md:text-[19px] text-[#012383] leading-snug">
-                    استراتيجيات تنمية اللغة والتواصل
+                    {{ __('landing.course1Title') }}
                   </h3>
 
                   <p class="text-xs text-[#475569] leading-relaxed line-clamp-2">
-                    دليل شامل يركز على التطبيقات السريرية لتطوير الحصيلة اللغوية وتأهيل اضطرابات التواصل للطلاب والدارسين.
+                    {{ __('landing.course1Desc') }}
                   </p>
 
                   <div class="flex items-center gap-2 pt-2 border-t border-[#DEE8F7]/60 text-xs text-[#475569]">
                     <div class="size-6 rounded-full bg-[#EAF1FB] flex items-center justify-center font-bold text-[10px] text-[#0B2A8F]">
                       د
                     </div>
-                    <span>د. عمر القحطاني • ٨ ساعات تدريبية</span>
+                    <span>{{ __('landing.course1Instructor') }}</span>
                   </div>
                 </div>
               </div>
@@ -98,14 +98,14 @@
               <!-- Footer CTA -->
               <div class="p-5 pt-0 flex items-center justify-between gap-3">
                 <span class="text-xs font-bold text-emerald-600 bg-[#EEF7F3] px-2.5 py-1 rounded-lg" data-i18n="catalog.includedInPlan">
-                  مشمول بالاشتراك
+                  {{ __('catalog.includedInPlan') }}
                 </span>
                 <a
                   href="{{ route('courses.show') }}"
                   class="px-4 py-2 bg-[#012383] hover:bg-[#0B2A8F] text-white text-xs font-bold rounded-xl transition-colors shadow-xs"
                   data-i18n="catalog.viewCourseDetails"
                 >
-                  عرض تفاصيل الكورس
+                  {{ __('catalog.viewCourseDetails') }}
                 </a>
               </div>
             </div>
@@ -115,17 +115,17 @@
               <div>
                 <!-- Thumbnail -->
                 <div class="h-48 w-full bg-[#0B2A8F] relative overflow-hidden">
-                  <img src="/assets/images/course-topic-articulation.png" alt="تطبيقات مخارج الحروف" class="size-full object-cover" />
+                  <img src="/assets/images/course-topic-articulation.png" alt="{{ __('landing.course2Title') }}" class="size-full object-cover" />
                   <div class="absolute top-3 end-3 flex gap-2">
-                    <span class="px-2.5 py-1 rounded-full bg-amber-500 text-white text-[11px] font-bold shadow-xs">مميز</span>
-                    <span class="px-2.5 py-1 rounded-full bg-black/60 text-white text-[11px] font-medium backdrop-blur-xs">١٦ درساً</span>
+                    <span class="px-2.5 py-1 rounded-full bg-amber-500 text-white text-[11px] font-bold shadow-xs">{{ __('landing.featured') }}</span>
+                    <span class="px-2.5 py-1 rounded-full bg-black/60 text-white text-[11px] font-medium backdrop-blur-xs">{{ __('landing.course2Lessons') }}</span>
                   </div>
                 </div>
 
                 <!-- Body -->
                 <div class="p-5 flex flex-col gap-3">
                   <div class="flex items-center justify-between text-xs font-bold">
-                    <span class="text-[#0B2A8F] bg-[#EAF1FB] px-2.5 py-0.5 rounded-md">تخاطب ونطق</span>
+                    <span class="text-[#0B2A8F] bg-[#EAF1FB] px-2.5 py-0.5 rounded-md">{{ __('landing.speechCategory') }}</span>
                     <div class="flex items-center gap-1 text-[#F59E0B]">
                       <span>★ 4.8</span>
                       <span class="text-slate-400 font-normal">(310)</span>
@@ -133,18 +133,18 @@
                   </div>
 
                   <h3 class="font-['Cairo'] font-bold text-[18px] md:text-[19px] text-[#012383] leading-snug">
-                    تطبيقات مخارج الحروف وتصحيح النطق
+                    {{ __('landing.course2Title') }}
                   </h3>
 
                   <p class="text-xs text-[#475569] leading-relaxed line-clamp-2">
-                    برنامج عملي مركز لتصحيح إبدال وتشويه الأصوات الكلامية (الراء، السين، الكاف) بالتمارين العضلية.
+                    {{ __('landing.course2Desc') }}
                   </p>
 
                   <div class="flex items-center gap-2 pt-2 border-t border-[#DEE8F7]/60 text-xs text-[#475569]">
                     <div class="size-6 rounded-full bg-[#EAF1FB] flex items-center justify-center font-bold text-[10px] text-[#0B2A8F]">
                       أ
                     </div>
-                    <span>أ. أحمد السالم • ٦ ساعات تدريبية</span>
+                    <span>{{ __('landing.course2Instructor') }}</span>
                   </div>
                 </div>
               </div>
@@ -152,14 +152,14 @@
               <!-- Footer CTA -->
               <div class="p-5 pt-0 flex items-center justify-between gap-3">
                 <span class="text-xs font-bold text-emerald-600 bg-[#EEF7F3] px-2.5 py-1 rounded-lg" data-i18n="catalog.includedInPlan">
-                  مشمول بالاشتراك
+                  {{ __('catalog.includedInPlan') }}
                 </span>
                 <a
                   href="{{ route('courses.show') }}"
                   class="px-4 py-2 bg-[#012383] hover:bg-[#0B2A8F] text-white text-xs font-bold rounded-xl transition-colors shadow-xs"
                   data-i18n="catalog.viewCourseDetails"
                 >
-                  عرض تفاصيل الكورس
+                  {{ __('catalog.viewCourseDetails') }}
                 </a>
               </div>
             </div>
@@ -169,17 +169,17 @@
               <div>
                 <!-- Thumbnail -->
                 <div class="h-48 w-full bg-[#152D4D] relative overflow-hidden">
-                  <img src="/assets/images/course-topic-basics.png" alt="أساسيات التخاطب" class="size-full object-cover" />
+                  <img src="/assets/images/course-topic-basics.png" alt="{{ __('landing.course3Title') }}" class="size-full object-cover" />
                   <div class="absolute top-3 end-3 flex gap-2">
-                    <span class="px-2.5 py-1 rounded-full bg-blue-600 text-white text-[11px] font-bold shadow-xs">مبتدئ</span>
-                    <span class="px-2.5 py-1 rounded-full bg-black/60 text-white text-[11px] font-medium backdrop-blur-xs">١٢ درساً</span>
+                    <span class="px-2.5 py-1 rounded-full bg-blue-600 text-white text-[11px] font-bold shadow-xs">{{ __('landing.fundamental') }}</span>
+                    <span class="px-2.5 py-1 rounded-full bg-black/60 text-white text-[11px] font-medium backdrop-blur-xs">{{ __('landing.course3Lessons') }}</span>
                   </div>
                 </div>
 
                 <!-- Body -->
                 <div class="p-5 flex flex-col gap-3">
                   <div class="flex items-center justify-between text-xs font-bold">
-                    <span class="text-[#0B2A8F] bg-[#EAF1FB] px-2.5 py-0.5 rounded-md">أساسيات علمية</span>
+                    <span class="text-[#0B2A8F] bg-[#EAF1FB] px-2.5 py-0.5 rounded-md">{{ __('catalog.scientificBasics') }}</span>
                     <div class="flex items-center gap-1 text-[#F59E0B]">
                       <span>★ 4.9</span>
                       <span class="text-slate-400 font-normal">(520)</span>
@@ -187,18 +187,18 @@
                   </div>
 
                   <h3 class="font-['Cairo'] font-bold text-[18px] md:text-[19px] text-[#012383] leading-snug">
-                    أساسيات التخاطب والتقييم اللغوي
+                    {{ __('landing.course3Title') }}
                   </h3>
 
                   <p class="text-xs text-[#475569] leading-relaxed line-clamp-2">
-                    المدخل الأكاديمي الشامل لفهم مراحل التطور اللغوي الطبيعي واكتشاف مؤشرات التأخر المبكر للدارسين.
+                    {{ __('landing.course3Desc') }}
                   </p>
 
                   <div class="flex items-center gap-2 pt-2 border-t border-[#DEE8F7]/60 text-xs text-[#475569]">
                     <div class="size-6 rounded-full bg-[#EAF1FB] flex items-center justify-center font-bold text-[10px] text-[#0B2A8F]">
                       س
                     </div>
-                    <span>د. سامي البدر • ٥ ساعات تدريبية</span>
+                    <span>{{ __('landing.course3Instructor') }}</span>
                   </div>
                 </div>
               </div>
@@ -206,34 +206,34 @@
               <!-- Footer CTA -->
               <div class="p-5 pt-0 flex items-center justify-between gap-3">
                 <span class="text-xs font-bold text-emerald-600 bg-[#EEF7F3] px-2.5 py-1 rounded-lg" data-i18n="catalog.includedInPlan">
-                  مشمول بالاشتراك
+                  {{ __('catalog.includedInPlan') }}
                 </span>
                 <a
                   href="{{ route('courses.show') }}"
                   class="px-4 py-2 bg-[#012383] hover:bg-[#0B2A8F] text-white text-xs font-bold rounded-xl transition-colors shadow-xs"
                   data-i18n="catalog.viewCourseDetails"
                 >
-                  عرض تفاصيل الكورس
+                  {{ __('catalog.viewCourseDetails') }}
                 </a>
               </div>
             </div>
 
             <!-- Course Card 4: Stuttering & Fluency Management -->
-            <div class="course-card bg-white border border-[#DEE8F7] rounded-[18px] overflow-hidden shadow-xs hover:shadow-card hover:-translate-y-1 transition-all flex flex-col justify-between" data-category="speech" data-title="إدارة التأتأة والطلاقة الكلامية">
+            <div class="course-card bg-white border border-[#DEE8F7] rounded-[18px] overflow-hidden shadow-xs hover:shadow-card hover:-translate-y-1 transition-all flex flex-col justify-between" data-category="speech" data-title="{{ __('catalog.course4Title') }}">
               <div>
                 <!-- Thumbnail -->
                 <div class="h-48 w-full bg-[#0B2A8F] relative overflow-hidden">
-                  <img src="/assets/images/photo1.png" alt="إدارة التأتأة" class="size-full object-cover" />
+                  <img src="/assets/images/photo1.png" alt="{{ __('catalog.course4Title') }}" class="size-full object-cover" />
                   <div class="absolute top-3 end-3 flex gap-2">
-                    <span class="px-2.5 py-1 rounded-full bg-emerald-600 text-white text-[11px] font-bold shadow-xs">متوسط</span>
-                    <span class="px-2.5 py-1 rounded-full bg-black/60 text-white text-[11px] font-medium backdrop-blur-xs">١٤ درساً</span>
+                    <span class="px-2.5 py-1 rounded-full bg-emerald-600 text-white text-[11px] font-bold shadow-xs">{{ __('catalog.intermediate') }}</span>
+                    <span class="px-2.5 py-1 rounded-full bg-black/60 text-white text-[11px] font-medium backdrop-blur-xs">{{ __('catalog.course4Lessons') }}</span>
                   </div>
                 </div>
 
                 <!-- Body -->
                 <div class="p-5 flex flex-col gap-3">
                   <div class="flex items-center justify-between text-xs font-bold">
-                    <span class="text-[#0B2A8F] bg-[#EAF1FB] px-2.5 py-0.5 rounded-md">تخاطب ونطق</span>
+                    <span class="text-[#0B2A8F] bg-[#EAF1FB] px-2.5 py-0.5 rounded-md">{{ __('catalog.categorySpeech') }}</span>
                     <div class="flex items-center gap-1 text-[#F59E0B]">
                       <span>★ 4.8</span>
                       <span class="text-slate-400 font-normal">(195)</span>
@@ -241,18 +241,18 @@
                   </div>
 
                   <h3 class="font-['Cairo'] font-bold text-[18px] md:text-[19px] text-[#012383] leading-snug">
-                    إدارة التأتأة وتعزيز الطلاقة الكلامية
+                    {{ __('catalog.course4Title') }}
                   </h3>
 
                   <p class="text-xs text-[#475569] leading-relaxed line-clamp-2">
-                    استراتيجيات تقليل التوتر والتحكم بمعدل وسرعة الكلام للأطفال واليافعين بطرق علمية مؤكدة.
+                    {{ __('catalog.course4Desc') }}
                   </p>
 
                   <div class="flex items-center gap-2 pt-2 border-t border-[#DEE8F7]/60 text-xs text-[#475569]">
                     <div class="size-6 rounded-full bg-[#EAF1FB] flex items-center justify-center font-bold text-[10px] text-[#0B2A8F]">
                       ع
                     </div>
-                    <span>د. عمر الفاروق • ٦ ساعات تدريبية</span>
+                    <span>{{ __('catalog.course4Instructor') }}</span>
                   </div>
                 </div>
               </div>
@@ -260,34 +260,34 @@
               <!-- Footer CTA -->
               <div class="p-5 pt-0 flex items-center justify-between gap-3">
                 <span class="text-xs font-bold text-emerald-600 bg-[#EEF7F3] px-2.5 py-1 rounded-lg" data-i18n="catalog.includedInPlan">
-                  مشمول بالاشتراك
+                  {{ __('catalog.includedInPlan') }}
                 </span>
                 <a
                   href="{{ route('courses.show') }}"
                   class="px-4 py-2 bg-[#012383] hover:bg-[#0B2A8F] text-white text-xs font-bold rounded-xl transition-colors shadow-xs"
                   data-i18n="catalog.viewCourseDetails"
                 >
-                  عرض تفاصيل الكورس
+                  {{ __('catalog.viewCourseDetails') }}
                 </a>
               </div>
             </div>
 
             <!-- Course Card 5: Autism Communication -->
-            <div class="course-card bg-white border border-[#DEE8F7] rounded-[18px] overflow-hidden shadow-xs hover:shadow-card hover:-translate-y-1 transition-all flex flex-col justify-between" data-category="speech" data-title="التدخل المبكر لأطفال طيف التوحد">
+            <div class="course-card bg-white border border-[#DEE8F7] rounded-[18px] overflow-hidden shadow-xs hover:shadow-card hover:-translate-y-1 transition-all flex flex-col justify-between" data-category="speech" data-title="{{ __('catalog.course5Title') }}">
               <div>
                 <!-- Thumbnail -->
                 <div class="h-48 w-full bg-[#152D4D] relative overflow-hidden">
-                  <img src="/assets/images/photo2.png" alt="طيف التوحد" class="size-full object-cover" />
+                  <img src="/assets/images/photo2.png" alt="{{ __('catalog.course5Title') }}" class="size-full object-cover" />
                   <div class="absolute top-3 end-3 flex gap-2">
-                    <span class="px-2.5 py-1 rounded-full bg-purple-600 text-white text-[11px] font-bold shadow-xs">تخصصي</span>
-                    <span class="px-2.5 py-1 rounded-full bg-black/60 text-white text-[11px] font-medium backdrop-blur-xs">١٨ درساً</span>
+                    <span class="px-2.5 py-1 rounded-full bg-purple-600 text-white text-[11px] font-bold shadow-xs">{{ __('catalog.advanced') }}</span>
+                    <span class="px-2.5 py-1 rounded-full bg-black/60 text-white text-[11px] font-medium backdrop-blur-xs">{{ __('catalog.course5Lessons') }}</span>
                   </div>
                 </div>
 
                 <!-- Body -->
                 <div class="p-5 flex flex-col gap-3">
                   <div class="flex items-center justify-between text-xs font-bold">
-                    <span class="text-[#0B2A8F] bg-[#EAF1FB] px-2.5 py-0.5 rounded-md">تخاطب ونطق</span>
+                    <span class="text-[#0B2A8F] bg-[#EAF1FB] px-2.5 py-0.5 rounded-md">{{ __('catalog.categorySpeech') }}</span>
                     <div class="flex items-center gap-1 text-[#F59E0B]">
                       <span>★ 5.0</span>
                       <span class="text-slate-400 font-normal">(340)</span>
@@ -295,18 +295,18 @@
                   </div>
 
                   <h3 class="font-['Cairo'] font-bold text-[18px] md:text-[19px] text-[#012383] leading-snug">
-                    التدخل المبكر لتطوير التواصل وتأهيل التوحد
+                    {{ __('catalog.course5Title') }}
                   </h3>
 
                   <p class="text-xs text-[#475569] leading-relaxed line-clamp-2">
-                    تطبيق نظام بيكس (PECS) والتواصل البديل والمعزز لتدريب طلاب التخاطب على الخطط الفردية.
+                    {{ __('catalog.course5Desc') }}
                   </p>
 
                   <div class="flex items-center gap-2 pt-2 border-t border-[#DEE8F7]/60 text-xs text-[#475569]">
                     <div class="size-6 rounded-full bg-[#EAF1FB] flex items-center justify-center font-bold text-[10px] text-[#0B2A8F]">
                       ن
                     </div>
-                    <span>أ. ناصر العتيبي • ٩ ساعات تدريبية</span>
+                    <span>{{ __('catalog.course5Instructor') }}</span>
                   </div>
                 </div>
               </div>
@@ -314,34 +314,34 @@
               <!-- Footer CTA -->
               <div class="p-5 pt-0 flex items-center justify-between gap-3">
                 <span class="text-xs font-bold text-emerald-600 bg-[#EEF7F3] px-2.5 py-1 rounded-lg" data-i18n="catalog.includedInPlan">
-                  مشمول بالاشتراك
+                  {{ __('catalog.includedInPlan') }}
                 </span>
                 <a
                   href="{{ route('courses.show') }}"
                   class="px-4 py-2 bg-[#012383] hover:bg-[#0B2A8F] text-white text-xs font-bold rounded-xl transition-colors shadow-xs"
                   data-i18n="catalog.viewCourseDetails"
                 >
-                  عرض تفاصيل الكورس
+                  {{ __('catalog.viewCourseDetails') }}
                 </a>
               </div>
             </div>
 
             <!-- Course Card 6: Clinical Speech Diagnostics -->
-            <div class="course-card bg-white border border-[#DEE8F7] rounded-[18px] overflow-hidden shadow-xs hover:shadow-card hover:-translate-y-1 transition-all flex flex-col justify-between" data-category="speech" data-title="التدريب السريري على تشخيص اضطرابات النطق">
+            <div class="course-card bg-white border border-[#DEE8F7] rounded-[18px] overflow-hidden shadow-xs hover:shadow-card hover:-translate-y-1 transition-all flex flex-col justify-between" data-category="speech" data-title="{{ __('catalog.course6Title') }}">
               <div>
                 <!-- Thumbnail -->
                 <div class="h-48 w-full bg-[#012383] relative overflow-hidden">
-                  <img src="/assets/images/photo3.png" alt="التدريب السريري على تشخيص اضطرابات النطق" class="size-full object-cover" />
+                  <img src="/assets/images/photo3.png" alt="{{ __('catalog.course6Title') }}" class="size-full object-cover" />
                   <div class="absolute top-3 end-3 flex gap-2">
-                    <span class="px-2.5 py-1 rounded-full bg-[#10B77F] text-white text-[11px] font-bold shadow-xs">تطبيق عملي</span>
-                    <span class="px-2.5 py-1 rounded-full bg-black/60 text-white text-[11px] font-medium backdrop-blur-xs">١٠ دروس</span>
+                    <span class="px-2.5 py-1 rounded-full bg-[#10B77F] text-white text-[11px] font-bold shadow-xs">{{ __('catalog.advanced') }}</span>
+                    <span class="px-2.5 py-1 rounded-full bg-black/60 text-white text-[11px] font-medium backdrop-blur-xs">{{ __('catalog.course6Lessons') }}</span>
                   </div>
                 </div>
 
                 <!-- Body -->
                 <div class="p-5 flex flex-col gap-3">
                   <div class="flex items-center justify-between text-xs font-bold">
-                    <span class="text-[#0B2A8F] bg-[#EAF1FB] px-2.5 py-0.5 rounded-md">ممارسة سريرية</span>
+                    <span class="text-[#0B2A8F] bg-[#EAF1FB] px-2.5 py-0.5 rounded-md">{{ __('catalog.categoryClinical') }}</span>
                     <div class="flex items-center gap-1 text-[#F59E0B]">
                       <span>★ 4.9</span>
                       <span class="text-slate-400 font-normal">(280)</span>
@@ -349,18 +349,18 @@
                   </div>
 
                   <h3 class="font-['Cairo'] font-bold text-[18px] md:text-[19px] text-[#012383] leading-snug">
-                    التدريب السريري على تشخيص اضطرابات النطق
+                    {{ __('catalog.course6Title') }}
                   </h3>
 
                   <p class="text-xs text-[#475569] leading-relaxed line-clamp-2">
-                    تأهيل الطلاب والدارسين على إجراء المقاييس التشخيصية وتحديد الخطة العلاجية الفردية لاضطرابات النطق.
+                    {{ __('catalog.course6Desc') }}
                   </p>
 
                   <div class="flex items-center gap-2 pt-2 border-t border-[#DEE8F7]/60 text-xs text-[#475569]">
                     <div class="size-6 rounded-full bg-[#EAF1FB] flex items-center justify-center font-bold text-[10px] text-[#0B2A8F]">
                       م
                     </div>
-                    <span>د. مروان الشريف • ٤ ساعات تدريبية</span>
+                    <span>{{ __('catalog.course6Instructor') }}</span>
                   </div>
                 </div>
               </div>
@@ -368,14 +368,14 @@
               <!-- Footer CTA -->
               <div class="p-5 pt-0 flex items-center justify-between gap-3">
                 <span class="text-xs font-bold text-emerald-600 bg-[#EEF7F3] px-2.5 py-1 rounded-lg" data-i18n="catalog.includedInPlan">
-                  مشمول بالاشتراك
+                  {{ __('catalog.includedInPlan') }}
                 </span>
                 <a
                   href="{{ route('courses.show') }}"
                   class="px-4 py-2 bg-[#012383] hover:bg-[#0B2A8F] text-white text-xs font-bold rounded-xl transition-colors shadow-xs"
                   data-i18n="catalog.viewCourseDetails"
                 >
-                  عرض تفاصيل الكورس
+                  {{ __('catalog.viewCourseDetails') }}
                 </a>
               </div>
             </div>
@@ -384,7 +384,7 @@
 
           <!-- Empty State (Hidden by default) -->
           <div id="catalog-empty" class="hidden flex-col items-center justify-center py-12 text-center bg-white border border-[#DEE8F7] rounded-[24px]">
-            <p class="text-sm font-bold text-[#012383]" data-i18n="catalog.noCoursesFound">لا توجد دورات تطابق معايير البحث الحالية.</p>
+            <p class="text-sm font-bold text-[#012383]" data-i18n="catalog.noCoursesFound">{{ __('catalog.noCoursesFound') }}</p>
           </div>
 
         </section>

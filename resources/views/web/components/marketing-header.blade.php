@@ -69,7 +69,7 @@
                 href="{{ route('admin.dashboard') }}"
                 class="bg-gradient-to-r from-[#F2AE2E] to-amber-500 hover:from-amber-400 hover:to-[#F2AE2E] flex items-center justify-center px-3 sm:px-5 h-[34px] sm:h-[40px] rounded-full text-slate-950 text-xs sm:text-sm font-bold font-['Cairo'] transition-all shadow-sm hover:shadow-md cursor-pointer whitespace-nowrap"
             >
-                {{ __('لوحة الإدارة') }}
+                {{ __('ui.لوحة الإدارة') }}
             </a>
         @elseif (auth()->check())
             <a
@@ -77,7 +77,7 @@
                 class="bg-[#012383] hover:bg-[#0B2A8F] flex items-center justify-center px-3 sm:px-5 h-[34px] sm:h-[40px] rounded-full !text-white text-xs sm:text-sm font-bold font-['Cairo'] transition-all shadow-sm hover:shadow-md cursor-pointer whitespace-nowrap"
                 style="color: #ffffff !important;"
             >
-                <span class="text-white" style="color: #ffffff !important;">{{ __('بوابة الطالب') }}</span>
+                <span class="text-white" style="color: #ffffff !important;">{{ __('ui.بوابة الطالب') }}</span>
             </a>
         @else
             <div class="flex items-center gap-1.5 sm:gap-2">
@@ -86,14 +86,14 @@
                     class="bg-[#012383] hover:bg-[#0B2A8F] flex items-center justify-center px-3 sm:px-5 h-[34px] sm:h-[40px] rounded-full !text-white text-xs sm:text-sm font-bold font-['Cairo'] transition-all shadow-sm hover:shadow-md cursor-pointer whitespace-nowrap"
                     style="color: #ffffff !important;"
                 >
-                    <span class="text-white" style="color: #ffffff !important;">{{ __('تسجيل الدخول') }}</span>
+                    <span class="text-white" style="color: #ffffff !important;">{{ __('landing.loginBtn') }}</span>
                 </a>
                 @if (Route::has('register'))
                     <a
                         href="{{ route('register') }}"
                         class="hidden md:flex border border-[#012383] dark:border-blue-400 text-[#012383] dark:text-blue-300 hover:bg-[#EAF1FB] dark:hover:bg-slate-800 items-center justify-center px-3.5 sm:px-5 h-[36px] sm:h-[40px] rounded-full text-xs sm:text-sm font-bold font-['Cairo'] transition-all cursor-pointer whitespace-nowrap"
                     >
-                        {{ __('حساب جديد') }}
+                        {{ __('landing.createAccount') }}
                     </a>
                 @endif
             </div>
@@ -183,7 +183,7 @@
         <div class="flex flex-col gap-4 pt-4 border-t border-[#D7E3F5] dark:border-slate-800 mt-auto">
             <!-- Mobile Switchers Row -->
             <div class="flex items-center justify-between gap-3">
-                <span class="text-xs font-bold text-slate-500 dark:text-slate-400">{{ __('الإعدادات') }}</span>
+                <span class="text-xs font-bold text-slate-500 dark:text-slate-400">{{ __('ui.الإعدادات') }}</span>
                 <div class="flex items-center gap-2">
                     <x-theme-switcher variant="dropdown" />
                     <x-language-switcher variant="dropdown" />
@@ -197,7 +197,7 @@
                         href="{{ route('register') }}"
                         class="w-full text-center border-2 border-[#012383] dark:border-blue-400 text-[#012383] dark:text-blue-300 hover:bg-[#EAF1FB] dark:hover:bg-slate-800 py-3 rounded-2xl text-sm font-bold font-['Cairo'] transition-all shadow-xs"
                     >
-                        {{ __('إنشاء حساب جديد') }}
+                        {{ __('landing.createAccount') }}
                     </a>
                 @endif
             @endguest

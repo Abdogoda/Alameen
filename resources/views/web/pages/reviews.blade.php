@@ -7,15 +7,15 @@
             <svg class="size-4" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
             </svg>
-            <span data-i18n="reviews.eyebrow">آراء وتقييمات الطلاب</span>
+            <span data-i18n="reviews.eyebrow">{{ __('reviews.eyebrow') }}</span>
           </div>
 
           <h1 class="font-['Cairo'] font-extrabold text-3xl sm:text-4xl lg:text-5xl text-[#012383] tracking-tight leading-tight" data-i18n="reviews.heroTitle">
-            تجارب واقعية وقصص نجاح في رحلة التخاطب
+            {{ __('reviews.heroTitle') }}
           </h1>
 
           <p class="text-base sm:text-lg text-[#475569] max-w-2xl font-medium leading-relaxed" data-i18n="reviews.heroDesc">
-            اكتشف كيف ساعدت دورات منصة مركز الأمين آلاف الطلاب والدارسين في تطوير مهارات النطق والتخاطب السريري.
+            {{ __('reviews.heroDesc') }}
           </p>
 
           <!-- Trust Badges 4-Item Grid -->
@@ -24,24 +24,24 @@
             <div class="bg-white border border-[#DEE8F7] rounded-[16px] p-4 flex flex-col items-center justify-center shadow-xs">
               <div class="flex items-center gap-1 text-[#F59E0B] text-xl font-extrabold mb-1">
                 <span>★</span>
-                <span data-i18n="reviews.statRating">٤.٩ من ٥</span>
+                <span data-i18n="reviews.statRating">{{ __('reviews.statRating') }}</span>
               </div>
-              <span class="text-xs font-semibold text-[#475569]" data-i18n="reviews.statRatingSub">متوسط التقييم العام</span>
+              <span class="text-xs font-semibold text-[#475569]" data-i18n="reviews.statRatingSub">{{ __('reviews.statRatingSub') }}</span>
             </div>
 
             <div class="bg-white border border-[#DEE8F7] rounded-[16px] p-4 flex flex-col items-center justify-center shadow-xs">
-              <span class="text-xl font-extrabold text-[#0B2A8F] mb-1" data-i18n="reviews.statReviews">+١,٤٨٠ تقييم</span>
-              <span class="text-xs font-semibold text-[#475569]" data-i18n="reviews.statReviewsSub">تقييمات موثقة من الطلاب</span>
+              <span class="text-xl font-extrabold text-[#0B2A8F] mb-1" data-i18n="reviews.statReviews">{{ __('reviews.statReviews') }}</span>
+              <span class="text-xs font-semibold text-[#475569]" data-i18n="reviews.statReviewsSub">{{ __('reviews.statReviewsSub') }}</span>
             </div>
 
             <div class="bg-white border border-[#DEE8F7] rounded-[16px] p-4 flex flex-col items-center justify-center shadow-xs">
-              <span class="text-xl font-extrabold text-[#10B77F] mb-1" data-i18n="reviews.statSatisfaction">٩٨٪</span>
-              <span class="text-xs font-semibold text-[#475569]" data-i18n="reviews.statSatisfactionSub">نسبة الرضا عن المحتوى</span>
+              <span class="text-xl font-extrabold text-[#10B77F] mb-1" data-i18n="reviews.statSatisfaction">{{ __('reviews.statSatisfaction') }}</span>
+              <span class="text-xs font-semibold text-[#475569]" data-i18n="reviews.statSatisfactionSub">{{ __('reviews.statSatisfactionSub') }}</span>
             </div>
 
             <div class="bg-white border border-[#DEE8F7] rounded-[16px] p-4 flex flex-col items-center justify-center shadow-xs">
-              <span class="text-xl font-extrabold text-[#012383] mb-1" data-i18n="reviews.statVerified">١٠٠٪</span>
-              <span class="text-xs font-semibold text-[#475569]" data-i18n="reviews.statVerifiedSub">طلاب أتموا الدورات</span>
+              <span class="text-xl font-extrabold text-[#012383] mb-1" data-i18n="reviews.statVerified">{{ __('reviews.statVerified') }}</span>
+              <span class="text-xs font-semibold text-[#475569]" data-i18n="reviews.statVerifiedSub">{{ __('reviews.statVerifiedSub') }}</span>
             </div>
 
           </div>
@@ -60,7 +60,7 @@
               <div class="flex items-center gap-1 text-[#F59E0B] text-lg my-1.5">
                 ★★★★★
               </div>
-              <span class="text-xs font-bold text-[#475569]" data-i18n="reviews.statReviewsSub">بناءً على ١,٤٨٠ تقييماً</span>
+              <span class="text-xs font-bold text-[#475569]" data-i18n="reviews.statReviewsSub">{{ __('reviews.statReviewsSub') }}</span>
             </div>
 
             <!-- Right: Breakdown Bars -->
@@ -68,7 +68,7 @@
               
               <!-- 5 Stars -->
               <div class="flex items-center gap-3 text-xs font-bold">
-                <span class="w-14 text-end text-[#012383]" data-i18n="reviews.star5">٥ نجوم</span>
+                <span class="w-14 text-end text-[#012383]" data-i18n="reviews.star5">{{ __('reviews.star5') }}</span>
                 <div class="flex-1 h-2.5 bg-[#EAF1FB] rounded-full overflow-hidden">
                   <div class="h-full bg-[#10B77F] rounded-full" style="width: 88%"></div>
                 </div>
@@ -77,7 +77,7 @@
 
               <!-- 4 Stars -->
               <div class="flex items-center gap-3 text-xs font-bold">
-                <span class="w-14 text-end text-[#012383]" data-i18n="reviews.star4">٤ نجوم</span>
+                <span class="w-14 text-end text-[#012383]" data-i18n="reviews.star4">{{ __('reviews.star4') }}</span>
                 <div class="flex-1 h-2.5 bg-[#EAF1FB] rounded-full overflow-hidden">
                   <div class="h-full bg-[#0B2A8F] rounded-full" style="width: 9%"></div>
                 </div>
@@ -86,7 +86,7 @@
 
               <!-- 3 Stars -->
               <div class="flex items-center gap-3 text-xs font-bold">
-                <span class="w-14 text-end text-[#012383]" data-i18n="reviews.star3">٣ نجوم</span>
+                <span class="w-14 text-end text-[#012383]" data-i18n="reviews.star3">{{ __('reviews.star3') }}</span>
                 <div class="flex-1 h-2.5 bg-[#EAF1FB] rounded-full overflow-hidden">
                   <div class="h-full bg-amber-400 rounded-full" style="width: 2%"></div>
                 </div>
@@ -95,7 +95,7 @@
 
               <!-- 2 Stars -->
               <div class="flex items-center gap-3 text-xs font-bold">
-                <span class="w-14 text-end text-[#012383]" data-i18n="reviews.star2">نجمتان</span>
+                <span class="w-14 text-end text-[#012383]" data-i18n="reviews.star2">{{ __('reviews.star2') }}</span>
                 <div class="flex-1 h-2.5 bg-[#EAF1FB] rounded-full overflow-hidden">
                   <div class="h-full bg-slate-400 rounded-full" style="width: 1%"></div>
                 </div>
@@ -104,7 +104,7 @@
 
               <!-- 1 Star -->
               <div class="flex items-center gap-3 text-xs font-bold">
-                <span class="w-14 text-end text-[#012383]" data-i18n="reviews.star1">نجمة واحدة</span>
+                <span class="w-14 text-end text-[#012383]" data-i18n="reviews.star1">{{ __('reviews.star1') }}</span>
                 <div class="flex-1 h-2.5 bg-[#EAF1FB] rounded-full overflow-hidden">
                   <div class="h-full bg-slate-300 rounded-full" style="width: 0%"></div>
                 </div>
@@ -120,10 +120,10 @@
             <div class="absolute -end-6 -bottom-6 w-32 h-32 rounded-full bg-white/5 pointer-events-none"></div>
             
             <div class="flex flex-col gap-2 relative z-10">
-              <span class="text-xs font-bold text-blue-200 uppercase tracking-wider" data-i18n="reviews.eyebrow">صوت المتعلم</span>
-              <h3 class="font-['Cairo'] font-bold text-2xl" data-i18n="reviews.addReviewCardTitle">شاركنا تجربتك التعليمية</h3>
+              <span class="text-xs font-bold text-blue-200 uppercase tracking-wider" data-i18n="reviews.eyebrow">{{ __('reviews.eyebrow') }}</span>
+              <h3 class="font-['Cairo'] font-bold text-2xl" data-i18n="reviews.addReviewCardTitle">{{ __('reviews.addReviewCardTitle') }}</h3>
               <p class="text-xs text-blue-100 font-medium leading-relaxed" data-i18n="reviews.addReviewCardDesc">
-                رأيك يساهم في إلهام غيرك وتطوير برامجنا التعليمية باستمرار.
+                {{ __('reviews.addReviewCardDesc') }}
               </p>
             </div>
 
@@ -153,7 +153,7 @@
               class="filter-pill active px-4 py-1.5 rounded-full text-xs font-bold transition-all bg-[#012383] text-white hover:bg-[#0B2A8F] cursor-pointer"
               data-i18n="reviews.filterAll"
             >
-              الكل
+              {{ __('reviews.filterAll') }}
             </button>
             <button
               type="button"
@@ -161,7 +161,7 @@
               class="filter-pill px-4 py-1.5 rounded-full text-xs font-bold transition-all bg-[#EAF1FB] text-[#0B2A8F] hover:bg-[#DEE8F7] cursor-pointer"
               data-i18n="reviews.filter5Star"
             >
-              ٥ نجوم
+              {{ __('reviews.filter5Star') }}
             </button>
             <button
               type="button"
@@ -169,7 +169,7 @@
               class="filter-pill px-4 py-1.5 rounded-full text-xs font-bold transition-all bg-[#EAF1FB] text-[#0B2A8F] hover:bg-[#DEE8F7] cursor-pointer"
               data-i18n="reviews.filterWithCert"
             >
-              مع شهادة إتمام
+              {{ __('reviews.filterWithCert') }}
             </button>
             <button
               type="button"
@@ -177,7 +177,7 @@
               class="filter-pill px-4 py-1.5 rounded-full text-xs font-bold transition-all bg-[#EAF1FB] text-[#0B2A8F] hover:bg-[#DEE8F7] cursor-pointer"
               data-i18n="reviews.filterSpeechDelay"
             >
-              تأخر الكلام
+              {{ __('reviews.filterSpeechDelay') }}
             </button>
             <button
               type="button"
@@ -185,7 +185,7 @@
               class="filter-pill px-4 py-1.5 rounded-full text-xs font-bold transition-all bg-[#EAF1FB] text-[#0B2A8F] hover:bg-[#DEE8F7] cursor-pointer"
               data-i18n="reviews.filterArticulation"
             >
-              مخارج الحروف
+              {{ __('reviews.filterArticulation') }}
             </button>
             <button
               type="button"
@@ -193,7 +193,7 @@
               class="filter-pill px-4 py-1.5 rounded-full text-xs font-bold transition-all bg-[#EAF1FB] text-[#0B2A8F] hover:bg-[#DEE8F7] cursor-pointer"
               data-i18n="reviews.filterStuttering"
             >
-              التأتأة
+              {{ __('reviews.filterStuttering') }}
             </button>
             <button
               type="button"
@@ -201,20 +201,20 @@
               class="filter-pill px-4 py-1.5 rounded-full text-xs font-bold transition-all bg-[#EAF1FB] text-[#0B2A8F] hover:bg-[#DEE8F7] cursor-pointer"
               data-i18n="reviews.filterParentTraining"
             >
-              تدريب الوالدين
+              {{ __('reviews.filterParentTraining') }}
             </button>
           </div>
 
           <!-- Sort Select -->
           <div class="flex items-center gap-2 shrink-0 self-end md:self-center">
-            <span class="text-xs font-semibold text-[#475569] whitespace-nowrap" data-i18n="reviews.sortLabel">الترتيب حسب:</span>
+            <span class="text-xs font-semibold text-[#475569] whitespace-nowrap" data-i18n="reviews.sortLabel">{{ __('reviews.sortLabel') }}</span>
             <select
               id="sort-select"
               class="bg-[#FAFCFF] border border-[#DEE8F7] text-xs font-bold text-[#012383] rounded-lg px-2.5 py-1.5 outline-none cursor-pointer focus:border-[#0B2A8F]"
             >
-              <option value="recent" data-i18n="reviews.sortRecent">الأحدث</option>
-              <option value="highest" data-i18n="reviews.sortHighest">الأعلى تقييماً</option>
-              <option value="helpful" data-i18n="reviews.sortHelpful">الأكثر فائدة</option>
+              <option value="recent" data-i18n="reviews.sortRecent">{{ __('reviews.sortRecent') }}</option>
+              <option value="highest" data-i18n="reviews.sortHighest">{{ __('reviews.sortHighest') }}</option>
+              <option value="helpful" data-i18n="reviews.sortHelpful">{{ __('reviews.sortHelpful') }}</option>
             </select>
           </div>
 
@@ -223,38 +223,38 @@
         <!-- 4. SPOTLIGHT CASE STUDY CARD (WorkDo Featured Card) -->
         <section id="spotlight-card" class="bg-gradient-to-r from-white via-white to-[#FAFCFF] border-2 border-[#10B77F]/30 rounded-[20px] p-6 lg:p-8 shadow-card flex flex-col md:flex-row items-center gap-8 relative overflow-hidden transition-all duration-300" data-category="speech" data-rating="5" data-cert="true">
           <div class="size-24 rounded-2xl bg-[#EEF7F3] border border-[#10B77F]/20 flex items-center justify-center shrink-0 overflow-hidden relative shadow-xs">
-            <img src="/assets/images/tip-1.png" alt="د. ريم القحطاني" class="size-full object-cover" />
+            <img src="/assets/images/tip-1.png" alt="{{ __('reviews.spotlightAuthor') }}" class="size-full object-cover" />
           </div>
 
           <div class="flex-1 flex flex-col gap-3">
             <div class="flex flex-wrap items-center gap-2">
               <span class="px-3 py-1 rounded-full bg-[#EEF7F3] text-[#10B77F] text-xs font-bold" data-i18n="reviews.spotlightEyebrow">
-                قصة نجاح مميزة
+                {{ __('reviews.spotlightEyebrow') }}
               </span>
               <span class="px-2.5 py-0.5 rounded-full bg-[#EAF1FB] text-[#0B2A8F] text-[11px] font-bold" data-i18n="reviews.spotlightCourse">
-                دورة استراتيجيات تنمية اللغة
+                {{ __('reviews.spotlightCourse') }}
               </span>
               <div class="flex text-[#F59E0B] text-sm">★★★★★</div>
             </div>
 
             <h3 class="font-['Cairo'] font-bold text-lg md:text-xl text-[#012383]" data-i18n="reviews.spotlightTitle">
-              «تطوّر مستواي في التشخيص السريري خلال ٦ أسابيع من التمارين العملية المنتظمة»
+              {{ __('reviews.spotlightTitle') }}
             </h3>
 
             <p class="text-sm text-[#475569] font-medium leading-relaxed" data-i18n="reviews.spotlightQuote">
-              كنت أبحث عن برنامج علمي وتطبيقي موثوق لتنمية مهاراتي في قيادة جلسات التخاطب. التمارين التفاعلية والتقييم الدقيق في منصة مركز الأمين أحدثا فارقاً ملموساً في كفاءتي السريرية وثقتي المهنية.
+              {{ __('reviews.spotlightQuote') }}
             </p>
 
             <div class="flex items-center gap-3 pt-2 text-xs font-bold text-[#012383]">
-              <span data-i18n="reviews.spotlightAuthor">د. عمر القحطاني</span>
+              <span data-i18n="reviews.spotlightAuthor">{{ __('reviews.spotlightAuthor') }}</span>
               <span class="text-slate-300">•</span>
-              <span class="text-[#475569]" data-i18n="reviews.spotlightRole">طالب وباحث في علوم التخاطب</span>
+              <span class="text-[#475569]" data-i18n="reviews.spotlightRole">{{ __('reviews.spotlightRole') }}</span>
               <span class="text-slate-300">•</span>
               <span class="text-emerald-600 flex items-center gap-1 font-semibold">
                 <svg class="size-3.5" fill="currentColor" viewBox="0 0 20 20">
                   <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
                 </svg>
-                <span data-i18n="reviews.verifiedBadge">طالب موثق</span>
+                <span data-i18n="reviews.verifiedBadge">{{ __('reviews.verifiedBadge') }}</span>
               </span>
             </div>
           </div>
@@ -272,27 +272,27 @@
                     س
                   </div>
                   <div>
-                    <h4 class="text-sm font-bold text-[#012383]">سامي المنصور</h4>
-                    <span class="text-[11px] text-[#475569]">منذ أسبوعين</span>
+                    <h4 class="text-sm font-bold text-[#012383]">{{ __('reviews.card1Author') }}</h4>
+                    <span class="text-[11px] text-[#475569]">{{ __('reviews.card1Time') }}</span>
                   </div>
                 </div>
                 <div class="flex text-[#F59E0B] text-xs">★★★★★</div>
               </div>
 
               <div class="flex flex-wrap gap-1.5 items-center">
-                <span class="px-2 py-0.5 rounded bg-[#EEF7F3] text-emerald-700 text-[10px] font-bold">طالب موثق</span>
-                <span class="px-2 py-0.5 rounded bg-[#EAF1FB] text-[#0B2A8F] text-[10px] font-bold">تطبيقات مخارج الحروف</span>
-                <span class="px-2 py-0.5 rounded bg-blue-50 text-blue-700 text-[10px] font-bold">شهادة معتمدة</span>
+                <span class="px-2 py-0.5 rounded bg-[#EEF7F3] text-emerald-700 text-[10px] font-bold">{{ __('reviews.verifiedBadge') }}</span>
+                <span class="px-2 py-0.5 rounded bg-[#EAF1FB] text-[#0B2A8F] text-[10px] font-bold">{{ __('reviews.card1Course') }}</span>
+                <span class="px-2 py-0.5 rounded bg-blue-50 text-blue-700 text-[10px] font-bold">{{ __('reviews.card1BadgeCert') }}</span>
               </div>
 
-              <h5 class="text-xs font-bold text-[#012383] mt-1">«تمارين واضحة ونتائج مباشرة في تصحيح مخارج الحروف سريرياً»</h5>
+              <h5 class="text-xs font-bold text-[#012383] mt-1">{{ __('reviews.card1Title') }}</h5>
               <p class="text-xs text-[#475569] font-medium leading-relaxed">
-                الكورس ممتاز من حيث الترتيب المنهجي. الفيديوهات مركزة، وملاحظات المحاضر على تحليلي الصوتي ساعدتني كثيراً في فهم مخارج الحروف سريرياً.
+                {{ __('reviews.card1Text') }}
               </p>
             </div>
 
             <div class="mt-4 pt-3 border-t border-[#DEE8F7] flex items-center justify-between text-xs">
-              <span class="text-[11px] text-emerald-600 font-bold">أتم ٩٥٪ من متطلبات الكورس</span>
+              <span class="text-[11px] text-emerald-600 font-bold">{{ __('reviews.card1Footer') }}</span>
               <button type="button" class="helpful-btn flex items-center gap-1.5 text-[#475569] hover:text-[#0B2A8F] font-semibold cursor-pointer">
                 <span>👍</span>
                 <span class="helpful-count">24</span>
@@ -309,26 +309,26 @@
                     خ
                   </div>
                   <div>
-                    <h4 class="text-sm font-bold text-[#012383]">خالد العمري</h4>
-                    <span class="text-[11px] text-[#475569]">منذ ٣ أسابيع</span>
+                    <h4 class="text-sm font-bold text-[#012383]">{{ __('reviews.card2Author') }}</h4>
+                    <span class="text-[11px] text-[#475569]">{{ __('reviews.card2Time') }}</span>
                   </div>
                 </div>
                 <div class="flex text-[#F59E0B] text-xs">★★★★★</div>
               </div>
 
               <div class="flex flex-wrap gap-1.5 items-center">
-                <span class="px-2 py-0.5 rounded bg-[#EEF7F3] text-emerald-700 text-[10px] font-bold">طالب موثق</span>
-                <span class="px-2 py-0.5 rounded bg-[#EAF1FB] text-[#0B2A8F] text-[10px] font-bold">أساسيات التخاطب</span>
+                <span class="px-2 py-0.5 rounded bg-[#EEF7F3] text-emerald-700 text-[10px] font-bold">{{ __('reviews.verifiedBadge') }}</span>
+                <span class="px-2 py-0.5 rounded bg-[#EAF1FB] text-[#0B2A8F] text-[10px] font-bold">{{ __('reviews.card2Course') }}</span>
               </div>
 
-              <h5 class="text-xs font-bold text-[#012383] mt-1">«أفضل استثمار في مسيرتي كطالب وباحث في علوم التخاطب»</h5>
+              <h5 class="text-xs font-bold text-[#012383] mt-1">{{ __('reviews.card2Title') }}</h5>
               <p class="text-xs text-[#475569] font-medium leading-relaxed">
-                استفدت كثيراً من النماذج التطبيقية واستمارة الملاحظة السريرية المرفقة بتوجيه المحاضرين. أنصح كل دارس في علوم التخاطب بهذه المنصة.
+                {{ __('reviews.card2Text') }}
               </p>
             </div>
 
             <div class="mt-4 pt-3 border-t border-[#DEE8F7] flex items-center justify-between text-xs">
-              <span class="text-[11px] text-emerald-600 font-bold">أتم الكورس بدرجة امتياز</span>
+              <span class="text-[11px] text-emerald-600 font-bold">{{ __('reviews.card2Footer') }}</span>
               <button type="button" class="helpful-btn flex items-center gap-1.5 text-[#475569] hover:text-[#0B2A8F] font-semibold cursor-pointer">
                 <span>👍</span>
                 <span class="helpful-count">18</span>
@@ -345,26 +345,26 @@
                     ف
                   </div>
                   <div>
-                    <h4 class="text-sm font-bold text-[#012383]">فهد الدوسري</h4>
-                    <span class="text-[11px] text-[#475569]">منذ شهر</span>
+                    <h4 class="text-sm font-bold text-[#012383]">{{ __('reviews.card3Author') }}</h4>
+                    <span class="text-[11px] text-[#475569]">{{ __('reviews.card3Time') }}</span>
                   </div>
                 </div>
                 <div class="flex text-[#F59E0B] text-xs">★★★★★</div>
               </div>
 
               <div class="flex flex-wrap gap-1.5 items-center">
-                <span class="px-2 py-0.5 rounded bg-[#EEF7F3] text-emerald-700 text-[10px] font-bold">طالب موثق</span>
-                <span class="px-2 py-0.5 rounded bg-[#EAF1FB] text-[#0B2A8F] text-[10px] font-bold">تدريب التخاطب السريري</span>
+                <span class="px-2 py-0.5 rounded bg-[#EEF7F3] text-emerald-700 text-[10px] font-bold">{{ __('reviews.verifiedBadge') }}</span>
+                <span class="px-2 py-0.5 rounded bg-[#EAF1FB] text-[#0B2A8F] text-[10px] font-bold">{{ __('reviews.card3Course') }}</span>
               </div>
 
-              <h5 class="text-xs font-bold text-[#012383] mt-1">«منهجية علمية واضحة في تصحيح اللدغات الصوتية»</h5>
+              <h5 class="text-xs font-bold text-[#012383] mt-1">{{ __('reviews.card3Title') }}</h5>
               <p class="text-xs text-[#475569] font-medium leading-relaxed">
-                الكورس قدّم تدريباً دقيقاً على تقنيات المحاكاة وتعديل مخارج الأصوات. التقييم المباشر للمهام من المحاضر عزز مهاراتي التطبيقية بشكل ملحوظ.
+                {{ __('reviews.card3Text') }}
               </p>
             </div>
 
             <div class="mt-4 pt-3 border-t border-[#DEE8F7] flex items-center justify-between text-xs">
-              <span class="text-[11px] text-blue-600 font-bold">طالب معتمد - نتائج ممتازة</span>
+              <span class="text-[11px] text-blue-600 font-bold">{{ __('reviews.card3Footer') }}</span>
               <button type="button" class="helpful-btn flex items-center gap-1.5 text-[#475569] hover:text-[#0B2A8F] font-semibold cursor-pointer">
                 <span>👍</span>
                 <span class="helpful-count">31</span>
@@ -381,26 +381,26 @@
                     ع
                   </div>
                   <div>
-                    <h4 class="text-sm font-bold text-[#012383]">عبدالله الحربي</h4>
-                    <span class="text-[11px] text-[#475569]">منذ شهر</span>
+                    <h4 class="text-sm font-bold text-[#012383]">{{ __('reviews.card4Author') }}</h4>
+                    <span class="text-[11px] text-[#475569]">{{ __('reviews.card4Time') }}</span>
                   </div>
                 </div>
                 <div class="flex text-[#F59E0B] text-xs">★★★★☆</div>
               </div>
 
               <div class="flex flex-wrap gap-1.5 items-center">
-                <span class="px-2 py-0.5 rounded bg-[#EEF7F3] text-emerald-700 text-[10px] font-bold">طالب موثق</span>
-                <span class="px-2 py-0.5 rounded bg-[#EAF1FB] text-[#0B2A8F] text-[10px] font-bold">إدارة التأتأة والطلاقة</span>
+                <span class="px-2 py-0.5 rounded bg-[#EEF7F3] text-emerald-700 text-[10px] font-bold">{{ __('reviews.verifiedBadge') }}</span>
+                <span class="px-2 py-0.5 rounded bg-[#EAF1FB] text-[#0B2A8F] text-[10px] font-bold">{{ __('reviews.card4Course') }}</span>
               </div>
 
-              <h5 class="text-xs font-bold text-[#012383] mt-1">«تمارين التنفس والتحكم بالإيقاع أحدثت فارقاً»</h5>
+              <h5 class="text-xs font-bold text-[#012383] mt-1">{{ __('reviews.card4Title') }}</h5>
               <p class="text-xs text-[#475569] font-medium leading-relaxed">
-                المحتوى عميق والأسلوب مبسط جداً. تقييم المحاضر الكتابي للمهام السريرية كان ممتازاً ومفصلاً وساعدني على فهم آليات التحكم بالطلاقة.
+                {{ __('reviews.card4Text') }}
               </p>
             </div>
 
             <div class="mt-4 pt-3 border-t border-[#DEE8F7] flex items-center justify-between text-xs">
-              <span class="text-[11px] text-emerald-600 font-bold">شهادة معتمدة</span>
+              <span class="text-[11px] text-emerald-600 font-bold">{{ __('reviews.card4BadgeCert') }}</span>
               <button type="button" class="helpful-btn flex items-center gap-1.5 text-[#475569] hover:text-[#0B2A8F] font-semibold cursor-pointer">
                 <span>👍</span>
                 <span class="helpful-count">14</span>
@@ -417,26 +417,26 @@
                     ن
                   </div>
                   <div>
-                    <h4 class="text-sm font-bold text-[#012383]">نايف القاسم</h4>
-                    <span class="text-[11px] text-[#475569]">منذ ٥ أسابيع</span>
+                    <h4 class="text-sm font-bold text-[#012383]">{{ __('reviews.card5Author') }}</h4>
+                    <span class="text-[11px] text-[#475569]">{{ __('reviews.card5Time') }}</span>
                   </div>
                 </div>
                 <div class="flex text-[#F59E0B] text-xs">★★★★★</div>
               </div>
 
               <div class="flex flex-wrap gap-1.5 items-center">
-                <span class="px-2 py-0.5 rounded bg-[#EEF7F3] text-emerald-700 text-[10px] font-bold">طالب موثق</span>
-                <span class="px-2 py-0.5 rounded bg-[#EAF1FB] text-[#0B2A8F] text-[10px] font-bold">تطبيقات مخارج الحروف</span>
+                <span class="px-2 py-0.5 rounded bg-[#EEF7F3] text-emerald-700 text-[10px] font-bold">{{ __('reviews.verifiedBadge') }}</span>
+                <span class="px-2 py-0.5 rounded bg-[#EAF1FB] text-[#0B2A8F] text-[10px] font-bold">{{ __('reviews.card5Course') }}</span>
               </div>
 
-              <h5 class="text-xs font-bold text-[#012383] mt-1">«تطبيقات علمية دقيقة في الفحص السريري للنطق»</h5>
+              <h5 class="text-xs font-bold text-[#012383] mt-1">{{ __('reviews.card5Title') }}</h5>
               <p class="text-xs text-[#475569] font-medium leading-relaxed">
-                طالب دراسات عليا وكنت أحتاج أدوات علمية للتعامل مع اضطرابات مخارج الحروف سريرياً. الأنشطة والتدريبات التفاعلية مع المحاضر ممتعة وعميقة للغاية.
+                {{ __('reviews.card5Text') }}
               </p>
             </div>
 
             <div class="mt-4 pt-3 border-t border-[#DEE8F7] flex items-center justify-between text-xs">
-              <span class="text-[11px] text-emerald-600 font-bold">شهادة إتمام معتمدة</span>
+              <span class="text-[11px] text-emerald-600 font-bold">{{ __('reviews.card5Footer') }}</span>
               <button type="button" class="helpful-btn flex items-center gap-1.5 text-[#475569] hover:text-[#0B2A8F] font-semibold cursor-pointer">
                 <span>👍</span>
                 <span class="helpful-count">20</span>
@@ -453,26 +453,26 @@
                     ي
                   </div>
                   <div>
-                    <h4 class="text-sm font-bold text-[#012383]">يوسف النجار</h4>
-                    <span class="text-[11px] text-[#475569]">منذ ٦ أسابيع</span>
+                    <h4 class="text-sm font-bold text-[#012383]">{{ __('reviews.card6Author') }}</h4>
+                    <span class="text-[11px] text-[#475569]">{{ __('reviews.card6Time') }}</span>
                   </div>
                 </div>
                 <div class="flex text-[#F59E0B] text-xs">★★★★★</div>
               </div>
 
               <div class="flex flex-wrap gap-1.5 items-center">
-                <span class="px-2 py-0.5 rounded bg-[#EEF7F3] text-emerald-700 text-[10px] font-bold">طالب موثق</span>
-                <span class="px-2 py-0.5 rounded bg-[#EAF1FB] text-[#0B2A8F] text-[10px] font-bold">استراتيجيات تنمية اللغة</span>
+                <span class="px-2 py-0.5 rounded bg-[#EEF7F3] text-emerald-700 text-[10px] font-bold">{{ __('reviews.verifiedBadge') }}</span>
+                <span class="px-2 py-0.5 rounded bg-[#EAF1FB] text-[#0B2A8F] text-[10px] font-bold">{{ __('reviews.card6Course') }}</span>
               </div>
 
-              <h5 class="text-xs font-bold text-[#012383] mt-1">«تدرج منهجي متقن من التقييم حتى التدخل العلاجي»</h5>
+              <h5 class="text-xs font-bold text-[#012383] mt-1">{{ __('reviews.card6Title') }}</h5>
               <p class="text-xs text-[#475569] font-medium leading-relaxed">
-                الشكر موصول لمنصة مركز الأمين والمحاضرين على الدعم المتواصل. الملاحظات الدورية بعد كل مهمة جعلتني أمتلك ثقة تامة في تطبيق خطط التخاطب السريرية.
+                {{ __('reviews.card6Text') }}
               </p>
             </div>
 
             <div class="mt-4 pt-3 border-t border-[#DEE8F7] flex items-center justify-between text-xs">
-              <span class="text-[11px] text-emerald-600 font-bold">أتم الكورس بنجاح</span>
+              <span class="text-[11px] text-emerald-600 font-bold">{{ __('reviews.card6Footer') }}</span>
               <button type="button" class="helpful-btn flex items-center gap-1.5 text-[#475569] hover:text-[#0B2A8F] font-semibold cursor-pointer">
                 <span>👍</span>
                 <span class="helpful-count">28</span>
@@ -487,8 +487,8 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
-            <h3 class="text-base font-bold text-[#012383] mb-1">لا توجد تقييمات مطابقة</h3>
-            <p class="text-xs text-[#475569]">جرب اختيار تصنيف آخر لعرض آراء الطلاب</p>
+            <h3 class="text-base font-bold text-[#012383] mb-1">{{ __('reviews.emptyTitle') }}</h3>
+            <p class="text-xs text-[#475569]">{{ __('reviews.emptyDesc') }}</p>
           </div>
 
         </section>
@@ -501,8 +501,8 @@
           <!-- Modal Header (Fixed) -->
           <div class="flex items-center justify-between px-6 py-4 border-b border-[#DEE8F7] shrink-0 bg-white">
             <div>
-              <h3 class="font-['Baloo_Bhaijaan_2'] font-bold text-xl sm:text-2xl text-[#012383]" data-i18n="reviews.modalTitle">إضافة تقييم جديد</h3>
-              <p class="text-xs text-[#475569] font-medium" data-i18n="reviews.modalSubtitle">شارك تجربتك وانطباعك عن الدورة التدريبية</p>
+              <h3 class="font-['Baloo_Bhaijaan_2'] font-bold text-xl sm:text-2xl text-[#012383]" data-i18n="reviews.modalTitle">{{ __('reviews.modalTitle') }}</h3>
+              <p class="text-xs text-[#475569] font-medium" data-i18n="reviews.modalSubtitle">{{ __('reviews.modalSubtitle') }}</p>
             </div>
             <button
               type="button"
@@ -518,7 +518,7 @@
             
             <!-- Interactive Star Picker -->
             <div class="flex flex-col gap-1">
-              <label class="text-xs font-bold text-[#012383]" data-i18n="reviews.modalRatingLabel">تقييمك العام للدورة</label>
+              <label class="text-xs font-bold text-[#012383]" data-i18n="reviews.modalRatingLabel">{{ __('reviews.modalRatingLabel') }}</label>
               <div class="flex items-center gap-1.5 text-2xl cursor-pointer" id="modal-star-group">
                 <span class="star-item text-amber-400 select-none hover:scale-110 transition-transform" data-val="1">★</span>
                 <span class="star-item text-amber-400 select-none hover:scale-110 transition-transform" data-val="2">★</span>
@@ -531,22 +531,22 @@
 
             <!-- Course Selector -->
             <div class="flex flex-col gap-1">
-              <label class="text-xs font-bold text-[#012383]" data-i18n="reviews.modalCourseLabel">الدورة التي حضرتها</label>
+              <label class="text-xs font-bold text-[#012383]" data-i18n="reviews.modalCourseLabel">{{ __('reviews.modalCourseLabel') }}</label>
               <select id="modal-course-select" class="w-full bg-[#FAFCFF] border border-[#DEE8F7] rounded-xl px-3.5 py-2 text-xs font-medium text-[#012383] outline-none focus:border-[#0B2A8F]">
-                <option value="lang-dev">دورة استراتيجيات تنمية اللغة</option>
-                <option value="articulation">دورة تطبيقات مخارج الحروف</option>
-                <option value="basics">دورة أساسيات التخاطب</option>
-                <option value="stuttering">دورة إدارة التأتأة والطلاقة</option>
+                <option value="lang-dev">{{ __('catalog.course1Title') }}</option>
+                <option value="articulation">{{ __('catalog.course2Title') }}</option>
+                <option value="basics">{{ __('catalog.course3Title') }}</option>
+                <option value="stuttering">{{ __('catalog.course4Title') }}</option>
               </select>
             </div>
 
             <!-- Review Headline -->
             <div class="flex flex-col gap-1">
-              <label class="text-xs font-bold text-[#012383]" data-i18n="reviews.modalTitleLabel">عنوان التقييم</label>
+              <label class="text-xs font-bold text-[#012383]" data-i18n="reviews.modalTitleLabel">{{ __('reviews.modalTitleLabel') }}</label>
               <input
                 type="text"
                 id="modal-review-title"
-                placeholder="مثال: تجربة رائعة وتمارين عملية فعالة"
+                placeholder="{{ __('reviews.modalTitlePlaceholder') }}"
                 data-i18n-placeholder="reviews.modalTitlePlaceholder"
                 class="w-full bg-[#FAFCFF] border border-[#DEE8F7] rounded-xl px-3.5 py-2 text-xs text-[#012383] placeholder-slate-400 outline-none focus:border-[#0B2A8F]"
               />
@@ -554,11 +554,11 @@
 
             <!-- Feedback Details -->
             <div class="flex flex-col gap-1">
-              <label class="text-xs font-bold text-[#012383]" data-i18n="reviews.modalFeedbackLabel">تفاصيل تجربتك والنتائج التي حققتها</label>
+              <label class="text-xs font-bold text-[#012383]" data-i18n="reviews.modalFeedbackLabel">{{ __('reviews.modalFeedbackLabel') }}</label>
               <textarea
                 id="modal-review-text"
                 rows="2"
-                placeholder="اكتب رأيك بالتفصيل هنا وكيف أثرت الدورة في تعلّمك..."
+                placeholder="{{ __('reviews.modalFeedbackPlaceholder') }}"
                 data-i18n-placeholder="reviews.modalFeedbackPlaceholder"
                 class="w-full bg-[#FAFCFF] border border-[#DEE8F7] rounded-xl p-2.5 text-xs text-[#012383] placeholder-slate-400 outline-none focus:border-[#0B2A8F] resize-none"
               ></textarea>
@@ -566,7 +566,7 @@
 
             <!-- File Upload Dropzone -->
             <div class="flex flex-col gap-1">
-              <label class="text-xs font-bold text-[#012383]" data-i18n="reviews.modalUploadLabel">إرفاق إثبات أو شهادة (اختياري)</label>
+              <label class="text-xs font-bold text-[#012383]" data-i18n="reviews.modalUploadLabel">{{ __('reviews.modalUploadLabel') }}</label>
               <input type="file" id="modal-file-input" accept="image/*,.pdf" class="hidden" />
               <div
                 id="modal-upload-box"
@@ -576,7 +576,7 @@
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                 </svg>
                 <p id="modal-upload-filename" class="text-[11px] text-[#475569] font-medium" data-i18n="reviews.modalUploadHint">
-                  انقر لاختيار ملف أو اسحبه هنا (PNG, JPG, PDF حتى 5MB)
+                  {{ __('reviews.modalUploadHint') }}
                 </p>
               </div>
             </div>
@@ -591,7 +591,7 @@
               class="px-4 py-2 rounded-xl text-xs font-bold text-[#475569] hover:bg-slate-200/60 transition-colors cursor-pointer"
               data-i18n="reviews.modalCancelBtn"
             >
-              إلغاء
+              {{ __('reviews.modalCancelBtn') }}
             </button>
             <button
               type="button"
@@ -599,7 +599,7 @@
               class="px-6 py-2.5 rounded-xl text-xs font-bold bg-[#012383] text-white hover:bg-[#0B2A8F] transition-all shadow-xs cursor-pointer"
               data-i18n="reviews.modalSubmitBtn"
             >
-              نشر التقييم
+              {{ __('reviews.modalSubmitBtn') }}
             </button>
           </div>
 

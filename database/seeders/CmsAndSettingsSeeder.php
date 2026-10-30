@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
+use App\Models\ClinicalTask;
 use App\Models\ContentBlock;
 use App\Models\Course;
 use App\Models\Menu;
@@ -168,6 +169,49 @@ class CmsAndSettingsSeeder extends Seeder
             ]
         );
 
+        ContentBlock::query()->updateOrCreate(
+            ['section_key' => 'about'],
+            [
+                'title_ar' => 'منصة مركز الأمين.. شريكك الأول في تأهيل التخاطب والنطق',
+                'title_en' => 'Al-Ameen Platform.. Your Premier Partner in Speech & Pronunciation Rehabilitation',
+                'subtitle_ar' => 'منصة تعليمية متخصصة تجمع بين المعرفة الأكاديمية والتطبيق السريري لتمكين طلاب التخاطب والدارسين من إتقان مهارات التشخيص والعلاج بأعلى معايير الجودة العلمية.',
+                'subtitle_en' => 'A specialized educational platform combining academic knowledge and clinical application to empower speech therapy students and practitioners to master diagnostic and therapeutic skills with the highest scientific quality standards.',
+                'metadata' => [
+                    'pillars' => [
+                        [
+                            'icon' => '🎯',
+                            'title_ar' => 'مناهج تدريبية معتمدة',
+                            'title_en' => 'Accredited Training Curricula',
+                            'desc_ar' => 'مسارات متسلسلة تبدأ من التشخيص الأولي وتمتد إلى جلسات النطق المتقدمة وتعديل السلوك خطوة بخطوة.',
+                            'desc_en' => 'Sequential pathways starting from initial diagnosis and extending to advanced articulation sessions and step-by-step behavior modification.',
+                        ],
+                        [
+                            'icon' => '🎙️',
+                            'title_ar' => 'مهام صوتية وتقييم مباشر',
+                            'title_en' => 'Voice Assignments & Direct Assessment',
+                            'desc_ar' => 'تطبيق عملي من خلال تسجيل المقاطع الصوتية ومخارج الحروف وتلقي ملاحظات وتوجيهات دقيقة من نخبة المحاضرين.',
+                            'desc_en' => 'Practical application through recording audio samples and articulation exercises, receiving precise guidance from expert lecturers.',
+                        ],
+                        [
+                            'icon' => '👨‍⚕️',
+                            'title_ar' => 'أخصائيون واستشاريون موثوقون',
+                            'title_en' => 'Certified Specialists & Consultants',
+                            'desc_ar' => 'فريق متكامل من أطباء ومحاضري التخاطب ذوي الخبرات الطويلة في المستشفيات والمراكز التأهيلية الكبرى.',
+                            'desc_en' => 'A comprehensive team of speech physicians and lecturers with extensive clinical experience in major hospitals and rehabilitation centers.',
+                        ],
+                        [
+                            'icon' => '📜',
+                            'title_ar' => 'شهادات إتمام موثقة برمز QR',
+                            'title_en' => 'Verified Certificates with QR Codes',
+                            'desc_ar' => 'شهادات إنجاز رسمية موثقة برقم مرجعي ورمز استجابة سريعة تثبت كفاءتك وساعاتك التدريبية في التخصص.',
+                            'desc_en' => 'Official achievement certificates documented with reference numbers and QR codes verifying your competence and training hours.',
+                        ],
+                    ],
+                ],
+                'is_active' => true,
+            ]
+        );
+
         // -------------------------------------------------------------
         // 3. Dynamic Menu Navigation (Header & Footers)
         // -------------------------------------------------------------
@@ -261,9 +305,23 @@ class CmsAndSettingsSeeder extends Seeder
         ];
 
         foreach ($videos as $v) {
-            Video::query()->updateOrCreate(
+            $videoModel = Video::query()->updateOrCreate(
                 ['course_id' => $defaultCourse->id, 'slug' => $v['slug']],
                 $v
+            );
+
+            ClinicalTask::query()->updateOrCreate(
+                [
+                    'course_id' => $defaultCourse->id,
+                    'video_id' => $videoModel->id,
+                ],
+                [
+                    'title_ar' => "المهمة السريرية: {$v['title_ar']}",
+                    'title_en' => "Clinical Task: {$v['title_en']}",
+                    'instructions_ar' => 'قم بتسجيل مقطع صوتي واضح مدته لا تتجاوز دقيقتين توضح فيه خطوات التطبيق السريري الموضحة في المحاضرة.',
+                    'instructions_en' => 'Record a clear audio clip (up to 2 minutes) demonstrating the clinical application steps explained in this lecture.',
+                    'max_score' => 100,
+                ]
             );
         }
     }

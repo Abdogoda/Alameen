@@ -24,7 +24,11 @@ class AdminSeeder extends Seeder
             ['slug' => 'super_admin'],
             [
                 'name' => 'المالك / مدير النظام العام',
+                'name_ar' => 'المالك / مدير النظام العام',
+                'name_en' => 'Owner / Super Administrator',
                 'description' => 'كامل صلاحيات التحكم في المنصة، الإعدادات، المشرفين، والتقارير',
+                'description_ar' => 'كامل صلاحيات التحكم في المنصة، الإعدادات، المشرفين، والتقارير',
+                'description_en' => 'Full administrative access to platform control, system settings, supervisors, and analytics',
                 'permissions' => ['*'],
                 'is_system' => true,
             ]
@@ -34,7 +38,11 @@ class AdminSeeder extends Seeder
             ['slug' => 'clinical_supervisor'],
             [
                 'name' => 'المشرف السريري والأكاديمي',
+                'name_ar' => 'المشرف السريري والأكاديمي',
+                'name_en' => 'Clinical & Academic Supervisor',
                 'description' => 'إدارة وتعديل الكورسات والمحاضرات، تقييم تسجيلات الطلاب السريرية، واعتماد الشهادات',
+                'description_ar' => 'إدارة وتعديل الكورسات والمحاضرات، تقييم تسجيلات الطلاب السريرية، واعتماد الشهادات',
+                'description_en' => 'Curriculum management, student clinical recording evaluations, and certificate accreditation',
                 'permissions' => AdminRole::CLINICAL_SUPERVISOR->defaultPermissions(),
                 'is_system' => false,
             ]
@@ -44,7 +52,11 @@ class AdminSeeder extends Seeder
             ['slug' => 'instructor'],
             [
                 'name' => 'محاضر ومدرب سريري',
+                'name_ar' => 'محاضر ومدرب سريري',
+                'name_en' => 'Clinical Instructor & Trainer',
                 'description' => 'استعراض المناهج وتقييم مهام الطلاب الإكلينيكية',
+                'description_ar' => 'استعراض المناهج وتقييم مهام الطلاب الإكلينيكية',
+                'description_en' => 'Curriculum reviewing and clinical voice task grading for enrolled trainees',
                 'permissions' => AdminRole::INSTRUCTOR->defaultPermissions(),
                 'is_system' => false,
             ]
@@ -54,7 +66,11 @@ class AdminSeeder extends Seeder
             ['slug' => 'finance_admin'],
             [
                 'name' => 'المسؤول المالي ومراجعة الإيصالات',
+                'name_ar' => 'المسؤول المالي ومراجعة الإيصالات',
+                'name_en' => 'Finance & Payment Receipts Auditor',
                 'description' => 'مراجعة وتدقيق إيصالات التحويل البنكي، تفعيل وصول الطلاب، والتقارير المالية',
+                'description_ar' => 'مراجعة وتدقيق إيصالات التحويل البنكي، تفعيل وصول الطلاب، والتقارير المالية',
+                'description_en' => 'Auditing transfer receipts, activating course enrollments, and exporting finance reports',
                 'permissions' => AdminRole::FINANCE_ADMIN->defaultPermissions(),
                 'is_system' => false,
             ]
@@ -64,7 +80,11 @@ class AdminSeeder extends Seeder
             ['slug' => 'support_admin'],
             [
                 'name' => 'مسؤول الدعم الفني والإشعارات',
+                'name_ar' => 'مسؤول الدعم الفني والإشعارات',
+                'name_en' => 'Technical Support & Communications Officer',
                 'description' => 'إرسال الإشعارات والتعاميم الجماعية، ومتابعة شؤون واستفسارات المتدربين',
+                'description_ar' => 'إرسال الإشعارات والتعاميم الجماعية، ومتابعة شؤون واستفسارات المتدربين',
+                'description_en' => 'Broadcasting announcements, managing push notifications, and supporting trainee inquiries',
                 'permissions' => AdminRole::SUPPORT_ADMIN->defaultPermissions(),
                 'is_system' => false,
             ]

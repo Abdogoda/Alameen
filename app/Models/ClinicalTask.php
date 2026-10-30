@@ -45,6 +45,24 @@ class ClinicalTask extends Model
         ];
     }
 
+    public function getTitleAttribute(): string
+    {
+        $locale = app()->getLocale();
+
+        return ($locale === 'en' && ! empty($this->title_en))
+            ? $this->title_en
+            : $this->title_ar;
+    }
+
+    public function getInstructionsAttribute(): ?string
+    {
+        $locale = app()->getLocale();
+
+        return ($locale === 'en' && ! empty($this->instructions_en))
+            ? $this->instructions_en
+            : $this->instructions_ar;
+    }
+
     public function course(): BelongsTo
     {
         return $this->belongsTo(Course::class);

@@ -44,7 +44,7 @@
         <button
             type="button"
             @click="open = !open"
-            class="inline-flex items-center gap-1.5 px-2.5 sm:px-3 h-9 sm:h-10 rounded-xl border border-[#DEE8F7] dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700/80 text-xs font-bold text-[#012383] dark:text-slate-200 transition-all cursor-pointer shadow-xs shrink-0"
+            class="inline-flex items-center gap-1.5 px-2.5 sm:px-3 h-9 sm:h-10 rounded-xl border border-[#DEE8F7] dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-[#0B2A8F]/40 dark:hover:border-blue-400/40 hover:bg-slate-50 dark:hover:bg-slate-700/80 hover:-translate-y-0.5 hover:shadow-xs active:scale-95 text-xs font-bold text-[#012383] dark:text-slate-200 transition-all cursor-pointer shadow-xs shrink-0"
         >
             <span class="text-sm leading-none">{{ $locales[$current]['flag'] ?? '🌐' }}</span>
             <span class="hidden sm:inline">{{ $locales[$current]['native'] ?? strtoupper($current) }}</span>

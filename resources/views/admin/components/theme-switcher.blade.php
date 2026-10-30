@@ -121,7 +121,7 @@
         <button
             type="button"
             @click="open = !open"
-            class="size-9 sm:size-10 rounded-xl bg-slate-50 dark:bg-slate-800/90 border border-[#DEE8F7] dark:border-slate-700/80 hover:bg-[#EAF1FB] dark:hover:bg-slate-700/80 flex items-center justify-center text-[#012383] dark:text-slate-200 transition-colors relative cursor-pointer shadow-xs group shrink-0"
+            class="size-9 sm:size-10 rounded-xl bg-slate-50 dark:bg-slate-800/90 border border-[#DEE8F7] dark:border-slate-700/80 hover:border-[#0B2A8F]/40 dark:hover:border-blue-400/40 hover:bg-[#EAF1FB] dark:hover:bg-slate-700/80 hover:-translate-y-0.5 hover:shadow-xs active:scale-95 flex items-center justify-center text-[#012383] dark:text-slate-200 transition-all duration-200 relative cursor-pointer shadow-xs group shrink-0"
             :title="'{{ __('theme.theme') }}: ' + (theme === 'light' ? '{{ __('theme.light') }}' : (theme === 'dark' ? '{{ __('theme.dark') }}' : '{{ __('theme.device') }}'))"
             aria-label="{{ __('theme.theme') }}"
         >

@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\Admin\AdminAuthController;
+use App\Http\Controllers\Admin\AdminFirebaseAuthController;
 use App\Http\Controllers\Admin\CertificateController;
 use App\Http\Controllers\Admin\ClinicalTaskController;
 use App\Http\Controllers\Admin\CourseController;
@@ -26,6 +27,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware('guest:admin')->group(function () {
         Route::get('login', [AdminAuthController::class, 'showLoginForm'])->name('login');
         Route::post('login', [AdminAuthController::class, 'login'])->name('login.store');
+
+        // Admin Google Authentication via Firebase
+        Route::post('auth/google/firebase', [AdminFirebaseAuthController::class, 'authenticate'])->name('auth.google.firebase');
+        Route::post('login/firebase', [AdminFirebaseAuthController::class, 'authenticate'])->name('login.firebase');
     });
 
     // -------------------------------------------------------------

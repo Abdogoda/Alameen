@@ -483,6 +483,193 @@ html, body {
     overflow-x: clip;
 }
 
+/* ========================================================
+   Creative & Interactive Button Hover & Micro-Motion System
+   ======================================================== */
+
+/* 1. Global Spring Physics for all interactive buttons and actionable controls */
+button,
+a[role="button"],
+.btn,
+button[type="button"],
+button[type="submit"],
+input[type="submit"] {
+    position: relative;
+    transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1),
+                box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+                background-color 0.2s ease,
+                border-color 0.2s ease,
+                color 0.15s ease,
+                filter 0.2s ease !important;
+    will-change: transform;
+    cursor: pointer;
+}
+
+/* Mechanical Click Tactile Feedback */
+button:active:not(:disabled),
+a[role="button"]:active,
+.btn:active,
+button[type="button"]:active:not(:disabled),
+button[type="submit"]:active:not(:disabled) {
+    transform: scale(0.95) translateY(1px) !important;
+    transition-duration: 0.08s !important;
+}
+
+/* 2. Primary Dark Navy Buttons - Elevate, Ambient Light & Shimmer Glow */
+button[class*="bg-[#012383]"]:not(:disabled),
+button[class*="bg-[#0B2A8F]"]:not(:disabled),
+a[class*="bg-[#012383]"],
+a[class*="bg-[#0B2A8F]"],
+button[class*="bg-blue-600"]:not(:disabled),
+a[class*="bg-blue-600"] {
+    position: relative;
+    overflow: hidden;
+}
+
+button[class*="bg-[#012383]"]:not(:disabled):hover,
+button[class*="bg-[#0B2A8F]"]:not(:disabled):hover,
+a[class*="bg-[#012383]"]:hover,
+a[class*="bg-[#0B2A8F]"]:hover,
+button[class*="bg-blue-600"]:not(:disabled):hover,
+a[class*="bg-blue-600"]:hover {
+    transform: translateY(-2.5px) !important;
+    box-shadow: 0 12px 28px -4px rgba(1, 35, 131, 0.42), 0 4px 10px -2px rgba(11, 42, 143, 0.28) !important;
+}
+
+html.dark button[class*="bg-[#012383]"]:not(:disabled):hover,
+html.dark button[class*="bg-[#0B2A8F]"]:not(:disabled):hover,
+html.dark a[class*="bg-[#012383]"]:hover,
+html.dark a[class*="bg-[#0B2A8F]"]:hover {
+    box-shadow: 0 12px 30px -4px rgba(96, 165, 250, 0.5), 0 0 16px rgba(59, 130, 246, 0.35) !important;
+}
+
+/* Diagonal Glossy Shimmer Reflection Sweep on Hover */
+button[class*="bg-[#012383]"]:not(:disabled)::after,
+button[class*="bg-[#0B2A8F]"]:not(:disabled)::after,
+a[class*="bg-[#012383]"]::after,
+a[class*="bg-[#0B2A8F]"]::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -130%;
+    width: 65%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.28) 50%,
+        transparent 100%
+    );
+    transform: skewX(-22deg);
+    pointer-events: none;
+    transition: left 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+button[class*="bg-[#012383]"]:not(:disabled):hover::after,
+button[class*="bg-[#0B2A8F]"]:not(:disabled):hover::after,
+a[class*="bg-[#012383]"]:hover::after,
+a[class*="bg-[#0B2A8F]"]:hover::after {
+    left: 190%;
+}
+
+/* 3. Secondary & White Outline Buttons - Spring Lift & Blue Light Accent */
+button[class*="bg-white"]:not(:disabled):hover,
+a[class*="bg-white"]:hover,
+button[class*="border-[#DEE8F7]"]:not(:disabled):hover,
+a[class*="border-[#DEE8F7]"]:hover,
+button[class*="border-slate-200"]:not(:disabled):hover,
+a[class*="border-slate-200"]:hover {
+    transform: translateY(-2px) !important;
+    border-color: #0B2A8F !important;
+    box-shadow: 0 10px 22px -4px rgba(1, 35, 131, 0.12), 0 2px 6px -1px rgba(0, 0, 0, 0.04) !important;
+}
+
+html.dark button[class*="bg-white"]:not(:disabled):hover,
+html.dark a[class*="bg-white"]:hover,
+html.dark button[class*="border-[#DEE8F7]"]:not(:disabled):hover,
+html.dark a[class*="border-[#DEE8F7]"]:hover,
+html.dark button[class*="dark:bg-slate-800"]:not(:disabled):hover,
+html.dark a[class*="dark:bg-slate-800"]:hover {
+    border-color: #60A5FA !important;
+    box-shadow: 0 10px 24px -4px rgba(0, 0, 0, 0.7), 0 0 12px rgba(96, 165, 250, 0.25) !important;
+}
+
+/* 4. Danger & Logout Buttons - Rose Ambient Glow */
+button[class*="bg-rose"]:not(:disabled):hover,
+a[class*="bg-rose"]:hover,
+button[class*="text-rose"]:not(:disabled):hover,
+a[class*="text-rose"]:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 10px 24px -4px rgba(225, 29, 72, 0.32) !important;
+}
+
+/* 5. Success Action Buttons - Emerald Ambient Glow */
+button[class*="bg-emerald"]:not(:disabled):hover,
+a[class*="bg-emerald"]:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 10px 24px -4px rgba(16, 185, 129, 0.35) !important;
+}
+
+/* 6. Creative SVG Icon Transformations on Button Hover */
+/* Plus icons (+) rotate 90deg on hover */
+button:hover svg path[d*="M12 4v16m8-8H4"],
+a:hover svg path[d*="M12 4v16m8-8H4"] {
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+button:hover svg:has(path[d*="M12 4v16m8-8H4"]),
+a:hover svg:has(path[d*="M12 4v16m8-8H4"]) {
+    transform: rotate(90deg) scale(1.15);
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Edit pencil tilt */
+button:hover svg:has(path[d*="M15.232 5.232"]),
+a:hover svg:has(path[d*="M15.232 5.232"]) {
+    transform: rotate(-14deg) scale(1.15);
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Play/Media icons subtle scale */
+button:hover svg:has(path[d*="M9.555 7.168"]),
+a:hover svg:has(path[d*="M9.555 7.168"]) {
+    transform: scale(1.15);
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Notification Bell Wobble on Hover */
+@keyframes bellInteractiveWobble {
+    0%, 100% { transform: rotate(0); }
+    20% { transform: rotate(14deg); }
+    40% { transform: rotate(-12deg); }
+    60% { transform: rotate(8deg); }
+    80% { transform: rotate(-4deg); }
+}
+
+a[href*="notifications"]:hover svg,
+button[aria-label*="إشعار"]:hover svg {
+    animation: bellInteractiveWobble 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transform-origin: top center;
+}
+
+/* Sidebar Nav Items Glide & Pop */
+.admin-sidebar-drawer nav a {
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+                background-color 0.2s ease,
+                color 0.15s ease,
+                box-shadow 0.2s ease !important;
+}
+.admin-sidebar-drawer nav a:not([class*="bg-[#012383]"]):hover {
+    transform: translateX(-4px);
+    box-shadow: 0 4px 12px rgba(11, 42, 143, 0.08);
+}
+[dir="ltr"] .admin-sidebar-drawer nav a:not([class*="bg-[#012383]"]):hover {
+    transform: translateX(4px);
+}
+.admin-sidebar-drawer nav a:hover svg {
+    transform: scale(1.14);
+    transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
 /* Custom scrollbars for responsive tables & filter bars */
 .scrollbar-none::-webkit-scrollbar {
     display: none;

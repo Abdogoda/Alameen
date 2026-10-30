@@ -165,19 +165,22 @@
 
                 <!-- Bottom Actions (Preview Student LMS / Sign Out) -->
                 <div class="border-t border-[#DEE8F7] dark:border-slate-800 pt-4 flex flex-col gap-2">
-                    <a href="{{ route('dashboard') }}" target="_blank" class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 hover:bg-[#EAF1FB] text-[#012383] text-xs font-bold transition-all duration-200 border border-slate-100 hover:border-[#DEE8F7] dark:bg-slate-800/80 dark:hover:bg-slate-700 dark:text-blue-300 dark:border-slate-700 group">
+                    <a href="{{ route('dashboard') }}" target="_blank" class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 hover:bg-[#EAF1FB] text-[#012383] text-xs font-bold transition-all duration-200 border border-slate-100 hover:border-[#DEE8F7] dark:bg-slate-800/80 dark:hover:bg-slate-700 dark:text-blue-300 dark:border-slate-700 group hover:-translate-y-0.5 hover:shadow-xs active:scale-97">
                         <span class="flex items-center gap-2">
-                            <svg class="size-4 text-[#0B2A8F] dark:text-blue-400 group-hover:scale-105 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                            <svg class="size-4 text-[#0B2A8F] dark:text-blue-400 group-hover:scale-115 group-hover:rotate-6 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                             <span>{{ __('معاينة بوابة الطالب') }}</span>
                         </span>
-                        <span class="text-[10px] text-slate-400 group-hover:text-[#0B2A8F] bg-white group-hover:bg-[#DEE8F7]/60 dark:bg-slate-700/80 dark:text-slate-300 px-1.5 py-0.5 rounded-md border border-slate-200/60 group-hover:border-[#C5D7F2] dark:border-slate-600 transition-colors font-medium">{{ __('فتح ↗') }}</span>
+                        <span class="text-[10px] text-slate-400 group-hover:text-[#0B2A8F] bg-white group-hover:bg-[#DEE8F7]/60 dark:bg-slate-700/80 dark:text-slate-300 px-1.5 py-0.5 rounded-md border border-slate-200/60 group-hover:border-[#C5D7F2] dark:border-slate-600 transition-colors font-medium flex items-center gap-0.5">
+                            <span>{{ __('فتح') }}</span>
+                            <span class="group-hover:-translate-y-0.5 group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5 transition-transform duration-200 inline-block">↗</span>
+                        </span>
                     </a>
 
                     <form method="POST" action="{{ route('admin.logout') }}" class="w-full">
                         @csrf
-                        <button type="submit" class="w-full flex items-center justify-between p-2.5 rounded-xl bg-rose-50/70 hover:bg-rose-100/90 text-rose-600 hover:text-rose-700 border border-rose-100/90 hover:border-rose-200 text-xs font-bold transition-all duration-200 cursor-pointer group shadow-2xs dark:bg-rose-950/25 dark:hover:bg-rose-950/50 dark:text-rose-400 dark:hover:text-rose-300 dark:border-rose-900/40 dark:hover:border-rose-800/60">
+                        <button type="submit" class="w-full flex items-center justify-between p-2.5 rounded-xl bg-rose-50/70 hover:bg-rose-100/90 text-rose-600 hover:text-rose-700 border border-rose-100/90 hover:border-rose-200 text-xs font-bold transition-all duration-200 cursor-pointer group shadow-2xs dark:bg-rose-950/25 dark:hover:bg-rose-950/50 dark:text-rose-400 dark:hover:text-rose-300 dark:border-rose-900/40 dark:hover:border-rose-800/60 hover:-translate-y-0.5 hover:shadow-xs active:scale-97">
                             <span class="flex items-center gap-2">
-                                <svg class="size-4 text-rose-500 group-hover:text-rose-600 rtl:rotate-180 transition-transform group-hover:-translate-x-0.5 dark:text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                                <svg class="size-4 text-rose-500 group-hover:text-rose-600 rtl:rotate-180 transition-transform group-hover:-translate-x-1 rtl:group-hover:translate-x-1 duration-200 dark:text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
                                 <span>{{ __('تسجيل خروج الإدارة') }}</span>
                             </span>
                             <span class="text-[10px] text-rose-500 group-hover:text-rose-700 bg-white group-hover:bg-rose-200/70 dark:bg-rose-950/60 dark:text-rose-300 px-1.5 py-0.5 rounded-md border border-rose-200/70 group-hover:border-rose-300 dark:border-rose-900/60 transition-colors font-semibold">{{ __('خروج') }} ↵</span>
@@ -230,7 +233,7 @@
                         <x-admin::language-switcher />
 
                         <!-- Notifications Quick Access -->
-                        <a href="{{ route('admin.notifications.index') }}" class="size-9 sm:size-10 rounded-xl bg-slate-50 dark:bg-slate-800 border border-[#DEE8F7] dark:border-slate-700 hover:bg-[#EAF1FB] dark:hover:bg-slate-700 flex items-center justify-center text-[#012383] dark:text-slate-200 transition-colors relative cursor-pointer" title="{{ __('إدارة الإشعارات') }}">
+                        <a href="{{ route('admin.notifications.index') }}" class="size-9 sm:size-10 rounded-xl bg-slate-50 dark:bg-slate-800 border border-[#DEE8F7] dark:border-slate-700 hover:border-[#0B2A8F]/40 dark:hover:border-blue-400/40 hover:bg-[#EAF1FB] dark:hover:bg-slate-700 hover:-translate-y-0.5 hover:shadow-xs active:scale-95 flex items-center justify-center text-[#012383] dark:text-slate-200 transition-all duration-200 relative cursor-pointer" title="{{ __('إدارة الإشعارات') }}">
                             <svg class="size-4 sm:size-5 text-[#0B2A8F] dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
                             <span class="absolute top-1.5 end-1.5 sm:top-2 sm:end-2 size-2 rounded-full bg-[#F2AE2E] animate-pulse"></span>
                         </a>

@@ -4,8 +4,8 @@
     contentClass="p-3.5 sm:p-6 lg:p-8 flex flex-col gap-5 sm:gap-6 max-w-[1400px] w-full mx-auto min-w-0"
 >
     <x-slot:actions>
-        <button type="button" onclick="openModal('modal-add-level')" class="h-9 sm:h-11 px-3 sm:px-5 rounded-xl bg-[#012383] hover:bg-[#0B2A8F] text-white font-bold text-xs shadow-sm transition-all flex items-center gap-1.5 sm:gap-2 cursor-pointer shrink-0">
-            <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+        <button type="button" onclick="openModal('modal-add-level')" class="group relative h-9 sm:h-11 px-3.5 sm:px-5 rounded-xl bg-gradient-to-r from-[#012383] to-[#0B2A8F] hover:from-[#0B2A8F] hover:to-[#012383] text-white font-bold text-xs shadow-sm hover:shadow-lg hover:shadow-blue-900/30 active:scale-95 transition-all duration-200 flex items-center gap-1.5 sm:gap-2 cursor-pointer shrink-0">
+            <svg class="size-4 group-hover:rotate-90 group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
             <span class="hidden xs:inline">{{ __('إضافة مستوى جديد') }}</span>
             <span class="xs:hidden">{{ __('مستوى جديد') }}</span>
         </button>
@@ -44,9 +44,9 @@
                   <span class="text-xs text-slate-400 line-through dynamic-course-old-price">١,٨٠٠ ج.م</span>
                 </div>
               </div>
-              <button type="button" onclick="openModal('modal-edit-price')" class="h-10 px-3.5 sm:px-4 rounded-xl bg-white dark:bg-slate-800 border border-[#DEE8F7] dark:border-slate-700 hover:bg-[#EAF1FB] dark:hover:bg-slate-700 text-[#0B2A8F] dark:text-blue-300 font-bold text-xs transition-colors shadow-2xs cursor-pointer flex items-center gap-1.5 shrink-0">
-                <svg class="size-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
-                <span>تعديل السعر</span>
+              <button type="button" onclick="openModal('modal-edit-price')" class="group h-10 px-3.5 sm:px-4 rounded-xl bg-white dark:bg-slate-800 border border-[#DEE8F7] dark:border-slate-700 hover:border-[#0B2A8F] dark:hover:border-blue-400 hover:bg-[#EAF1FB] dark:hover:bg-slate-700 text-[#0B2A8F] dark:text-blue-300 font-bold text-xs transition-all duration-200 shadow-2xs hover:shadow-md active:scale-95 cursor-pointer flex items-center gap-1.5 shrink-0">
+                <svg class="size-3.5 group-hover:-rotate-14 group-hover:scale-110 transition-transform duration-250" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                <span>{{ __('تعديل السعر') }}</span>
               </button>
             </div>
           </div>
@@ -83,9 +83,9 @@
                     </div>
                   </div>
                   <div class="flex items-center gap-2 self-end sm:self-auto shrink-0">
-                    <button type="button" onclick="openAddLessonModal('level-card-1', 'المستوى الأول: مدخل إلى علوم التخاطب')" class="px-3.5 py-1.5 rounded-xl bg-[#0B2A8F] hover:bg-[#012383] text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer">
-                      <svg class="size-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
-                      <span>إضافة درس</span>
+                    <button type="button" onclick="openAddLessonModal('level-card-1', 'المستوى الأول: مدخل إلى علوم التخاطب')" class="group px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-[#0B2A8F] to-[#012383] hover:from-[#012383] hover:to-[#0B2A8F] text-white text-xs font-bold transition-all duration-200 shadow-xs hover:shadow-md hover:shadow-blue-900/25 active:scale-95 flex items-center gap-1.5 cursor-pointer">
+                      <svg class="size-3.5 group-hover:rotate-90 group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+                      <span>{{ __('إضافة درس') }}</span>
                     </button>
                     <button type="button" onclick="showToast('تعديل المستوى', 'يمكنك تعديل اسم ووصف المستوى الأول', 'info')" class="p-2 text-slate-400 hover:text-[#012383] dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" title="تعديل">
                       <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
@@ -112,7 +112,10 @@
                       </div>
                     </div>
                     <div class="flex items-center gap-1.5 self-end sm:self-auto shrink-0">
-                      <button type="button" onclick="showToast('معاينة الفيديو', 'جاري فتح مشغل الفيديو في نافذة المعاينة', 'info')" class="px-2.5 py-1 text-xs font-bold text-[#0B2A8F] dark:text-blue-400 hover:bg-[#EAF1FB] dark:hover:bg-slate-700 rounded-lg">تشغيل ↗</button>
+                      <button type="button" onclick="showToast('معاينة الفيديو', 'جاري فتح مشغل الفيديو في نافذة المعاينة', 'info')" class="group px-3 py-1.5 text-xs font-bold text-[#0B2A8F] dark:text-blue-300 bg-blue-50/70 dark:bg-slate-800/80 hover:bg-[#0B2A8F] hover:text-white dark:hover:bg-blue-600 dark:hover:text-white rounded-xl border border-blue-100 dark:border-slate-700 hover:border-[#0B2A8F] shadow-2xs hover:shadow-md hover:shadow-blue-900/20 active:scale-95 transition-all duration-200 flex items-center gap-1 cursor-pointer">
+                        <span>{{ __('تشغيل') }}</span>
+                        <span class="text-xs group-hover:-translate-y-0.5 group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5 transition-transform duration-200">↗</span>
+                      </button>
                     </div>
                   </div>
 
@@ -132,7 +135,10 @@
                       </div>
                     </div>
                     <div class="flex items-center gap-1.5 self-end sm:self-auto shrink-0">
-                      <button type="button" onclick="showToast('معاينة الفيديو', 'جاري فتح مشغل الفيديو في نافذة المعاينة', 'info')" class="px-2.5 py-1 text-xs font-bold text-[#0B2A8F] dark:text-blue-400 hover:bg-[#EAF1FB] dark:hover:bg-slate-700 rounded-lg">تشغيل ↗</button>
+                      <button type="button" onclick="showToast('معاينة الفيديو', 'جاري فتح مشغل الفيديو في نافذة المعاينة', 'info')" class="group px-3 py-1.5 text-xs font-bold text-[#0B2A8F] dark:text-blue-300 bg-blue-50/70 dark:bg-slate-800/80 hover:bg-[#0B2A8F] hover:text-white dark:hover:bg-blue-600 dark:hover:text-white rounded-xl border border-blue-100 dark:border-slate-700 hover:border-[#0B2A8F] shadow-2xs hover:shadow-md hover:shadow-blue-900/20 active:scale-95 transition-all duration-200 flex items-center gap-1 cursor-pointer">
+                        <span>{{ __('تشغيل') }}</span>
+                        <span class="text-xs group-hover:-translate-y-0.5 group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5 transition-transform duration-200">↗</span>
+                      </button>
                     </div>
                   </div>
 
@@ -152,7 +158,10 @@
                       </div>
                     </div>
                     <div class="flex items-center gap-1.5 self-end sm:self-auto shrink-0">
-                      <button type="button" onclick="showToast('معاينة الفيديو', 'جاري فتح مشغل الفيديو في نافذة المعاينة', 'info')" class="px-2.5 py-1 text-xs font-bold text-[#0B2A8F] dark:text-blue-400 hover:bg-[#EAF1FB] dark:hover:bg-slate-700 rounded-lg">تشغيل ↗</button>
+                      <button type="button" onclick="showToast('معاينة الفيديو', 'جاري فتح مشغل الفيديو في نافذة المعاينة', 'info')" class="group px-3 py-1.5 text-xs font-bold text-[#0B2A8F] dark:text-blue-300 bg-blue-50/70 dark:bg-slate-800/80 hover:bg-[#0B2A8F] hover:text-white dark:hover:bg-blue-600 dark:hover:text-white rounded-xl border border-blue-100 dark:border-slate-700 hover:border-[#0B2A8F] shadow-2xs hover:shadow-md hover:shadow-blue-900/20 active:scale-95 transition-all duration-200 flex items-center gap-1 cursor-pointer">
+                        <span>{{ __('تشغيل') }}</span>
+                        <span class="text-xs group-hover:-translate-y-0.5 group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5 transition-transform duration-200">↗</span>
+                      </button>
                     </div>
                   </div>
 
@@ -176,9 +185,9 @@
                     </div>
                   </div>
                   <div class="flex items-center gap-2 self-end sm:self-auto shrink-0">
-                    <button type="button" onclick="openAddLessonModal('level-card-2', 'المستوى الثاني: مهارات الصوت والاستماع')" class="px-3.5 py-1.5 rounded-xl bg-[#0B2A8F] hover:bg-[#012383] text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer">
-                      <svg class="size-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
-                      <span>إضافة درس</span>
+                    <button type="button" onclick="openAddLessonModal('level-card-2', 'المستوى الثاني: مهارات الصوت والاستماع')" class="group px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-[#0B2A8F] to-[#012383] hover:from-[#012383] hover:to-[#0B2A8F] text-white text-xs font-bold transition-all duration-200 shadow-xs hover:shadow-md hover:shadow-blue-900/25 active:scale-95 flex items-center gap-1.5 cursor-pointer">
+                      <svg class="size-3.5 group-hover:rotate-90 group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+                      <span>{{ __('إضافة درس') }}</span>
                     </button>
                   </div>
                 </div>
@@ -234,9 +243,9 @@
                     </div>
                   </div>
                   <div class="flex items-center gap-2 self-end sm:self-auto shrink-0">
-                    <button type="button" onclick="openAddLessonModal('level-card-3', 'المستوى الثالث: مخارج الحروف وتصحيح اللدغات')" class="px-3.5 py-1.5 rounded-xl bg-[#0B2A8F] hover:bg-[#012383] text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer">
-                      <svg class="size-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
-                      <span>إضافة درس</span>
+                    <button type="button" onclick="openAddLessonModal('level-card-3', 'المستوى الثالث: مخارج الحروف وتصحيح اللدغات')" class="group px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-[#0B2A8F] to-[#012383] hover:from-[#012383] hover:to-[#0B2A8F] text-white text-xs font-bold transition-all duration-200 shadow-xs hover:shadow-md hover:shadow-blue-900/25 active:scale-95 flex items-center gap-1.5 cursor-pointer">
+                      <svg class="size-3.5 group-hover:rotate-90 group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+                      <span>{{ __('إضافة درس') }}</span>
                     </button>
                   </div>
                 </div>
@@ -259,9 +268,9 @@
                     </div>
                   </div>
                   <div class="flex items-center gap-2 self-end sm:self-auto shrink-0">
-                    <button type="button" onclick="openAddLessonModal('level-card-4', 'المستوى الرابع: التطبيقات السريرية')" class="px-3.5 py-1.5 rounded-xl bg-[#0B2A8F] hover:bg-[#012383] text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer">
-                      <svg class="size-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
-                      <span>إضافة درس</span>
+                    <button type="button" onclick="openAddLessonModal('level-card-4', 'المستوى الرابع: التطبيقات السريرية')" class="group px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-[#0B2A8F] to-[#012383] hover:from-[#012383] hover:to-[#0B2A8F] text-white text-xs font-bold transition-all duration-200 shadow-xs hover:shadow-md hover:shadow-blue-900/25 active:scale-95 flex items-center gap-1.5 cursor-pointer">
+                      <svg class="size-3.5 group-hover:rotate-90 group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+                      <span>{{ __('إضافة درس') }}</span>
                     </button>
                   </div>
                 </div>

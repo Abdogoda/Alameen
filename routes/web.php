@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\FirebaseAuthController;
 use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Controllers\Auth\PasswordResetOtpController;
 use App\Http\Controllers\LocaleController;
@@ -17,6 +18,10 @@ Route::middleware('guest')->group(function () {
     // Socialite fallback routes
     Route::get('auth/google/redirect', [GoogleAuthController::class, 'redirect'])->name('auth.google.redirect');
     Route::get('auth/google/callback', [GoogleAuthController::class, 'callback'])->name('auth.google.callback');
+
+    // Firebase Google Authentication routes
+    Route::post('auth/google/firebase', [FirebaseAuthController::class, 'authenticate'])->name('auth.google.firebase');
+    Route::post('auth/firebase', [FirebaseAuthController::class, 'authenticate'])->name('auth.firebase');
 
     // Password Reset via 6-Digit OTP
     Route::get('forgot-password', [PasswordResetOtpController::class, 'showForgotForm'])->name('password.request');

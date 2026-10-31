@@ -81,7 +81,8 @@ class PhpFileLoader extends FileLoader
             }
         }
 
-        return $output;
+        // 3. Load standard JSON translation file if present (e.g. lang/{locale}.json)
+        return array_replace($output, parent::loadJsonPaths($locale));
     }
 
     /**

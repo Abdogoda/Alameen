@@ -80,7 +80,7 @@
                     <h3 class="text-3xl font-black text-[#012383] dark:text-blue-400 font-['Cairo'] tracking-tight">{{ number_format($totalStudents) }}</h3>
                     <div class="flex items-center justify-between mt-2 pt-2 border-t border-slate-100 dark:border-slate-800/80">
                         <span class="text-xs text-slate-500 dark:text-slate-400 font-medium">{{ __('طالب في مسار التخاطب') }}</span>
-                        <span class="text-xs text-emerald-600 dark:text-emerald-400 font-bold group-hover:translate-x-[-2px] rtl:group-hover:translate-x-[2px] transition-transform">عرض ←</span>
+                        <span class="text-xs text-emerald-600 dark:text-emerald-400 font-bold group-hover:translate-x-[-2px] rtl:group-hover:translate-x-[2px] transition-transform">{{ __('عرض') }} ←</span>
                     </div>
                 </div>
             </a>
@@ -104,7 +104,7 @@
                         @else
                             <span class="text-xs text-slate-400 dark:text-slate-500">{{ __('جميع الإيصالات مدققة') }}</span>
                         @endif
-                        <span class="text-xs text-amber-600 dark:text-amber-400 font-bold group-hover:translate-x-[-2px] rtl:group-hover:translate-x-[2px] transition-transform">مراجعة ←</span>
+                        <span class="text-xs text-amber-600 dark:text-amber-400 font-bold group-hover:translate-x-[-2px] rtl:group-hover:translate-x-[2px] transition-transform">{{ __('مراجعة') }} ←</span>
                     </div>
                 </div>
             </a>
@@ -128,7 +128,7 @@
                         @else
                             <span class="text-xs text-slate-400 dark:text-slate-500">{{ __('تم تصحيح كافة التكليفات') }}</span>
                         @endif
-                        <span class="text-xs text-indigo-600 dark:text-indigo-400 font-bold group-hover:translate-x-[-2px] rtl:group-hover:translate-x-[2px] transition-transform">تصحيح ←</span>
+                        <span class="text-xs text-indigo-600 dark:text-indigo-400 font-bold group-hover:translate-x-[-2px] rtl:group-hover:translate-x-[2px] transition-transform">{{ __('تصحيح') }} ←</span>
                     </div>
                 </div>
             </a>
@@ -145,7 +145,7 @@
                     <h3 class="text-3xl font-black text-[#012383] dark:text-blue-400 font-['Cairo'] tracking-tight">{{ number_format($totalVideos) }}</h3>
                     <div class="flex items-center justify-between mt-2 pt-2 border-t border-slate-100 dark:border-slate-800/80">
                         <span class="text-xs text-slate-500 dark:text-slate-400 font-medium">{{ __('محاضرة فيديو ومهمة عملية') }}</span>
-                        <span class="text-xs text-[#0B2A8F] dark:text-blue-400 font-bold group-hover:translate-x-[-2px] rtl:group-hover:translate-x-[2px] transition-transform">إدارة ←</span>
+                        <span class="text-xs text-[#0B2A8F] dark:text-blue-400 font-bold group-hover:translate-x-[-2px] rtl:group-hover:translate-x-[2px] transition-transform">{{ __('إدارة') }} ←</span>
                     </div>
                 </div>
             </a>
@@ -174,7 +174,7 @@
                                     <span class="text-[11px] text-slate-400">{{ __('مستويات متسلسلة') }}</span>
                                 </div>
                                 <h3 class="font-bold text-base sm:text-lg text-[#012383] dark:text-white mt-0.5 truncate">
-                                    {{ $activeCourse?->title_ar ?? __('دبلوم أساسيات وتطبيقات التخاطب وتنمية اللغة') }}
+                                    {{ (app()->getLocale() === 'en' && !empty($activeCourse?->title_en)) ? $activeCourse->title_en : ($activeCourse?->title_ar ?? __('دبلوم أساسيات وتطبيقات التخاطب وتنمية اللغة')) }}
                                 </h3>
                             </div>
                         </div>
@@ -200,12 +200,12 @@
                         </div>
                         <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
                             <span class="text-[11px] text-slate-400 font-bold block">{{ __('معيار الشهادة') }}</span>
-                            <span class="text-lg font-black text-indigo-600 dark:text-indigo-400 mt-1 block">٩٥٪ {{ __('إتمام') }}</span>
+                            <span class="text-lg font-black text-indigo-600 dark:text-indigo-400 mt-1 block">95% {{ __('إتمام') }}</span>
                         </div>
                     </div>
 
                     <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                        {{ $activeCourse?->description_ar ?? __('البرنامج التدريبي المتكامل لتأهيل أخصائيي التخاطب وأولياء الأمور مع نظام المهام بعد كل درس ونظام القفل المتسلسل.') }}
+                        {{ (app()->getLocale() === 'en' && !empty($activeCourse?->description_en)) ? $activeCourse->description_en : ($activeCourse?->description_ar ?? __('البرنامج التدريبي المتكامل لتأهيل أخصائيي التخاطب وأولياء الأمور مع نظام المهام بعد كل درس ونظام القفل المتسلسل.')) }}
                     </p>
                 </div>
 

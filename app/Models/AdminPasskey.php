@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
@@ -25,8 +24,6 @@ use Laravel\Passkeys\Support\Aaguids;
  */
 class AdminPasskey extends Model
 {
-    use HasFactory;
-
     protected $table = 'admin_passkeys';
 
     protected $fillable = [
@@ -54,6 +51,8 @@ class AdminPasskey extends Model
 
     /**
      * The admin user who owns this passkey.
+     *
+     * @return BelongsTo<Admin, $this>
      */
     public function admin(): BelongsTo
     {
@@ -62,6 +61,8 @@ class AdminPasskey extends Model
 
     /**
      * Alias for user relation to satisfy contracts if needed.
+     *
+     * @return BelongsTo<Admin, $this>
      */
     public function user(): BelongsTo
     {
@@ -70,6 +71,8 @@ class AdminPasskey extends Model
 
     /**
      * Get the authenticator brand name based on AAGUID.
+     *
+     * @return Attribute<string|null, never>
      */
     protected function authenticator(): Attribute
     {

@@ -322,7 +322,8 @@ class CourseController extends Controller
 
             // If a specific video is being edited, update it immediately in database so refresh keeps it
             if (! empty($validated['video_id'])) {
-                $targetVideo = Video::where('course_id', $course->id)->find($validated['video_id']);
+                /** @var Video|null $targetVideo */
+                $targetVideo = Video::where('course_id', $course->id)->where('id', $validated['video_id'])->first();
                 if ($targetVideo) {
                     $targetVideo->update([
                         'video_source' => $uploadResult['video_source'],

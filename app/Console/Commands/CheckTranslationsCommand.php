@@ -93,7 +93,7 @@ class CheckTranslationsCommand extends Command
                 'mismatched_placeholders' => $auditResult['mismatched_placeholders'],
                 'unwrapped_arabic_text' => $unwrapped,
             ];
-            $this->line(json_encode($output, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+            $this->line((string) json_encode($output, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
 
             return ($strict && (count($auditResult['missing_keys']) > 0 || count($unwrapped) > 0)) ? self::FAILURE : self::SUCCESS;
         }
@@ -404,21 +404,19 @@ class CheckTranslationsCommand extends Command
             }
 
             // Check placeholders
-            if (is_string($translatedValue)) {
-                preg_match_all('/:([a-zA-Z_]+)/', $key, $keyParams);
-                preg_match_all('/:([a-zA-Z_]+)/', $translatedValue, $transParams);
+            preg_match_all('/:([a-zA-Z_]+)/', $key, $keyParams);
+            preg_match_all('/:([a-zA-Z_]+)/', $translatedValue, $transParams);
 
-                $expected = $keyParams[1] ?? [];
-                $actual = $transParams[1] ?? [];
+            $expected = $keyParams[1];
+            $actual = $transParams[1];
 
-                $missingParams = array_diff($expected, $actual);
-                if (! empty($missingParams)) {
-                    $mismatchedPlaceholders[] = [
-                        'key' => $key,
-                        'expected_params' => array_values($missingParams),
-                        'translation' => $translatedValue,
-                    ];
-                }
+            $missingParams = array_diff($expected, $actual);
+            if (! empty($missingParams)) {
+                $mismatchedPlaceholders[] = [
+                    'key' => $key,
+                    'expected_params' => array_values($missingParams),
+                    'translation' => $translatedValue,
+                ];
             }
         }
 
@@ -448,7 +446,8 @@ class CheckTranslationsCommand extends Command
         }
 
         ksort($existing);
-        File::put($jsonPath, json_encode($existing, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+        $encoded = json_encode($existing, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        File::put($jsonPath, $encoded !== false ? $encoded : '{}');
 
         return $addedCount;
     }

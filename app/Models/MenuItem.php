@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Route;
  * @property bool $is_active
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property-read Menu|null $menu
  */
 #[Fillable([
     'menu_id',
@@ -47,6 +48,9 @@ class MenuItem extends Model
         ];
     }
 
+    /**
+     * @return BelongsTo<Menu, $this>
+     */
     public function menu(): BelongsTo
     {
         return $this->belongsTo(Menu::class);

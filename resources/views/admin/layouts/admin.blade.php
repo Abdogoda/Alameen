@@ -54,8 +54,8 @@
                             <img src="/assets/images/logo.png" alt="منصة الأمين" class="size-full object-contain pointer-events-none" />
                         </div>
                         <div class="min-w-0">
-                            <span class="font-['Baloo_Bhaijaan_2'] font-extrabold text-base sm:text-lg leading-tight text-[#012383] dark:text-white block truncate">منصة الأمين</span>
-                            <span class="text-[10px] sm:text-[11px] font-bold text-[#0B2A8F] dark:text-blue-300 bg-[#EAF1FB] dark:bg-slate-800 px-2 py-0.5 rounded-full inline-block leading-none mt-0.5">لوحة الإدارة المركزية</span>
+                            <span class="font-['Baloo_Bhaijaan_2'] font-extrabold text-base sm:text-lg leading-tight text-[#012383] dark:text-white block truncate">{{ __('منصة الأمين') }}</span>
+                            <span class="text-[10px] sm:text-[11px] font-bold text-[#0B2A8F] dark:text-blue-300 bg-[#EAF1FB] dark:bg-slate-800 px-2 py-0.5 rounded-full inline-block leading-none mt-0.5">{{ __('لوحة الإدارة المركزية') }}</span>
                         </div>
                     </a>
                     <button type="button" @click="adminSidebarOpen = false" class="lg:hidden p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer shrink-0" aria-label="{{ __('إغلاق القائمة') }}">

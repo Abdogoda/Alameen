@@ -36,7 +36,7 @@
                         <span class="text-slate-300 dark:text-slate-700">•</span>
                         <span class="text-[11px] font-semibold text-slate-500 dark:text-slate-400">{{ __('بث Bunny Stream مشفر') }}</span>
                         <span class="text-slate-300 dark:text-slate-700">•</span>
-                        <span class="text-[11px] font-semibold text-slate-500 dark:text-slate-400">{{ __('معيار الشهادة ٩٥٪') }}</span>
+                        <span class="text-[11px] font-semibold text-slate-500 dark:text-slate-400">{{ __('معيار الشهادة 95%') }}</span>
                     </div>
                     <h1 class="text-xl sm:text-2xl font-black text-[#012383] dark:text-white font-['Cairo'] tracking-tight">
                         {{ __('مرحباً بك، :name', ['name' => $adminName]) }} 👋
@@ -174,7 +174,7 @@
                                     <span class="text-[11px] text-slate-400">{{ __('مستويات متسلسلة') }}</span>
                                 </div>
                                 <h3 class="font-bold text-base sm:text-lg text-[#012383] dark:text-white mt-0.5 truncate">
-                                    {{ (app()->getLocale() === 'en' && !empty($activeCourse?->title_en)) ? $activeCourse->title_en : ($activeCourse?->title_ar ?? __('دبلوم أساسيات وتطبيقات التخاطب وتنمية اللغة')) }}
+                                    {{ (app()->getLocale() === 'en' && !empty($activeCourse?->title_en)) ? $activeCourse->title_en : __(($activeCourse?->title_ar ?? 'دبلوم أساسيات وتطبيقات التخاطب وتنمية اللغة العربية')) }}
                                 </h3>
                             </div>
                         </div>
@@ -205,7 +205,7 @@
                     </div>
 
                     <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                        {{ (app()->getLocale() === 'en' && !empty($activeCourse?->description_en)) ? $activeCourse->description_en : ($activeCourse?->description_ar ?? __('البرنامج التدريبي المتكامل لتأهيل أخصائيي التخاطب وأولياء الأمور مع نظام المهام بعد كل درس ونظام القفل المتسلسل.')) }}
+                        {{ (app()->getLocale() === 'en' && !empty($activeCourse?->description_en)) ? $activeCourse->description_en : __(($activeCourse?->description_ar ?? 'البرنامج التدريبي المتكامل لتأهيل أخصائيي التخاطب وأولياء الأمور مع نظام المهام بعد كل درس ونظام القفل المتسلسل.')) }}
                     </p>
                 </div>
 
@@ -238,7 +238,7 @@
                         <div>
                             <div class="flex items-center justify-between text-xs mb-1.5">
                                 <span class="font-bold text-slate-600 dark:text-slate-300">{{ __('نسبة جاهزية المنهج والدروس') }}</span>
-                                <span class="font-black text-emerald-600 dark:text-emerald-400">١٠٠٪</span>
+                                <span class="font-black text-emerald-600 dark:text-emerald-400">100%</span>
                             </div>
                             <div class="h-2.5 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
                                 <div class="h-full bg-emerald-500 rounded-full" style="width: 100%"></div>

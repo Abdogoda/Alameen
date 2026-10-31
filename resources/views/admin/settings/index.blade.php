@@ -65,54 +65,74 @@
 
     {{-- Interactive Multi-Tab Control Tower Container --}}
     <div x-data="{ 
-        activeTab: window.location.hash ? window.location.hash.substring(1) : 'branding',
+        validTabs: ['branding', 'contact', 'cms', 'faq', 'academic', 'payments', 'menus', 'theme'],
+        activeTab: 'branding',
+        init() {
+            const rawHash = (window.location.hash || '').replace(/^#/, '').trim();
+            const urlTab = new URLSearchParams(window.location.search).get('tab');
+            const stored = localStorage.getItem('alameen_admin_settings_tab');
+
+            if (rawHash && this.validTabs.includes(rawHash)) {
+                this.activeTab = rawHash;
+            } else if (urlTab && this.validTabs.includes(urlTab)) {
+                this.activeTab = urlTab;
+            } else if (stored && this.validTabs.includes(stored)) {
+                this.activeTab = stored;
+            } else {
+                this.activeTab = 'branding';
+            }
+        },
         setTab(tab) {
+            if (!this.validTabs.includes(tab)) return;
             this.activeTab = tab;
-            window.location.hash = tab;
+            try {
+                localStorage.setItem('alameen_admin_settings_tab', tab);
+                history.replaceState(null, '', '#' + tab);
+            } catch (e) {}
         }
     }" class="flex flex-col gap-6">
 
         {{-- Tab Pills Navigation Bar --}}
         <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-2xl p-1.5 shadow-xs overflow-x-auto flex items-center gap-1.5 scrollbar-none">
             
-            <button type="button" @click="setTab('branding')" :class="activeTab === 'branding' ? 'bg-[#012383] text-white shadow-xs font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" class="px-4 py-2.5 rounded-xl text-xs whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer">
-                <span>🏢</span>
-                <span>{{ __('الهوية والعلامة التجارية') }}</span>
+            <button type="button" @click="setTab('branding')" :class="activeTab === 'branding' ? 'bg-[#012383] text-white shadow-xs font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" class="shrink-0 px-4 py-2.5 rounded-xl text-xs whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer">
+                <span class="shrink-0 text-sm">🏢</span>
+                <span class="shrink-0 font-bold whitespace-nowrap">{{ __('الهوية والعلامة التجارية') }}</span>
             </button>
 
-            <button type="button" @click="setTab('contact')" :class="activeTab === 'contact' ? 'bg-[#012383] text-white shadow-xs font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" class="px-4 py-2.5 rounded-xl text-xs whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer">
-                <span>📞</span>
-                <span>{{ __('التواصل والدعم الفني') }}</span>
+            <button type="button" @click="setTab('contact')" :class="activeTab === 'contact' ? 'bg-[#012383] text-white shadow-xs font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" class="shrink-0 px-4 py-2.5 rounded-xl text-xs whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer">
+                <span class="shrink-0 text-sm">📞</span>
+                <span class="shrink-0 font-bold whitespace-nowrap">{{ __('التواصل والدعم الفني') }}</span>
             </button>
 
-            <button type="button" @click="setTab('cms')" :class="activeTab === 'cms' ? 'bg-[#012383] text-white shadow-xs font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" class="px-4 py-2.5 rounded-xl text-xs whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer">
-                <span>🚀</span>
-                <span>{{ __('الواجهة ومحتوى الموقع') }}</span>
+            <button type="button" @click="setTab('cms')" :class="activeTab === 'cms' ? 'bg-[#012383] text-white shadow-xs font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" class="shrink-0 px-4 py-2.5 rounded-xl text-xs whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer">
+                <span class="shrink-0 text-sm">🚀</span>
+                <span class="shrink-0 font-bold whitespace-nowrap">{{ __('الواجهة ومحتوى الموقع') }}</span>
             </button>
 
-            <button type="button" @click="setTab('faq')" :class="activeTab === 'faq' ? 'bg-[#012383] text-white shadow-xs font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" class="px-4 py-2.5 rounded-xl text-xs whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer">
-                <span>❓</span>
-                <span>{{ __('الأسئلة الشائعة (FAQ)') }}</span>
+            <button type="button" @click="setTab('faq')" :class="activeTab === 'faq' ? 'bg-[#012383] text-white shadow-xs font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" class="shrink-0 px-4 py-2.5 rounded-xl text-xs whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer">
+                <span class="shrink-0 text-sm">❓</span>
+                <span class="shrink-0 font-bold whitespace-nowrap">{{ __('الأسئلة الشائعة (FAQ)') }}</span>
             </button>
 
-            <button type="button" @click="setTab('academic')" :class="activeTab === 'academic' ? 'bg-[#012383] text-white shadow-xs font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" class="px-4 py-2.5 rounded-xl text-xs whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer">
-                <span>🎓</span>
-                <span>{{ __('السياسات الأكاديمية والمحاضرات') }}</span>
+            <button type="button" @click="setTab('academic')" :class="activeTab === 'academic' ? 'bg-[#012383] text-white shadow-xs font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" class="shrink-0 px-4 py-2.5 rounded-xl text-xs whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer">
+                <span class="shrink-0 text-sm">🎓</span>
+                <span class="shrink-0 font-bold whitespace-nowrap">{{ __('السياسات الأكاديمية والمحاضرات') }}</span>
             </button>
 
-            <button type="button" @click="setTab('payments')" :class="activeTab === 'payments' ? 'bg-[#012383] text-white shadow-xs font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" class="px-4 py-2.5 rounded-xl text-xs whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer">
-                <span>💳</span>
-                <span>{{ __('قنوات الدفع والتحويل') }}</span>
+            <button type="button" @click="setTab('payments')" :class="activeTab === 'payments' ? 'bg-[#012383] text-white shadow-xs font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" class="shrink-0 px-4 py-2.5 rounded-xl text-xs whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer">
+                <span class="shrink-0 text-sm">💳</span>
+                <span class="shrink-0 font-bold whitespace-nowrap">{{ __('قنوات الدفع والتحويل') }}</span>
             </button>
 
-            <button type="button" @click="setTab('menus')" :class="activeTab === 'menus' ? 'bg-[#012383] text-white shadow-xs font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" class="px-4 py-2.5 rounded-xl text-xs whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer">
-                <span>🧭</span>
-                <span>{{ __('مدير القوائم والتنقل') }}</span>
+            <button type="button" @click="setTab('menus')" :class="activeTab === 'menus' ? 'bg-[#012383] text-white shadow-xs font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" class="shrink-0 px-4 py-2.5 rounded-xl text-xs whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer">
+                <span class="shrink-0 text-sm">🧭</span>
+                <span class="shrink-0 font-bold whitespace-nowrap">{{ __('مدير القوائم والتنقل') }}</span>
             </button>
 
-            <button type="button" @click="setTab('theme')" :class="activeTab === 'theme' ? 'bg-[#012383] text-white shadow-xs font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" class="px-4 py-2.5 rounded-xl text-xs whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer">
-                <span>🎨</span>
-                <span>{{ __('المظهر والنظام') }}</span>
+            <button type="button" @click="setTab('theme')" :class="activeTab === 'theme' ? 'bg-[#012383] text-white shadow-xs font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" class="shrink-0 px-4 py-2.5 rounded-xl text-xs whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer">
+                <span class="shrink-0 text-sm">🎨</span>
+                <span class="shrink-0 font-bold whitespace-nowrap">{{ __('المظهر والنظام') }}</span>
             </button>
 
         </div>
@@ -131,7 +151,7 @@
                     </p>
                 </div>
 
-                <form method="POST" action="{{ route('admin.settings.update') }}" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <form method="POST" action="{{ route('admin.settings.update') }}#branding" class="grid grid-cols-1 md:grid-cols-2 gap-5">
                     @csrf
                     
                     {{-- Site Name AR --}}
@@ -214,7 +234,7 @@
                     </p>
                 </div>
 
-                <form method="POST" action="{{ route('admin.settings.update') }}" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                <form method="POST" action="{{ route('admin.settings.update') }}#contact" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                     @csrf
 
                     {{-- Support Email --}}
@@ -323,7 +343,7 @@
                     </p>
                 </div>
 
-                <form method="POST" action="{{ route('admin.settings.update') }}" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <form method="POST" action="{{ route('admin.settings.update') }}#cms" class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     @csrf
                     <div>
                         <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1.5">{{ __('حالة الشريط العلوي:') }}</label>
@@ -368,7 +388,7 @@
                     </p>
                 </div>
 
-                <form method="POST" action="{{ route('admin.settings.content.update', 'hero') }}" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <form method="POST" action="{{ route('admin.settings.content.update', 'hero') }}#cms" class="grid grid-cols-1 md:grid-cols-2 gap-5">
                     @csrf
 
                     <div>
@@ -451,7 +471,7 @@
                     </p>
                 </div>
 
-                <form method="POST" action="{{ route('admin.settings.content.update', 'about') }}" class="flex flex-col gap-6">
+                <form method="POST" action="{{ route('admin.settings.content.update', 'about') }}#cms" class="flex flex-col gap-6">
                     @csrf
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -515,7 +535,7 @@
                     $faqItems = $faqBlock->metadata['items'] ?? [];
                 @endphp
 
-                <form method="POST" action="{{ route('admin.settings.content.update', 'faq') }}" 
+                <form method="POST" action="{{ route('admin.settings.content.update', 'faq') }}#faq" 
                       x-data="{ 
                           items: @js($faqItems),
                           addItem() {
@@ -623,7 +643,7 @@
                     </p>
                 </div>
 
-                <form method="POST" action="{{ route('admin.settings.update') }}" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <form method="POST" action="{{ route('admin.settings.update') }}#academic" class="grid grid-cols-1 md:grid-cols-2 gap-5">
                     @csrf
 
                     {{-- 1. Certificate Threshold % --}}
@@ -743,7 +763,7 @@
                     </p>
                 </div>
 
-                <form method="POST" action="{{ route('admin.settings.update') }}" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <form method="POST" action="{{ route('admin.settings.update') }}#payments" class="grid grid-cols-1 md:grid-cols-2 gap-5">
                     @csrf
                     
                     {{-- 1. Vodafone Cash --}}
@@ -901,7 +921,7 @@
 
                                         <div class="flex items-center gap-2 shrink-0">
                                             {{-- Toggle Active Status --}}
-                                            <form method="POST" action="{{ route('admin.settings.menus.item.toggle', $item->id) }}">
+                                            <form method="POST" action="{{ route('admin.settings.menus.item.toggle', $item->id) }}#menus">
                                                 @csrf
                                                 <button type="submit" class="px-2.5 py-1 rounded-lg text-[10px] font-bold cursor-pointer transition-colors {{ $item->is_active ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300' : 'bg-slate-200 text-slate-600 dark:bg-slate-700 dark:text-slate-300' }}">
                                                     {{ $item->is_active ? __('نشط ✓') : __('معطل ✕') }}
@@ -911,7 +931,7 @@
                                             {{-- Delete Item --}}
                                             <form 
                                                 method="POST" 
-                                                action="{{ route('admin.settings.menus.item.delete', $item->id) }}" 
+                                                action="{{ route('admin.settings.menus.item.delete', $item->id) }}#menus" 
                                                 data-confirm="{{ __('هل أنت متأكد من حذف هذا الرابط من القائمة نهائياً؟') }}"
                                                 data-confirm-title="{{ __('حذف رابط القائمة') }}"
                                                 data-confirm-btn="{{ __('نعم، احذف الرابط') }}"
@@ -930,7 +950,7 @@
                             </div>
 
                             {{-- Add New Link Form --}}
-                            <form method="POST" action="{{ route('admin.settings.menus.item', $menu->id) }}" class="mt-2 pt-3 border-t border-[#DEE8F7] dark:border-slate-700/60 flex flex-col gap-2.5">
+                            <form method="POST" action="{{ route('admin.settings.menus.item', $menu->id) }}#menus" class="mt-2 pt-3 border-t border-[#DEE8F7] dark:border-slate-700/60 flex flex-col gap-2.5">
                                 @csrf
                                 <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400">{{ __('+ إضافة رابط جديد إلى القائمة:') }}</span>
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">

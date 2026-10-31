@@ -1101,5 +1101,14 @@
     "إدارة": "Manage",
     "مشغل :player بث": ":player Player",
     "لوحة الإدارة المركزية": "Central Admin & Control Tower",
-    "معيار الشهادة :pct%": "Certificate Standard :pct%"
+    "معيار الشهادة :pct%": "Certificate Standard :pct%",
+    "معيار الشهادة 95%": "Certificate Threshold 95%",
+    "دبلوم أساسيات وتطبيقات التخاطب وتنمية اللغة العربية": "Diploma in Fundamentals & Clinical Applications of Speech Therapy",
+    "جاري التحقق من هوية المشرف عبر Google...": "Verifying admin identity via Google...",
+    "تنبيه تسجيل الدخول": "Sign In Alert",
+    "Al-Ameen Speech & Language Therapy Platform": "Al-Ameen Platform",
+    "Al-Ameen Speech Testing Platform": "Al-Ameen Platform",
+    "منصة الأمين لتأهيل أخصائيي النطق والتخاطب": "Al-Ameen Platform",
+    "حفظ وتطبيق بيانات الهوية والعلامة التجارية": "Save & Apply Brand Settings",
+    "حفظ وتطبيق بيانات الواجهة فورياً": "Save & Apply Interface Settings"
 }

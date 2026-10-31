@@ -90,6 +90,98 @@ if (typeof window !== 'undefined') {
   window.showToast = showToast;
 }
 
+// ==========================================
+// 2.1 GLOBAL CONFIRMATION MODAL SYSTEM
+// ==========================================
+let currentConfirmCallback = null;
+
+export function showConfirmModal({
+  title = 'تأكيد الإجراء',
+  message = 'هل أنت متأكد من رغبتك في المتابعة؟',
+  confirmText = 'نعم، تأكيد',
+  cancelText = 'إلغاء الأمر',
+  isDanger = true,
+  onConfirm = null,
+} = {}) {
+  const modal = document.getElementById('alameen-confirm-modal');
+  if (!modal) {
+    if (typeof onConfirm === 'function') onConfirm();
+    return;
+  }
+
+  const titleEl = document.getElementById('alameen-confirm-title');
+  const messageEl = document.getElementById('alameen-confirm-message');
+  const confirmBtn = document.getElementById('alameen-confirm-btn');
+  const cancelBtn = document.getElementById('alameen-confirm-cancel');
+
+  if (titleEl) titleEl.textContent = title;
+  if (messageEl) messageEl.textContent = message;
+  if (confirmBtn) {
+    confirmBtn.textContent = confirmText;
+    if (isDanger) {
+      confirmBtn.className = 'flex-1 h-11 px-5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer';
+    } else {
+      confirmBtn.className = 'flex-1 h-11 px-5 rounded-xl bg-[#012383] hover:bg-[#0B2A8F] text-white font-bold text-xs shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer';
+    }
+  }
+  if (cancelBtn) cancelBtn.textContent = cancelText;
+
+  currentConfirmCallback = onConfirm;
+  openModal('alameen-confirm-modal');
+}
+
+export function handleConfirmModalSubmit() {
+  const cb = currentConfirmCallback;
+  currentConfirmCallback = null;
+  closeModal('alameen-confirm-modal');
+  if (typeof cb === 'function') {
+    cb();
+  }
+}
+
+export function handleConfirmModalCancel() {
+  currentConfirmCallback = null;
+  closeModal('alameen-confirm-modal');
+}
+
+if (typeof window !== 'undefined') {
+  window.AlameenConfirm = showConfirmModal;
+  window.showConfirmModal = showConfirmModal;
+  window.handleConfirmModalSubmit = handleConfirmModalSubmit;
+  window.handleConfirmModalCancel = handleConfirmModalCancel;
+}
+
+// Intercept all forms with data-confirm automatically
+document.addEventListener('submit', (e) => {
+  const form = e.target;
+  if (form && form.hasAttribute && form.hasAttribute('data-confirm') && !form.dataset.alameenConfirmed) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const message = form.getAttribute('data-confirm');
+    const title = form.getAttribute('data-confirm-title') || 'تأكيد الحذف والإجراء';
+    const confirmText = form.getAttribute('data-confirm-btn') || 'نعم، تأكيد الإجراء';
+    const cancelText = form.getAttribute('data-confirm-cancel') || 'إلغاء الأمر';
+    const isDanger = form.getAttribute('data-confirm-danger') !== 'false';
+
+    showConfirmModal({
+      title,
+      message,
+      confirmText,
+      cancelText,
+      isDanger,
+      onConfirm: () => {
+        form.dataset.alameenConfirmed = 'true';
+        if (typeof form.requestSubmit === 'function') {
+          form.requestSubmit();
+        } else {
+          form.submit();
+        }
+      },
+    });
+  }
+});
+
 // Close modal on escape key
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {

@@ -4,6 +4,13 @@
     $aboutBlock = \App\Models\ContentBlock::where('section_key', 'about')->first();
     $faqBlock = \App\Models\ContentBlock::where('section_key', 'faq')->first();
     $cmsSettings = app(\App\Services\Cms\SettingsService::class);
+    $heroMeta = $heroBlock?->metadata ?? [];
+    $loc = app()->getLocale();
+    $cta1Text = $heroMeta['cta_primary_' . $loc] ?? ($loc === 'ar' ? ($heroMeta['cta_primary_ar'] ?? __('landing.slide1Cta1')) : ($heroMeta['cta_primary_en'] ?? __('landing.slide1Cta1')));
+    $cta1Url = !empty($heroMeta['cta_primary_url']) ? $heroMeta['cta_primary_url'] : '#courses';
+    $cta2Text = $heroMeta['cta_secondary_' . $loc] ?? ($loc === 'ar' ? ($heroMeta['cta_secondary_ar'] ?? __('landing.slide1Cta2')) : ($heroMeta['cta_secondary_en'] ?? __('landing.slide1Cta2')));
+    $cta2Url = !empty($heroMeta['cta_secondary_url']) ? $heroMeta['cta_secondary_url'] : '#about';
+    $studentsCount = $heroMeta['students_count'] ?? '2500+';
 @endphp
 <!-- SECTION 1: #home (HERO SLIDER SHOWCASE)                                   -->
       <!-- ========================================================================= -->
@@ -39,13 +46,13 @@
 
               <div class="slide-ctas flex flex-wrap sm:flex-nowrap items-center justify-center lg:justify-start gap-2.5 sm:gap-3 pt-1 sm:pt-2 w-full sm:w-auto">
                 <a
-                  href="#courses"
+                  href="{{ $cta1Url }}"
                   class="w-full sm:w-auto px-6 sm:px-8 h-[46px] sm:h-[56px] bg-[#012383] hover:bg-[#0B2A8F] flex items-center justify-center rounded-[14px] sm:rounded-[16px] text-white font-['Cairo'] font-extrabold text-[15px] sm:text-[18px] shadow-md hover:shadow-lg transition-all cursor-pointer whitespace-nowrap"
-                >{{ __('landing.slide1Cta1') }}</a>
+                >{{ $cta1Text }}</a>
                 <a
-                  href="#about"
+                  href="{{ $cta2Url }}"
                   class="w-full sm:w-auto px-5 sm:px-6 h-[46px] sm:h-[56px] bg-white hover:bg-[#EAF1FB] text-[#012383] border border-[#DEE8F7] flex items-center justify-center rounded-[14px] sm:rounded-[16px] font-['Cairo'] font-bold text-[14px] sm:text-[16px] transition-colors cursor-pointer whitespace-nowrap shadow-xs"
-                >{{ __('landing.slide1Cta2') }}</a>
+                >{{ $cta2Text }}</a>
               </div>
 
             </div>
@@ -92,8 +99,8 @@
                   ✓
                 </div>
                 <div class="flex flex-col text-start">
-                  <span class="text-[11px] sm:text-xs font-bold text-[#012383]">{{ __('landing.statsStudents') }}</span>
-                  <span class="text-[10px] sm:text-[11px] text-[#475569]">{{ __('landing.statsSub') }}</span>
+                  <span class="text-[11px] sm:text-xs font-bold text-[#012383]">{{ $studentsCount }} {{ __('طالب ومتدرب') }}</span>
+                  <span class="text-[10px] sm:text-[11px] text-[#475569]">{{ __('إشراف سريري متقدم') }}</span>
                 </div>
               </div>
             </div>

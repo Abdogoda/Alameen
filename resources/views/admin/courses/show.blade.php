@@ -76,14 +76,18 @@
                         {{ $course->is_published ? __('الكورس الأساسي النشط') : __('مسودة غير منشورة') }}
                     </span>
                     <span class="text-xs text-slate-400">•</span>
-                    <span class="text-xs text-slate-600 dark:text-slate-300 font-medium">{{ $course->levels->count() }} مستويات معتمدة</span>
+                    <span class="text-xs text-slate-600 dark:text-slate-300 font-medium">{{ __(':count مستويات معتمدة', ['count' => $course->levels->count()]) }}</span>
                     <span class="text-xs text-slate-400">•</span>
-                    <span class="text-xs text-slate-600 dark:text-slate-300 font-medium">{{ $course->videos->count() }} درس و{{ $course->clinicalTasks()->count() }} مهمة</span>
+                    <span class="text-xs text-slate-600 dark:text-slate-300 font-medium">{{ __(':videos درس و:tasks مهمة', ['videos' => $course->videos->count(), 'tasks' => $course->clinicalTasks()->count()]) }}</span>
                     @if(!empty($course->effective_promo_video_url) || !empty($course->mux_playback_id))
                         <span class="text-xs text-slate-400">•</span>
                         <button 
                             type="button" 
-                            onclick="previewVideo('{{ addslashes($course->title_ar) }} (فيديو تعريفي)', '{{ $course->promo_video_source ?: 'mux' }}', '{{ $course->effective_promo_video_url }}', '{{ $course->mux_playback_id }}')" 
+                            data-preview-title="{{ $course->title_ar }} ({{ __('فيديو تعريفي') }})"
+                            data-preview-source="{{ $course->promo_video_source ?: 'mux' }}"
+                            data-preview-url="{{ $course->effective_promo_video_url }}"
+                            data-preview-mux="{{ $course->mux_playback_id }}"
+                            onclick="handleVideoPreviewClick(this)" 
                             class="text-xs font-bold text-emerald-600 hover:text-emerald-700 flex items-center gap-1 cursor-pointer"
                         >
                             <svg class="size-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
@@ -106,11 +110,11 @@
                 <span class="text-[11px] text-slate-400 font-bold block">{{ __('سعر الكورس المعتمد') }}</span>
                 <div class="flex items-baseline gap-2 mt-0.5">
                     <span class="text-xl sm:text-2xl font-black text-[#012383] dark:text-blue-400 dynamic-course-price">
-                        {{ number_format($course->price) }} ج.م
+                        {{ number_format($course->price) }} {{ __('ج.م') }}
                     </span>
                     @if($course->original_price && $course->original_price > $course->price)
                         <span class="text-xs text-slate-400 line-through dynamic-course-old-price">
-                            {{ number_format($course->original_price) }} ج.م
+                            {{ number_format($course->original_price) }} {{ __('ج.م') }}
                         </span>
                     @endif
                 </div>
@@ -179,10 +183,10 @@
                                         {{ $level->title_ar }}
                                     </h4>
                                     <span class="px-2 py-0.5 rounded-md bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 text-[11px] font-bold">
-                                        {{ $level->videos->count() }} دروس
+                                        {{ __(':count دروس', ['count' => $level->videos->count()]) }}
                                     </span>
                                     <span class="px-2 py-0.5 rounded-md bg-purple-50 dark:bg-purple-950/40 text-purple-700 dark:text-purple-400 text-[11px] font-bold">
-                                        {{ $level->videos->filter(fn($v) => !is_null($v->clinicalTask))->count() }} مهام
+                                        {{ __(':count مهام', ['count' => $level->videos->filter(fn($v) => !is_null($v->clinicalTask))->count()]) }}
                                     </span>
                                 </div>
                                 @if($level->description_ar)
@@ -227,7 +231,9 @@
                             <form 
                                 action="{{ route('admin.courses.levels.destroy', [$course, $level]) }}" 
                                 method="POST" 
-                                onsubmit="return confirm('{{ __('هل أنت متأكد من حذف هذا المستوى والدروس التابعة له؟') }}')"
+                                data-confirm="{{ __('هل أنت متأكد من حذف هذا المستوى والدروس التابعة له؟') }}"
+                                data-confirm-title="{{ __('حذف المستوى التدريبي') }}"
+                                data-confirm-btn="{{ __('نعم، احذف المستوى') }}"
                             >
                                 @csrf
                                 @method('DELETE')
@@ -264,7 +270,11 @@
                                             </h5>
                                             
                                             {{-- Source Badge (MUX / Link / etc.) --}}
-                                            @if($video->video_source === 'mux' || !empty($video->mux_playback_id))
+                                            @if($video->video_source === 'local')
+                                                <span class="px-2 py-0.2 rounded-md bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-400 text-[10px] font-bold border border-indigo-200 dark:border-indigo-800 flex items-center gap-1">
+                                                    <span class="size-1.5 rounded-full bg-indigo-500"></span> {{ __('سيرفر محلي') }}
+                                                </span>
+                                            @elseif($video->video_source === 'mux' || !empty($video->mux_playback_id))
                                                 <span class="px-2 py-0.2 rounded-md bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 text-[10px] font-bold border border-emerald-200 dark:border-emerald-800 flex items-center gap-1">
                                                     <span class="size-1.5 rounded-full bg-emerald-500"></span> MUX Video
                                                 </span>
@@ -275,7 +285,7 @@
                                             @elseif($video->video_source === 'bunny' || !empty($video->bunny_video_id))
                                                 <span class="px-2 py-0.2 rounded-md bg-amber-50 text-amber-700 text-[10px] font-bold border border-amber-200">Bunny Stream</span>
                                             @else
-                                                <span class="px-2 py-0.2 rounded-md bg-blue-50 text-blue-700 text-[10px] font-bold border border-blue-200">رابط مباشر</span>
+                                                <span class="px-2 py-0.2 rounded-md bg-blue-50 text-blue-700 text-[10px] font-bold border border-blue-200">{{ __('رابط مباشر') }}</span>
                                             @endif
 
                                             {{-- Required Completion Percentage Badge --}}
@@ -284,12 +294,12 @@
                                             </span>
 
                                             @if($video->is_free_preview)
-                                                <span class="px-1.5 py-0.2 rounded-md bg-amber-100 dark:bg-amber-950/50 text-amber-800 dark:text-amber-300 text-[10px] font-bold">معاينة مجانية</span>
+                                                <span class="px-1.5 py-0.2 rounded-md bg-amber-100 dark:bg-amber-950/50 text-amber-800 dark:text-amber-300 text-[10px] font-bold">{{ __('معاينة مجانية') }}</span>
                                             @endif
                                         </div>
 
                                         <div class="flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 mt-0.5 flex-wrap">
-                                            <span>{{ $video->duration_minutes }} دقيقة</span>
+                                            <span>{{ __(':min دقيقة', ['min' => $video->duration_minutes]) }}</span>
                                             @if($video->clinicalTask)
                                                 <span>•</span>
                                                 <span class="text-purple-700 dark:text-purple-400 font-medium">
@@ -303,15 +313,32 @@
                                 {{-- Lesson Action Buttons --}}
                                 <div class="flex items-center gap-2 self-end sm:self-auto shrink-0">
                                     {{-- Universal Preview Button (MUX or any source) --}}
-                                    <button 
-                                        type="button" 
-                                        onclick="previewVideo('{{ addslashes($video->title_ar) }}', '{{ $video->video_source }}', '{{ $video->effective_playback_url }}', '{{ $video->mux_playback_id }}')" 
-                                        class="px-3.5 py-1.5 rounded-xl bg-[#EAF1FB] dark:bg-slate-700/80 border border-[#BFD5F8] dark:border-slate-600 text-[#012383] dark:text-blue-200 hover:bg-[#012383] hover:text-white hover:border-[#012383] dark:hover:bg-blue-600 dark:hover:text-white text-xs font-black transition-all flex items-center gap-1.5 shadow-2xs hover:shadow-xs active:scale-95 cursor-pointer shrink-0"
-                                        title="{{ __('تشغيل ومعاينة الدرس') }}"
-                                    >
-                                        <svg class="size-3.5 fill-current shrink-0" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                                        <span class="font-black">{{ __('تشغيل ↗') }}</span>
-                                    </button>
+                                    @php
+                                        $hasPlayback = ! empty($video->effective_playback_url) || ! empty($video->mux_playback_id);
+                                    @endphp
+                                    @if($hasPlayback)
+                                        <button 
+                                            type="button" 
+                                            data-preview-title="{{ $video->title_ar }}"
+                                            data-preview-source="{{ $video->video_source }}"
+                                            data-preview-url="{{ $video->effective_playback_url }}"
+                                            data-preview-mux="{{ $video->mux_playback_id }}"
+                                            onclick="handleVideoPreviewClick(this)"
+                                            class="lesson-preview-btn px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all duration-150 flex items-center gap-1.5 shadow-2xs hover:shadow-xs active:scale-95 cursor-pointer shrink-0"
+                                            title="{{ __('تشغيل ومعاينة الدرس') }}"
+                                        >
+                                            <svg class="size-3.5 shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                            <span class="font-bold">{{ __('تشغيل ↗') }}</span>
+                                        </button>
+                                    @else
+                                        <span 
+                                            class="px-3.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 shrink-0 opacity-40 cursor-not-allowed select-none bg-slate-100 dark:bg-slate-700 text-slate-400 dark:text-slate-500 border border-slate-200 dark:border-slate-600"
+                                            title="{{ __('لا يوجد فيديو مرفوع لهذا الدرس بعد') }}"
+                                        >
+                                            <svg class="size-3.5 shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                            <span class="font-bold">{{ __('لا فيديو') }}</span>
+                                        </span>
+                                    @endif
 
                                     {{-- Quick Single Video Settings Button --}}
                                     <button 
@@ -336,7 +363,9 @@
                                     <form 
                                         action="{{ route('admin.courses.videos.destroy', [$course, $video]) }}" 
                                         method="POST" 
-                                        onsubmit="return confirm('{{ __('هل أنت متأكد من رغبتك في حذف هذا الدرس نهائياً؟') }}')"
+                                        data-confirm="{{ __('هل أنت متأكد من رغبتك في حذف هذا الدرس نهائياً؟') }}"
+                                        data-confirm-title="{{ __('حذف الدرس') }}"
+                                        data-confirm-btn="{{ __('نعم، احذف الدرس') }}"
                                     >
                                         @csrf
                                         @method('DELETE')
@@ -610,7 +639,7 @@
         </div>
 
         <!-- Modal 6: Universal Video Preview Modal (MUX Player or Multi-Source) -->
-        <div id="modal-video-preview" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 modal-hidden">
+        <div id="modal-video-preview" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 modal-hidden" onclick="if(event.target === this) closeVideoPreview()">
             <div class="modal-content bg-slate-950 text-white rounded-2xl sm:rounded-3xl max-w-3xl w-full p-4 sm:p-6 flex flex-col gap-4 shadow-2xl border border-slate-800">
                 <div class="flex items-center justify-between border-b border-slate-800 pb-3">
                     <div class="flex items-center gap-2.5">
@@ -1062,28 +1091,44 @@
         function submitBulkDelete() {
             const selectedIds = getSelectedVideoIds();
             if (selectedIds.length === 0) {
-                alert('{{ __("يرجى تحديد درس واحد على الأقل أولاً.") }}');
+                if (window.showToast) {
+                    window.showToast('{{ __("تنبيه") }}', '{{ __("يرجى تحديد درس واحد على الأقل أولاً.") }}', 'error');
+                } else {
+                    alert('{{ __("يرجى تحديد درس واحد على الأقل أولاً.") }}');
+                }
                 return;
             }
 
-            if (!confirm(`{{ __("هل أنت متأكد من رغبتك في حذف") }} ${selectedIds.length} {{ __("درس محدد نهائياً من المنهج؟") }}`)) {
-                return;
-            }
+            window.AlameenConfirm({
+                title: '{{ __("حذف الدروس المحددة") }}',
+                message: `{{ __("هل أنت متأكد من رغبتك في حذف") }} ${selectedIds.length} {{ __("درس محدد نهائياً من المنهج؟") }}`,
+                confirmText: '{{ __("نعم، احذف الدروس المحددة") }}',
+                onConfirm: () => {
+                    const container = document.getElementById('bulk-delete-ids-container');
+                    container.innerHTML = '';
+                    selectedIds.forEach(id => {
+                        const inp = document.createElement('input');
+                        inp.type = 'hidden';
+                        inp.name = 'video_ids[]';
+                        inp.value = id;
+                        container.appendChild(inp);
+                    });
 
-            const container = document.getElementById('bulk-delete-ids-container');
-            container.innerHTML = '';
-            selectedIds.forEach(id => {
-                const inp = document.createElement('input');
-                inp.type = 'hidden';
-                inp.name = 'video_ids[]';
-                inp.value = id;
-                container.appendChild(inp);
+                    document.getElementById('form-bulk-delete').submit();
+                }
             });
-
-            document.getElementById('form-bulk-delete').submit();
         }
 
-        // Universal Video Preview Player (MUX / YouTube / Vimeo / HLS / MP4)
+        // Universal Video Preview Helper
+        function handleVideoPreviewClick(btn) {
+            const title = btn.getAttribute('data-preview-title') || '';
+            const source = btn.getAttribute('data-preview-source') || '';
+            const url = btn.getAttribute('data-preview-url') || '';
+            const muxId = btn.getAttribute('data-preview-mux') || '';
+            previewVideo(title, source, url, muxId);
+        }
+
+        // Universal Video Preview Player (MUX / Bunny / YouTube / Vimeo / HLS / MP4)
         function previewVideo(title, source, playbackUrl, muxPlaybackId) {
             document.getElementById('preview-video-title').textContent = title;
             const container = document.getElementById('video-player-container');
@@ -1093,8 +1138,22 @@
             container.innerHTML = '';
             urlLabel.textContent = playbackUrl || muxPlaybackId || '';
 
-            // 1. MUX Stream (via <mux-player> or HLS)
-            if (muxPlaybackId || (playbackUrl && playbackUrl.includes('stream.mux.com'))) {
+            // 1. Local Server Storage Video
+            if (source === 'local' || (playbackUrl && playbackUrl.includes('/storage/'))) {
+                sourceLabel.textContent = 'سيرفر المنصة المحلي';
+                const video = document.createElement('video');
+                video.controls = true;
+                video.autoplay = true;
+                video.className = 'w-full h-full';
+                let finalUrl = playbackUrl || '';
+                if (finalUrl.includes('/storage/')) {
+                    finalUrl = '/storage/' + finalUrl.split('/storage/')[1];
+                }
+                video.src = finalUrl;
+                container.appendChild(video);
+            }
+            // 2. MUX Stream (via <mux-player> or HLS)
+            else if (muxPlaybackId || (playbackUrl && playbackUrl.includes('stream.mux.com'))) {
                 const finalPlaybackId = muxPlaybackId || (playbackUrl.match(/stream\.mux\.com\/([a-zA-Z0-9_\-]+)/) ? playbackUrl.match(/stream\.mux\.com\/([a-zA-Z0-9_\-]+)/)[1] : '');
                 sourceLabel.textContent = 'MUX Stream Player';
 
@@ -1124,7 +1183,20 @@
                     container.appendChild(video);
                 }
             }
-            // 2. YouTube
+            // 2. Bunny Stream Player
+            else if (source === 'bunny' || (playbackUrl && (playbackUrl.includes('mediadelivery.net') || playbackUrl.includes('b-cdn.net')))) {
+                sourceLabel.textContent = 'Bunny Stream Player';
+                let embedUrl = playbackUrl;
+                if (!embedUrl.startsWith('http://') && !embedUrl.startsWith('https://')) {
+                    embedUrl = `https://iframe.mediadelivery.net/embed/${embedUrl}`;
+                }
+                const sep = embedUrl.includes('?') ? '&' : '?';
+                if (!embedUrl.includes('autoplay=')) {
+                    embedUrl += `${sep}autoplay=true`;
+                }
+                container.innerHTML = `<iframe src="${embedUrl}" class="w-full h-full border-0" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`;
+            }
+            // 3. YouTube
             else if (playbackUrl && (playbackUrl.includes('youtube.com') || playbackUrl.includes('youtu.be'))) {
                 sourceLabel.textContent = 'YouTube Player';
                 let ytId = '';
@@ -1132,7 +1204,7 @@
                 if (m) ytId = m[1];
                 container.innerHTML = `<iframe src="https://www.youtube.com/embed/${ytId}?autoplay=1" class="w-full h-full border-0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
             }
-            // 3. Vimeo
+            // 4. Vimeo
             else if (playbackUrl && playbackUrl.includes('vimeo.com')) {
                 sourceLabel.textContent = 'Vimeo Player';
                 let vmId = '';
@@ -1140,7 +1212,7 @@
                 if (m) vmId = m[1];
                 container.innerHTML = `<iframe src="https://player.vimeo.com/video/${vmId}?autoplay=1" class="w-full h-full border-0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
             }
-            // 4. Direct HLS or MP4 HTML5 Video
+            // 5. Direct HLS or MP4 HTML5 Video
             else if (playbackUrl) {
                 sourceLabel.textContent = 'HTML5 Video Player';
                 const video = document.createElement('video');
@@ -1179,5 +1251,34 @@
             closeModal('modal-video-preview');
         }
     </script>
+
+    <style>
+        .lesson-preview-btn {
+            background-color: #EAF1FB !important;
+            color: #012383 !important;
+            border: 1px solid #BFD5F8 !important;
+        }
+        .lesson-preview-btn:hover {
+            background-color: #012383 !important;
+            color: #ffffff !important;
+            border-color: #012383 !important;
+        }
+        .lesson-preview-btn svg {
+            fill: currentColor !important;
+        }
+        .lesson-preview-btn span {
+            color: inherit !important;
+        }
+        html.dark .lesson-preview-btn {
+            background-color: #1e293b !important;
+            color: #93c5fd !important;
+            border-color: #334155 !important;
+        }
+        html.dark .lesson-preview-btn:hover {
+            background-color: #2563eb !important;
+            color: #ffffff !important;
+            border-color: #2563eb !important;
+        }
+    </style>
 <script src="https://cdn.jsdelivr.net/npm/@mux/mux-player"></script>
 </x-admin-layout::admin>

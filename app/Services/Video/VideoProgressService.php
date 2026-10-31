@@ -8,6 +8,7 @@ use App\Models\Course;
 use App\Models\User;
 use App\Models\Video;
 use App\Models\VideoProgress;
+use App\Services\Cms\SettingsService;
 use App\Services\Course\CourseEnrollmentService;
 use Illuminate\Support\Carbon;
 
@@ -35,7 +36,13 @@ class VideoProgressService
             return false;
         }
 
-        // 3. Find the immediately preceding video in the course
+        // 3. Check if sequential video locking policy is enabled globally
+        $isLockEnabled = app(SettingsService::class)->get('sequential_video_lock', '1') === '1';
+        if (! $isLockEnabled) {
+            return true;
+        }
+
+        // 4. Find the immediately preceding video in the course
         $previousVideo = Video::query()
             ->where('course_id', $video->course_id)
             ->where('sort_order', '<', $video->sort_order)

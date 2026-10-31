@@ -4,10 +4,14 @@ declare(strict_types=1);
 
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\AdminFirebaseAuthController;
+use App\Http\Controllers\Admin\AdminManagementController;
+use App\Http\Controllers\Admin\AdminPasskeyController;
+use App\Http\Controllers\Admin\AdminProfileController;
 use App\Http\Controllers\Admin\CertificateController;
 use App\Http\Controllers\Admin\ClinicalTaskController;
 use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Admin\ReceiptController;
+use App\Http\Controllers\Admin\RoleManagementController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\StudentManagerController;
 use App\Livewire\Admin\Notifications\NotificationManager;
@@ -31,6 +35,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Admin Google Authentication via Firebase
         Route::post('auth/google/firebase', [AdminFirebaseAuthController::class, 'authenticate'])->name('auth.google.firebase');
         Route::post('login/firebase', [AdminFirebaseAuthController::class, 'authenticate'])->name('login.firebase');
+
+        // Admin Passkey Authentication (WebAuthn)
+        Route::get('passkeys/login/options', [AdminPasskeyController::class, 'loginOptions'])->name('passkey.login-options');
+        Route::post('passkeys/login', [AdminPasskeyController::class, 'login'])->name('passkey.login');
     });
 
     // -------------------------------------------------------------
@@ -83,10 +91,28 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('students', [StudentManagerController::class, 'index'])->name('students.index');
         Route::post('students/{user}/toggle', [StudentManagerController::class, 'toggleStatus'])->name('students.toggle');
 
+        // Admin Profile & Security Settings
+        Route::get('profile', [AdminProfileController::class, 'edit'])->name('profile.edit');
+        Route::put('profile', [AdminProfileController::class, 'update'])->name('profile.update');
+        Route::put('profile/password', [AdminProfileController::class, 'updatePassword'])->name('profile.password');
+
+        // Admin Passkeys Management
+        Route::get('passkeys/options', [AdminPasskeyController::class, 'registrationOptions'])->name('passkey.registration-options');
+        Route::get('passkeys', [AdminPasskeyController::class, 'index'])->name('passkey.index');
+        Route::post('passkeys', [AdminPasskeyController::class, 'store'])->name('passkey.store');
+        Route::delete('passkeys/{passkey}', [AdminPasskeyController::class, 'destroy'])->name('passkey.destroy');
+
+        // Staff & Roles Management
+        Route::resource('admins', AdminManagementController::class)->except(['show']);
+        Route::resource('roles', RoleManagementController::class)->except(['show']);
+
         // Dynamic CMS, Menus & System Settings
         Route::get('settings', [SettingsController::class, 'index'])->name('settings.index');
         Route::post('settings', [SettingsController::class, 'update'])->name('settings.update');
+        Route::post('settings/content/{sectionKey}', [SettingsController::class, 'updateContentBlock'])->name('settings.content.update');
         Route::post('settings/menus/{menu}/items', [SettingsController::class, 'saveMenuItem'])->name('settings.menus.item');
+        Route::post('settings/menus/items/{item}/toggle', [SettingsController::class, 'toggleMenuItem'])->name('settings.menus.item.toggle');
+        Route::delete('settings/menus/items/{item}', [SettingsController::class, 'deleteMenuItem'])->name('settings.menus.item.delete');
 
         // Admin Notification Broadcasting
         Route::livewire('notifications', NotificationManager::class)->name('notifications.index');

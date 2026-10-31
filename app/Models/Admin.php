@@ -8,10 +8,13 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
+use Laravel\Passkeys\Contracts\PasskeyUser;
 
 /**
  * @property int $id
@@ -31,7 +34,7 @@ use Illuminate\Support\Str;
  */
 #[Fillable(['name', 'email', 'password', 'google_id', 'firebase_uid', 'avatar', 'role_id', 'permissions', 'locale'])]
 #[Hidden(['password', 'remember_token'])]
-class Admin extends Authenticatable
+class Admin extends Authenticatable implements PasskeyUser
 {
     use HasFactory, Notifiable;
 
@@ -41,6 +44,53 @@ class Admin extends Authenticatable
      * @var string
      */
     protected $table = 'admins';
+
+    /**
+     * Get the passkeys associated with this administrator.
+     *
+     * @return HasMany<AdminPasskey, $this>
+     */
+    public function passkeys(): HasMany
+    {
+        return $this->hasMany(AdminPasskey::class, 'admin_id');
+    }
+
+    /**
+     * Determine if this admin has any active passkeys.
+     */
+    public function hasPasskeysEnabled(): bool
+    {
+        return $this->passkeys()->exists();
+    }
+
+    /**
+     * Get the stable WebAuthn handle for this admin.
+     */
+    public function getPasskeyUserHandle(): string
+    {
+        return hash_hmac(
+            'sha256',
+            'admins|'.$this->getKey(),
+            Config::string('passkeys.user_handle_secret', config('app.key')),
+            true
+        );
+    }
+
+    /**
+     * Get the display name for WebAuthn prompts.
+     */
+    public function getPasskeyDisplayName(): string
+    {
+        return $this->name ?: $this->email;
+    }
+
+    /**
+     * Get the account identifier for WebAuthn prompt subtitles.
+     */
+    public function getPasskeyUsername(): string
+    {
+        return $this->email;
+    }
 
     /**
      * Get the attributes that should be cast.

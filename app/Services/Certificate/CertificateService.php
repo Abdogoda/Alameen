@@ -7,6 +7,7 @@ namespace App\Services\Certificate;
 use App\Models\Certificate;
 use App\Models\Course;
 use App\Models\User;
+use App\Services\Cms\SettingsService;
 use App\Services\Video\VideoProgressService;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
@@ -21,13 +22,23 @@ class CertificateService
     ) {}
 
     /**
-     * Determine if student is eligible for certificate issuance (>= 95% progress).
+     * Get configured minimum progress percentage required for certificate (defaults to 95%).
+     */
+    public function getMinProgress(): float
+    {
+        $custom = app(SettingsService::class)->get('certificate_min_percentage');
+
+        return ! empty($custom) && is_numeric($custom) ? (float) $custom : self::MIN_PROGRESS_FOR_CERTIFICATE;
+    }
+
+    /**
+     * Determine if student is eligible for certificate issuance (>= min progress).
      */
     public function isEligible(User $user, Course $course): bool
     {
         $percentage = $this->progressService->getCourseProgressPercentage($user, $course);
 
-        return $percentage >= self::MIN_PROGRESS_FOR_CERTIFICATE;
+        return $percentage >= $this->getMinProgress();
     }
 
     /**
@@ -45,10 +56,12 @@ class CertificateService
         }
 
         $percentage = $this->progressService->getCourseProgressPercentage($user, $course);
+        $minRequired = $this->getMinProgress();
 
-        if ($percentage < self::MIN_PROGRESS_FOR_CERTIFICATE) {
+        if ($percentage < $minRequired) {
             throw ValidationException::withMessages([
-                'progress' => __('عذراً، يجب إكمال 95% على الأقل من المحاضرات والمهام لإصدار الشهادة. نسبة إنجازك الحالية: :percent%', [
+                'progress' => __('عذراً، يجب إكمال :min% على الأقل من المحاضرات والمهام لإصدار الشهادة. نسبة إنجازك الحالية: :percent%', [
+                    'min' => $minRequired,
                     'percent' => $percentage,
                 ]),
             ]);

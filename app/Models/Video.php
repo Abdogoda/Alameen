@@ -143,7 +143,10 @@ class Video extends Model
         }
 
         if (! empty($this->bunny_video_id)) {
-            return $this->bunny_video_id;
+            $libraryId = $this->bunny_library_id ?: config('services.bunny.library_id', env('BUNNY_STREAM_LIBRARY_ID', ''));
+            $pullZone = config('services.bunny.pull_zone', env('BUNNY_STREAM_PULL_ZONE', 'iframe.mediadelivery.net'));
+
+            return "https://{$pullZone}/embed/{$libraryId}/{$this->bunny_video_id}";
         }
 
         return '';

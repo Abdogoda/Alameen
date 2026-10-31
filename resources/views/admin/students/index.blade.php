@@ -89,7 +89,14 @@
                             @endif
                         </td>
                         <td class="py-4 px-5 text-center">
-                            <form method="POST" action="{{ route('admin.students.toggle', $student->id) }}" onsubmit="return confirm('{{ $student->isActive() ? __('هل أنت متأكد من تعليق حساب هذا الطالب؟') : __('هل أنت متأكد من إعادة تنشيط هذا الحساب؟') }}');">
+                            <form 
+                                method="POST" 
+                                action="{{ route('admin.students.toggle', $student->id) }}"
+                                data-confirm="{{ $student->isActive() ? __('هل أنت متأكد من تعليق حساب هذا الطالب؟') : __('هل أنت متأكد من إعادة تنشيط هذا الحساب؟') }}"
+                                data-confirm-title="{{ $student->isActive() ? __('تعليق حساب الطالب') : __('تنشيط حساب الطالب') }}"
+                                data-confirm-btn="{{ $student->isActive() ? __('نعم، علّق الحساب') : __('نعم، نشّط الحساب') }}"
+                                data-confirm-danger="{{ $student->isActive() ? 'true' : 'false' }}"
+                            >
                                 @csrf
                                 @if($student->isActive())
                                     <button type="submit" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 dark:bg-rose-950/40 dark:text-rose-300 dark:border-rose-800 transition-colors cursor-pointer">
@@ -158,7 +165,15 @@
                     </div>
                 </div>
 
-                <form method="POST" action="{{ route('admin.students.toggle', $student->id) }}" onsubmit="return confirm('{{ $student->isActive() ? __('هل أنت متأكد من تعليق حساب هذا الطالب؟') : __('هل أنت متأكد من إعادة تنشيط هذا الحساب؟') }}');" class="pt-1">
+                <form 
+                    method="POST" 
+                    action="{{ route('admin.students.toggle', $student->id) }}" 
+                    data-confirm="{{ $student->isActive() ? __('هل أنت متأكد من تعليق حساب هذا الطالب؟') : __('هل أنت متأكد من إعادة تنشيط هذا الحساب؟') }}"
+                    data-confirm-title="{{ $student->isActive() ? __('تعليق حساب الطالب') : __('تنشيط حساب الطالب') }}"
+                    data-confirm-btn="{{ $student->isActive() ? __('نعم، علّق الحساب') : __('نعم، نشّط الحساب') }}"
+                    data-confirm-danger="{{ $student->isActive() ? 'true' : 'false' }}"
+                    class="pt-1"
+                >
                     @csrf
                     @if($student->isActive())
                         <button type="submit" class="w-full py-2 rounded-xl text-xs font-bold bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 dark:bg-rose-950/40 dark:text-rose-300 dark:border-rose-800 transition-colors cursor-pointer text-center">

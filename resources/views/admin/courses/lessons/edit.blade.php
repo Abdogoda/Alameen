@@ -40,11 +40,13 @@
         method="POST" 
         enctype="multipart/form-data" 
         class="flex flex-col gap-6"
+        x-data="{ uploadTab: '{{ old('upload_tab', 'keep') }}' }"
     >
         @csrf
         @method('PUT')
         
         {{-- Hidden fields for Chunked Video Replacement --}}
+        <input type="hidden" name="upload_tab" id="field-upload-tab" :value="uploadTab" />
         <input type="hidden" name="video_source" id="field-video-source" value="{{ old('video_source', $video->video_source) }}" />
         <input type="hidden" name="mux_playback_id" id="field-mux-playback-id" value="{{ old('mux_playback_id', $video->mux_playback_id) }}" />
         <input type="hidden" name="mux_asset_id" id="field-mux-asset-id" value="{{ old('mux_asset_id', $video->mux_asset_id) }}" />
@@ -177,7 +179,7 @@
         {{-- ===================================================== --}}
         {{-- CARD 2: Current Video & Replacement Engine            --}}
         {{-- ===================================================== --}}
-        <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-2xl sm:rounded-3xl p-5 sm:p-7 shadow-xs space-y-5" x-data="{ uploadTab: 'keep' }">
+        <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-2xl sm:rounded-3xl p-5 sm:p-7 shadow-xs space-y-5">
             <div class="border-b border-[#DEE8F7]/80 dark:border-slate-800 pb-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div class="flex items-center gap-2.5">
                     <span class="size-8 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 font-bold flex items-center justify-center text-sm shadow-2xs">
@@ -196,9 +198,9 @@
                 {{-- Current Video Source Badge --}}
                 <div class="flex items-center gap-2">
                     <span class="text-[11px] font-bold text-slate-400">{{ __('المصدر الحالي:') }}</span>
-                    <span class="px-2.5 py-1 rounded-lg text-xs font-bold border flex items-center gap-1.5 {{ $video->video_source === 'mux' ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800' : 'bg-blue-50 dark:bg-slate-800 text-[#012383] dark:text-blue-300 border-blue-200 dark:border-slate-700' }}">
-                        <span class="size-2 rounded-full {{ $video->video_source === 'mux' ? 'bg-emerald-500' : 'bg-blue-500' }}"></span>
-                        <span>{{ $video->video_source === 'mux' ? 'بث MUX السحابي' : ($video->video_source === 'local' ? 'سيرفر المنصة المحلي' : 'رابط مباشر') }}</span>
+                    <span class="px-2.5 py-1 rounded-lg text-xs font-bold border flex items-center gap-1.5 {{ $video->video_source === 'mux' ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800' : ($video->video_source === 'bunny' ? 'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-800' : 'bg-blue-50 dark:bg-slate-800 text-[#012383] dark:text-blue-300 border-blue-200 dark:border-slate-700') }}">
+                        <span class="size-2 rounded-full {{ $video->video_source === 'mux' ? 'bg-emerald-500' : ($video->video_source === 'bunny' ? 'bg-amber-500' : 'bg-blue-500') }}"></span>
+                        <span>{{ $video->video_source === 'mux' ? __('بث MUX السحابي') : ($video->video_source === 'bunny' ? __('سحابة Bunny Stream') : ($video->video_source === 'local' ? __('سيرفر المنصة المحلي') : __('رابط مباشر'))) }}</span>
                     </span>
                 </div>
             </div>
@@ -247,6 +249,14 @@
                                 stream-type="on-demand"
                                 class="size-full"
                             ></mux-player>
+                        @elseif($video->video_source === 'bunny' || !empty($video->bunny_video_id))
+                            <iframe
+                                src="{{ $video->effective_playback_url }}"
+                                loading="lazy"
+                                class="size-full border-0"
+                                allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
+                                allowfullscreen="true"
+                            ></iframe>
                         @elseif($video->effective_playback_url)
                             <video src="{{ $video->effective_playback_url }}" controls class="size-full"></video>
                         @else
@@ -260,9 +270,14 @@
                         <div class="text-xs font-bold text-slate-700 dark:text-slate-200">
                             {{ __('بيانات البث الحالية:') }}
                         </div>
-                        @if($video->mux_playback_id)
+                        @if($video->video_source === 'mux' && $video->mux_playback_id)
                             <p class="text-xs font-mono text-slate-500 dark:text-slate-400 break-all">
                                 <span class="font-bold text-[#012383] dark:text-blue-300">MUX Playback ID:</span> {{ $video->mux_playback_id }}
+                            </p>
+                        @endif
+                        @if($video->video_source === 'bunny' && !empty($video->bunny_video_id))
+                            <p class="text-xs font-mono text-slate-500 dark:text-slate-400 break-all">
+                                <span class="font-bold text-[#012383] dark:text-blue-300">Bunny Video ID:</span> {{ $video->bunny_video_id }}
                             </p>
                         @endif
                         @if($video->effective_playback_url)
@@ -377,16 +392,30 @@
 
                     {{-- Success & Ready Banner --}}
                     <div id="success-banner" class="hidden p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 space-y-3">
-                        <div class="flex items-center justify-between">
+                        <div class="flex items-center justify-between flex-wrap gap-2">
                             <div class="flex items-center gap-2 text-emerald-800 dark:text-emerald-300 text-xs font-bold">
                                 <svg class="size-5 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                                <span id="success-message-text">{{ __('تم تجهيز ومعالجة الفيديو البديل بنجاح وهو جاهز للحفظ!') }}</span>
+                                <span id="success-message-text">{{ __('تم رفع وتجهيز الفيديو الجديد بنجاح على السيرفر وهو جاهز للعرض!') }}</span>
                             </div>
                             <span id="success-driver-badge" class="px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-200 text-emerald-900"></span>
                         </div>
 
                         <div class="rounded-xl overflow-hidden bg-black aspect-video max-w-lg mx-auto shadow-inner relative">
                             <video id="preview-player" controls class="size-full"></video>
+                        </div>
+
+                        <div class="p-3 bg-emerald-100/70 dark:bg-emerald-900/40 rounded-xl border border-emerald-300 dark:border-emerald-700 flex flex-col sm:flex-row items-center justify-between gap-3">
+                            <div class="text-xs text-emerald-900 dark:text-emerald-200">
+                                <p class="font-bold">{{ __('تم تحديث وحفظ الفيديو الجديد على الدرس في السيرفر بنجاح.') }}</p>
+                                <p class="text-[11px] text-emerald-800/80 dark:text-emerald-300/80">{{ __('اضغط على الزر لتأكيد واعتماد التعديلات وحفظ باقي بيانات الدرس فوراً.') }}</p>
+                            </div>
+                            <button 
+                                type="submit" 
+                                class="px-5 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-black text-xs flex items-center gap-1.5 shadow-md cursor-pointer transition-all shrink-0"
+                            >
+                                <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                <span>{{ __('حفظ وتأكيد تعديلات الدرس 💾') }}</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -403,7 +432,7 @@
                         name="video_url" 
                         id="input-direct-video-url" 
                         value="{{ old('video_url', $video->effective_playback_url) }}" 
-                        placeholder="https://stream.mux.com/xxxxx.m3u8 أو https://youtu.be/xxxxx" 
+                        placeholder="{{ __('https://stream.mux.com/xxxxx.m3u8 أو https://youtu.be/xxxxx') }}" 
                         class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-mono text-[#012383] dark:text-white outline-none focus:border-[#0B2A8F] bg-slate-50/50 dark:bg-slate-800/50" 
                     />
                     <p class="text-[11px] text-slate-400 mt-1">
@@ -441,7 +470,7 @@
                     type="text" 
                     name="task_title_ar" 
                     value="{{ old('task_title_ar', $video->clinicalTask?->title_ar) }}" 
-                    placeholder="مثال: تسجيل صوتي عملي لتقييم مخارج الحروف اللثوية" 
+                    placeholder="{{ __('مثال: تسجيل صوتي عملي لتقييم مخارج الحروف اللثوية') }}" 
                     class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-sm font-bold text-[#012383] dark:text-white outline-none focus:border-[#0B2A8F] bg-slate-50/50 dark:bg-slate-800/50" 
                 />
             </div>
@@ -566,6 +595,7 @@
 
                 const formData = new FormData();
                 formData.append('upload_id', uploadId);
+                formData.append('video_id', '{{ $video->id }}');
                 formData.append('chunk_index', chunkIndex);
                 formData.append('total_chunks', totalChunks);
                 formData.append('original_filename', file.name);
@@ -621,16 +651,14 @@
                         }
 
                         // Populate hidden form inputs
-                        document.getElementById('field-video-source').value = result.video_source;
+                        const uploadTabField = document.getElementById('field-upload-tab');
+                        if (uploadTabField) uploadTabField.value = 'chunked';
+                        document.getElementById('field-video-source').value = result.video_source || 'local';
                         if (playUrl) {
                             document.getElementById('input-direct-video-url').value = playUrl;
                         }
-                        if (result.mux_playback_id) {
-                            document.getElementById('field-mux-playback-id').value = result.mux_playback_id;
-                        }
-                        if (result.mux_asset_id) {
-                            document.getElementById('field-mux-asset-id').value = result.mux_asset_id;
-                        }
+                        document.getElementById('field-mux-playback-id').value = result.mux_playback_id || '';
+                        document.getElementById('field-mux-asset-id').value = result.mux_asset_id || '';
 
                         // Update driver badge
                         const driverBadge = document.getElementById('success-driver-badge');

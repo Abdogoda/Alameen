@@ -8,7 +8,7 @@
     <title>{{ __('تسجيل دخول المسؤولين | منصة الأمين') }}</title>
 
     @include('partials.head')
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/passkeys.js'])
 </head>
 <body class="bg-[#FAFCFF] dark:bg-[#0B1120] min-h-screen text-[#1E293B] dark:text-slate-100 flex flex-col justify-center items-center px-3.5 py-6 sm:px-6 lg:px-10 font-['Cairo'] antialiased relative selection:bg-[#0B2A8F]/10 selection:text-[#0B2A8F] overflow-x-hidden">
 
@@ -78,8 +78,9 @@
                 </div>
             @endif
 
-            <!-- Google Sign In for Admins -->
-            <div class="mb-5">
+            <!-- Quick Login Options (Google & Passkey) -->
+            <div class="mb-5 space-y-2.5">
+                <!-- Google Sign In for Admins -->
                 <button
                     type="button"
                     data-firebase-auth="admin"
@@ -96,7 +97,66 @@
                     <span>{{ __('تسجيل الدخول عبر Google') }}</span>
                 </button>
 
-                <div class="relative my-5">
+                <!-- Passkey Sign In for Admins -->
+                <div
+                    x-data="{
+                        supported: false,
+                        loading: false,
+                        error: null,
+                        updateSupport() {
+                            this.supported = Boolean(window.Passkeys?.isSupported());
+                        },
+                        init() {
+                            this.updateSupport();
+                            window.addEventListener('passkeys:ready', () => this.updateSupport(), { once: true });
+                        },
+                        async loginWithPasskey() {
+                            this.loading = true;
+                            this.error = null;
+                            try {
+                                const response = await window.Passkeys.verify({
+                                    routes: {
+                                        options: '{{ route('admin.passkey.login-options') }}',
+                                        submit: '{{ route('admin.passkey.login') }}',
+                                    },
+                                });
+                                window.location.href = response.redirect || '{{ route('admin.dashboard') }}';
+                            } catch (e) {
+                                if (window.translatePasskeyError) {
+                                    this.error = window.translatePasskeyError(e);
+                                } else {
+                                    this.error = e?.message || '{{ __('فشل تسجيل الدخول بمفتاح المرور.') }}';
+                                }
+                            } finally {
+                                this.loading = false;
+                            }
+                        }
+                    }"
+                    class="w-full"
+                >
+                    <button
+                        type="button"
+                        x-show="supported"
+                        @click="loginWithPasskey()"
+                        :disabled="loading"
+                        class="w-full py-3.5 px-4 rounded-2xl border border-[#DEE8F7] dark:border-slate-700 hover:border-[#012383]/40 dark:hover:border-blue-400/40 bg-[#FAFCFF] dark:bg-slate-800 hover:bg-white dark:hover:bg-slate-700 text-[#012383] dark:text-blue-300 font-bold text-sm shadow-xs transition-all flex items-center justify-center gap-2.5 cursor-pointer group active:scale-[0.99] disabled:opacity-75 disabled:cursor-wait"
+                        title="{{ __('تسجيل الدخول السريع عبر مفتاح المرور (Touch ID / Face ID / Windows Hello)') }}"
+                    >
+                        <svg x-show="!loading" class="size-5 shrink-0 text-[#0B2A8F] dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 004 11a7.96 7.96 0 001.272 4.316m5.748 4.288A19.92 19.92 0 0112 21"/>
+                        </svg>
+                        <svg x-show="loading" x-cloak class="size-4.5 shrink-0 animate-spin text-[#0B2A8F] dark:text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3.5" fill="none"></circle>
+                            <path class="opacity-90" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <span x-show="!loading">{{ __('تسجيل الدخول عبر مفتاح المرور (Passkey)') }}</span>
+                        <span x-show="loading" x-cloak>{{ __('جارٍ التحقق البيومتري...') }}</span>
+                    </button>
+
+                    <div x-show="error" x-cloak class="mt-2.5 p-3 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-rose-600 dark:text-rose-400 text-xs font-semibold text-center" x-text="error"></div>
+                </div>
+
+                <div class="relative pt-2">
                     <div class="absolute inset-0 flex items-center">
                         <div class="w-full border-t border-[#DEE8F7] dark:border-slate-700"></div>
                     </div>

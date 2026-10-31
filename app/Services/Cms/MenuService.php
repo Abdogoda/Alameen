@@ -78,6 +78,28 @@ class MenuService
     }
 
     /**
+     * Delete an item from a menu and flush cache.
+     */
+    public function deleteItem(MenuItem $item): void
+    {
+        $location = $item->menu?->location;
+        $item->delete();
+        $this->flushMenuCache($location);
+    }
+
+    /**
+     * Toggle active state of a menu item.
+     */
+    public function toggleItem(MenuItem $item): MenuItem
+    {
+        $item->is_active = ! $item->is_active;
+        $item->save();
+        $this->flushMenuCache($item->menu?->location);
+
+        return $item;
+    }
+
+    /**
      * Flush cache for a specific menu location or all menus.
      */
     public function flushMenuCache(?string $location = null): void

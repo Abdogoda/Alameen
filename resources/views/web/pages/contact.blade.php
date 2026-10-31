@@ -1,16 +1,29 @@
 <x-layouts::marketing :title="__('تواصل معنا والدعم الفني')" active="contact">
+@php
+    $cmsSettings = app(\App\Services\Cms\SettingsService::class);
+    $contactEmail = $cmsSettings->get('contact_email', 'support@alameen.edu.sa');
+    $contactPhone = $cmsSettings->get('contact_phone', '+20 100 000 0000');
+    $whatsappUrl = $cmsSettings->get('social_whatsapp', 'https://wa.me/201000000000');
+    $contactAddress = $cmsSettings->get('contact_address', 'المملكة العربية السعودية / جمهورية مصر العربية');
+    $workingHours = $cmsSettings->get('contact_working_hours', 'السبت - الخميس: 9:00 ص - 9:00 م');
+    $supportStatusOnline = $cmsSettings->get('support_status_online', '1') === '1';
+@endphp
     <div class="flex-1 w-full max-w-[1536px] mx-auto px-6 sm:px-10 lg:px-16 xl:px-24 2xl:px-32 py-8 lg:py-12 flex flex-col gap-10">
 <!-- 1. HERO SECTION & AVAILABILITY STATUS (WorkDo Hero Style) -->
         <section class="flex flex-col items-center text-center gap-4 max-w-4xl mx-auto">
           
-          <div class="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-[#EEF7F3] border border-[#10B77F]/30 text-[#10B77F] text-xs font-bold shadow-xs">
+          <div class="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full {{ $supportStatusOnline ? 'bg-[#EEF7F3] border-[#10B77F]/30 text-[#10B77F]' : 'bg-slate-100 border-slate-300 text-slate-600' }} border text-xs font-bold shadow-xs">
             <span class="relative flex size-2.5">
+              @if($supportStatusOnline)
               <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
               <span class="relative inline-flex rounded-full size-2.5 bg-emerald-500"></span>
+              @else
+              <span class="relative inline-flex rounded-full size-2.5 bg-slate-400"></span>
+              @endif
             </span>
-            <span data-i18n="contact.statusOnline">{{ __('contact.statusOnline') }}</span>
+            <span>{{ $supportStatusOnline ? __('contact.statusOnline') : __('الدعم غير متاح حالياً') }}</span>
             <span class="text-emerald-300">•</span>
-            <span class="text-[#475569] font-medium" data-i18n="contact.responseTime">{{ __('contact.responseTime') }}</span>
+            <span class="text-[#475569] font-medium">{{ $workingHours }}</span>
           </div>
 
           <h1 class="font-['Cairo'] font-extrabold text-3xl sm:text-4xl lg:text-5xl text-[#012383] tracking-tight leading-tight" data-i18n="contact.heroTitle">
@@ -38,9 +51,9 @@
               </p>
             </div>
             <div class="mt-6 pt-4 border-t border-[#DEE8F7] flex items-center justify-between">
-              <span class="text-sm font-bold text-[#0B2A8F] dir-ltr">support@alameen.edu.sa</span>
+              <span class="text-sm font-bold text-[#0B2A8F] dir-ltr">{{ $contactEmail }}</span>
               <a
-                href="mailto:support@alameen.edu.sa"
+                href="mailto:{{ $contactEmail }}"
                 class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#EAF1FB] hover:bg-[#DEE8F7] text-xs font-bold text-[#012383] hover:text-[#0B2A8F] transition-all"
                 data-i18n="contact.channelTechBtn"
               >
@@ -62,9 +75,9 @@
               </p>
             </div>
             <div class="mt-6 pt-4 border-t border-[#DEE8F7] flex items-center justify-between">
-              <span class="text-sm font-bold text-[#10B77F] dir-ltr">+966 50 123 4567</span>
+              <span class="text-sm font-bold text-[#10B77F] dir-ltr">{{ $contactPhone }}</span>
               <a
-                href="https://wa.me/966501234567"
+                href="{{ $whatsappUrl }}"
                 target="_blank"
                 rel="noopener"
                 class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#EEF7F3] hover:bg-[#DEE8F7] text-xs font-bold text-emerald-700 hover:text-emerald-800 transition-all"
@@ -264,7 +277,7 @@
                     📍
                   </div>
                   <div>
-                    <span class="font-bold text-[#012383] block">{{ __('ui.المركز التقني في مصر') }}</span>
+                    <span class="font-bold text-[#012383] block">{{ __('المركز التقني في مصر') }}</span>
                     <span class="text-[#475569]" data-i18n="contact.officeLocationCairo">{{ __('contact.officeLocationCairo') }}</span>
                   </div>
                 </div>

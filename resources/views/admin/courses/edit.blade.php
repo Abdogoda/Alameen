@@ -303,7 +303,15 @@
             <div>
                 <button 
                     type="button" 
-                    onclick="if(confirm('{{ __('هل أنت متأكد من رغبتك في حذف هذا الكورس نهائياً؟') }}')) { if(window.AlameenButtonLoader) window.AlameenButtonLoader.setButtonLoading(this, true, '{{ __('جاري حذف الكورس...') }}'); document.getElementById('delete-course-form').submit(); }" 
+                    onclick="window.AlameenConfirm({
+                        title: '{{ __('حذف الكورس التدريبي') }}',
+                        message: '{{ __('هل أنت متأكد من رغبتك في حذف هذا الكورس نهائياً؟') }}',
+                        confirmText: '{{ __('نعم، احذف الكورس') }}',
+                        onConfirm: () => {
+                            if(window.AlameenButtonLoader) window.AlameenButtonLoader.setButtonLoading(this, true, '{{ __('جاري حذف الكورس...') }}');
+                            document.getElementById('delete-course-form').submit();
+                        }
+                    })" 
                     class="px-4 py-2.5 rounded-xl border border-rose-300 dark:border-rose-900 text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 text-xs font-bold transition-all cursor-pointer"
                 >
                     {{ __('حذف الكورس التدريبي نهائياً') }}

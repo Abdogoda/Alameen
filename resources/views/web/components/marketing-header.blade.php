@@ -2,22 +2,41 @@
     'active' => 'home',
 ])
 
+@php
+    $cmsSettings = app(\App\Services\Cms\SettingsService::class);
+    $headerMenuItems = app(\App\Services\Cms\MenuService::class)->getMenu('header');
+    $announcementEnabled = $cmsSettings->get('announcement_enabled', '0') === '1';
+    $announcementText = $cmsSettings->get('announcement_text');
+    $announcementUrl = $cmsSettings->get('announcement_url');
+    $siteName = $cmsSettings->get('site_name', __('brand.name'));
+    $siteLogo = $cmsSettings->get('site_logo') ?: '/assets/images/logo.png';
+@endphp
+
+@if($announcementEnabled && !empty($announcementText))
+    <div class="w-full bg-gradient-to-r from-[#012383] via-[#0B2A8F] to-[#10B77F] text-white text-xs py-2 px-4 text-center font-bold flex items-center justify-center gap-3 relative z-50 shadow-xs">
+        <span class="inline-block size-2 rounded-full bg-amber-400 animate-pulse"></span>
+        <span>{{ $announcementText }}</span>
+        @if(!empty($announcementUrl))
+            <a href="{{ $announcementUrl }}" class="underline hover:text-amber-300 font-extrabold inline-flex items-center gap-1 transition-colors">
+                <span>{{ __('المزيد') }}</span>
+                <span class="rtl:rotate-180">→</span>
+            </a>
+        @endif
+    </div>
+@endif
+
 <!-- UNIFIED MASTER HEADER (Sticky at Top) -->
 <header class="w-full bg-[#FAFCFF]/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-[#D7E3F5] dark:border-slate-800 flex items-center justify-between px-3.5 sm:px-6 lg:px-12 xl:px-20 2xl:px-28 py-2.5 sm:py-3.5 shrink-0 sticky top-0 z-50 shadow-xs transition-colors" id="main-header" x-data="{ mobileNavOpen: false }">
     
     <!-- Brand Identity -->
     <a href="{{ route('home') }}" class="flex gap-2 sm:gap-2.5 items-center shrink-0 cursor-pointer">
         <div class="size-8 sm:size-9 lg:size-10 shrink-0 relative flex items-center justify-center transition-all">
-            <img src="/assets/images/logo.png" alt="{{ config('app.name', 'منصة مركز الأمين') }}" class="size-full object-contain pointer-events-none" />
+            <img src="{{ $siteLogo }}" alt="{{ $siteName }}" class="size-full object-contain pointer-events-none" />
         </div>
         <span class="font-['Baloo_Bhaijaan_2'] font-bold text-base sm:text-lg lg:text-[21px] leading-tight text-[#012383] dark:text-white whitespace-nowrap tracking-tight">
-            {{ __('brand.name') }}
+            {{ $siteName }}
         </span>
     </a>
-
-@php
-    $headerMenuItems = app(\App\Services\Cms\MenuService::class)->getMenu('header');
-@endphp
 
     <!-- Main Navigation Links (Desktop) -->
     <nav class="hidden lg:flex gap-[4px] xl:gap-[8px] items-center shrink-0">
@@ -69,7 +88,7 @@
                 href="{{ route('admin.dashboard') }}"
                 class="bg-gradient-to-r from-[#F2AE2E] to-amber-500 hover:from-amber-400 hover:to-[#F2AE2E] flex items-center justify-center px-3 sm:px-5 h-[34px] sm:h-[40px] rounded-full text-slate-950 text-xs sm:text-sm font-bold font-['Cairo'] transition-all shadow-sm hover:shadow-md cursor-pointer whitespace-nowrap"
             >
-                {{ __('ui.لوحة الإدارة') }}
+                {{ __('لوحة الإدارة') }}
             </a>
         @elseif (auth()->check())
             <a
@@ -77,7 +96,7 @@
                 class="bg-[#012383] hover:bg-[#0B2A8F] flex items-center justify-center px-3 sm:px-5 h-[34px] sm:h-[40px] rounded-full !text-white text-xs sm:text-sm font-bold font-['Cairo'] transition-all shadow-sm hover:shadow-md cursor-pointer whitespace-nowrap"
                 style="color: #ffffff !important;"
             >
-                <span class="text-white" style="color: #ffffff !important;">{{ __('ui.بوابة الطالب') }}</span>
+                <span class="text-white" style="color: #ffffff !important;">{{ __('بوابة الطالب') }}</span>
             </a>
         @else
             <div class="flex items-center gap-1.5 sm:gap-2">
@@ -183,7 +202,7 @@
         <div class="flex flex-col gap-4 pt-4 border-t border-[#D7E3F5] dark:border-slate-800 mt-auto">
             <!-- Mobile Switchers Row -->
             <div class="flex items-center justify-between gap-3">
-                <span class="text-xs font-bold text-slate-500 dark:text-slate-400">{{ __('ui.الإعدادات') }}</span>
+                <span class="text-xs font-bold text-slate-500 dark:text-slate-400">{{ __('الإعدادات') }}</span>
                 <div class="flex items-center gap-2">
                     <x-theme-switcher variant="dropdown" />
                     <x-language-switcher variant="dropdown" />

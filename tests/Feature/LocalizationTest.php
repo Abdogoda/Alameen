@@ -60,10 +60,10 @@ class LocalizationTest extends TestCase
         $response->assertSee('Log in');
     }
 
-    public function test_translations_are_loaded_from_php_files_without_json(): void
+    public function test_arabic_translations_are_loaded_from_php_files(): void
     {
+        // Arabic translations always come from lang/ar/*.php group files — no JSON needed.
         $this->assertFileDoesNotExist(base_path('lang/ar.json'));
-        $this->assertFileDoesNotExist(base_path('lang/en.json'));
 
         app()->setLocale('ar');
 
@@ -71,5 +71,17 @@ class LocalizationTest extends TestCase
         $this->assertEquals('لوحة التحكم', __('Dashboard'));
         $this->assertEquals('بيانات الاعتماد هذه غير متطابقة مع سجلاتنا.', __('auth.failed'));
         $this->assertEquals('تمت العملية بنجاح.', __('messages.Operation successful.'));
+    }
+
+    public function test_english_json_translation_file_exists_and_is_valid(): void
+    {
+        // lang/en.json provides English translations for Arabic-keyed __() calls.
+        $this->assertFileExists(base_path('lang/en.json'));
+
+        $content = file_get_contents(base_path('lang/en.json'));
+        $decoded = json_decode($content, true);
+
+        $this->assertIsArray($decoded, 'lang/en.json must be valid JSON');
+        $this->assertGreaterThan(100, count($decoded), 'lang/en.json should contain at least 100 translation keys');
     }
 }

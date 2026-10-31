@@ -25,7 +25,7 @@
     style="aspect-ratio: {{ $aspectRatio }};"
 >
     {{-- 1. MUX Stream Player --}}
-    @if(!empty($muxPlaybackId))
+    @if(($videoSource === 'mux' || empty($videoSource)) && !empty($muxPlaybackId))
         <mux-player 
             playback-id="{{ $muxPlaybackId }}" 
             stream-type="on-demand" 
@@ -94,11 +94,13 @@
         </div>
     @endif
 
+    @if(app(\App\Services\Cms\SettingsService::class)->get('dynamic_video_watermark', '1') === '1')
     {{-- Dynamic Floating Canvas Overlay (Anti Screen Recording) --}}
     <canvas 
         x-ref="watermarkCanvas" 
         class="absolute inset-0 w-full h-full pointer-events-none z-30 opacity-75"
     ></canvas>
+    @endif
 </div>
 
 <script>

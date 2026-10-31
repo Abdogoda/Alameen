@@ -10,8 +10,10 @@ use App\Models\Level;
 use App\Models\Role;
 use App\Models\Video;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class MuxWebhookAndLessonEditTest extends TestCase
@@ -116,6 +118,96 @@ class MuxWebhookAndLessonEditTest extends TestCase
             'video_id' => $this->video->id,
             'title_ar' => 'مهمة عملية: تقييم سقف الحلق',
         ]);
+    }
+
+    public function test_chunk_upload_with_video_id_immediately_persists_local_video_and_clears_mux(): void
+    {
+        Storage::fake('public');
+
+        $uploadId = 'chunk_test_'.uniqid();
+        $dummyChunk = UploadedFile::fake()->create('chunk.bin', 1024, 'application/octet-stream');
+
+        $response = $this->actingAs($this->admin, 'admin')
+            ->postJson(route('admin.courses.videos.chunk.upload', $this->course), [
+                'upload_id' => $uploadId,
+                'chunk_index' => 0,
+                'total_chunks' => 1,
+                'original_filename' => 'new_clinical_lesson.mp4',
+                'file_chunk' => $dummyChunk,
+                'video_id' => $this->video->id,
+            ]);
+
+        $response->assertOk()
+            ->assertJson([
+                'status' => 'completed',
+                'video_source' => 'local',
+            ]);
+
+        $this->video->refresh();
+        $this->assertEquals('local', $this->video->video_source);
+        $this->assertNotNull($this->video->video_url);
+        $this->assertNull($this->video->mux_playback_id);
+        $this->assertNull($this->video->mux_asset_id);
+        $this->assertNull($this->video->bunny_video_id);
+    }
+
+    public function test_update_lesson_with_chunked_tab_replaces_mux_with_local_even_if_stale_mux_id_passed(): void
+    {
+        // Video starts with Mux data
+        $this->video->update([
+            'video_source' => 'mux',
+            'mux_playback_id' => 'DS00Spx1CV902MCtP7ToneAwBpR00uoJq',
+            'video_url' => 'https://stream.mux.com/DS00Spx1CV902MCtP7ToneAwBpR00uoJq.m3u8',
+            'bunny_video_id' => 'sample-bunny-video-01',
+        ]);
+
+        $response = $this->actingAs($this->admin, 'admin')
+            ->put(route('admin.courses.videos.update', [$this->course, $this->video]), [
+                'level_id' => $this->level->id,
+                'title_ar' => 'الدرس الأول: تشريح وتدريب جهاز النطق المحدث',
+                'duration_minutes' => 35,
+                'min_completion_percentage' => 85,
+                'is_free_preview' => '1',
+                'upload_tab' => 'chunked',
+                'video_source' => 'local',
+                'video_url' => '/storage/videos/lessons/lesson_20261031_new.mp4',
+                'mux_playback_id' => 'DS00Spx1CV902MCtP7ToneAwBpR00uoJq', // Stale hidden input
+            ]);
+
+        $response->assertRedirect(route('admin.courses.show', $this->course));
+
+        $this->video->refresh();
+        $this->assertEquals('local', $this->video->video_source);
+        $this->assertEquals('/storage/videos/lessons/lesson_20261031_new.mp4', $this->video->video_url);
+        $this->assertNull($this->video->mux_playback_id);
+        $this->assertNull($this->video->mux_asset_id);
+        $this->assertNull($this->video->bunny_video_id);
+    }
+
+    public function test_update_lesson_with_keep_tab_preserves_existing_video_source(): void
+    {
+        $this->video->update([
+            'video_source' => 'mux',
+            'mux_playback_id' => 'keep_playback_123',
+            'video_url' => 'https://stream.mux.com/keep_playback_123.m3u8',
+        ]);
+
+        $response = $this->actingAs($this->admin, 'admin')
+            ->put(route('admin.courses.videos.update', [$this->course, $this->video]), [
+                'level_id' => $this->level->id,
+                'title_ar' => 'تعديل العنوان فقط',
+                'duration_minutes' => 40,
+                'upload_tab' => 'keep',
+                'video_source' => 'local', // Even if stale inputs are submitted
+                'video_url' => '/storage/different.mp4',
+            ]);
+
+        $response->assertRedirect(route('admin.courses.show', $this->course));
+
+        $this->video->refresh();
+        $this->assertEquals('تعديل العنوان فقط', $this->video->title_ar);
+        $this->assertEquals('mux', $this->video->video_source);
+        $this->assertEquals('keep_playback_123', $this->video->mux_playback_id);
     }
 
     public function test_mux_webhook_updates_video_on_asset_ready(): void

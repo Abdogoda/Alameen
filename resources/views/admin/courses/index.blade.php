@@ -106,7 +106,7 @@
                                     </span>
                                 @endif
                                 <span class="text-xs text-slate-400">•</span>
-                                <span class="text-xs text-slate-500 dark:text-slate-400 font-semibold">صلاحية {{ $course->access_duration_days }} يوم</span>
+                                <span class="text-xs text-slate-500 dark:text-slate-400 font-semibold">{{ __('صلاحية :days يوم', ['days' => $course->access_duration_days]) }}</span>
                             </div>
 
                             <h2 class="font-['Cairo'] font-extrabold text-lg sm:text-xl text-[#012383] dark:text-white leading-snug truncate" title="{{ $course->title_ar }}">
@@ -140,11 +140,11 @@
                         {{-- Price --}}
                         <div class="flex items-baseline gap-2">
                             <span class="text-base sm:text-lg font-black text-[#012383] dark:text-blue-400">
-                                {{ number_format($course->price) }} ج.م
+                                {{ number_format($course->price) }} {{ __('ج.م') }}
                             </span>
                             @if($course->original_price && $course->original_price > $course->price)
                                 <span class="text-xs text-slate-400 line-through">
-                                    {{ number_format($course->original_price) }} ج.م
+                                    {{ number_format($course->original_price) }} {{ __('ج.م') }}
                                 </span>
                             @endif
                         </div>
@@ -176,7 +176,9 @@
                             <form 
                                 action="{{ route('admin.courses.destroy', $course) }}" 
                                 method="POST" 
-                                onsubmit="return confirm('{{ __('هل أنت متأكد من رغبتك في حذف هذا الكورس وجميع مستوياته ودروسه نهائياً؟') }}')"
+                                data-confirm="{{ __('هل أنت متأكد من رغبتك في حذف هذا الكورس وجميع مستوياته ودروسه نهائياً؟') }}"
+                                data-confirm-title="{{ __('حذف الكورس التدريبي') }}"
+                                data-confirm-btn="{{ __('نعم، احذف الكورس') }}"
                                 class="w-full sm:w-auto"
                             >
                                 @csrf

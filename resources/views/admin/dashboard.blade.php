@@ -7,6 +7,9 @@
         $totalVideos = \App\Models\Video::count();
         $activeCourse = \App\Models\Course::withCount('videos')->first();
         $certificatesCount = \Illuminate\Support\Facades\Schema::hasTable('certificates') ? \App\Models\Certificate::count() : 0;
+        $totalAdmins = \App\Models\Admin::count();
+        $totalRoles = \App\Models\Role::count();
+        $recentAdmins = \App\Models\Admin::with('role')->take(4)->get();
         $adminName = auth('admin')->user()?->name ?? __('المسؤول العام');
     @endphp
 
@@ -334,6 +337,20 @@
                             <span class="text-xs text-[#0B2A8F] dark:text-blue-400 font-bold group-hover:translate-x-[-2px] rtl:group-hover:translate-x-[2px] transition-transform">←</span>
                         </a>
 
+                        <!-- Admins & Roles Action -->
+                        <a href="{{ route('admin.admins.index') }}" class="flex items-center justify-between p-3 rounded-xl border border-[#DEE8F7] dark:border-slate-800 hover:border-[#012383] hover:bg-[#EAF1FB]/40 dark:hover:bg-slate-800 transition-colors group">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <div class="size-9 rounded-lg bg-blue-50 dark:bg-slate-800 text-[#012383] dark:text-blue-400 flex items-center justify-center shrink-0">
+                                    <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                                </div>
+                                <div class="flex flex-col min-w-0">
+                                    <span class="font-bold text-xs text-[#012383] dark:text-blue-300 truncate">{{ __('إدارة المشرفين والأدوار') }}</span>
+                                    <span class="text-[10px] text-slate-400 truncate">{{ $totalAdmins }} {{ __('مشرفين') }} • {{ $totalRoles }} {{ __('أدوار معتمدة') }}</span>
+                                </div>
+                            </div>
+                            <span class="text-xs text-[#0B2A8F] dark:text-blue-400 font-bold group-hover:translate-x-[-2px] rtl:group-hover:translate-x-[2px] transition-transform">←</span>
+                        </a>
+
                         <!-- Platform Settings Action -->
                         <a href="{{ route('admin.settings.index') }}" class="flex items-center justify-between p-3 rounded-xl border border-[#DEE8F7] dark:border-slate-800 hover:border-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors group">
                             <div class="flex items-center gap-3 min-w-0">
@@ -362,6 +379,42 @@
                             <span class="text-xs text-slate-400 group-hover:translate-x-[-2px] rtl:group-hover:translate-x-[2px] transition-transform">↗</span>
                         </a>
 
+                    </div>
+                </div>
+
+                <!-- Team & Roles Quick Card -->
+                <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-2xl sm:rounded-3xl p-5 shadow-xs flex flex-col gap-3.5 min-w-0">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h5 class="text-xs font-bold text-slate-400 uppercase tracking-wider">{{ __('فريق العمل والمشرفين') }}</h5>
+                            <span class="text-sm font-black text-[#012383] dark:text-blue-400 block mt-0.5">{{ $totalAdmins }} {{ __('مشرفين نشطين') }}</span>
+                        </div>
+                        <a href="{{ route('admin.admins.create') }}" class="size-8 rounded-lg bg-blue-50 dark:bg-slate-800 text-[#012383] dark:text-blue-300 hover:bg-blue-100 flex items-center justify-center transition-colors" title="{{ __('إضافة مشرف جديد') }}">
+                            <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                        </a>
+                    </div>
+
+                    <div class="space-y-2 pt-1 border-t border-slate-100 dark:border-slate-800">
+                        @foreach ($recentAdmins as $adm)
+                            <div class="flex items-center justify-between text-xs py-1">
+                                <div class="flex items-center gap-2 min-w-0">
+                                    <div class="size-6 rounded-md bg-gradient-to-br from-[#012383] to-[#0B2A8F] text-white flex items-center justify-center font-bold text-[9px] shrink-0">
+                                        {{ $adm->initials() }}
+                                    </div>
+                                    <span class="font-bold text-slate-700 dark:text-slate-200 truncate">{{ $adm->name }}</span>
+                                </div>
+                                <span class="text-[10px] font-semibold text-slate-400 truncate max-w-[120px]">{{ $adm->role_name }}</span>
+                            </div>
+                        @endforeach
+                    </div>
+
+                    <div class="flex items-center justify-between gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+                        <a href="{{ route('admin.admins.index') }}" class="text-xs font-bold text-[#0B2A8F] dark:text-blue-400 hover:underline">
+                            {{ __('إدارة المشرفين') }} ←
+                        </a>
+                        <a href="{{ route('admin.roles.index') }}" class="text-xs font-bold text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
+                            {{ __('الأدوار (:count)', ['count' => $totalRoles]) }}
+                        </a>
                     </div>
                 </div>
 

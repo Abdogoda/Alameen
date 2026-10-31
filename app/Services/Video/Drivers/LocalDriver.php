@@ -34,6 +34,8 @@ class LocalDriver implements VideoDriverInterface
 
     public function handleUpload(UploadedFile $file): array
     {
+        Storage::disk($this->disk)->makeDirectory($this->path);
+
         $extension = $file->getClientOriginalExtension() ?: 'mp4';
         $filename = 'lesson_'.date('Ymd_His').'_'.Str::random(10).'.'.$extension;
 

@@ -105,7 +105,7 @@
                         name="title_ar" 
                         value="{{ old('title_ar') }}" 
                         required 
-                        placeholder="مثال: الدرس ٤: تمارين تقوية عضلات النطق وجلسات التدريب" 
+                        placeholder="{{ __('مثال: الدرس ٤: تمارين تقوية عضلات النطق وجلسات التدريب') }}" 
                         class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-sm font-bold text-[#012383] dark:text-white outline-none focus:border-[#0B2A8F] bg-slate-50/50 dark:bg-slate-800/50" 
                     />
                 </div>
@@ -609,12 +609,8 @@
             if (playUrl) {
                 document.getElementById('input-external-url').value = playUrl;
             }
-            if (result.mux_playback_id) {
-                document.getElementById('field-mux-playback-id').value = result.mux_playback_id;
-            }
-            if (result.mux_asset_id) {
-                document.getElementById('field-mux-asset-id').value = result.mux_asset_id;
-            }
+            document.getElementById('field-mux-playback-id').value = result.mux_playback_id || '';
+            document.getElementById('field-mux-asset-id').value = result.mux_asset_id || '';
 
             // Play video preview
             const player = document.getElementById('preview-player');

@@ -320,6 +320,20 @@ class CourseController extends Controller
             // Clean up temporary merged file
             @unlink($mergedFile->getRealPath());
 
+            // If a specific video is being edited, update it immediately in database so refresh keeps it
+            if (! empty($validated['video_id'])) {
+                $targetVideo = Video::where('course_id', $course->id)->find($validated['video_id']);
+                if ($targetVideo) {
+                    $targetVideo->update([
+                        'video_source' => $uploadResult['video_source'],
+                        'video_url' => $uploadResult['video_url'],
+                        'mux_playback_id' => $uploadResult['mux_playback_id'] ?? null,
+                        'mux_asset_id' => $uploadResult['mux_asset_id'] ?? null,
+                        'bunny_video_id' => null,
+                    ]);
+                }
+            }
+
             return response()->json([
                 'status' => 'completed',
                 'message' => $uploadResult['driver_used'] === 'mux'
@@ -425,9 +439,7 @@ class CourseController extends Controller
             $updateData['duration_seconds'] = ((int) $request->input('duration_minutes')) * 60;
         }
 
-        if (! empty($validated['video_source'])) {
-            $updateData['video_source'] = $validated['video_source'];
-        }
+        $uploadTab = $validated['upload_tab'] ?? null;
 
         if ($request->hasFile('video_file')) {
             $uploadResult = $this->videoManager->handleVideoUpload($request->file('video_file'));
@@ -435,16 +447,39 @@ class CourseController extends Controller
             $updateData['video_url'] = $uploadResult['video_url'];
             $updateData['mux_playback_id'] = $uploadResult['mux_playback_id'];
             $updateData['mux_asset_id'] = $uploadResult['mux_asset_id'];
-        } elseif (! empty($validated['mux_playback_id'])) {
+            $updateData['bunny_video_id'] = null;
+        } elseif ($uploadTab === 'chunked' || ($uploadTab === null && ($validated['video_source'] ?? '') === 'local')) {
+            $videoSource = $validated['video_source'] ?? 'local';
+            $updateData['video_source'] = $videoSource;
+            if ($videoSource === 'local') {
+                $updateData['video_url'] = $validated['video_url'] ?? $video->video_url;
+                $updateData['mux_playback_id'] = null;
+                $updateData['mux_asset_id'] = null;
+                $updateData['bunny_video_id'] = null;
+            } elseif ($videoSource === 'mux' && ! empty($validated['mux_playback_id'])) {
+                $updateData['mux_playback_id'] = trim($validated['mux_playback_id']);
+                $updateData['mux_asset_id'] = $validated['mux_asset_id'] ?? null;
+                $updateData['video_url'] = "https://stream.mux.com/{$updateData['mux_playback_id']}.m3u8";
+                $updateData['bunny_video_id'] = null;
+            }
+        } elseif ($uploadTab === 'link' || ($uploadTab === null && ! empty($validated['video_url']))) {
+            $videoUrl = $validated['video_url'] ?? '';
+            if (! empty($videoUrl)) {
+                $parsed = $this->videoManager->parseVideoInput($videoUrl);
+                $updateData['video_source'] = $parsed['video_source'];
+                $updateData['video_url'] = $parsed['video_url'];
+                $updateData['mux_playback_id'] = $parsed['mux_playback_id'];
+                $updateData['bunny_video_id'] = null;
+                if ($parsed['video_source'] !== 'mux') {
+                    $updateData['mux_asset_id'] = null;
+                }
+            }
+        } elseif ($uploadTab === null && ! empty($validated['mux_playback_id']) && ($validated['video_source'] ?? '') === 'mux') {
             $updateData['video_source'] = 'mux';
             $updateData['mux_playback_id'] = trim($validated['mux_playback_id']);
             $updateData['mux_asset_id'] = $validated['mux_asset_id'] ?? $video->mux_asset_id;
             $updateData['video_url'] = "https://stream.mux.com/{$updateData['mux_playback_id']}.m3u8";
-        } elseif (! empty($validated['video_url'])) {
-            $parsed = $this->videoManager->parseVideoInput($validated['video_url']);
-            $updateData['video_source'] = $parsed['video_source'];
-            $updateData['video_url'] = $parsed['video_url'];
-            $updateData['mux_playback_id'] = $parsed['mux_playback_id'];
+            $updateData['bunny_video_id'] = null;
         }
 
         $video->update($updateData);

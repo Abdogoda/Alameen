@@ -25,6 +25,7 @@ class UploadLessonChunkRequest extends FormRequest
             'total_chunks' => ['required', 'integer', 'min:1'],
             'original_filename' => ['required', 'string', 'max:255'],
             'file_chunk' => ['required', 'file'],
+            'video_id' => ['nullable', 'integer', 'exists:videos,id'],
         ];
     }
 }

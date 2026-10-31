@@ -10,10 +10,13 @@ use App\Models\Course;
 use App\Models\Level;
 use App\Models\Role;
 use App\Models\Video;
+use App\Services\Video\Contracts\VideoDriverInterface;
 use App\Services\Video\MuxVideoService;
+use App\Services\Video\VideoServiceManager;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class CourseManagementAndMuxTest extends TestCase
@@ -323,7 +326,7 @@ class CourseManagementAndMuxTest extends TestCase
 
         $result = $muxService->handleVideoUpload($fakeVideo);
 
-        $this->assertEquals('upload', $result['video_source']);
+        $this->assertEquals('local', $result['video_source']);
         $this->assertNotNull($result['video_url']);
         $this->assertNull($result['mux_playback_id']);
     }
@@ -526,5 +529,101 @@ class CourseManagementAndMuxTest extends TestCase
 
         $response3->assertRedirect();
         $this->assertDatabaseMissing('videos', ['id' => $v2->id]);
+    }
+
+    /**
+     * 14. Test admin can access dedicated separate page to add a new lesson.
+     */
+    public function test_admin_can_view_separate_create_lesson_page(): void
+    {
+        $level = Level::create([
+            'course_id' => $this->course->id,
+            'title_ar' => 'المستوى الأول',
+            'sort_order' => 1,
+        ]);
+
+        $response = $this->actingAs($this->admin, 'admin')
+            ->get(route('admin.courses.videos.create', [
+                'course' => $this->course,
+                'level_id' => $level->id,
+            ]));
+
+        $response->assertOk();
+        $response->assertSee($this->course->title_ar);
+        $response->assertSee('المستوى الأول');
+        $response->assertSee('رفع فيديو بالتجزئة المباشرة');
+        $response->assertSee('حفظ ونشر الدرس في المنهج');
+    }
+
+    /**
+     * 15. Test chunked video upload assembling, progress and processing fallback.
+     */
+    public function test_admin_can_upload_lesson_video_in_chunks_and_process(): void
+    {
+        Storage::fake('public');
+        Storage::fake('local');
+
+        $uploadId = 'test_upload_'.Str::random(12);
+        $part1 = UploadedFile::fake()->create('chunk_0.part', 500, 'application/octet-stream');
+        $part2 = UploadedFile::fake()->create('chunk_1.part', 500, 'application/octet-stream');
+
+        // Chunk 1 of 2
+        $response1 = $this->actingAs($this->admin, 'admin')
+            ->postJson(route('admin.courses.videos.chunk.upload', $this->course), [
+                'upload_id' => $uploadId,
+                'chunk_index' => 0,
+                'total_chunks' => 2,
+                'original_filename' => 'pediatric_session.mp4',
+                'file_chunk' => $part1,
+            ]);
+
+        $response1->assertOk();
+        $response1->assertJson([
+            'status' => 'chunk_received',
+            'chunk_index' => 0,
+            'total_chunks' => 2,
+        ]);
+
+        // Chunk 2 of 2 (completion)
+        $response2 = $this->actingAs($this->admin, 'admin')
+            ->postJson(route('admin.courses.videos.chunk.upload', $this->course), [
+                'upload_id' => $uploadId,
+                'chunk_index' => 1,
+                'total_chunks' => 2,
+                'original_filename' => 'pediatric_session.mp4',
+                'file_chunk' => $part2,
+            ]);
+
+        $response2->assertOk();
+        $response2->assertJson([
+            'status' => 'completed',
+            'video_source' => 'local',
+        ]);
+        $this->assertNotEmpty($response2->json('video_url'));
+    }
+
+    /**
+     * 16. Test VideoServiceManager driver abstraction and local fallback.
+     */
+    public function test_video_service_manager_driver_abstraction_and_local_fallback(): void
+    {
+        Storage::fake('public');
+
+        /** @var VideoServiceManager $manager */
+        $manager = app(VideoServiceManager::class);
+
+        $this->assertInstanceOf(VideoDriverInterface::class, $manager->driver('mux'));
+        $this->assertInstanceOf(VideoDriverInterface::class, $manager->driver('local'));
+
+        // When MUX is not configured, active driver falls back automatically to local
+        $activeDriver = $manager->getActiveDriver();
+        $this->assertEquals('local', $activeDriver->name());
+
+        $fakeFile = UploadedFile::fake()->create('speech_lesson.mp4', 1024, 'video/mp4');
+        $uploadResult = $manager->handleVideoUpload($fakeFile);
+
+        $this->assertEquals('local', $uploadResult['video_source']);
+        $this->assertEquals('local', $uploadResult['driver_used']);
+        $this->assertNotNull($uploadResult['video_url']);
     }
 }

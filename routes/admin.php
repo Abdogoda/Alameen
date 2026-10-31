@@ -54,7 +54,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::put('courses/{course}/levels/{level}', [CourseController::class, 'updateLevel'])->name('courses.levels.update');
         Route::delete('courses/{course}/levels/{level}', [CourseController::class, 'destroyLevel'])->name('courses.levels.destroy');
 
-        // Video & Lessons Management with MUX & Multi-Source Support
+        // Video & Lessons Management with Resilient Driver & Chunked Upload
+        Route::get('courses/{course}/lessons/create', [CourseController::class, 'createLesson'])->name('courses.videos.create');
+        Route::post('courses/{course}/lessons/upload-chunk', [CourseController::class, 'uploadLessonChunk'])->name('courses.videos.chunk.upload');
         Route::post('courses/{course}/videos', [CourseController::class, 'storeVideo'])->name('courses.videos.store');
         Route::post('courses/{course}/videos/bulk-settings', [CourseController::class, 'applyVideoSettings'])->name('courses.videos.settings.apply');
         Route::put('courses/{course}/videos/{video}', [CourseController::class, 'updateVideo'])->name('courses.videos.update');

@@ -32,10 +32,19 @@
                 <span>{{ __('إعدادات دروس الكورس') }}</span>
             </button>
 
+            {{-- Dedicated Page: Add Lesson Button --}}
+            <a 
+                href="{{ route('admin.courses.videos.create', $course) }}" 
+                class="group h-9 sm:h-11 px-3.5 sm:px-4 rounded-xl bg-gradient-to-r from-[#012383] to-[#0B2A8F] hover:from-[#0B2A8F] hover:to-[#012383] text-white font-bold text-xs flex items-center gap-1.5 transition-all shadow-sm hover:shadow-md cursor-pointer shrink-0"
+            >
+                <svg class="size-4 group-hover:rotate-90 group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+                <span>{{ __('إضافة درس جديد') }}</span>
+            </a>
+
             <button 
                 type="button" 
                 onclick="openModal('modal-add-level')" 
-                class="group relative h-9 sm:h-11 px-3.5 sm:px-5 rounded-xl bg-gradient-to-r from-[#012383] to-[#0B2A8F] hover:from-[#0B2A8F] hover:to-[#012383] text-white font-bold text-xs shadow-sm hover:shadow-lg hover:shadow-blue-900/30 active:scale-95 transition-all duration-200 flex items-center gap-1.5 sm:gap-2 cursor-pointer shrink-0"
+                class="group relative h-9 sm:h-11 px-3.5 sm:px-4 rounded-xl bg-white dark:bg-slate-800 border border-[#DEE8F7] dark:border-slate-700 hover:border-[#0B2A8F] text-slate-700 dark:text-slate-200 font-bold text-xs shadow-2xs hover:shadow-xs active:scale-95 transition-all duration-200 flex items-center gap-1.5 cursor-pointer shrink-0"
             >
                 <svg class="size-4 group-hover:rotate-90 group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
                 <span class="hidden xs:inline">{{ __('إضافة مستوى جديد') }}</span>
@@ -198,14 +207,13 @@
                                 </button>
                             @endif
 
-                            <button 
-                                type="button" 
-                                onclick="openAddLessonModal({{ $level->id }}, '{{ addslashes($level->title_ar) }}')" 
+                            <a 
+                                href="{{ route('admin.courses.videos.create', ['course' => $course, 'level_id' => $level->id]) }}" 
                                 class="group px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-[#0B2A8F] to-[#012383] hover:from-[#012383] hover:to-[#0B2A8F] text-white text-xs font-bold transition-all duration-200 shadow-xs hover:shadow-md hover:shadow-blue-900/25 active:scale-95 flex items-center gap-1.5 cursor-pointer"
                             >
                                 <svg class="size-3.5 group-hover:rotate-90 group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
                                 <span>{{ __('إضافة درس') }}</span>
-                            </button>
+                            </a>
 
                             <button 
                                 type="button" 
@@ -340,8 +348,15 @@
                                 </div>
                             </div>
                         @empty
-                            <div class="p-4 text-center text-xs text-slate-400 bg-white/60 dark:bg-slate-800/40 rounded-xl border border-dashed border-[#DEE8F7] dark:border-slate-700">
-                                {{ __('لا توجد دروس مضافة لهذا المستوى حتى الآن. اضغط على "+ إضافة درس" للبدء في رفع الدروس.') }}
+                            <div class="p-6 text-center text-xs text-slate-400 bg-white/60 dark:bg-slate-800/40 rounded-xl border border-dashed border-[#DEE8F7] dark:border-slate-700 flex flex-col items-center justify-center gap-2">
+                                <span>{{ __('لا توجد دروس مضافة لهذا المستوى حتى الآن.') }}</span>
+                                <a 
+                                    href="{{ route('admin.courses.videos.create', ['course' => $course, 'level_id' => $level->id]) }}" 
+                                    class="px-3.5 py-1.5 rounded-lg bg-[#012383] text-white font-bold text-xs hover:bg-[#0B2A8F] transition-all flex items-center gap-1.5 shadow-2xs cursor-pointer"
+                                >
+                                    <svg class="size-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+                                    <span>{{ __('إضافة الدرس الأول لهذا المستوى') }}</span>
+                                </a>
                             </div>
                         @endforelse
                     </div>
@@ -412,129 +427,6 @@
     </div>
 
     <x-slot:modals>
-        <!-- Modal 1: Add New Lesson (MUX or Link) -->
-        <div id="modal-add-lesson" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 modal-hidden">
-            <div class="modal-content bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl max-w-xl w-full p-5 sm:p-7 flex flex-col gap-4 sm:gap-5 shadow-2xl border border-[#DEE8F7] dark:border-slate-800 max-h-[90dvh] overflow-y-auto">
-                <div class="flex items-center justify-between border-b border-[#DEE8F7] dark:border-slate-800 pb-3.5">
-                    <div>
-                        <h3 class="font-['Baloo_Bhaijaan_2'] font-bold text-lg sm:text-xl text-[#012383] dark:text-white">{{ __('إضافة درس جديد') }}</h3>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                            {{ __('المستوى المستهدف:') }} <span id="add-lesson-level-label" class="font-bold text-[#0B2A8F] dark:text-blue-400"></span>
-                        </p>
-                    </div>
-                    <button type="button" onclick="closeModal('modal-add-lesson')" class="p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer">
-                        <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                    </button>
-                </div>
-
-                <form action="{{ route('admin.courses.videos.store', $course) }}" method="POST" enctype="multipart/form-data" class="flex flex-col gap-4">
-                    @csrf
-                    <input type="hidden" name="level_id" id="add-lesson-level-id" value="" />
-
-                    <div>
-                        <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">{{ __('عنوان الدرس:') }} <span class="text-rose-500">*</span></label>
-                        <input type="text" name="title_ar" required placeholder="مثال: الدرس ٤: تمارين تقوية عضلات النطق" class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-sm font-bold text-[#012383] dark:text-white outline-none focus:border-[#0B2A8F] bg-slate-50/50 dark:bg-slate-800/50" />
-                    </div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <div>
-                            <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">{{ __('مدة الدرس (بالدقائق):') }} <span class="text-rose-500">*</span></label>
-                            <input type="number" name="duration_minutes" required min="1" max="300" value="20" class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-sm font-bold text-slate-700 dark:text-slate-200 outline-none focus:border-[#0B2A8F] bg-slate-50/50 dark:bg-slate-800/50" />
-                        </div>
-                        <div>
-                            <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">{{ __('نسبة إكمال المشاهدة المطلوبة (%):') }}</label>
-                            <input type="number" name="min_completion_percentage" min="1" max="100" value="80" class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-sm font-bold text-slate-700 dark:text-slate-200 outline-none focus:border-[#0B2A8F] bg-slate-50/50 dark:bg-slate-800/50" />
-                        </div>
-                    </div>
-
-                    {{-- Video Source Tabs (Upload to MUX vs Direct Link) --}}
-                    <div class="p-3.5 rounded-2xl bg-blue-50/60 dark:bg-slate-800/60 border border-[#DEE8F7] dark:border-slate-700 space-y-3" x-data="{ sourceMode: 'mux_upload' }">
-                        <div class="flex items-center justify-between">
-                            <label class="text-xs font-bold text-[#012383] dark:text-blue-400 block flex items-center gap-1.5">
-                                <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
-                                <span>{{ __('مصدر فيديو الدرس (رفع عبر MUX أو عبر رابط):') }}</span>
-                            </label>
-                            
-                            {{-- Toggle pill --}}
-                            <div class="flex items-center gap-1 bg-white dark:bg-slate-900 p-1 rounded-xl border border-[#DEE8F7] dark:border-slate-700">
-                                <button 
-                                    type="button" 
-                                    @click="sourceMode = 'mux_upload'" 
-                                    :class="sourceMode === 'mux_upload' ? 'bg-[#012383] text-white shadow-xs' : 'text-slate-600 dark:text-slate-300 hover:text-[#012383]'" 
-                                    class="px-2.5 py-1 text-[11px] font-bold rounded-lg transition-all cursor-pointer"
-                                >
-                                    {{ __('رفع إلى MUX') }}
-                                </button>
-                                <button 
-                                    type="button" 
-                                    @click="sourceMode = 'link'" 
-                                    :class="sourceMode === 'link' ? 'bg-[#012383] text-white shadow-xs' : 'text-slate-600 dark:text-slate-300 hover:text-[#012383]'" 
-                                    class="px-2.5 py-1 text-[11px] font-bold rounded-lg transition-all cursor-pointer"
-                                >
-                                    {{ __('عبر رابط / Mux ID') }}
-                                </button>
-                            </div>
-                        </div>
-
-                        {{-- Mode 1: File upload to MUX --}}
-                        <div x-show="sourceMode === 'mux_upload'" class="space-y-1.5">
-                            <span class="text-[11px] text-slate-500 font-medium block">
-                                {{ __('اختر ملف فيديو الدرس من جهازك ليتم رفعه مباشرة عبر المنصة ومعالجته على منصة MUX:') }}
-                            </span>
-                            <input 
-                                type="file" 
-                                name="video_file" 
-                                accept="video/mp4,video/quicktime,video/webm" 
-                                class="w-full text-xs text-slate-500 file:mr-2 file:py-2 file:px-3.5 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-[#012383] file:text-white hover:file:bg-[#0B2A8F] cursor-pointer" 
-                            />
-                        </div>
-
-                        {{-- Mode 2: Link or Mux Playback ID --}}
-                        <div x-show="sourceMode === 'link'" class="space-y-1.5" style="display: none;">
-                            <span class="text-[11px] text-slate-500 font-medium block">
-                                {{ __('أدخل معرّف بث MUX (Playback ID) أو رابط Mux .m3u8 أو YouTube أو Vimeo:') }}
-                            </span>
-                            <input 
-                                type="text" 
-                                name="video_url" 
-                                placeholder="مثال: https://stream.mux.com/XXXXX.m3u8 أو معرّف MUX أو رابط YouTube" 
-                                class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-mono text-slate-700 dark:text-slate-200 outline-none focus:border-[#0B2A8F] bg-white dark:bg-slate-800" 
-                            />
-                        </div>
-                    </div>
-
-                    {{-- Attached Clinical Task --}}
-                    <div class="border-t border-[#DEE8F7] dark:border-slate-800 pt-3">
-                        <label class="text-xs font-bold text-[#012383] dark:text-blue-400 block mb-1">
-                            {{ __('المهمة السريرية الملحقة بالدرس (تفتح بعد إتمام المشاهدة):') }}
-                        </label>
-                        <input 
-                            type="text" 
-                            name="task_title_ar" 
-                            placeholder="عنوان المهمة (مثال: إعداد خطة تمارين عملية وتقييم مخارج الحروف)" 
-                            class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200 outline-none focus:border-[#0B2A8F] bg-slate-50/50 dark:bg-slate-800/50" 
-                        />
-                    </div>
-
-                    <div class="flex items-center gap-2">
-                        <input type="checkbox" name="is_free_preview" id="new-lesson-preview" value="1" class="size-4 rounded border-slate-300 text-[#012383] focus:ring-[#012383] cursor-pointer" />
-                        <label for="new-lesson-preview" class="text-xs font-medium text-slate-600 dark:text-slate-300 cursor-pointer">
-                            {{ __('إتاحة هذا الدرس كمعاينة مجانية للزوار قبل الاشتراك') }}
-                        </label>
-                    </div>
-
-                    <div class="flex flex-col-reverse sm:flex-row items-center justify-end gap-2 pt-2 border-t border-[#DEE8F7] dark:border-slate-800">
-                        <button type="button" onclick="closeModal('modal-add-lesson')" class="w-full sm:w-auto px-4 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold text-xs cursor-pointer">
-                            {{ __('إلغاء') }}
-                        </button>
-                        <button type="submit" class="w-full sm:w-auto px-6 h-10 rounded-xl bg-[#012383] hover:bg-[#0B2A8F] text-white font-bold text-xs shadow-sm cursor-pointer">
-                            {{ __('حفظ وإضافة الدرس') }}
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
         <!-- Modal 2: Edit Lesson -->
         <div id="modal-edit-lesson" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 modal-hidden">
             <div class="modal-content bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl max-w-xl w-full p-5 sm:p-7 flex flex-col gap-4 shadow-2xl border border-[#DEE8F7] dark:border-slate-800 max-h-[90dvh] overflow-y-auto">
@@ -969,12 +861,6 @@
                     document.documentElement.style.overflow = '';
                 }
             }
-        }
-
-        function openAddLessonModal(levelId, levelTitle) {
-            document.getElementById('add-lesson-level-id').value = levelId;
-            document.getElementById('add-lesson-level-label').textContent = levelTitle;
-            openModal('modal-add-lesson');
         }
 
         function openEditLevelModal(levelId, title, desc, sortOrder) {

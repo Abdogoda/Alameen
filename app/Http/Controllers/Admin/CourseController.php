@@ -9,7 +9,9 @@ use App\Models\ClinicalTask;
 use App\Models\Course;
 use App\Models\Level;
 use App\Models\Video;
+use App\Services\Video\ChunkedUploadService;
 use App\Services\Video\MuxVideoService;
+use App\Services\Video\VideoServiceManager;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -20,6 +22,8 @@ use Illuminate\View\View;
 class CourseController extends Controller
 {
     public function __construct(
+        protected VideoServiceManager $videoManager,
+        protected ChunkedUploadService $chunkedUploadService,
         protected MuxVideoService $muxService
     ) {}
 
@@ -244,6 +248,91 @@ class CourseController extends Controller
     /**
      * Store a video/lesson inside a level or course with MUX or direct link.
      */
+    /**
+     * Show dedicated page to add a new lesson to a course.
+     */
+    public function createLesson(Request $request, Course $course): View
+    {
+        $course->load('levels');
+        $selectedLevelId = $request->query('level_id');
+        $activeDriver = $this->videoManager->getActiveDriver();
+        $isMuxConfigured = $this->videoManager->isMuxConfigured();
+
+        return view('admin.courses.lessons.create', [
+            'course' => $course,
+            'selectedLevelId' => $selectedLevelId ? (int) $selectedLevelId : null,
+            'activeDriverName' => $activeDriver->name(),
+            'activeDriverTitle' => $activeDriver->title(),
+            'isMuxConfigured' => $isMuxConfigured,
+        ]);
+    }
+
+    /**
+     * Handle asynchronous chunked video file upload with real-time progress and resilient processing.
+     */
+    public function uploadLessonChunk(Request $request, Course $course): JsonResponse
+    {
+        $validated = $request->validate([
+            'upload_id' => ['required', 'string', 'max:100'],
+            'chunk_index' => ['required', 'integer', 'min:0'],
+            'total_chunks' => ['required', 'integer', 'min:1'],
+            'original_filename' => ['required', 'string', 'max:255'],
+            'file_chunk' => ['required', 'file'],
+        ]);
+
+        $uploadId = $this->chunkedUploadService->sanitizeUploadId($validated['upload_id']);
+        $chunkIndex = (int) $validated['chunk_index'];
+        $totalChunks = (int) $validated['total_chunks'];
+        $originalFilename = $validated['original_filename'];
+
+        // 1. Save this chunk
+        $this->chunkedUploadService->saveChunk($uploadId, $chunkIndex, $request->file('file_chunk'));
+
+        // 2. Check if all chunks have arrived
+        if (! $this->chunkedUploadService->isComplete($uploadId, $totalChunks)) {
+            return response()->json([
+                'status' => 'chunk_received',
+                'chunk_index' => $chunkIndex,
+                'total_chunks' => $totalChunks,
+                'progress_percentage' => round((($chunkIndex + 1) / $totalChunks) * 100, 1),
+            ]);
+        }
+
+        // 3. All chunks received -> Merge & Process video file
+        try {
+            $mergedFile = $this->chunkedUploadService->mergeChunks($uploadId, $totalChunks, $originalFilename);
+
+            // Resilient upload: tries configured default driver (e.g. MUX), falls back to local server storage
+            $uploadResult = $this->videoManager->handleVideoUpload($mergedFile);
+
+            // Clean up temporary merged file
+            @unlink($mergedFile->getRealPath());
+
+            return response()->json([
+                'status' => 'completed',
+                'message' => $uploadResult['driver_used'] === 'mux'
+                    ? __('تمت معالجة وتهيئة الفيديو بنجاح عبر MUX.')
+                    : __('تم حفظ ومعالجة الفيديو بنجاح على سيرفر المنصة المحلي.'),
+                'driver_used' => $uploadResult['driver_used'],
+                'video_source' => $uploadResult['video_source'],
+                'video_url' => $uploadResult['video_url'],
+                'mux_playback_id' => $uploadResult['mux_playback_id'] ?? null,
+                'mux_asset_id' => $uploadResult['mux_asset_id'] ?? null,
+                'original_filename' => $originalFilename,
+            ]);
+        } catch (\Throwable $e) {
+            $this->chunkedUploadService->cleanup($uploadId);
+
+            return response()->json([
+                'status' => 'error',
+                'message' => __('حدث خطأ أثناء معالجة وتجميع ملف الفيديو: :error', ['error' => $e->getMessage()]),
+            ], 500);
+        }
+    }
+
+    /**
+     * Store a newly created lesson/video in storage.
+     */
     public function storeVideo(Request $request, Course $course): RedirectResponse
     {
         $validated = $request->validate([
@@ -256,9 +345,11 @@ class CourseController extends Controller
             'sort_order' => ['nullable', 'integer', 'min:1'],
             'is_free_preview' => ['nullable', 'boolean'],
             // Video sources
-            'video_source_type' => ['nullable', 'string', 'in:mux_upload,link,mux_playback_id,bunny'],
+            'video_source' => ['nullable', 'string', 'max:50'],
+            'video_source_type' => ['nullable', 'string', 'in:mux_upload,link,mux_playback_id,bunny,local'],
             'video_url' => ['nullable', 'string', 'max:1000'],
             'mux_playback_id' => ['nullable', 'string', 'max:255'],
+            'mux_asset_id' => ['nullable', 'string', 'max:255'],
             'video_file' => ['nullable', 'file', 'mimetypes:video/mp4,video/quicktime,video/webm,video/x-matroska', 'max:1048576'],
             // Attached Clinical Task
             'task_title_ar' => ['nullable', 'string', 'max:255'],
@@ -273,20 +364,20 @@ class CourseController extends Controller
             'level_id' => $validated['level_id'] ?? null,
             'title_ar' => $validated['title_ar'],
             'title_en' => $validated['title_en'] ?? null,
-            'slug' => Str::slug($validated['title_en'] ?: 'video-'.Str::random(6)),
+            'slug' => Str::slug($validated['title_en'] ?: 'lesson-'.Str::random(6)),
             'duration_seconds' => $durationSeconds,
             'min_completion_percentage' => (int) ($validated['min_completion_percentage'] ?? 80),
             'sort_order' => $validated['sort_order'] ?? (($course->videos()->max('sort_order') ?? 0) + 1),
             'is_free_preview' => $request->boolean('is_free_preview', false),
-            'video_source' => 'link',
-            'video_url' => null,
-            'mux_playback_id' => null,
-            'mux_asset_id' => null,
+            'video_source' => $validated['video_source'] ?? 'link',
+            'video_url' => $validated['video_url'] ?? null,
+            'mux_playback_id' => $validated['mux_playback_id'] ?? null,
+            'mux_asset_id' => $validated['mux_asset_id'] ?? null,
         ];
 
-        // 1. Video file uploaded to MUX
+        // 1. Direct standard video file upload fallback
         if ($request->hasFile('video_file')) {
-            $uploadResult = $this->muxService->handleVideoUpload($request->file('video_file'));
+            $uploadResult = $this->videoManager->handleVideoUpload($request->file('video_file'));
             $videoData['video_source'] = $uploadResult['video_source'];
             $videoData['video_url'] = $uploadResult['video_url'];
             $videoData['mux_playback_id'] = $uploadResult['mux_playback_id'];
@@ -295,8 +386,8 @@ class CourseController extends Controller
             $videoData['video_source'] = 'mux';
             $videoData['mux_playback_id'] = trim($validated['mux_playback_id']);
             $videoData['video_url'] = "https://stream.mux.com/{$videoData['mux_playback_id']}.m3u8";
-        } elseif (! empty($validated['video_url'])) {
-            $parsed = $this->muxService->parseVideoInput($validated['video_url']);
+        } elseif (! empty($validated['video_url']) && empty($validated['video_source'])) {
+            $parsed = $this->videoManager->parseVideoInput($validated['video_url']);
             $videoData['video_source'] = $parsed['video_source'];
             $videoData['video_url'] = $parsed['video_url'];
             $videoData['mux_playback_id'] = $parsed['mux_playback_id'];
@@ -316,7 +407,7 @@ class CourseController extends Controller
             ]);
         }
 
-        return back()->with('success', __('تمت إضافة الدرس بنجاح إلى المنهج.'));
+        return redirect()->route('admin.courses.show', $course)->with('success', __('تمت إضافة الدرس بنجاح إلى المنهج.'));
     }
 
     /**
@@ -353,7 +444,7 @@ class CourseController extends Controller
         }
 
         if ($request->hasFile('video_file')) {
-            $uploadResult = $this->muxService->handleVideoUpload($request->file('video_file'));
+            $uploadResult = $this->videoManager->handleVideoUpload($request->file('video_file'));
             $updateData['video_source'] = $uploadResult['video_source'];
             $updateData['video_url'] = $uploadResult['video_url'];
             $updateData['mux_playback_id'] = $uploadResult['mux_playback_id'];
@@ -363,7 +454,7 @@ class CourseController extends Controller
             $updateData['mux_playback_id'] = trim($validated['mux_playback_id']);
             $updateData['video_url'] = "https://stream.mux.com/{$updateData['mux_playback_id']}.m3u8";
         } elseif (! empty($validated['video_url'])) {
-            $parsed = $this->muxService->parseVideoInput($validated['video_url']);
+            $parsed = $this->videoManager->parseVideoInput($validated['video_url']);
             $updateData['video_source'] = $parsed['video_source'];
             $updateData['video_url'] = $parsed['video_url'];
             $updateData['mux_playback_id'] = $parsed['mux_playback_id'];

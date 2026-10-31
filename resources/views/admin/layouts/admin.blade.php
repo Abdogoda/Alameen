@@ -198,8 +198,8 @@
             <!-- ============================================== -->
             <main class="flex-1 flex flex-col min-w-0 bg-[#F8FAFC] dark:bg-[#0B1120]">
                 
-                <!-- Top Admin Header (Always Sticky at Top) -->
-                <header class="admin-sticky-header min-h-16 sm:min-h-20 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-[#DEE8F7] dark:border-slate-800 px-3 sm:px-6 lg:px-8 flex items-center justify-between gap-2 sm:gap-4 sticky top-0 z-40 shadow-xs">
+                <!-- Top Admin Header (Clean Sticky Topbar: No Page Titles or Action Buttons) -->
+                <header class="admin-sticky-header h-14 sm:h-16 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-[#DEE8F7] dark:border-slate-800 px-3 sm:px-6 lg:px-8 flex items-center justify-between gap-3 sticky top-0 z-40 shadow-2xs">
                     
                     <div class="flex items-center gap-2 sm:gap-3 min-w-0">
                         <button
@@ -210,26 +210,10 @@
                         >
                             <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
                         </button>
-                        
-                        <div class="min-w-0">
-                            <h2 class="font-['Baloo_Bhaijaan_2'] font-bold text-sm sm:text-base md:text-xl text-[#012383] dark:text-white leading-tight truncate">
-                                {{ $title ?? __('لوحة التحكم والإشراف الأكاديمي') }}
-                            </h2>
-                            <p class="text-[11px] text-slate-500 dark:text-slate-400 hidden md:block truncate">
-                                {{ $description ?? __('إدارة شاملة لبرنامج التخاطب، المشتركين، والموافقات المالية') }}
-                            </p>
-                        </div>
                     </div>
 
-                    <!-- Left: Admin Status & Profile Badge -->
+                    <!-- Left: Admin Status & Profile Badge (No action buttons or page titles) -->
                     <div class="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
-                        
-                        @if (isset($actions))
-                            <div class="flex items-center gap-1.5 sm:gap-2">
-                                {{ $actions }}
-                            </div>
-                        @endif
-
                         <!-- Theme Switcher for Admin (Light / Dark / Device) -->
                         <x-admin::theme-switcher />
 
@@ -264,15 +248,39 @@
                     </div>
                 </header>
 
-                <!-- Page Content Area -->
+                <!-- Page Content Area with Dedicated Responsive Page Header -->
                 <div class="{{ $contentClass }}">
+                    @if(isset($title) || isset($actions))
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 pb-2">
+                            @if(isset($title))
+                                <div class="min-w-0">
+                                    <h1 class="font-['Baloo_Bhaijaan_2'] font-bold text-xl sm:text-2xl text-[#012383] dark:text-white leading-tight">
+                                        {{ $title }}
+                                    </h1>
+                                    @if(isset($description))
+                                        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
+                                            {{ $description }}
+                                        </p>
+                                    @endif
+                                </div>
+                            @endif
+
+                            @if(isset($actions))
+                                <div class="flex items-center gap-2 flex-wrap shrink-0 w-full sm:w-auto">
+                                    {{ $actions }}
+                                </div>
+                            @endif
+                        </div>
+                    @endif
+
                     {{ $slot }}
                 </div>
-
-                {{ $modals ?? '' }}
             </main>
 
         </div>
+
+        {{-- Global Modals Container (Rendered directly under body to guarantee absolute viewport centering) --}}
+        {{ $modals ?? '' }}
 
         @persist('toast')
             <flux:toast.group>

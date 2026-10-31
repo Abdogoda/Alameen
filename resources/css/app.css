@@ -53,13 +53,13 @@
     --color-accent-foreground: #ffffff;
 }
 
-/* Ensure buttons on dark/navy backgrounds have pure white text */
-button[class*="bg-[#012383]"],
-button[class*="bg-[#0B2A8F]"],
-button[class*="bg-[#0b2a8f]"],
-a[class*="bg-[#012383]"],
-a[class*="bg-[#0B2A8F]"],
-a[class*="bg-[#0b2a8f]"],
+/* Ensure buttons on dark/navy backgrounds have pure white text (excluding light background buttons) */
+button[class*="bg-[#012383]"]:not([class*="bg-blue-"]):not([class*="bg-white"]):not([class*="bg-slate-"]),
+button[class*="bg-[#0B2A8F]"]:not([class*="bg-blue-"]):not([class*="bg-white"]):not([class*="bg-slate-"]),
+button[class*="bg-[#0b2a8f]"]:not([class*="bg-blue-"]):not([class*="bg-white"]):not([class*="bg-slate-"]),
+a[class*="bg-[#012383]"]:not([class*="bg-blue-"]):not([class*="bg-white"]):not([class*="bg-slate-"]),
+a[class*="bg-[#0B2A8F]"]:not([class*="bg-blue-"]):not([class*="bg-white"]):not([class*="bg-slate-"]),
+a[class*="bg-[#0b2a8f]"]:not([class*="bg-blue-"]):not([class*="bg-white"]):not([class*="bg-slate-"]),
 button.text-white,
 a.text-white {
     color: #ffffff !important;
@@ -275,6 +275,52 @@ html.dark textarea::placeholder {
 }
 
 /* Modals & Dialogs */
+.modal-backdrop {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    background-color: rgba(15, 23, 42, 0.65) !important;
+    backdrop-filter: blur(4px) !important;
+    -webkit-backdrop-filter: blur(4px) !important;
+    z-index: 99999 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 1rem !important;
+    overflow: hidden !important;
+    overscroll-behavior: contain !important;
+}
+
+.modal-backdrop.modal-hidden,
+.modal-hidden {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
+
+.modal-backdrop .modal-content {
+    position: relative !important;
+    max-height: calc(100dvh - 2.5rem) !important;
+    max-height: calc(100vh - 2.5rem) !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain !important;
+    -webkit-overflow-scrolling: touch !important;
+    margin: auto !important;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.45) !important;
+}
+
+/* Page Scroll Lock when Modal is Active */
+html.modal-open,
+body.modal-open {
+    overflow: hidden !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    touch-action: none !important;
+}
+
 html.dark .modal-content,
 html.dark [id^="modal-"] .bg-white {
     background-color: #131D31 !important;

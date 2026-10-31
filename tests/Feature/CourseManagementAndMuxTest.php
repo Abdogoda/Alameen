@@ -72,8 +72,8 @@ class CourseManagementAndMuxTest extends TestCase
         $response->assertOk();
         $response->assertSee('دليل وإدارة الكورسات التدريبية');
         $response->assertSee($this->course->title_ar);
-        $response->assertSee('عرض المنهج والمستويات (View Page)');
-        $response->assertSee('تعديل بيانات الكورس (Edit Page)');
+        $response->assertSee('عرض المنهج والمستويات');
+        $response->assertSee('تعديل بيانات الكورس');
         $response->assertSee('إضافة كورس جديد');
     }
 
@@ -326,5 +326,205 @@ class CourseManagementAndMuxTest extends TestCase
         $this->assertEquals('upload', $result['video_source']);
         $this->assertNotNull($result['video_url']);
         $this->assertNull($result['mux_playback_id']);
+    }
+
+    /**
+     * 10. Test specific video settings update (completion % and free preview).
+     */
+    public function test_admin_can_update_specific_video_settings(): void
+    {
+        $level = Level::create([
+            'course_id' => $this->course->id,
+            'title_ar' => 'المستوى الأول',
+            'sort_order' => 1,
+        ]);
+
+        $video = Video::create([
+            'course_id' => $this->course->id,
+            'level_id' => $level->id,
+            'title_ar' => 'درس سريري تمهيدي',
+            'slug' => 'intro-clinical-lesson',
+            'duration_seconds' => 1800,
+            'video_source' => 'link',
+            'video_url' => 'https://example.com/stream.m3u8',
+            'min_completion_percentage' => 80,
+            'is_free_preview' => false,
+            'sort_order' => 1,
+        ]);
+
+        $response = $this->actingAs($this->admin, 'admin')
+            ->put(route('admin.courses.videos.update', [$this->course, $video]), [
+                'title_ar' => 'درس سريري تمهيدي محدث',
+                'duration_minutes' => 30,
+                'min_completion_percentage' => 90,
+                'is_free_preview' => 1,
+                'level_id' => $level->id,
+                'video_url' => 'https://example.com/stream.m3u8',
+            ]);
+
+        $response->assertRedirect();
+        $video->refresh();
+
+        $this->assertEquals(90, $video->min_completion_percentage);
+        $this->assertTrue($video->is_free_preview);
+    }
+
+    /**
+     * 11. Test course-wide video settings application.
+     */
+    public function test_admin_can_apply_course_wide_video_settings(): void
+    {
+        $level = Level::create([
+            'course_id' => $this->course->id,
+            'title_ar' => 'المستوى الشامل',
+            'sort_order' => 1,
+        ]);
+
+        $v1 = Video::create([
+            'course_id' => $this->course->id,
+            'level_id' => $level->id,
+            'title_ar' => 'فيديو ١',
+            'slug' => 'video-1-course',
+            'duration_seconds' => 600,
+            'min_completion_percentage' => 80,
+            'is_free_preview' => false,
+            'sort_order' => 1,
+        ]);
+
+        $v2 = Video::create([
+            'course_id' => $this->course->id,
+            'level_id' => $level->id,
+            'title_ar' => 'فيديو ٢',
+            'slug' => 'video-2-course',
+            'duration_seconds' => 600,
+            'min_completion_percentage' => 80,
+            'is_free_preview' => true,
+            'sort_order' => 2,
+        ]);
+
+        $response = $this->actingAs($this->admin, 'admin')
+            ->post(route('admin.courses.videos.settings.apply', $this->course), [
+                'scope' => 'course',
+                'min_completion_percentage' => 85,
+                'free_preview_policy' => 'first_only',
+            ]);
+
+        $response->assertRedirect();
+        $v1->refresh();
+        $v2->refresh();
+
+        $this->assertEquals(85, $v1->min_completion_percentage);
+        $this->assertEquals(85, $v2->min_completion_percentage);
+        $this->assertTrue($v1->is_free_preview);
+        $this->assertFalse($v2->is_free_preview);
+    }
+
+    /**
+     * 12. Test level-wide video settings application.
+     */
+    public function test_admin_can_apply_level_wide_video_settings(): void
+    {
+        $lvl1 = Level::create(['course_id' => $this->course->id, 'title_ar' => 'مستوى ١', 'sort_order' => 1]);
+        $lvl2 = Level::create(['course_id' => $this->course->id, 'title_ar' => 'مستوى ٢', 'sort_order' => 2]);
+
+        $v1 = Video::create([
+            'course_id' => $this->course->id,
+            'level_id' => $lvl1->id,
+            'title_ar' => 'فيديو مستوى ١',
+            'slug' => 'video-lvl1',
+            'duration_seconds' => 600,
+            'min_completion_percentage' => 80,
+            'is_free_preview' => false,
+            'sort_order' => 1,
+        ]);
+
+        $v2 = Video::create([
+            'course_id' => $this->course->id,
+            'level_id' => $lvl2->id,
+            'title_ar' => 'فيديو مستوى ٢',
+            'slug' => 'video-lvl2',
+            'duration_seconds' => 600,
+            'min_completion_percentage' => 80,
+            'is_free_preview' => false,
+            'sort_order' => 1,
+        ]);
+
+        $response = $this->actingAs($this->admin, 'admin')
+            ->post(route('admin.courses.videos.settings.apply', $this->course), [
+                'scope' => 'level',
+                'level_id' => $lvl1->id,
+                'min_completion_percentage' => 95,
+                'free_preview_policy' => 'enable_all',
+            ]);
+
+        $response->assertRedirect();
+        $v1->refresh();
+        $v2->refresh();
+
+        // Level 1 updated
+        $this->assertEquals(95, $v1->min_completion_percentage);
+        $this->assertTrue($v1->is_free_preview);
+
+        // Level 2 intact
+        $this->assertEquals(80, $v2->min_completion_percentage);
+        $this->assertFalse($v2->is_free_preview);
+    }
+
+    /**
+     * 13. Test bulk selection video settings, move, and delete.
+     */
+    public function test_admin_can_bulk_update_move_and_delete_videos(): void
+    {
+        $lvl1 = Level::create(['course_id' => $this->course->id, 'title_ar' => 'مستوى أ', 'sort_order' => 1]);
+        $lvl2 = Level::create(['course_id' => $this->course->id, 'title_ar' => 'مستوى ب', 'sort_order' => 2]);
+
+        $v1 = Video::create(['course_id' => $this->course->id, 'level_id' => $lvl1->id, 'title_ar' => 'درس أ١', 'slug' => 'lesson-a1', 'duration_seconds' => 600, 'min_completion_percentage' => 80, 'sort_order' => 1]);
+        $v2 = Video::create(['course_id' => $this->course->id, 'level_id' => $lvl1->id, 'title_ar' => 'درس أ٢', 'slug' => 'lesson-a2', 'duration_seconds' => 600, 'min_completion_percentage' => 80, 'sort_order' => 2]);
+        $v3 = Video::create(['course_id' => $this->course->id, 'level_id' => $lvl1->id, 'title_ar' => 'درس أ٣', 'slug' => 'lesson-a3', 'duration_seconds' => 600, 'min_completion_percentage' => 80, 'sort_order' => 3]);
+
+        // Bulk update settings for v1 and v2
+        $response1 = $this->actingAs($this->admin, 'admin')
+            ->post(route('admin.courses.videos.settings.apply', $this->course), [
+                'scope' => 'bulk',
+                'video_ids' => [$v1->id, $v2->id],
+                'min_completion_percentage' => 70,
+                'free_preview_policy' => 'enable_all',
+            ]);
+
+        $response1->assertRedirect();
+        $v1->refresh();
+        $v2->refresh();
+        $v3->refresh();
+
+        $this->assertEquals(70, $v1->min_completion_percentage);
+        $this->assertEquals(70, $v2->min_completion_percentage);
+        $this->assertEquals(80, $v3->min_completion_percentage);
+        $this->assertTrue($v1->is_free_preview);
+        $this->assertTrue($v2->is_free_preview);
+        $this->assertFalse($v3->is_free_preview);
+
+        // Bulk move v1 to lvl2
+        $response2 = $this->actingAs($this->admin, 'admin')
+            ->post(route('admin.courses.videos.settings.apply', $this->course), [
+                'scope' => 'bulk',
+                'bulk_action' => 'move_level',
+                'video_ids' => [$v1->id],
+                'target_level_id' => $lvl2->id,
+            ]);
+
+        $response2->assertRedirect();
+        $v1->refresh();
+        $this->assertEquals($lvl2->id, $v1->level_id);
+
+        // Bulk delete v2
+        $response3 = $this->actingAs($this->admin, 'admin')
+            ->post(route('admin.courses.videos.settings.apply', $this->course), [
+                'scope' => 'bulk',
+                'bulk_action' => 'delete',
+                'video_ids' => [$v2->id],
+            ]);
+
+        $response3->assertRedirect();
+        $this->assertDatabaseMissing('videos', ['id' => $v2->id]);
     }
 }

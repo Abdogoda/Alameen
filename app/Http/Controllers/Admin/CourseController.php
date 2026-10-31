@@ -316,7 +316,7 @@ class CourseController extends Controller
             ]);
         }
 
-        return back()->with('success', __('تمت إضافة المحاضرة/الدرس بنجاح إلى المنهج.'));
+        return back()->with('success', __('تمت إضافة الدرس بنجاح إلى المنهج.'));
     }
 
     /**
@@ -329,6 +329,7 @@ class CourseController extends Controller
             'title_ar' => ['required', 'string', 'max:255'],
             'title_en' => ['nullable', 'string', 'max:255'],
             'duration_minutes' => ['nullable', 'integer', 'min:1'],
+            'min_completion_percentage' => ['nullable', 'integer', 'min:1', 'max:100'],
             'video_url' => ['nullable', 'string', 'max:1000'],
             'mux_playback_id' => ['nullable', 'string', 'max:255'],
             'video_file' => ['nullable', 'file', 'mimetypes:video/mp4,video/quicktime,video/webm,video/x-matroska', 'max:1048576'],
@@ -342,6 +343,10 @@ class CourseController extends Controller
             'title_en' => $validated['title_en'] ?? $video->title_en,
             'is_free_preview' => $request->boolean('is_free_preview', false),
         ];
+
+        if ($request->filled('min_completion_percentage')) {
+            $updateData['min_completion_percentage'] = (int) $request->input('min_completion_percentage');
+        }
 
         if ($request->filled('duration_minutes')) {
             $updateData['duration_seconds'] = ((int) $request->input('duration_minutes')) * 60;
@@ -390,6 +395,103 @@ class CourseController extends Controller
         $video->delete();
 
         return back()->with('success', __('تم حذف الدرس بنجاح من المنهج.'));
+    }
+
+    /**
+     * Apply video settings or bulk operations (specific video, multiple selection, by level, or by course).
+     */
+    public function applyVideoSettings(Request $request, Course $course): RedirectResponse
+    {
+        $validated = $request->validate([
+            'scope' => ['required', 'string', 'in:specific,bulk,level,course'],
+            'video_ids' => ['nullable', 'array'],
+            'video_ids.*' => ['integer', 'exists:videos,id'],
+            'level_id' => ['nullable', 'integer', 'exists:levels,id'],
+            'target_level_id' => ['nullable', 'integer', 'exists:levels,id'],
+            'bulk_action' => ['nullable', 'string', 'in:update_settings,move_level,delete'],
+            'min_completion_percentage' => ['nullable', 'integer', 'min:1', 'max:100'],
+            'free_preview_policy' => ['nullable', 'string', 'in:keep,enable_all,disable_all,first_only'],
+        ]);
+
+        $scope = $validated['scope'];
+        $query = $course->videos();
+
+        if ($scope === 'level') {
+            if (empty($validated['level_id'])) {
+                return back()->with('error', __('يرجى تحديد المستوى المستهدف لتطبيق الإعدادات.'));
+            }
+            $query->where('level_id', $validated['level_id']);
+        } elseif ($scope === 'bulk' || $scope === 'specific') {
+            $videoIds = $validated['video_ids'] ?? [];
+            if (empty($videoIds)) {
+                return back()->with('error', __('لم يتم تحديد أي دروس لتطبيق الإعدادات عليها.'));
+            }
+            $query->whereIn('id', $videoIds);
+        }
+
+        $totalMatching = (clone $query)->count();
+        if ($totalMatching === 0) {
+            return back()->with('error', __('لا توجد دروس مطابقة لنطاق الإعدادات المحدد.'));
+        }
+
+        $action = $validated['bulk_action'] ?? 'update_settings';
+
+        // 1. Bulk Delete
+        if ($action === 'delete') {
+            $deletedCount = (clone $query)->count();
+            $query->delete();
+
+            return back()->with('success', __('تم حذف :count درس بنجاح من المنهج.', ['count' => $deletedCount]));
+        }
+
+        // 2. Bulk Move Level
+        if ($action === 'move_level') {
+            $targetLevelId = $validated['target_level_id'] ?? null;
+            if (! $targetLevelId) {
+                return back()->with('error', __('يرجى اختيار المستوى المراد نقل الدروس إليه.'));
+            }
+
+            $movedCount = (clone $query)->count();
+            $query->update(['level_id' => $targetLevelId]);
+
+            return back()->with('success', __('تم نقل :count درس إلى المستوى المحدد بنجاح.', ['count' => $movedCount]));
+        }
+
+        // 3. Update Settings (Completion %, Free Preview, optional target level)
+        if ($request->filled('min_completion_percentage')) {
+            (clone $query)->update([
+                'min_completion_percentage' => (int) $validated['min_completion_percentage'],
+            ]);
+        }
+
+        $policy = $validated['free_preview_policy'] ?? 'keep';
+        if ($policy === 'enable_all') {
+            (clone $query)->update(['is_free_preview' => true]);
+        } elseif ($policy === 'disable_all') {
+            (clone $query)->update(['is_free_preview' => false]);
+        } elseif ($policy === 'first_only') {
+            // Disable preview for all, enable only for the first video in the scope
+            (clone $query)->update(['is_free_preview' => false]);
+            $firstVideo = (clone $query)->orderBy('sort_order')->orderBy('id')->first();
+            if ($firstVideo) {
+                $firstVideo->update(['is_free_preview' => true]);
+            }
+        }
+
+        if (! empty($validated['target_level_id'])) {
+            (clone $query)->update(['level_id' => $validated['target_level_id']]);
+        }
+
+        $scopeLabels = [
+            'specific' => __('الدرس المحدد'),
+            'bulk' => __('الدروس المحددة (:count درس)', ['count' => $totalMatching]),
+            'level' => __('دروس المستوى المحدد (:count درس)', ['count' => $totalMatching]),
+            'course' => __('كافة دروس الكورس (:count درس)', ['count' => $totalMatching]),
+        ];
+
+        $scopeName = $scopeLabels[$scope] ?? __('الدروس');
+
+        return back()->with('success', __('تم تحديث إعدادات :scope بنجاح.', ['scope' => $scopeName]));
     }
 
     /**

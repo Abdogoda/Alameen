@@ -56,6 +56,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         // Video & Lessons Management with MUX & Multi-Source Support
         Route::post('courses/{course}/videos', [CourseController::class, 'storeVideo'])->name('courses.videos.store');
+        Route::post('courses/{course}/videos/bulk-settings', [CourseController::class, 'applyVideoSettings'])->name('courses.videos.settings.apply');
         Route::put('courses/{course}/videos/{video}', [CourseController::class, 'updateVideo'])->name('courses.videos.update');
         Route::delete('courses/{course}/videos/{video}', [CourseController::class, 'destroyVideo'])->name('courses.videos.destroy');
 

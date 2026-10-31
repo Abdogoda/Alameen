@@ -7,7 +7,7 @@
         <button 
             type="button" 
             onclick="openModal('modal-add-course')" 
-            class="group relative h-10 sm:h-11 px-4 sm:px-5 rounded-xl bg-gradient-to-r from-[#012383] to-[#0B2A8F] hover:from-[#0B2A8F] hover:to-[#012383] text-white font-bold text-xs sm:text-sm shadow-sm hover:shadow-lg hover:shadow-blue-900/30 active:scale-95 transition-all duration-200 flex items-center gap-2 cursor-pointer shrink-0"
+            class="group relative h-10 sm:h-11 px-4 sm:px-5 rounded-xl bg-gradient-to-r from-[#012383] to-[#0B2A8F] hover:from-[#0B2A8F] hover:to-[#012383] text-white font-bold text-xs sm:text-sm shadow-sm hover:shadow-lg hover:shadow-blue-900/30 active:scale-95 transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer w-full sm:w-auto"
         >
             <svg class="size-4 group-hover:rotate-90 group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
@@ -54,7 +54,7 @@
                 <svg class="size-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
             </div>
             <div>
-                <span class="text-xs text-slate-400 font-bold block">{{ __('إجمالي الدروس والفيديوهات') }}</span>
+                <span class="text-xs text-slate-400 font-bold block">{{ __('إجمالي الدروس') }}</span>
                 <span class="text-xl sm:text-2xl font-black text-emerald-700 dark:text-emerald-400">{{ $courses->sum('videos_count') }}</span>
             </div>
         </div>
@@ -72,7 +72,7 @@
 
     {{-- Courses Grid --}}
     <div class="flex flex-col gap-4">
-        <div class="flex items-center justify-between">
+        <div class="flex items-center justify-between gap-2 flex-wrap">
             <h3 class="font-bold text-base sm:text-lg text-[#012383] dark:text-white">{{ __('قائمة الكورسات والبرامج التدريبية المتاحة') }}</h3>
             <span class="text-xs font-bold text-slate-400 dark:text-slate-500 bg-white dark:bg-slate-800 border border-[#DEE8F7] dark:border-slate-800 px-3 py-1 rounded-full">
                 {{ __('عدد الكورسات: :count', ['count' => $courses->count()]) }}
@@ -112,9 +112,6 @@
                             <h2 class="font-['Cairo'] font-extrabold text-lg sm:text-xl text-[#012383] dark:text-white leading-snug truncate" title="{{ $course->title_ar }}">
                                 {{ $course->title_ar }}
                             </h2>
-                            @if($course->title_en)
-                                <p class="text-xs text-slate-400 truncate font-sans">{{ $course->title_en }}</p>
-                            @endif
                             <p class="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed">
                                 {{ $course->description_ar ?: __('لا يوجد وصف متاح حالياً لهذا الكورس.') }}
                             </p>
@@ -131,7 +128,7 @@
                             <span>•</span>
                             <span class="flex items-center gap-1.5">
                                 <span class="size-2 rounded-full bg-emerald-500"></span>
-                                {{ $course->videos_count }} {{ __('فيديو') }}
+                                {{ $course->videos_count }} {{ __('درس') }}
                             </span>
                             <span>•</span>
                             <span class="flex items-center gap-1.5">
@@ -153,43 +150,47 @@
                         </div>
                     </div>
 
-                    {{-- Bottom Action Buttons --}}
-                    <div class="flex items-center justify-between gap-2 pt-1 border-t border-[#DEE8F7]/60 dark:border-slate-800">
+                    {{-- Bottom Action Buttons (Responsive Layout) --}}
+                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 pt-3 border-t border-[#DEE8F7]/70 dark:border-slate-800">
                         {{-- Preview & Edit Course Details --}}
-                        <div class="flex items-center gap-2">
+                        <div class="grid grid-cols-1 sm:flex items-center gap-2 flex-1 min-w-0">
                             <a 
                                 href="{{ route('admin.courses.show', $course) }}" 
-                                class="h-9 px-3.5 rounded-xl bg-[#012383] hover:bg-[#0B2A8F] text-white font-bold text-xs shadow-xs hover:shadow-md transition-all flex items-center gap-1.5 cursor-pointer"
+                                class="h-9.5 px-3.5 rounded-xl bg-[#012383] hover:bg-[#0B2A8F] text-white font-bold text-xs shadow-xs hover:shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap text-center"
                             >
-                                <svg class="size-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                                <span>{{ __('عرض المنهج والمستويات (View Page)') }}</span>
+                                <svg class="size-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                <span>{{ __('عرض المنهج والمستويات') }}</span>
                             </a>
 
                             <a 
                                 href="{{ route('admin.courses.edit', $course) }}" 
-                                class="h-9 px-3.5 rounded-xl bg-white dark:bg-slate-800 border border-[#DEE8F7] dark:border-slate-700 hover:border-[#0B2A8F] text-[#0B2A8F] dark:text-blue-300 font-bold text-xs transition-all flex items-center gap-1.5 cursor-pointer"
+                                class="h-9.5 px-3.5 rounded-xl bg-white dark:bg-slate-800 border border-[#DEE8F7] dark:border-slate-700 hover:border-[#0B2A8F] text-[#0B2A8F] dark:text-blue-300 font-bold text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap text-center"
                             >
-                                <svg class="size-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
-                                <span>{{ __('تعديل بيانات الكورس (Edit Page)') }}</span>
+                                <svg class="size-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                                <span>{{ __('تعديل بيانات الكورس') }}</span>
                             </a>
                         </div>
 
                         {{-- Quick Delete Course --}}
-                        <form 
-                            action="{{ route('admin.courses.destroy', $course) }}" 
-                            method="POST" 
-                            onsubmit="return confirm('{{ __('هل أنت متأكد من رغبتك في حذف هذا الكورس وجميع مستوياته وفيديوهاته نهائياً؟') }}')"
-                        >
-                            @csrf
-                            @method('DELETE')
-                            <button 
-                                type="submit" 
-                                class="p-2 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer" 
-                                title="{{ __('حذف الكورس') }}"
+                        <div class="flex items-center justify-end sm:justify-start">
+                            <form 
+                                action="{{ route('admin.courses.destroy', $course) }}" 
+                                method="POST" 
+                                onsubmit="return confirm('{{ __('هل أنت متأكد من رغبتك في حذف هذا الكورس وجميع مستوياته ودروسه نهائياً؟') }}')"
+                                class="w-full sm:w-auto"
                             >
-                                <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                            </button>
-                        </form>
+                                @csrf
+                                @method('DELETE')
+                                <button 
+                                    type="submit" 
+                                    class="w-full sm:w-auto h-9 sm:h-9 px-3 text-slate-400 hover:text-rose-600 rounded-xl hover:bg-rose-50 dark:hover:bg-rose-950/40 border border-slate-200/80 sm:border-transparent dark:border-slate-800 sm:dark:border-transparent transition-colors cursor-pointer flex items-center justify-center gap-1.5 text-xs font-semibold" 
+                                    title="{{ __('حذف الكورس') }}"
+                                >
+                                    <svg class="size-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                    <span class="sm:hidden text-rose-600 dark:text-rose-400">{{ __('حذف الكورس') }}</span>
+                                </button>
+                            </form>
+                        </div>
                     </div>
 
                 </div>

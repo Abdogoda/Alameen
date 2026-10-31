@@ -37,7 +37,7 @@ class FirebaseAuthenticationTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertSee('data-firebase-auth="admin"', false);
-        $response->assertSee(__('تسجيل الدخول عبر Google (Firebase)'));
+        $response->assertSee(__('تسجيل الدخول عبر Google'));
     }
 
     public function test_existing_admin_can_authenticate_via_firebase_google(): void

@@ -88,13 +88,13 @@ html.dark body {
   font-family: var(--font-body);
 }
 
-/* Guarantee white text color on all dark/navy buttons */
-button[class*="bg-[#012383]"],
-button[class*="bg-[#0B2A8F]"],
-button[class*="bg-[#0b2a8f]"],
-a[class*="bg-[#012383]"],
-a[class*="bg-[#0B2A8F]"],
-a[class*="bg-[#0b2a8f]"],
+/* Guarantee white text color on all dark/navy buttons (excluding hover-only or light background buttons) */
+button[class*="bg-[#012383]"]:not([class*="bg-blue-"]):not([class*="bg-white"]):not([class*="bg-slate-"]),
+button[class*="bg-[#0B2A8F]"]:not([class*="bg-blue-"]):not([class*="bg-white"]):not([class*="bg-slate-"]),
+button[class*="bg-[#0b2a8f]"]:not([class*="bg-blue-"]):not([class*="bg-white"]):not([class*="bg-slate-"]),
+a[class*="bg-[#012383]"]:not([class*="bg-blue-"]):not([class*="bg-white"]):not([class*="bg-slate-"]),
+a[class*="bg-[#0B2A8F]"]:not([class*="bg-blue-"]):not([class*="bg-white"]):not([class*="bg-slate-"]),
+a[class*="bg-[#0b2a8f]"]:not([class*="bg-blue-"]):not([class*="bg-white"]):not([class*="bg-slate-"]),
 button.text-white,
 a.text-white,
 button.text-white *,

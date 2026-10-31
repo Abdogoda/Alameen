@@ -57,14 +57,30 @@ export function openModal(modalId) {
   const modal = document.getElementById(modalId);
   if (!modal) return;
   modal.classList.remove('modal-hidden');
+  document.documentElement.classList.add('modal-open');
+  document.body.classList.add('modal-open');
   document.body.style.overflow = 'hidden';
+  document.documentElement.style.overflow = 'hidden';
+
+  // Ensure modal content starts scrolled to top so header is never cut off
+  const content = modal.querySelector('.modal-content') || modal;
+  if (content && typeof content.scrollTop !== 'undefined') {
+    content.scrollTop = 0;
+  }
 }
 
 export function closeModal(modalId) {
   const modal = document.getElementById(modalId);
   if (!modal) return;
   modal.classList.add('modal-hidden');
-  document.body.style.overflow = '';
+
+  const anyOpen = document.querySelector('.modal-backdrop:not(.modal-hidden)');
+  if (!anyOpen) {
+    document.documentElement.classList.remove('modal-open');
+    document.body.classList.remove('modal-open');
+    document.body.style.overflow = '';
+    document.documentElement.style.overflow = '';
+  }
 }
 
 // Global window attachment for inline HTML callbacks
@@ -89,6 +105,23 @@ document.addEventListener('click', (e) => {
     closeModal(e.target.id);
   }
 });
+
+// Prevent outside scroll leak when modal is open
+document.addEventListener('wheel', (e) => {
+  const activeModal = document.querySelector('.modal-backdrop:not(.modal-hidden)');
+  if (!activeModal) return;
+  if (!e.target.closest('.modal-content')) {
+    e.preventDefault();
+  }
+}, { passive: false });
+
+document.addEventListener('touchmove', (e) => {
+  const activeModal = document.querySelector('.modal-backdrop:not(.modal-hidden)');
+  if (!activeModal) return;
+  if (!e.target.closest('.modal-content')) {
+    e.preventDefault();
+  }
+}, { passive: false });
 
 // ==========================================
 // 3. SIDEBAR MOBILE TOGGLE

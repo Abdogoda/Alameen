@@ -46,10 +46,14 @@ window.signInWithFirebaseGoogle = async function (targetRole = 'user', buttonEle
         return;
     }
 
+    const isEn = (document.documentElement.lang || 'ar').toLowerCase().startsWith('en');
+
     const fb = getFirebaseInstance();
     if (!fb || !window.__firebaseConfig?.projectId) {
         showAuthAlert(
-            'لم يتم ضبط بيانات Firebase (FIREBASE_PROJECT_ID) في ملف الإعدادات .env. يرجى مراجعة إعدادات الخادم.',
+            isEn
+                ? 'Firebase credentials (FIREBASE_PROJECT_ID) are not configured. Please check server settings.'
+                : 'لم يتم ضبط بيانات Firebase (FIREBASE_PROJECT_ID) في ملف الإعدادات .env. يرجى مراجعة إعدادات الخادم.',
             'error'
         );
         return;
@@ -62,8 +66,8 @@ window.signInWithFirebaseGoogle = async function (targetRole = 'user', buttonEle
         buttonElement.disabled = true;
         buttonElement.classList.add('opacity-75', 'cursor-wait');
         const loadingText = targetRole === 'admin'
-            ? 'جاري التحقق من هوية المشرف عبر Google...'
-            : 'جاري تسجيل الدخول عبر Google...';
+            ? (isEn ? 'Verifying admin identity via Google...' : 'جاري التحقق من هوية المشرف عبر Google...')
+            : (isEn ? 'Signing in with Google...' : 'جاري تسجيل الدخول عبر Google...');
         buttonElement.innerHTML = `
             <svg class="animate-spin size-5 shrink-0 text-current" fill="none" viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -161,16 +165,18 @@ async function postTokenToBackend(idToken, targetRole, buttonElement, originalCo
 
     if (response.ok && data.success) {
         if (buttonElement) {
+            const isEn = (document.documentElement.lang || 'ar').toLowerCase().startsWith('en');
             buttonElement.innerHTML = `
                 <svg class="size-5 shrink-0 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                 </svg>
-                <span>تم الدخول بنجاح! جاري التوجيه...</span>
+                <span>${isEn ? 'Signed in successfully! Redirecting...' : 'تم الدخول بنجاح! جاري التوجيه...'}</span>
             `;
         }
         window.location.href = data.redirect || (targetRole === 'admin' ? '/admin/dashboard' : '/dashboard');
     } else {
-        const errorMessage = data.message || 'فشل تسجيل الدخول. يرجى المحاولة مرة أخرى.';
+        const isEn = (document.documentElement.lang || 'ar').toLowerCase().startsWith('en');
+        const errorMessage = data.message || (isEn ? 'Sign in failed. Please try again.' : 'فشل تسجيل الدخول. يرجى المحاولة مرة أخرى.');
         showAuthAlert(errorMessage, 'error');
         resetButton(buttonElement, originalContent);
     }
@@ -237,6 +243,7 @@ function showAuthAlert(message, type = 'error') {
         document.body.appendChild(alertBox);
     }
 
+    const isEn = (document.documentElement.lang || 'ar').toLowerCase().startsWith('en');
     const isError = type === 'error';
     alertBox.className = `fixed bottom-5 end-5 z-50 max-w-md p-4 rounded-2xl shadow-xl transition-all duration-300 font-['Cairo'] flex items-start gap-3 text-sm ${
         isError
@@ -253,7 +260,7 @@ function showAuthAlert(message, type = 'error') {
             }"/>
         </svg>
         <div class="flex-1">
-            <p class="font-bold mb-0.5">${isError ? 'تنبيه تسجيل الدخول' : 'إشعار'}</p>
+            <p class="font-bold mb-0.5">${isError ? (isEn ? 'Sign In Alert' : 'تنبيه تسجيل الدخول') : (isEn ? 'Notice' : 'إشعار')}</p>
             <p class="text-xs leading-relaxed opacity-90">${message}</p>
         </div>
         <button type="button" onclick="this.parentElement.remove()" class="text-current opacity-60 hover:opacity-100 p-1">

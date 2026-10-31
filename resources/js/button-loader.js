@@ -28,10 +28,13 @@ export function getProcessingTitle(button, explicitTitle = null) {
     if (button.dataset?.loadingText) return button.dataset.loadingText;
 
     const rawText = extractCleanText(button);
-    const isArabic = ARABIC_REGEX.test(rawText) ||
-                     (document.documentElement.lang || '').startsWith('ar') ||
-                     document.documentElement.dir === 'rtl' ||
-                     Boolean(button.closest && button.closest('[dir="rtl"]'));
+    const isEn = (document.documentElement.lang || '').toLowerCase().startsWith('en') && document.documentElement.dir !== 'rtl';
+    const isArabic = !isEn && (
+        ARABIC_REGEX.test(rawText) ||
+        (document.documentElement.lang || '').startsWith('ar') ||
+        document.documentElement.dir === 'rtl' ||
+        Boolean(button.closest && button.closest('[dir="rtl"]'))
+    );
 
     const text = rawText.trim();
     const lower = text.toLowerCase();

@@ -5,13 +5,13 @@
     'scripts' => null,
 ])
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}" class="scroll-smooth">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}" class="scroll-smooth overflow-x-clip">
     <head>
         @include('partials.head')
         <title>{{ filled($title ?? null) ? $title . ' | ' . config('app.name', 'منصة مركز الأمين') : config('app.name', 'منصة مركز الأمين') }}</title>
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="bg-[#FAFCFF] dark:bg-slate-950 min-h-screen text-[#334155] dark:text-slate-100 font-body antialiased selection:bg-[#EAF1FB] selection:text-[#0B2A8F] overflow-x-hidden relative transition-colors">
+    <body class="bg-[#FAFCFF] dark:bg-slate-950 min-h-screen text-[#334155] dark:text-slate-100 font-body antialiased selection:bg-[#EAF1FB] selection:text-[#0B2A8F] overflow-x-clip w-full max-w-full relative transition-colors">
         
         <!-- Top-Level Pre-Rendered Themed Loader (At the top of everything from 0ms) -->
         <x-alameen-loader />

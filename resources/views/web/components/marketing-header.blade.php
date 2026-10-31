@@ -26,7 +26,7 @@
 @endif
 
 <!-- UNIFIED MASTER HEADER (Sticky at Top) -->
-<header class="w-full bg-[#FAFCFF]/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-[#D7E3F5] dark:border-slate-800 flex items-center justify-between px-3.5 sm:px-6 lg:px-12 xl:px-20 2xl:px-28 py-2.5 sm:py-3.5 shrink-0 sticky top-0 z-50 shadow-xs transition-colors" id="main-header" x-data="{ mobileNavOpen: false }">
+<header class="w-full bg-[#FAFCFF]/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-[#D7E3F5] dark:border-slate-800 flex items-center justify-between px-3.5 sm:px-6 lg:px-12 xl:px-20 2xl:px-28 py-2.5 sm:py-3.5 shrink-0 sticky top-0 z-40 shadow-xs transition-colors" id="main-header" x-data="{ mobileNavOpen: false }" @keydown.window.escape="mobileNavOpen = false" x-init="$watch('mobileNavOpen', value => document.body.classList.toggle('overflow-hidden', value))">
     
     <!-- Brand Identity -->
     <a href="{{ route('home') }}" class="flex gap-2 sm:gap-2.5 items-center shrink-0 cursor-pointer">
@@ -136,72 +136,121 @@
 
     </div>
 
-    <!-- Mobile Full-Height Navigation Menu -->
+    <!-- Mobile Navigation Drawer (Sidebar) & Backdrop -->
+    <!-- 1. Backdrop Overlay -->
+    <div
+        x-show="mobileNavOpen"
+        x-cloak
+        x-transition:enter="transition-opacity ease-linear duration-300"
+        x-transition:enter-start="opacity-0"
+        x-transition:enter-end="opacity-100"
+        x-transition:leave="transition-opacity ease-linear duration-200"
+        x-transition:leave-start="opacity-100"
+        x-transition:leave-end="opacity-0"
+        @click="mobileNavOpen = false"
+        class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 lg:hidden"
+        style="display: none;"
+    ></div>
+
+    <!-- 2. Slide-Over Sidebar Drawer -->
     <div
         id="mobile-nav-menu"
         x-show="mobileNavOpen"
         x-cloak
-        @click.outside="mobileNavOpen = false"
-        x-transition:enter="transition ease-out duration-250"
-        x-transition:enter-start="opacity-0 -translate-y-3"
-        x-transition:enter-end="opacity-100 translate-y-0"
-        x-transition:leave="transition ease-in duration-200"
-        x-transition:leave-start="opacity-100 translate-y-0"
-        x-transition:leave-end="opacity-0 -translate-y-3"
-        class="lg:hidden w-full h-[calc(100dvh-100%)] min-h-[calc(100dvh-100%)] bg-[#FAFCFF] dark:bg-slate-900 border-b border-[#D7E3F5] dark:border-slate-800 px-5 pt-4 pb-8 flex flex-col justify-between absolute top-full start-0 z-50 shadow-2xl overflow-y-auto"
+        x-transition:enter="transition ease-out duration-300 transform"
+        x-transition:enter-start="ltr:-translate-x-full rtl:translate-x-full"
+        x-transition:enter-end="translate-x-0"
+        x-transition:leave="transition ease-in duration-200 transform"
+        x-transition:leave-start="translate-x-0"
+        x-transition:leave-end="ltr:-translate-x-full rtl:translate-x-full"
+        class="fixed inset-y-0 start-0 z-50 w-[300px] sm:w-[340px] max-w-[85vw] bg-[#FAFCFF] dark:bg-slate-900 border-e border-[#D7E3F5] dark:border-slate-800 shadow-2xl flex flex-col justify-between p-5 overflow-y-auto lg:hidden"
+        style="display: none;"
     >
-        <!-- Nav Links -->
-        <div class="flex flex-col gap-1.5">
-            <a
-                href="{{ route('home') }}#home"
-                @click="mobileNavOpen = false"
-                class="mobile-nav-link flex items-center justify-between px-4 py-3 rounded-2xl font-['Cairo'] font-bold text-base transition-all {{ $active === 'home' ? 'bg-[#EAF1FB] dark:bg-slate-800 text-[#0B2A8F] dark:text-blue-300 shadow-xs' : 'text-[#012383] dark:text-slate-300 hover:bg-[#EAF1FB]/50' }}"
-            >
-                <span>{{ __('landing.navHome') }}</span>
-                <span class="text-xs opacity-50 rtl:rotate-180">→</span>
-            </a>
+        <div class="flex flex-col gap-5">
+            <!-- Sidebar Header: Brand + Close Button -->
+            <div class="flex items-center justify-between pb-4 border-b border-[#D7E3F5] dark:border-slate-800">
+                <a href="{{ route('home') }}" @click="mobileNavOpen = false" class="flex items-center gap-2.5">
+                    <img src="{{ $siteLogo }}" alt="{{ $siteName }}" class="size-8 object-contain" />
+                    <span class="font-['Baloo_Bhaijaan_2'] font-bold text-base text-[#012383] dark:text-white">
+                        {{ $siteName }}
+                    </span>
+                </a>
+                <button
+                    type="button"
+                    @click="mobileNavOpen = false"
+                    class="size-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+                    aria-label="{{ __('إغلاق القائمة') }}"
+                >
+                    <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
 
-            <a
-                href="{{ route('courses.index') }}"
-                @click="mobileNavOpen = false"
-                class="mobile-nav-link flex items-center justify-between px-4 py-3 rounded-2xl font-['Cairo'] font-bold text-base transition-all {{ $active === 'courses' ? 'bg-[#EAF1FB] dark:bg-slate-800 text-[#0B2A8F] dark:text-blue-300 shadow-xs' : 'text-[#012383] dark:text-slate-300 hover:bg-[#EAF1FB]/50' }}"
-            >
-                <span>{{ __('landing.navCourses') }}</span>
-                <span class="text-xs opacity-50 rtl:rotate-180">→</span>
-            </a>
+            <!-- Dynamic or Fallback Navigation Links -->
+            <nav class="flex flex-col gap-1.5">
+                @if($headerMenuItems->isNotEmpty())
+                    @foreach($headerMenuItems as $item)
+                        <a
+                            href="{{ $item->resolved_url }}"
+                            target="{{ $item->target }}"
+                            @click="mobileNavOpen = false"
+                            class="mobile-nav-link flex items-center justify-between px-3.5 py-2.5 rounded-xl font-['Cairo'] font-bold text-sm text-[#012383] dark:text-slate-300 hover:bg-[#EAF1FB] dark:hover:bg-slate-800 transition-colors"
+                        >
+                            <span>{{ $item->title }}</span>
+                            <span class="text-xs opacity-50 rtl:rotate-180">→</span>
+                        </a>
+                    @endforeach
+                @else
+                    <a
+                        href="{{ route('home') }}#home"
+                        @click="mobileNavOpen = false"
+                        class="mobile-nav-link flex items-center justify-between px-3.5 py-2.5 rounded-xl font-['Cairo'] font-bold text-sm transition-all {{ $active === 'home' ? 'bg-[#EAF1FB] dark:bg-slate-800 text-[#0B2A8F] dark:text-blue-300' : 'text-[#012383] dark:text-slate-300 hover:bg-[#EAF1FB]/50' }}"
+                    >
+                        <span>{{ __('landing.navHome') }}</span>
+                        <span class="text-xs opacity-50 rtl:rotate-180">→</span>
+                    </a>
 
-            <a
-                href="{{ route('home') }}#about"
-                @click="mobileNavOpen = false"
-                class="mobile-nav-link flex items-center justify-between px-4 py-3 rounded-2xl font-['Cairo'] font-bold text-base transition-all {{ $active === 'about' ? 'bg-[#EAF1FB] dark:bg-slate-800 text-[#0B2A8F] dark:text-blue-300 shadow-xs' : 'text-[#012383] dark:text-slate-300 hover:bg-[#EAF1FB]/50' }}"
-            >
-                <span>{{ __('landing.navAbout') }}</span>
-                <span class="text-xs opacity-50 rtl:rotate-180">→</span>
-            </a>
+                    <a
+                        href="{{ route('courses.index') }}"
+                        @click="mobileNavOpen = false"
+                        class="mobile-nav-link flex items-center justify-between px-3.5 py-2.5 rounded-xl font-['Cairo'] font-bold text-sm transition-all {{ $active === 'courses' ? 'bg-[#EAF1FB] dark:bg-slate-800 text-[#0B2A8F] dark:text-blue-300' : 'text-[#012383] dark:text-slate-300 hover:bg-[#EAF1FB]/50' }}"
+                    >
+                        <span>{{ __('landing.navCourses') }}</span>
+                        <span class="text-xs opacity-50 rtl:rotate-180">→</span>
+                    </a>
 
-            <a
-                href="{{ route('reviews.index') }}"
-                @click="mobileNavOpen = false"
-                class="mobile-nav-link flex items-center justify-between px-4 py-3 rounded-2xl font-['Cairo'] font-bold text-base transition-all {{ $active === 'reviews' ? 'bg-[#EAF1FB] dark:bg-slate-800 text-[#0B2A8F] dark:text-blue-300 shadow-xs' : 'text-[#012383] dark:text-slate-300 hover:bg-[#EAF1FB]/50' }}"
-            >
-                <span>{{ __('landing.navTestimonials') }}</span>
-                <span class="text-xs opacity-50 rtl:rotate-180">→</span>
-            </a>
+                    <a
+                        href="{{ route('home') }}#about"
+                        @click="mobileNavOpen = false"
+                        class="mobile-nav-link flex items-center justify-between px-3.5 py-2.5 rounded-xl font-['Cairo'] font-bold text-sm transition-all {{ $active === 'about' ? 'bg-[#EAF1FB] dark:bg-slate-800 text-[#0B2A8F] dark:text-blue-300' : 'text-[#012383] dark:text-slate-300 hover:bg-[#EAF1FB]/50' }}"
+                    >
+                        <span>{{ __('landing.navAbout') }}</span>
+                        <span class="text-xs opacity-50 rtl:rotate-180">→</span>
+                    </a>
 
-            <a
-                href="{{ route('contact') }}"
-                @click="mobileNavOpen = false"
-                class="mobile-nav-link flex items-center justify-between px-4 py-3 rounded-2xl font-['Cairo'] font-bold text-base transition-all {{ $active === 'contact' ? 'bg-[#EAF1FB] dark:bg-slate-800 text-[#0B2A8F] dark:text-blue-300 shadow-xs' : 'text-[#012383] dark:text-slate-300 hover:bg-[#EAF1FB]/50' }}"
-            >
-                <span>{{ __('landing.navContact') }}</span>
-                <span class="text-xs opacity-50 rtl:rotate-180">→</span>
-            </a>
+                    <a
+                        href="{{ route('reviews.index') }}"
+                        @click="mobileNavOpen = false"
+                        class="mobile-nav-link flex items-center justify-between px-3.5 py-2.5 rounded-xl font-['Cairo'] font-bold text-sm transition-all {{ $active === 'reviews' ? 'bg-[#EAF1FB] dark:bg-slate-800 text-[#0B2A8F] dark:text-blue-300' : 'text-[#012383] dark:text-slate-300 hover:bg-[#EAF1FB]/50' }}"
+                    >
+                        <span>{{ __('landing.navTestimonials') }}</span>
+                        <span class="text-xs opacity-50 rtl:rotate-180">→</span>
+                    </a>
+
+                    <a
+                        href="{{ route('contact') }}"
+                        @click="mobileNavOpen = false"
+                        class="mobile-nav-link flex items-center justify-between px-3.5 py-2.5 rounded-xl font-['Cairo'] font-bold text-sm transition-all {{ $active === 'contact' ? 'bg-[#EAF1FB] dark:bg-slate-800 text-[#0B2A8F] dark:text-blue-300' : 'text-[#012383] dark:text-slate-300 hover:bg-[#EAF1FB]/50' }}"
+                    >
+                        <span>{{ __('landing.navContact') }}</span>
+                        <span class="text-xs opacity-50 rtl:rotate-180">→</span>
+                    </a>
+                @endif
+            </nav>
         </div>
 
-        <!-- Bottom Actions (Settings & Auth) -->
-        <div class="flex flex-col gap-4 pt-4 border-t border-[#D7E3F5] dark:border-slate-800 mt-auto">
-            <!-- Mobile Switchers Row -->
-            <div class="flex items-center justify-between gap-3">
+        <!-- Bottom Actions (Settings, Language, Theme & Auth) -->
+        <div class="flex flex-col gap-4 pt-4 border-t border-[#D7E3F5] dark:border-slate-800 mt-6">
+            <div class="flex items-center justify-between gap-2">
                 <span class="text-xs font-bold text-slate-500 dark:text-slate-400">{{ __('الإعدادات') }}</span>
                 <div class="flex items-center gap-2">
                     <x-theme-switcher variant="dropdown" />
@@ -209,17 +258,38 @@
                 </div>
             </div>
 
-            <!-- Auth Action -->
-            @guest
-                @if (Route::has('register'))
+            @if (auth('admin')->check())
+                <a
+                    href="{{ route('admin.dashboard') }}"
+                    class="w-full text-center bg-gradient-to-r from-[#F2AE2E] to-amber-500 text-slate-950 font-bold py-2.5 rounded-xl text-xs font-['Cairo'] shadow-sm"
+                >
+                    {{ __('لوحة الإدارة') }}
+                </a>
+            @elseif (auth()->check())
+                <a
+                    href="{{ route('dashboard') }}"
+                    class="w-full text-center bg-[#012383] hover:bg-[#0B2A8F] text-white font-bold py-2.5 rounded-xl text-xs font-['Cairo'] shadow-sm"
+                >
+                    {{ __('بوابة الطالب') }}
+                </a>
+            @else
+                <div class="flex flex-col gap-2">
                     <a
-                        href="{{ route('register') }}"
-                        class="w-full text-center border-2 border-[#012383] dark:border-blue-400 text-[#012383] dark:text-blue-300 hover:bg-[#EAF1FB] dark:hover:bg-slate-800 py-3 rounded-2xl text-sm font-bold font-['Cairo'] transition-all shadow-xs"
+                        href="{{ route('login') }}"
+                        class="w-full text-center bg-[#012383] hover:bg-[#0B2A8F] text-white font-bold py-2.5 rounded-xl text-xs font-['Cairo'] shadow-sm"
                     >
-                        {{ __('landing.createAccount') }}
+                        {{ __('landing.loginBtn') }}
                     </a>
-                @endif
-            @endguest
+                    @if (Route::has('register'))
+                        <a
+                            href="{{ route('register') }}"
+                            class="w-full text-center border border-[#012383] dark:border-blue-400 text-[#012383] dark:text-blue-300 hover:bg-[#EAF1FB] dark:hover:bg-slate-800 py-2.5 rounded-xl text-xs font-bold font-['Cairo'] transition-all"
+                        >
+                            {{ __('landing.createAccount') }}
+                        </a>
+                    @endif
+                </div>
+            @endif
         </div>
     </div>
 

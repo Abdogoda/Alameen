@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Controllers\Auth\PasswordResetOtpController;
 use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\StudentCourseController;
+use App\Http\Controllers\Webhooks\MuxWebhookController;
 use App\Livewire\Notifications\NotificationInbox;
 use Illuminate\Support\Facades\Route;
 
@@ -42,6 +43,9 @@ Route::view('audit-report', 'web.pages.audit-report')->name('audit.report');
 
 // Public Certificate Verification
 Route::get('verify-certificate/{code}', [StudentCourseController::class, 'verifyCertificate'])->name('certificates.verify');
+
+// MUX Video Streaming Cloud Webhooks
+Route::post('webhooks/mux', [MuxWebhookController::class, 'handle'])->name('webhooks.mux');
 
 // Shortcut / fallback redirect for log-viewer to secure admin path
 Route::redirect('log-viewer', '/admin/log-viewer');

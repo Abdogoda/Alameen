@@ -306,11 +306,11 @@
                                     <button 
                                         type="button" 
                                         onclick="previewVideo('{{ addslashes($video->title_ar) }}', '{{ $video->video_source }}', '{{ $video->effective_playback_url }}', '{{ $video->mux_playback_id }}')" 
-                                        class="group px-3 py-1.5 text-xs font-extrabold !text-[#012383] hover:!text-white dark:!text-blue-300 dark:hover:!text-white bg-blue-50 hover:bg-[#012383] dark:bg-slate-800 dark:hover:bg-blue-600 rounded-xl border border-blue-200 hover:border-[#012383] dark:border-slate-700 shadow-2xs hover:shadow-xs active:scale-95 transition-all duration-150 flex items-center gap-1.5 cursor-pointer"
+                                        class="px-3.5 py-1.5 rounded-xl bg-[#EAF1FB] dark:bg-slate-700/80 border border-[#BFD5F8] dark:border-slate-600 text-[#012383] dark:text-blue-200 hover:bg-[#012383] hover:text-white hover:border-[#012383] dark:hover:bg-blue-600 dark:hover:text-white text-xs font-black transition-all flex items-center gap-1.5 shadow-2xs hover:shadow-xs active:scale-95 cursor-pointer shrink-0"
                                         title="{{ __('تشغيل ومعاينة الدرس') }}"
                                     >
-                                        <svg class="size-3 text-[#012383] group-hover:text-white dark:text-blue-300 dark:group-hover:text-white transition-colors fill-current shrink-0" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                                        <span class="!text-[#012383] group-hover:!text-white dark:!text-blue-300 dark:group-hover:!text-white font-extrabold transition-colors">{{ __('تشغيل ↗') }}</span>
+                                        <svg class="size-3.5 fill-current shrink-0" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                        <span class="font-black">{{ __('تشغيل ↗') }}</span>
                                     </button>
 
                                     {{-- Quick Single Video Settings Button --}}
@@ -323,15 +323,14 @@
                                         <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3"/></svg>
                                     </button>
 
-                                    {{-- Edit Lesson Button --}}
-                                    <button 
-                                        type="button" 
-                                        onclick="openEditLessonModal({{ $video->id }}, '{{ addslashes($video->title_ar) }}', {{ $video->duration_minutes }}, '{{ addslashes($video->effective_playback_url) }}', '{{ $video->mux_playback_id }}', '{{ addslashes($video->clinicalTask?->title_ar ?? '') }}', {{ $video->level_id }}, {{ $video->min_completion_percentage }}, {{ $video->is_free_preview ? 1 : 0 }})" 
-                                        class="p-1.5 text-slate-400 hover:text-[#012383] rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer" 
-                                        title="{{ __('تعديل الدرس') }}"
+                                    {{-- Edit Lesson Dedicated Page Link --}}
+                                    <a 
+                                        href="{{ route('admin.courses.videos.edit', [$course, $video]) }}" 
+                                        class="p-1.5 text-slate-400 hover:text-[#012383] dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer" 
+                                        title="{{ __('تعديل بيانات وفيديو الدرس') }}"
                                     >
                                         <svg class="size-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
-                                    </button>
+                                    </a>
 
                                     {{-- Delete Lesson Form --}}
                                     <form 
@@ -1169,4 +1168,5 @@
             closeModal('modal-video-preview');
         }
     </script>
+<script src="https://cdn.jsdelivr.net/npm/@mux/mux-player"></script>
 </x-admin-layout::admin>

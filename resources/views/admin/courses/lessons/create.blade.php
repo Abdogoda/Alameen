@@ -168,7 +168,7 @@
                         class="size-4.5 rounded border-slate-300 text-[#012383] focus:ring-[#012383] cursor-pointer" 
                     />
                     <div>
-                        <span class="text-xs font-bold text-[#012383] dark:text-blue-300 block">{{ __('إتاحة هذا الدرس كمعاينة مجانية (Free Preview)') }}</span>
+                        <span class="text-xs font-bold text-[#012383] dark:text-blue-300 block">{{ __('إتاحة هذا الدرس كمعاينة مجانية ') }}</span>
                         <span class="text-[11px] text-slate-500 dark:text-slate-400">{{ __('يستطيع الزوار والطلاب المسجلون حضور هذا الدرس قبل دفع رسوم الاشتراك') }}</span>
                     </div>
                 </label>
@@ -186,7 +186,7 @@
                     </span>
                     <div>
                         <h3 class="font-bold text-base sm:text-lg text-[#012383] dark:text-white leading-tight">
-                            {{ __('مصدر ورفع فيديو الدرس (Video Streaming Engine)') }}
+                            {{ __('مصدر ورفع فيديو الدرس ') }}
                         </h3>
                         <p class="text-xs text-slate-400">
                             {{ __('رفع بالتجزئة (Chunks)، شريط تقدم لحظي، ومعالجة تلقائية للسيرفر أو MUX') }}
@@ -213,7 +213,7 @@
                     class="px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer"
                 >
                     <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
-                    <span>{{ __('رفع فيديو بالتجزئة المباشرة (Chunks Upload)') }}</span>
+                    <span>{{ __('رفع فيديو بالتجزئة المباشرة ') }}</span>
                 </button>
 
                 <button 
@@ -610,4 +610,5 @@
             }
         }
     </script>
+<script src="https://cdn.jsdelivr.net/npm/@mux/mux-player"></script>
 </x-admin-layout::admin>

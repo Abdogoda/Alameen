@@ -21,6 +21,12 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->validateCsrfTokens(except: [
+            'webhooks/*',
+            'auth/google/firebase',
+            'auth/firebase',
+        ]);
+
         $middleware->web(append: [
             SetCrossOriginHeaders::class,
             SetLocale::class,

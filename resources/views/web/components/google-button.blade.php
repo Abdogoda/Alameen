@@ -32,6 +32,9 @@
             if (typeof window.signInWithFirebaseGoogle === 'function' && window.__firebaseConfig?.projectId) {
                 window.signInWithFirebaseGoogle('user', btn);
             } else if (@json($hasSocialite)) {
+                if (btn && window.AlameenButtonLoader) {
+                    window.AlameenButtonLoader.setButtonLoading(btn, true, '{{ __('جاري التحويل إلى Google...') }}');
+                }
                 window.location.href = "{{ route('auth.google.redirect') }}";
             }
         };

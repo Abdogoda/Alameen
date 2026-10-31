@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\RejectReceiptRequest;
 use App\Models\Admin;
 use App\Models\PaymentReceipt;
 use App\Services\Payment\PaymentReceiptService;
@@ -71,11 +72,9 @@ class ReceiptController extends Controller
     /**
      * Reject receipt with mandatory note.
      */
-    public function reject(Request $request, PaymentReceipt $receipt): RedirectResponse
+    public function reject(RejectReceiptRequest $request, PaymentReceipt $receipt): RedirectResponse
     {
-        $request->validate([
-            'rejection_reason' => ['required', 'string', 'max:500'],
-        ]);
+        $validated = $request->validated();
 
         /** @var Admin $admin */
         $admin = auth('admin')->user();
@@ -83,7 +82,7 @@ class ReceiptController extends Controller
         $this->receiptService->rejectReceipt(
             $receipt,
             $admin,
-            $request->input('rejection_reason')
+            $validated['rejection_reason']
         );
 
         return back()->with('warning', __('تم رفض الإيصال وتوثيق سبب الرفض بنجاح.'));

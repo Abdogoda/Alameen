@@ -421,14 +421,24 @@
 
         contactForm?.addEventListener('submit', (e) => {
           e.preventDefault();
-          const isEn = document.documentElement.lang === 'en';
-          toastMessage.textContent = isEn ? 'Your inquiry has been received! We will respond shortly.' : 'تم استلام استفسارك بنجاح! سيتواصل معك فريق الدعم قريباً.';
-          toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
-          
-          contactForm.reset();
+          const submitBtn = document.getElementById('submit-contact-btn');
+          if (window.AlameenButtonLoader && submitBtn) {
+            window.AlameenButtonLoader.setButtonLoading(submitBtn, true, isEn ? 'Sending message...' : 'جاري إرسال الرسالة...');
+          }
+
           setTimeout(() => {
-            toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
-          }, 3500);
+            const isEn = document.documentElement.lang === 'en';
+            toastMessage.textContent = isEn ? 'Your inquiry has been received! We will respond shortly.' : 'تم استلام استفسارك بنجاح! سيتواصل معك فريق الدعم قريباً.';
+            toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+            
+            contactForm.reset();
+            if (window.AlameenButtonLoader && submitBtn) {
+              window.AlameenButtonLoader.setButtonLoading(submitBtn, false);
+            }
+            setTimeout(() => {
+              toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+            }, 3500);
+          }, 450);
         });
 
         // 3. FAQ Accordion Toggle

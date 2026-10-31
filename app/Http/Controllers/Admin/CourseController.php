@@ -5,6 +5,15 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\ApplyVideoSettingsRequest;
+use App\Http\Requests\Admin\StoreCourseRequest;
+use App\Http\Requests\Admin\StoreLevelRequest;
+use App\Http\Requests\Admin\StoreVideoRequest;
+use App\Http\Requests\Admin\UpdateCoursePriceRequest;
+use App\Http\Requests\Admin\UpdateCourseRequest;
+use App\Http\Requests\Admin\UpdateLevelRequest;
+use App\Http\Requests\Admin\UpdateVideoRequest;
+use App\Http\Requests\Admin\UploadLessonChunkRequest;
 use App\Models\ClinicalTask;
 use App\Models\Course;
 use App\Models\Level;
@@ -67,35 +76,22 @@ class CourseController extends Controller
     /**
      * Store a newly created course.
      */
-    public function store(Request $request): RedirectResponse
+    public function store(StoreCourseRequest $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'title_ar' => ['required', 'string', 'max:255'],
-            'title_en' => ['nullable', 'string', 'max:255'],
-            'slug' => ['nullable', 'string', 'max:255', 'unique:courses,slug'],
-            'description_ar' => ['nullable', 'string'],
-            'description_en' => ['nullable', 'string'],
-            'price' => ['required', 'numeric', 'min:0'],
-            'original_price' => ['nullable', 'numeric', 'min:0'],
-            'access_duration_days' => ['required', 'integer', 'min:1'],
-            'thumbnail_file' => ['nullable', 'image', 'max:4096'],
-            'thumbnail' => ['nullable', 'string', 'max:500'],
-            'promo_video_source' => ['nullable', 'string', 'in:mux,link,upload,youtube,vimeo'],
-            'promo_video_url' => ['nullable', 'string', 'max:1000'],
-            'promo_video_file' => ['nullable', 'file', 'mimetypes:video/mp4,video/quicktime,video/webm,video/x-matroska', 'max:512000'],
-            'is_published' => ['nullable', 'boolean'],
-        ]);
+        $validated = $request->validated();
 
         $validated['slug'] = ! empty($validated['slug'])
             ? Str::slug($validated['slug'])
-            : Str::slug($validated['title_en'] ?: Str::random(8));
+            : (! empty($validated['title_en']) ? Str::slug($validated['title_en']) : 'course-'.strtolower(Str::random(8)));
 
         $validated['is_published'] = $request->boolean('is_published', true);
 
         // Handle thumbnail upload
         if ($request->hasFile('thumbnail_file')) {
             $path = $request->file('thumbnail_file')->store('courses/thumbnails', 'public');
-            $validated['thumbnail'] = Storage::url($path);
+            if (is_string($path)) {
+                $validated['thumbnail'] = Storage::url($path);
+            }
         }
 
         // Handle promo video file upload to MUX or storage
@@ -121,24 +117,9 @@ class CourseController extends Controller
     /**
      * Update an existing course.
      */
-    public function update(Request $request, Course $course): RedirectResponse
+    public function update(UpdateCourseRequest $request, Course $course): RedirectResponse
     {
-        $validated = $request->validate([
-            'title_ar' => ['required', 'string', 'max:255'],
-            'title_en' => ['nullable', 'string', 'max:255'],
-            'slug' => ['required', 'string', 'max:255', 'unique:courses,slug,'.$course->id],
-            'description_ar' => ['nullable', 'string'],
-            'description_en' => ['nullable', 'string'],
-            'price' => ['required', 'numeric', 'min:0'],
-            'original_price' => ['nullable', 'numeric', 'min:0'],
-            'access_duration_days' => ['required', 'integer', 'min:1'],
-            'thumbnail_file' => ['nullable', 'image', 'max:4096'],
-            'thumbnail' => ['nullable', 'string', 'max:500'],
-            'promo_video_source' => ['nullable', 'string', 'in:mux,link,upload,youtube,vimeo'],
-            'promo_video_url' => ['nullable', 'string', 'max:1000'],
-            'promo_video_file' => ['nullable', 'file', 'mimetypes:video/mp4,video/quicktime,video/webm,video/x-matroska', 'max:512000'],
-            'is_published' => ['nullable', 'boolean'],
-        ]);
+        $validated = $request->validated();
 
         $validated['slug'] = Str::slug($validated['slug']);
         $validated['is_published'] = $request->boolean('is_published', true);
@@ -146,7 +127,9 @@ class CourseController extends Controller
         // Handle thumbnail upload
         if ($request->hasFile('thumbnail_file')) {
             $path = $request->file('thumbnail_file')->store('courses/thumbnails', 'public');
-            $validated['thumbnail'] = Storage::url($path);
+            if (is_string($path)) {
+                $validated['thumbnail'] = Storage::url($path);
+            }
         }
 
         // Handle promo video file upload to MUX or storage
@@ -171,12 +154,9 @@ class CourseController extends Controller
     /**
      * Fast price update from quick modal.
      */
-    public function updatePrice(Request $request, Course $course): RedirectResponse
+    public function updatePrice(UpdateCoursePriceRequest $request, Course $course): RedirectResponse
     {
-        $validated = $request->validate([
-            'currentPrice' => ['required', 'numeric', 'min:0'],
-            'originalPrice' => ['nullable', 'numeric', 'min:0'],
-        ]);
+        $validated = $request->validated();
 
         $course->update([
             'price' => $validated['currentPrice'],
@@ -199,15 +179,9 @@ class CourseController extends Controller
     /**
      * Store a new dynamic curriculum level.
      */
-    public function storeLevel(Request $request, Course $course): RedirectResponse
+    public function storeLevel(StoreLevelRequest $request, Course $course): RedirectResponse
     {
-        $validated = $request->validate([
-            'title_ar' => ['required', 'string', 'max:255'],
-            'title_en' => ['nullable', 'string', 'max:255'],
-            'description_ar' => ['nullable', 'string'],
-            'description_en' => ['nullable', 'string'],
-            'sort_order' => ['nullable', 'integer', 'min:1'],
-        ]);
+        $validated = $request->validated();
 
         $validated['course_id'] = $course->id;
         $validated['sort_order'] = $validated['sort_order'] ?? (($course->levels()->max('sort_order') ?? 0) + 1);
@@ -220,15 +194,9 @@ class CourseController extends Controller
     /**
      * Update an existing level.
      */
-    public function updateLevel(Request $request, Course $course, Level $level): RedirectResponse
+    public function updateLevel(UpdateLevelRequest $request, Course $course, Level $level): RedirectResponse
     {
-        $validated = $request->validate([
-            'title_ar' => ['required', 'string', 'max:255'],
-            'title_en' => ['nullable', 'string', 'max:255'],
-            'description_ar' => ['nullable', 'string'],
-            'description_en' => ['nullable', 'string'],
-            'sort_order' => ['nullable', 'integer', 'min:1'],
-        ]);
+        $validated = $request->validated();
 
         $level->update($validated);
 
@@ -268,17 +236,61 @@ class CourseController extends Controller
     }
 
     /**
+     * Show dedicated page to edit an existing lesson.
+     */
+    public function editLesson(Course $course, Video $video): View
+    {
+        abort_if($video->course_id !== $course->id, 404);
+
+        $course->load('levels');
+        $video->load('clinicalTask');
+        $activeDriver = $this->videoManager->getActiveDriver();
+        $isMuxConfigured = $this->videoManager->isMuxConfigured();
+
+        return view('admin.courses.lessons.edit', [
+            'course' => $course,
+            'video' => $video,
+            'activeDriverName' => $activeDriver->name(),
+            'activeDriverTitle' => $activeDriver->title(),
+            'isMuxConfigured' => $isMuxConfigured,
+        ]);
+    }
+
+    /**
+     * Create a MUX Direct Upload URL for client-side uploads.
+     */
+    public function getMuxDirectUploadUrl(Course $course): JsonResponse
+    {
+        $muxDriver = $this->videoManager->driver('mux');
+
+        if (! $muxDriver->isConfigured()) {
+            return response()->json([
+                'success' => false,
+                'message' => __('خدمة MUX غير مهيأة على السيرفر، يتم الرفع المباشر عبر السيرفر المحلي.'),
+            ], 400);
+        }
+
+        $upload = $muxDriver->createDirectUploadUrl();
+        if (! $upload || empty($upload['url'])) {
+            return response()->json([
+                'success' => false,
+                'message' => __('فشل إنشاء رابط الرفع لمنصة MUX.'),
+            ], 500);
+        }
+
+        return response()->json([
+            'success' => true,
+            'upload_url' => $upload['url'],
+            'upload_id' => $upload['id'],
+        ]);
+    }
+
+    /**
      * Handle asynchronous chunked video file upload with real-time progress and resilient processing.
      */
-    public function uploadLessonChunk(Request $request, Course $course): JsonResponse
+    public function uploadLessonChunk(UploadLessonChunkRequest $request, Course $course): JsonResponse
     {
-        $validated = $request->validate([
-            'upload_id' => ['required', 'string', 'max:100'],
-            'chunk_index' => ['required', 'integer', 'min:0'],
-            'total_chunks' => ['required', 'integer', 'min:1'],
-            'original_filename' => ['required', 'string', 'max:255'],
-            'file_chunk' => ['required', 'file'],
-        ]);
+        $validated = $request->validated();
 
         $uploadId = $this->chunkedUploadService->sanitizeUploadId($validated['upload_id']);
         $chunkIndex = (int) $validated['chunk_index'];
@@ -333,28 +345,9 @@ class CourseController extends Controller
     /**
      * Store a newly created lesson/video in storage.
      */
-    public function storeVideo(Request $request, Course $course): RedirectResponse
+    public function storeVideo(StoreVideoRequest $request, Course $course): RedirectResponse
     {
-        $validated = $request->validate([
-            'level_id' => ['nullable', 'exists:levels,id'],
-            'title_ar' => ['required', 'string', 'max:255'],
-            'title_en' => ['nullable', 'string', 'max:255'],
-            'duration_minutes' => ['nullable', 'integer', 'min:1'],
-            'duration_seconds' => ['nullable', 'integer', 'min:0'],
-            'min_completion_percentage' => ['nullable', 'integer', 'min:1', 'max:100'],
-            'sort_order' => ['nullable', 'integer', 'min:1'],
-            'is_free_preview' => ['nullable', 'boolean'],
-            // Video sources
-            'video_source' => ['nullable', 'string', 'max:50'],
-            'video_source_type' => ['nullable', 'string', 'in:mux_upload,link,mux_playback_id,bunny,local'],
-            'video_url' => ['nullable', 'string', 'max:1000'],
-            'mux_playback_id' => ['nullable', 'string', 'max:255'],
-            'mux_asset_id' => ['nullable', 'string', 'max:255'],
-            'video_file' => ['nullable', 'file', 'mimetypes:video/mp4,video/quicktime,video/webm,video/x-matroska', 'max:1048576'],
-            // Attached Clinical Task
-            'task_title_ar' => ['nullable', 'string', 'max:255'],
-            'task_instructions_ar' => ['nullable', 'string'],
-        ]);
+        $validated = $request->validated();
 
         $durationMinutes = $request->filled('duration_minutes') ? (int) $request->input('duration_minutes') : 20;
         $durationSeconds = $request->filled('duration_seconds') ? (int) $request->input('duration_seconds') : ($durationMinutes * 60);
@@ -413,20 +406,9 @@ class CourseController extends Controller
     /**
      * Update an existing video/lesson.
      */
-    public function updateVideo(Request $request, Course $course, Video $video): RedirectResponse
+    public function updateVideo(UpdateVideoRequest $request, Course $course, Video $video): RedirectResponse
     {
-        $validated = $request->validate([
-            'level_id' => ['nullable', 'exists:levels,id'],
-            'title_ar' => ['required', 'string', 'max:255'],
-            'title_en' => ['nullable', 'string', 'max:255'],
-            'duration_minutes' => ['nullable', 'integer', 'min:1'],
-            'min_completion_percentage' => ['nullable', 'integer', 'min:1', 'max:100'],
-            'video_url' => ['nullable', 'string', 'max:1000'],
-            'mux_playback_id' => ['nullable', 'string', 'max:255'],
-            'video_file' => ['nullable', 'file', 'mimetypes:video/mp4,video/quicktime,video/webm,video/x-matroska', 'max:1048576'],
-            'is_free_preview' => ['nullable', 'boolean'],
-            'task_title_ar' => ['nullable', 'string', 'max:255'],
-        ]);
+        $validated = $request->validated();
 
         $updateData = [
             'level_id' => $validated['level_id'] ?? $video->level_id,
@@ -443,6 +425,10 @@ class CourseController extends Controller
             $updateData['duration_seconds'] = ((int) $request->input('duration_minutes')) * 60;
         }
 
+        if (! empty($validated['video_source'])) {
+            $updateData['video_source'] = $validated['video_source'];
+        }
+
         if ($request->hasFile('video_file')) {
             $uploadResult = $this->videoManager->handleVideoUpload($request->file('video_file'));
             $updateData['video_source'] = $uploadResult['video_source'];
@@ -452,6 +438,7 @@ class CourseController extends Controller
         } elseif (! empty($validated['mux_playback_id'])) {
             $updateData['video_source'] = 'mux';
             $updateData['mux_playback_id'] = trim($validated['mux_playback_id']);
+            $updateData['mux_asset_id'] = $validated['mux_asset_id'] ?? $video->mux_asset_id;
             $updateData['video_url'] = "https://stream.mux.com/{$updateData['mux_playback_id']}.m3u8";
         } elseif (! empty($validated['video_url'])) {
             $parsed = $this->videoManager->parseVideoInput($validated['video_url']);
@@ -469,13 +456,13 @@ class CourseController extends Controller
                 [
                     'course_id' => $course->id,
                     'title_ar' => $validated['task_title_ar'],
-                    'instructions_ar' => __('قم بإعداد وتسجيل التطبيق السريري المرفق بهذا الدرس.'),
+                    'instructions_ar' => $validated['task_instructions_ar'] ?? __('قم بإعداد وتسجيل التطبيق السريري المرفق بهذا الدرس.'),
                     'max_score' => 100,
                 ]
             );
         }
 
-        return back()->with('success', __('تم تحديث الدرس والمهمة المرفقة بنجاح.'));
+        return redirect()->route('admin.courses.show', $course)->with('success', __('تم تحديث الدرس والمهمة المرفقة بنجاح.'));
     }
 
     /**
@@ -491,18 +478,9 @@ class CourseController extends Controller
     /**
      * Apply video settings or bulk operations (specific video, multiple selection, by level, or by course).
      */
-    public function applyVideoSettings(Request $request, Course $course): RedirectResponse
+    public function applyVideoSettings(ApplyVideoSettingsRequest $request, Course $course): RedirectResponse
     {
-        $validated = $request->validate([
-            'scope' => ['required', 'string', 'in:specific,bulk,level,course'],
-            'video_ids' => ['nullable', 'array'],
-            'video_ids.*' => ['integer', 'exists:videos,id'],
-            'level_id' => ['nullable', 'integer', 'exists:levels,id'],
-            'target_level_id' => ['nullable', 'integer', 'exists:levels,id'],
-            'bulk_action' => ['nullable', 'string', 'in:update_settings,move_level,delete'],
-            'min_completion_percentage' => ['nullable', 'integer', 'min:1', 'max:100'],
-            'free_preview_policy' => ['nullable', 'string', 'in:keep,enable_all,disable_all,first_only'],
-        ]);
+        $validated = $request->validated();
 
         $scope = $validated['scope'];
         $query = $course->videos();

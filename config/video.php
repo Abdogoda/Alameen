@@ -26,6 +26,7 @@ return [
         'mux' => [
             'token_id' => env('MUX_TOKEN_ID'),
             'token_secret' => env('MUX_TOKEN_SECRET'),
+            'webhook_secret' => env('MUX_WEBHOOK_SECRET'),
             'base_url' => env('MUX_BASE_URL', 'https://api.mux.com/video/v1'),
             'playback_policy' => ['public'],
             'cors_origin' => env('MUX_CORS_ORIGIN', '*'),

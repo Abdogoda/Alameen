@@ -62,31 +62,18 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">
-                        {{ __('عنوان الكورس بالعربية:') }} <span class="text-rose-500">*</span>
-                    </label>
-                    <input 
-                        type="text" 
-                        name="title_ar" 
-                        required 
-                        value="{{ old('title_ar', $course->title_ar) }}" 
-                        class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-sm font-bold text-[#012383] dark:text-white outline-none focus:border-[#0B2A8F] bg-slate-50/50 dark:bg-slate-800/50" 
-                    />
-                </div>
-
-                <div>
-                    <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">
-                        {{ __('عنوان الكورس بالإنجليزية:') }}
-                    </label>
-                    <input 
-                        type="text" 
-                        name="title_en" 
-                        value="{{ old('title_en', $course->title_en) }}" 
-                        class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-sm font-medium text-slate-700 dark:text-slate-200 outline-none focus:border-[#0B2A8F] bg-slate-50/50 dark:bg-slate-800/50" 
-                    />
-                </div>
+            <div>
+                <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">
+                    {{ __('عنوان الكورس بالعربية:') }} <span class="text-rose-500">*</span>
+                </label>
+                <input 
+                    type="text" 
+                    name="title_ar" 
+                    required 
+                    value="{{ old('title_ar', $course->title_ar) }}" 
+                    class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-sm font-bold text-[#012383] dark:text-white outline-none focus:border-[#0B2A8F] bg-slate-50/50 dark:bg-slate-800/50" 
+                />
+                <input type="hidden" name="title_en" value="{{ old('title_en', $course->title_en) }}" />
             </div>
 
             <div>
@@ -102,16 +89,10 @@
                 />
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">{{ __('الوصف بالعربية:') }}</label>
-                    <textarea name="description_ar" rows="3" class="w-full p-3.5 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-medium text-slate-700 dark:text-slate-200 outline-none focus:border-[#0B2A8F] resize-none bg-slate-50/50 dark:bg-slate-800/50">{{ old('description_ar', $course->description_ar) }}</textarea>
-                </div>
-
-                <div>
-                    <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">{{ __('الوصف بالإنجليزية:') }}</label>
-                    <textarea name="description_en" rows="3" class="w-full p-3.5 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-medium text-slate-700 dark:text-slate-200 outline-none focus:border-[#0B2A8F] resize-none bg-slate-50/50 dark:bg-slate-800/50">{{ old('description_en', $course->description_en) }}</textarea>
-                </div>
+            <div>
+                <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">{{ __('نبذة ووصف الكورس بالعربية:') }}</label>
+                <textarea name="description_ar" rows="3" class="w-full p-3.5 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-medium text-slate-700 dark:text-slate-200 outline-none focus:border-[#0B2A8F] resize-none bg-slate-50/50 dark:bg-slate-800/50">{{ old('description_ar', $course->description_ar) }}</textarea>
+                <input type="hidden" name="description_en" value="{{ old('description_en', $course->description_en) }}" />
             </div>
         </div>
 
@@ -322,7 +303,7 @@
             <div>
                 <button 
                     type="button" 
-                    onclick="if(confirm('{{ __('هل أنت متأكد من رغبتك في حذف هذا الكورس نهائياً؟') }}')) document.getElementById('delete-course-form').submit();" 
+                    onclick="if(confirm('{{ __('هل أنت متأكد من رغبتك في حذف هذا الكورس نهائياً؟') }}')) { if(window.AlameenButtonLoader) window.AlameenButtonLoader.setButtonLoading(this, true, '{{ __('جاري حذف الكورس...') }}'); document.getElementById('delete-course-form').submit(); }" 
                     class="px-4 py-2.5 rounded-xl border border-rose-300 dark:border-rose-900 text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 text-xs font-bold transition-all cursor-pointer"
                 >
                     {{ __('حذف الكورس التدريبي نهائياً') }}

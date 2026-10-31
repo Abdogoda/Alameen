@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\FirebaseLoginRequest;
 use App\Services\Auth\FirebaseAuthenticationService;
 use App\Services\Auth\FirebaseTokenVerifier;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
 class FirebaseAuthController extends Controller
@@ -21,7 +21,7 @@ class FirebaseAuthController extends Controller
     /**
      * Authenticate or register a student user using a Firebase ID token.
      */
-    public function authenticate(Request $request): JsonResponse
+    public function authenticate(FirebaseLoginRequest $request): JsonResponse
     {
         if (! $this->tokenVerifier->isEnabled()) {
             return response()->json([
@@ -30,10 +30,7 @@ class FirebaseAuthController extends Controller
             ], 400);
         }
 
-        $validated = $request->validate([
-            'id_token' => ['required', 'string'],
-            'remember' => ['sometimes', 'boolean'],
-        ]);
+        $validated = $request->validated();
 
         try {
             $result = $this->authService->authenticateUser(

@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\AdminFirebaseLoginRequest;
 use App\Services\Auth\FirebaseAuthenticationService;
 use App\Services\Auth\FirebaseTokenVerifier;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
 class AdminFirebaseAuthController extends Controller
@@ -21,7 +21,7 @@ class AdminFirebaseAuthController extends Controller
     /**
      * Authenticate an administrator using a Firebase ID token.
      */
-    public function authenticate(Request $request): JsonResponse
+    public function authenticate(AdminFirebaseLoginRequest $request): JsonResponse
     {
         if (! $this->tokenVerifier->isEnabled()) {
             return response()->json([
@@ -30,10 +30,7 @@ class AdminFirebaseAuthController extends Controller
             ], 400);
         }
 
-        $validated = $request->validate([
-            'id_token' => ['required', 'string'],
-            'remember' => ['sometimes', 'boolean'],
-        ]);
+        $validated = $request->validated();
 
         try {
             $result = $this->authService->authenticateAdmin(

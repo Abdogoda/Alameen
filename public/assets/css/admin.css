@@ -523,3 +523,91 @@ html[dir="rtl"] #alameen-back-to-top {
     transform: translateY(0);
   }
 }
+
+/* ========================================================
+   Sidebar Drawer Structure & Modern Custom Scrollbar
+   ======================================================== */
+.admin-sidebar-drawer,
+.student-sidebar-drawer {
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.alameen-sidebar-scroll {
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  overscroll-behavior: contain !important;
+  -webkit-overflow-scrolling: touch !important;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(203, 213, 225, 0.7) transparent;
+}
+
+html.dark .alameen-sidebar-scroll,
+.dark .alameen-sidebar-scroll {
+  scrollbar-color: rgba(71, 85, 105, 0.7) transparent;
+}
+
+.alameen-sidebar-scroll::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+.alameen-sidebar-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.alameen-sidebar-scroll::-webkit-scrollbar-thumb {
+  background-color: rgba(203, 213, 225, 0.65);
+  border-radius: 9999px;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.alameen-sidebar-scroll:hover::-webkit-scrollbar-thumb,
+.alameen-sidebar-scroll::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(148, 163, 184, 0.95);
+}
+
+html.dark .alameen-sidebar-scroll::-webkit-scrollbar-thumb,
+.dark .alameen-sidebar-scroll::-webkit-scrollbar-thumb {
+  background-color: rgba(71, 85, 105, 0.65);
+}
+
+html.dark .alameen-sidebar-scroll:hover::-webkit-scrollbar-thumb,
+html.dark .alameen-sidebar-scroll::-webkit-scrollbar-thumb:hover,
+.dark .alameen-sidebar-scroll:hover::-webkit-scrollbar-thumb,
+.dark .alameen-sidebar-scroll::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(100, 116, 139, 0.95);
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: rgba(203, 213, 225, 0.65);
+  border-radius: 9999px;
+  transition: background-color 0.2s ease-in-out;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(148, 163, 184, 0.95);
+}
+html.dark .scrollbar-thin::-webkit-scrollbar-thumb,
+.dark .scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: rgba(71, 85, 105, 0.65);
+}
+html.dark .scrollbar-thin::-webkit-scrollbar-thumb:hover,
+.dark .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(100, 116, 139, 0.95);
+}
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(203, 213, 225, 0.7) transparent;
+}
+html.dark .scrollbar-thin,
+.dark .scrollbar-thin {
+  scrollbar-color: rgba(71, 85, 105, 0.7) transparent;
+}

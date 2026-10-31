@@ -156,19 +156,29 @@ if (typeof window !== 'undefined') {
 export function handleUpdatePrice(event) {
   event.preventDefault();
   const form = event.target;
-  const originalPrice = form.originalPrice?.value;
-  const currentPrice = form.currentPrice?.value;
+  const submitBtn = form.querySelector('button[type="submit"]');
+  if (window.AlameenButtonLoader && submitBtn) {
+    window.AlameenButtonLoader.setButtonLoading(submitBtn, true, 'جاري تحديث السعر...');
+  }
 
-  // Update elements across page
-  document.querySelectorAll('.dynamic-course-price').forEach(el => {
-    el.textContent = `${Number(currentPrice).toLocaleString('ar-EG')} ج.م`;
-  });
-  document.querySelectorAll('.dynamic-course-old-price').forEach(el => {
-    el.textContent = `${Number(originalPrice).toLocaleString('ar-EG')} ج.م`;
-  });
+  setTimeout(() => {
+    const originalPrice = form.originalPrice?.value;
+    const currentPrice = form.currentPrice?.value;
 
-  closeModal('modal-edit-price');
-  showToast('تم تحديث السعر بنجاح', `تم ضبط سعر الكورس إلى ${currentPrice} ج.م مع إمكانية الشراء المباشر.`);
+    // Update elements across page
+    document.querySelectorAll('.dynamic-course-price').forEach(el => {
+      el.textContent = `${Number(currentPrice).toLocaleString('ar-EG')} ج.م`;
+    });
+    document.querySelectorAll('.dynamic-course-old-price').forEach(el => {
+      el.textContent = `${Number(originalPrice).toLocaleString('ar-EG')} ج.م`;
+    });
+
+    closeModal('modal-edit-price');
+    if (window.AlameenButtonLoader && submitBtn) {
+      window.AlameenButtonLoader.setButtonLoading(submitBtn, false);
+    }
+    showToast('تم تحديث السعر بنجاح', `تم ضبط سعر الكورس إلى ${currentPrice} ج.م مع إمكانية الشراء المباشر.`);
+  }, 400);
 }
 
 if (typeof window !== 'undefined') {
@@ -201,23 +211,33 @@ export function viewReceiptModal(data) {
 
 export function approveReceipt() {
   const modal = document.getElementById('modal-view-receipt');
-  const rowId = modal.dataset.rowId;
-  const row = document.getElementById(rowId);
-
-  if (row) {
-    const badge = row.querySelector('.receipt-status-badge');
-    if (badge) {
-      badge.className = 'receipt-status-badge px-3 py-1 rounded-full text-xs font-bold badge-active flex items-center gap-1.5 justify-center';
-      badge.innerHTML = `<span class="size-1.5 rounded-full bg-emerald-500"></span> <span>معتمد • مفعل</span>`;
-    }
-    const actionCell = row.querySelector('.receipt-actions-cell');
-    if (actionCell) {
-      actionCell.innerHTML = `<span class="text-xs text-emerald-700 font-bold bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-lg">تم منح الوصول</span>`;
-    }
+  const confirmBtn = document.querySelector('#modal-view-receipt button[onclick*="approveReceipt"]');
+  if (window.AlameenButtonLoader && confirmBtn) {
+    window.AlameenButtonLoader.setButtonLoading(confirmBtn, true, 'جاري الاعتماد ومنح الوصول...');
   }
 
-  closeModal('modal-view-receipt');
-  showToast('تم اعتماد الإيصال', 'تم تأكيد السداد وتفعيل صلاحية وصول الطالب إلى الكورس تلقائيًا.');
+  setTimeout(() => {
+    const rowId = modal.dataset.rowId;
+    const row = document.getElementById(rowId);
+
+    if (row) {
+      const badge = row.querySelector('.receipt-status-badge');
+      if (badge) {
+        badge.className = 'receipt-status-badge px-3 py-1 rounded-full text-xs font-bold badge-active flex items-center gap-1.5 justify-center';
+        badge.innerHTML = `<span class="size-1.5 rounded-full bg-emerald-500"></span> <span>معتمد • مفعل</span>`;
+      }
+      const actionCell = row.querySelector('.receipt-actions-cell');
+      if (actionCell) {
+        actionCell.innerHTML = `<span class="text-xs text-emerald-700 font-bold bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-lg">تم منح الوصول</span>`;
+      }
+    }
+
+    closeModal('modal-view-receipt');
+    if (window.AlameenButtonLoader && confirmBtn) {
+      window.AlameenButtonLoader.setButtonLoading(confirmBtn, false);
+    }
+    showToast('تم اعتماد الإيصال', 'تم تأكيد السداد وتفعيل صلاحية وصول الطالب إلى الكورس تلقائيًا.');
+  }, 400);
 }
 
 export function openRejectReceiptModal() {
@@ -227,25 +247,38 @@ export function openRejectReceiptModal() {
 
 export function submitRejectReceipt(event) {
   event.preventDefault();
-  const modal = document.getElementById('modal-view-receipt');
-  const rowId = modal.dataset.rowId;
-  const reason = document.getElementById('reject-reason-input')?.value || 'بيانات التحويل غير مطابقة';
-
-  const row = document.getElementById(rowId);
-  if (row) {
-    const badge = row.querySelector('.receipt-status-badge');
-    if (badge) {
-      badge.className = 'receipt-status-badge px-3 py-1 rounded-full text-xs font-bold badge-rejected flex items-center gap-1.5 justify-center';
-      badge.innerHTML = `<span class="size-1.5 rounded-full bg-rose-500"></span> <span>مرفوض</span>`;
-    }
-    const actionCell = row.querySelector('.receipt-actions-cell');
-    if (actionCell) {
-      actionCell.innerHTML = `<button type="button" onclick="showToast('سبب الرفض', '${reason}', 'info')" class="text-xs text-rose-700 hover:underline">عرض السبب</button>`;
-    }
+  const form = event.target;
+  const submitBtn = form.querySelector('button[type="submit"]');
+  if (window.AlameenButtonLoader && submitBtn) {
+    window.AlameenButtonLoader.setButtonLoading(submitBtn, true, 'جاري تأكيد الرفض...');
   }
 
-  closeModal('modal-reject-receipt');
-  showToast('تم رفض الإيصال', `تم رفض الطلب مع إشعار الطالب بالسبب: ${reason}`, 'error');
+  setTimeout(() => {
+    const modal = document.getElementById('modal-view-receipt');
+    const rowId = modal?.dataset?.rowId;
+    const reason = document.getElementById('reject-reason-input')?.value || 'بيانات التحويل غير مطابقة';
+
+    if (rowId) {
+      const row = document.getElementById(rowId);
+      if (row) {
+        const badge = row.querySelector('.receipt-status-badge');
+        if (badge) {
+          badge.className = 'receipt-status-badge px-3 py-1 rounded-full text-xs font-bold badge-rejected flex items-center gap-1.5 justify-center';
+          badge.innerHTML = `<span class="size-1.5 rounded-full bg-rose-500"></span> <span>مرفوض</span>`;
+        }
+        const actionCell = row.querySelector('.receipt-actions-cell');
+        if (actionCell) {
+          actionCell.innerHTML = `<button type="button" onclick="showToast('سبب الرفض', '${reason}', 'info')" class="text-xs text-rose-700 hover:underline">عرض السبب</button>`;
+        }
+      }
+    }
+
+    closeModal('modal-reject-receipt');
+    if (window.AlameenButtonLoader && submitBtn) {
+      window.AlameenButtonLoader.setButtonLoading(submitBtn, false);
+    }
+    showToast('تم رفض الإيصال', `تم رفض الطلب مع إشعار الطالب بالسبب: ${reason}`, 'error');
+  }, 400);
 }
 
 if (typeof window !== 'undefined') {
@@ -288,38 +321,50 @@ export function confirmToggleAccess() {
   const modal = document.getElementById('modal-toggle-access');
   const studentId = modal.dataset.studentId;
   const currentStatus = modal.dataset.currentStatus;
-  const row = document.getElementById(studentId);
+  const confirmBtn = document.getElementById('toggle-access-confirm-btn');
+  const processingText = currentStatus === 'active' ? 'جاري إلغاء الصلاحية...' : 'جاري تفعيل الصلاحية...';
 
-  if (row) {
-    const badge = row.querySelector('.student-access-badge');
-    const toggleBtn = row.querySelector('.student-toggle-btn');
-
-    if (currentStatus === 'active') {
-      if (badge) {
-        badge.className = 'student-access-badge px-3 py-1 rounded-full text-xs font-bold badge-revoked';
-        badge.textContent = 'ملغي الصلاحية';
-      }
-      if (toggleBtn) {
-        toggleBtn.textContent = 'منح الصلاحية';
-        toggleBtn.className = 'student-toggle-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 transition-colors';
-        toggleBtn.setAttribute('onclick', `toggleStudentAccess('${studentId}', '${row.dataset.studentName}', 'revoked')`);
-      }
-      showToast('تم سحب الصلاحية', 'تم إلغاء وصول الطالب للكورس بنجاح.', 'info');
-    } else {
-      if (badge) {
-        badge.className = 'student-access-badge px-3 py-1 rounded-full text-xs font-bold badge-active';
-        badge.textContent = 'نشط ومفعل';
-      }
-      if (toggleBtn) {
-        toggleBtn.textContent = 'إلغاء الصلاحية';
-        toggleBtn.className = 'student-toggle-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 transition-colors';
-        toggleBtn.setAttribute('onclick', `toggleStudentAccess('${studentId}', '${row.dataset.studentName}', 'active')`);
-      }
-      showToast('تم تفعيل الصلاحية', 'تم منح الطالب صلاحية الوصول الكامل لمحتوى الكورس.');
-    }
+  if (window.AlameenButtonLoader && confirmBtn) {
+    window.AlameenButtonLoader.setButtonLoading(confirmBtn, true, processingText);
   }
 
-  closeModal('modal-toggle-access');
+  setTimeout(() => {
+    const row = document.getElementById(studentId);
+
+    if (row) {
+      const badge = row.querySelector('.student-access-badge');
+      const toggleBtn = row.querySelector('.student-toggle-btn');
+
+      if (currentStatus === 'active') {
+        if (badge) {
+          badge.className = 'student-access-badge px-3 py-1 rounded-full text-xs font-bold badge-revoked';
+          badge.textContent = 'ملغي الصلاحية';
+        }
+        if (toggleBtn) {
+          toggleBtn.textContent = 'منح الصلاحية';
+          toggleBtn.className = 'student-toggle-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 transition-colors';
+          toggleBtn.setAttribute('onclick', `toggleStudentAccess('${studentId}', '${row.dataset.studentName}', 'revoked')`);
+        }
+        showToast('تم سحب الصلاحية', 'تم إلغاء وصول الطالب للكورس بنجاح.', 'info');
+      } else {
+        if (badge) {
+          badge.className = 'student-access-badge px-3 py-1 rounded-full text-xs font-bold badge-active';
+          badge.textContent = 'نشط ومفعل';
+        }
+        if (toggleBtn) {
+          toggleBtn.textContent = 'إلغاء الصلاحية';
+          toggleBtn.className = 'student-toggle-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 transition-colors';
+          toggleBtn.setAttribute('onclick', `toggleStudentAccess('${studentId}', '${row.dataset.studentName}', 'active')`);
+        }
+        showToast('تم تفعيل الصلاحية', 'تم منح الطالب صلاحية الوصول الكامل لمحتوى الكورس.');
+      }
+    }
+
+    closeModal('modal-toggle-access');
+    if (window.AlameenButtonLoader && confirmBtn) {
+      window.AlameenButtonLoader.setButtonLoading(confirmBtn, false);
+    }
+  }, 400);
 }
 
 if (typeof window !== 'undefined') {
@@ -351,26 +396,37 @@ export function openGradingModal(data) {
 
 export function submitTaskGrade(event) {
   event.preventDefault();
-  const modal = document.getElementById('modal-grade-task');
-  const taskId = modal.dataset.taskId;
-  const score = document.getElementById('grade-score-input')?.value;
-  const feedback = document.getElementById('grade-feedback-input')?.value;
-
-  const row = document.getElementById(taskId);
-  if (row) {
-    const scoreCell = row.querySelector('.task-score-cell');
-    if (scoreCell) {
-      scoreCell.innerHTML = `<span class="font-bold text-sm text-[#012383]">${score} / ١٠٠</span>`;
-    }
-    const statusCell = row.querySelector('.task-status-badge');
-    if (statusCell) {
-      statusCell.className = 'task-status-badge px-3 py-1 rounded-full text-xs font-bold badge-active';
-      statusCell.textContent = 'مُقيّمة ومُعتمدة';
-    }
+  const form = event.target;
+  const submitBtn = form.querySelector('button[type="submit"]');
+  if (window.AlameenButtonLoader && submitBtn) {
+    window.AlameenButtonLoader.setButtonLoading(submitBtn, true, 'جاري حفظ التقييم...');
   }
 
-  closeModal('modal-grade-task');
-  showToast('تم حفظ التقييم', `تم تسجيل الدرجة (${score} من 100) وإرسال الملاحظات التوجيهية لملف الطالب.`);
+  setTimeout(() => {
+    const modal = document.getElementById('modal-grade-task');
+    const taskId = modal?.dataset?.taskId;
+    const score = document.getElementById('grade-score-input')?.value;
+    const feedback = document.getElementById('grade-feedback-input')?.value;
+
+    const row = taskId ? document.getElementById(taskId) : null;
+    if (row) {
+      const scoreCell = row.querySelector('.task-score-cell');
+      if (scoreCell) {
+        scoreCell.innerHTML = `<span class="font-bold text-sm text-[#012383]">${score} / ١٠٠</span>`;
+      }
+      const statusCell = row.querySelector('.task-status-badge');
+      if (statusCell) {
+        statusCell.className = 'task-status-badge px-3 py-1 rounded-full text-xs font-bold badge-active';
+        statusCell.textContent = 'مُقيّمة ومُعتمدة';
+      }
+    }
+
+    closeModal('modal-grade-task');
+    if (window.AlameenButtonLoader && submitBtn) {
+      window.AlameenButtonLoader.setButtonLoading(submitBtn, false);
+    }
+    showToast('تم حفظ التقييم', `تم تسجيل الدرجة (${score} من 100) وإرسال الملاحظات التوجيهية لملف الطالب.`);
+  }, 400);
 }
 
 if (typeof window !== 'undefined') {
@@ -383,47 +439,58 @@ if (typeof window !== 'undefined') {
 // ==========================================
 export function submitAddLevel(event) {
   event.preventDefault();
+  const form = event.target;
+  const submitBtn = form.querySelector('button[type="submit"]');
   const title = document.getElementById('new-level-title')?.value;
   const desc = document.getElementById('new-level-desc')?.value;
   const container = document.getElementById('levels-curriculum-container');
 
   if (!title || !container) return;
 
-  const levelCount = container.children.length + 1;
-  const levelId = `level-dynamic-${Date.now()}`;
+  if (window.AlameenButtonLoader && submitBtn) {
+    window.AlameenButtonLoader.setButtonLoading(submitBtn, true, 'جاري إضافة المستوى...');
+  }
 
-  const levelHtml = `
-    <div id="${levelId}" class="bg-white border border-[#DEE8F7] rounded-2xl overflow-hidden shadow-xs transition-all mb-4">
-      <div class="p-5 bg-gradient-to-r from-slate-50 to-white flex items-center justify-between border-b border-[#DEE8F7]/60">
-        <div class="flex items-center gap-3">
-          <span class="size-8 rounded-xl bg-[#EAF1FB] text-[#0B2A8F] font-bold text-sm flex items-center justify-center font-['Cairo']">
-            ${levelCount}
-          </span>
-          <div>
-            <h3 class="font-bold text-base text-[#012383] font-['Cairo']">${title}</h3>
-            <p class="text-xs text-[#64748B] font-['Cairo']">${desc || 'مستوى ديناميكي جديد • ٠ فيديوهات'}</p>
+  setTimeout(() => {
+    const levelCount = container.children.length + 1;
+    const levelId = `level-dynamic-${Date.now()}`;
+
+    const levelHtml = `
+      <div id="${levelId}" class="bg-white border border-[#DEE8F7] rounded-2xl overflow-hidden shadow-xs transition-all mb-4">
+        <div class="p-5 bg-gradient-to-r from-slate-50 to-white flex items-center justify-between border-b border-[#DEE8F7]/60">
+          <div class="flex items-center gap-3">
+            <span class="size-8 rounded-xl bg-[#EAF1FB] text-[#0B2A8F] font-bold text-sm flex items-center justify-center font-['Cairo']">
+              ${levelCount}
+            </span>
+            <div>
+              <h3 class="font-bold text-base text-[#012383] font-['Cairo']">${title}</h3>
+              <p class="text-xs text-[#64748B] font-['Cairo']">${desc || 'مستوى ديناميكي جديد • ٠ فيديوهات'}</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <button type="button" onclick="openAddLessonModal('${levelId}', '${title}')" class="px-3.5 py-1.5 rounded-xl bg-[#0B2A8F] hover:bg-[#012383] text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer">
+              <svg class="size-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+              <span>إضافة درس</span>
+            </button>
+            <button type="button" onclick="document.getElementById('${levelId}').remove(); showToast('تم الحذف', 'تم حذف المستوى بنجاح', 'info');" class="p-2 text-slate-400 hover:text-rose-600 transition-colors cursor-pointer rounded-lg hover:bg-rose-50" title="حذف المستوى">
+              <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+            </button>
           </div>
         </div>
-        <div class="flex items-center gap-2">
-          <button type="button" onclick="openAddLessonModal('${levelId}', '${title}')" class="px-3.5 py-1.5 rounded-xl bg-[#0B2A8F] hover:bg-[#012383] text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer">
-            <svg class="size-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
-            <span>إضافة درس</span>
-          </button>
-          <button type="button" onclick="document.getElementById('${levelId}').remove(); showToast('تم الحذف', 'تم حذف المستوى بنجاح', 'info');" class="p-2 text-slate-400 hover:text-rose-600 transition-colors cursor-pointer rounded-lg hover:bg-rose-50" title="حذف المستوى">
-            <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-          </button>
+        <div class="lessons-list p-4 flex flex-col gap-2.5 bg-slate-50/40 min-h-[70px] text-center text-xs text-slate-400 font-['Cairo'] py-6">
+          لا توجد فيديوهات في هذا المستوى حتى الآن. اضغط على زر "إضافة درس" لإضافة فيديو ومهمته.
         </div>
       </div>
-      <div class="lessons-list p-4 flex flex-col gap-2.5 bg-slate-50/40 min-h-[70px] text-center text-xs text-slate-400 font-['Cairo'] py-6">
-        لا توجد فيديوهات في هذا المستوى حتى الآن. اضغط على زر "إضافة درس" لإضافة فيديو ومهمته.
-      </div>
-    </div>
-  `;
+    `;
 
-  container.insertAdjacentHTML('beforeend', levelHtml);
-  closeModal('modal-add-level');
-  showToast('تمت إضافة المستوى', `تم إنشاء "${title}" بنجاح ضمن تسلسل منهج الكورس.`);
-  event.target.reset();
+    container.insertAdjacentHTML('beforeend', levelHtml);
+    closeModal('modal-add-level');
+    if (window.AlameenButtonLoader && submitBtn) {
+      window.AlameenButtonLoader.setButtonLoading(submitBtn, false);
+    }
+    showToast('تمت إضافة المستوى', `تم إنشاء "${title}" بنجاح ضمن تسلسل منهج الكورس.`);
+    form.reset();
+  }, 400);
 }
 
 export function openAddLessonModal(levelId, levelTitle) {
@@ -437,47 +504,59 @@ export function openAddLessonModal(levelId, levelTitle) {
 
 export function submitAddLesson(event) {
   event.preventDefault();
+  const form = event.target;
+  const submitBtn = form.querySelector('button[type="submit"]');
   const modal = document.getElementById('modal-add-lesson');
   const levelId = modal.dataset.targetLevelId;
   const levelEl = document.getElementById(levelId);
   if (!levelEl) return;
 
-  const listContainer = levelEl.querySelector('.lessons-list');
   const title = document.getElementById('new-lesson-title')?.value;
-  const duration = document.getElementById('new-lesson-duration')?.value || '20';
-  const taskTitle = document.getElementById('new-lesson-task-title')?.value || `مهمة: ${title}`;
+  if (!title) return;
 
-  // Clear placeholder if empty
-  if (listContainer.innerHTML.includes('لا توجد فيديوهات')) {
-    listContainer.innerHTML = '';
+  if (window.AlameenButtonLoader && submitBtn) {
+    window.AlameenButtonLoader.setButtonLoading(submitBtn, true, 'جاري إضافة الدرس...');
   }
 
-  const lessonId = `lesson-dynamic-${Date.now()}`;
-  const lessonHtml = `
-    <div id="${lessonId}" class="p-3.5 bg-white border border-[#DEE8F7] rounded-xl flex items-center justify-between gap-3 shadow-2xs hover:border-[#0B2A8F]/40 transition-colors">
-      <div class="flex items-center gap-3">
-        <div class="size-8 rounded-lg bg-[#EAF1FB] flex items-center justify-center shrink-0 text-[#0B2A8F]">
-          <svg class="size-4" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"/></svg>
-        </div>
-        <div class="text-right">
-          <h4 class="font-bold text-sm text-[#012383] font-['Cairo']">${title}</h4>
-          <div class="flex items-center gap-2 text-xs text-slate-500 font-['Cairo'] mt-0.5">
-            <span>${duration} دقيقة</span>
-            <span>•</span>
-            <span class="text-emerald-700 font-medium">مهمة مرتبطة: ${taskTitle}</span>
+  setTimeout(() => {
+    const listContainer = levelEl.querySelector('.lessons-list');
+    const duration = document.getElementById('new-lesson-duration')?.value || '20';
+    const taskTitle = document.getElementById('new-lesson-task-title')?.value || `مهمة: ${title}`;
+
+    if (listContainer.innerHTML.includes('لا توجد فيديوهات')) {
+      listContainer.innerHTML = '';
+    }
+
+    const lessonId = `lesson-dynamic-${Date.now()}`;
+    const lessonHtml = `
+      <div id="${lessonId}" class="p-3.5 bg-white border border-[#DEE8F7] rounded-xl flex items-center justify-between gap-3 shadow-2xs hover:border-[#0B2A8F]/40 transition-colors">
+        <div class="flex items-center gap-3">
+          <div class="size-8 rounded-lg bg-[#EAF1FB] flex items-center justify-center shrink-0 text-[#0B2A8F]">
+            <svg class="size-4" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"/></svg>
+          </div>
+          <div class="text-right">
+            <h4 class="font-bold text-sm text-[#012383] font-['Cairo']">${title}</h4>
+            <div class="flex items-center gap-2 text-xs text-slate-500 font-['Cairo'] mt-0.5">
+              <span>${duration} دقيقة</span>
+              <span>•</span>
+              <span class="text-emerald-700 font-medium">مهمة مرتبطة: ${taskTitle}</span>
+            </div>
           </div>
         </div>
+        <button type="button" onclick="document.getElementById('${lessonId}').remove(); showToast('تم الحذف', 'تم حذف الدرس ومهمته', 'info');" class="p-1.5 text-slate-400 hover:text-rose-600 transition-colors cursor-pointer rounded-lg hover:bg-rose-50" title="حذف الدرس">
+          <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+        </button>
       </div>
-      <button type="button" onclick="document.getElementById('${lessonId}').remove(); showToast('تم الحذف', 'تم حذف الدرس ومهمته', 'info');" class="p-1.5 text-slate-400 hover:text-rose-600 transition-colors cursor-pointer rounded-lg hover:bg-rose-50" title="حذف الدرس">
-        <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-      </button>
-    </div>
-  `;
+    `;
 
-  listContainer.insertAdjacentHTML('beforeend', lessonHtml);
-  closeModal('modal-add-lesson');
-  showToast('تمت إضافة الدرس', `تمت إضافة فيديو "${title}" مع مهمته بنجاح.`);
-  event.target.reset();
+    listContainer.insertAdjacentHTML('beforeend', lessonHtml);
+    closeModal('modal-add-lesson');
+    if (window.AlameenButtonLoader && submitBtn) {
+      window.AlameenButtonLoader.setButtonLoading(submitBtn, false);
+    }
+    showToast('تمت إضافة الدرس', `تمت إضافة فيديو "${title}" مع مهمته بنجاح.`);
+    form.reset();
+  }, 400);
 }
 
 if (typeof window !== 'undefined') {

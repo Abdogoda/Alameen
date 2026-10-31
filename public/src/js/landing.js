@@ -394,18 +394,28 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      hideReviewModal();
-      if (document.getElementById('modal-review-title')) document.getElementById('modal-review-title').value = '';
-      if (document.getElementById('modal-review-text')) document.getElementById('modal-review-text').value = '';
-
-      if (toast && toastMessage) {
+      if (window.AlameenButtonLoader) {
         const isEn = document.documentElement.lang === 'en';
-        toastMessage.textContent = isEn ? 'Your review has been submitted successfully!' : 'تم نشر تقييمك بنجاح! شكراً لمشاركتك.';
-        toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
-        setTimeout(() => {
-          toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
-        }, 3500);
+        window.AlameenButtonLoader.setButtonLoading(submitReviewBtn, true, isEn ? 'Submitting review...' : 'جاري إرسال التقييم...');
       }
+
+      setTimeout(() => {
+        hideReviewModal();
+        if (window.AlameenButtonLoader) {
+          window.AlameenButtonLoader.setButtonLoading(submitReviewBtn, false);
+        }
+        if (document.getElementById('modal-review-title')) document.getElementById('modal-review-title').value = '';
+        if (document.getElementById('modal-review-text')) document.getElementById('modal-review-text').value = '';
+
+        if (toast && toastMessage) {
+          const isEn = document.documentElement.lang === 'en';
+          toastMessage.textContent = isEn ? 'Your review has been submitted successfully!' : 'تم نشر تقييمك بنجاح! شكراً لمشاركتك.';
+          toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+          setTimeout(() => {
+            toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+          }, 3500);
+        }
+      }, 450);
     });
   }
 

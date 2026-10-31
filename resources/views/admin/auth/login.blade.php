@@ -45,19 +45,18 @@
                 <img src="/assets/images/logo.png" alt="منصة الأمين" class="size-full object-contain pointer-events-none" />
             </div>
 
-            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-50 dark:bg-amber-950/40 border border-amber-200/90 dark:border-amber-800/50 text-amber-900 dark:text-amber-300 text-xs font-bold mb-2.5 tracking-wide shadow-xs">
+            <!-- Title -->
+            <h1 class="text-2xl sm:text-3xl lg:text-[34px] font-extrabold text-[#012383] dark:text-blue-400 font-['Baloo_Bhaijaan_2'] tracking-tight mb-2 sm:mb-2.5">
+                {{ __('منصة الأمين') }}
+            </h1>
+
+            <!-- Badge under Title -->
+            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-50 dark:bg-amber-950/40 border border-amber-200/90 dark:border-amber-800/50 text-amber-900 dark:text-amber-300 text-xs font-bold tracking-wide shadow-xs">
                 <svg class="size-3.5 text-amber-600 dark:text-amber-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
                 </svg>
                 <span>{{ __('بوابة الإدارة المركزية والتحكم') }}</span>
             </div>
-
-            <h1 class="text-2xl sm:text-3xl lg:text-[34px] font-extrabold text-[#012383] dark:text-blue-400 font-['Baloo_Bhaijaan_2'] tracking-tight mb-1">
-                {{ __('منصة الأمين') }}
-            </h1>
-            <p class="text-xs sm:text-sm text-[#475569] dark:text-slate-400 font-medium max-w-sm leading-relaxed px-2">
-                {{ __('تسجيل الدخول المخصص للمشرفين، المحاضرين، وإدارة المنصة') }}
-            </p>
         </div>
 
         <!-- Crisp Light Login Card -->

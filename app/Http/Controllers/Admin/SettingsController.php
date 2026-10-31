@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\SaveMenuItemRequest;
 use App\Models\ContentBlock;
 use App\Models\Menu;
 use App\Services\Cms\MenuService;
@@ -57,17 +58,9 @@ class SettingsController extends Controller
     /**
      * Store or update a dynamic menu item.
      */
-    public function saveMenuItem(Request $request, Menu $menu): RedirectResponse
+    public function saveMenuItem(SaveMenuItemRequest $request, Menu $menu): RedirectResponse
     {
-        $validated = $request->validate([
-            'title_ar' => ['required', 'string', 'max:255'],
-            'title_en' => ['nullable', 'string', 'max:255'],
-            'url' => ['required', 'string', 'max:255'],
-            'route_name' => ['nullable', 'string', 'max:255'],
-            'sort_order' => ['nullable', 'integer'],
-            'target' => ['nullable', 'string', 'in:_self,_blank'],
-            'is_active' => ['nullable', 'boolean'],
-        ]);
+        $validated = $request->validated();
 
         $this->menuService->saveItem(
             menu: $menu,

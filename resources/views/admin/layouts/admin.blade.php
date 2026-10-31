@@ -45,25 +45,26 @@
             <!-- ============================================== -->
             <aside
                 :class="{ 'is-open': adminSidebarOpen }"
-                class="admin-sidebar-drawer z-50 bg-white dark:bg-slate-900 border-e border-[#DEE8F7] dark:border-slate-800 flex flex-col p-4 sm:p-5 shrink-0 shadow-xl lg:shadow-none overflow-y-auto overscroll-contain scrollbar-thin"
+                class="admin-sidebar-drawer z-50 bg-white dark:bg-slate-900 border-e border-[#DEE8F7] dark:border-slate-800 flex flex-col shrink-0 shadow-xl lg:shadow-none select-none overflow-hidden"
             >
-                <div class="flex flex-col gap-5 sm:gap-6 shrink-0">
-                    <!-- Platform Brand & Role Badge -->
-                    <div class="flex items-center justify-between border-b border-[#DEE8F7] dark:border-slate-800 pb-4">
-                        <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 cursor-pointer">
-                            <div class="size-11 rounded-xl bg-[#EAF1FB] dark:bg-slate-800 flex items-center justify-center p-2 shrink-0 border border-[#DEE8F7] dark:border-slate-700 shadow-xs">
-                                <img src="/assets/images/logo.png" alt="منصة الأمين" class="size-full object-contain pointer-events-none" />
-                            </div>
-                            <div>
-                                <span class="font-['Baloo_Bhaijaan_2'] font-extrabold text-xl leading-tight text-[#012383] dark:text-white block">منصة الأمين</span>
-                                <span class="text-[11px] font-bold text-[#0B2A8F] dark:text-blue-300 bg-[#EAF1FB] dark:bg-slate-800 px-2 py-0.5 rounded-full inline-block mt-0.5">لوحة الإدارة المركزية</span>
-                            </div>
-                        </a>
-                        <button type="button" @click="adminSidebarOpen = false" class="lg:hidden p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer" aria-label="{{ __('إغلاق القائمة') }}">
-                            <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                        </button>
-                    </div>
+                <!-- Platform Brand & Role Badge (Matches top header height: h-14 sm:h-16) -->
+                <div class="h-14 sm:h-16 px-4 sm:px-5 border-b border-[#DEE8F7] dark:border-slate-800 flex items-center justify-between shrink-0 bg-white dark:bg-slate-900">
+                    <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2.5 sm:gap-3 cursor-pointer min-w-0 group">
+                        <div class="size-9 sm:size-10 rounded-xl bg-[#EAF1FB] dark:bg-slate-800 flex items-center justify-center p-1.5 shrink-0 border border-[#DEE8F7] dark:border-slate-700 shadow-xs group-hover:scale-105 transition-transform duration-200">
+                            <img src="/assets/images/logo.png" alt="منصة الأمين" class="size-full object-contain pointer-events-none" />
+                        </div>
+                        <div class="min-w-0">
+                            <span class="font-['Baloo_Bhaijaan_2'] font-extrabold text-base sm:text-lg leading-tight text-[#012383] dark:text-white block truncate">منصة الأمين</span>
+                            <span class="text-[10px] sm:text-[11px] font-bold text-[#0B2A8F] dark:text-blue-300 bg-[#EAF1FB] dark:bg-slate-800 px-2 py-0.5 rounded-full inline-block leading-none mt-0.5">لوحة الإدارة المركزية</span>
+                        </div>
+                    </a>
+                    <button type="button" @click="adminSidebarOpen = false" class="lg:hidden p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer shrink-0" aria-label="{{ __('إغلاق القائمة') }}">
+                        <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                </div>
 
+                <!-- Navigation Links Scroll Area (Enhanced modern subtle scrollbar) -->
+                <div class="flex-1 min-h-0 overflow-y-auto overscroll-contain px-3 sm:px-4 py-4 flex flex-col gap-5 sm:gap-6 alameen-sidebar-scroll">
                     <!-- Navigation Links Group -->
                     <nav class="flex flex-col gap-1.5">
                         <p class="text-[11px] font-bold text-slate-400 dark:text-slate-500 px-3 uppercase tracking-wider mb-1">{{ __('الرئيسية والتحليلات') }}</p>
@@ -168,7 +169,7 @@
                 </div>
 
                 <!-- Bottom Actions (Preview Student LMS / Sign Out) -->
-                <div class="mt-auto shrink-0 border-t border-[#DEE8F7] dark:border-slate-800 pt-4 flex flex-col gap-2">
+                <div class="mt-auto shrink-0 border-t border-[#DEE8F7] dark:border-slate-800 p-3 sm:p-4 flex flex-col gap-2 bg-white dark:bg-slate-900">
                     <a href="{{ route('dashboard') }}" target="_blank" class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 hover:bg-[#EAF1FB] text-[#012383] text-xs font-bold transition-all duration-200 border border-slate-100 hover:border-[#DEE8F7] dark:bg-slate-800/80 dark:hover:bg-slate-700 dark:text-blue-300 dark:border-slate-700 group hover:-translate-y-0.5 hover:shadow-xs active:scale-97">
                         <span class="flex items-center gap-2">
                             <svg class="size-4 text-[#0B2A8F] dark:text-blue-400 group-hover:scale-115 group-hover:rotate-6 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>

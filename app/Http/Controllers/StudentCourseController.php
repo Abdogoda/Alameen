@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Student\RecordProgressRequest;
+use App\Http\Requests\Student\SubmitAssignmentRequest;
+use App\Http\Requests\Student\SubmitReceiptRequest;
 use App\Models\Certificate;
 use App\Models\ClinicalTask;
 use App\Models\Course;
@@ -36,15 +39,9 @@ class StudentCourseController extends Controller
     /**
      * Submit a manual payment receipt for a course.
      */
-    public function submitReceipt(Request $request, Course $course): RedirectResponse
+    public function submitReceipt(SubmitReceiptRequest $request, Course $course): RedirectResponse
     {
-        $validated = $request->validate([
-            'payment_method' => ['required', 'string', 'in:vodafone_cash,instapay,bank_transfer'],
-            'amount' => ['required', 'numeric', 'min:1'],
-            'sender_account' => ['nullable', 'string', 'max:100'],
-            'transaction_reference' => ['nullable', 'string', 'max:100'],
-            'receipt_image' => ['required', 'image', 'max:5120'], // up to 5MB
-        ]);
+        $validated = $request->validated();
 
         /** @var User $user */
         $user = $request->user();
@@ -99,11 +96,9 @@ class StudentCourseController extends Controller
     /**
      * AJAX/API endpoint to record video watch progress in real time.
      */
-    public function recordProgress(Request $request, Video $video): JsonResponse
+    public function recordProgress(RecordProgressRequest $request, Video $video): JsonResponse
     {
-        $validated = $request->validate([
-            'watched_seconds' => ['required', 'integer', 'min:0'],
-        ]);
+        $validated = $request->validated();
 
         /** @var User $user */
         $user = $request->user();
@@ -162,13 +157,9 @@ class StudentCourseController extends Controller
     /**
      * Submit an audio recording or document for a clinical voice exercise.
      */
-    public function submitAssignment(Request $request, ClinicalTask $task): RedirectResponse
+    public function submitAssignment(SubmitAssignmentRequest $request, ClinicalTask $task): RedirectResponse
     {
-        $request->validate([
-            'audio_file' => ['nullable', 'file', 'max:25600'], // 25MB
-            'audio_data' => ['nullable', 'string'],
-            'student_notes' => ['nullable', 'string', 'max:1000'],
-        ]);
+        $validated = $request->validated();
 
         /** @var User $user */
         $user = $request->user();
@@ -176,9 +167,9 @@ class StudentCourseController extends Controller
         $fileToSubmit = null;
         if ($request->hasFile('audio_file')) {
             $fileToSubmit = $request->file('audio_file');
-        } elseif ($request->filled('audio_data')) {
+        } elseif (! empty($validated['audio_data'])) {
             // Base64 recorded blob
-            $data = $request->input('audio_data');
+            $data = (string) $validated['audio_data'];
             if (preg_match('/^data:audio\/(\w+);base64,/', $data, $type)) {
                 $data = substr($data, strpos($data, ',') + 1);
                 $type = strtolower($type[1]);

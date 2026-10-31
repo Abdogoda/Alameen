@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\GradeTaskSubmissionRequest;
 use App\Models\Admin;
 use App\Models\TaskSubmission;
 use App\Services\Clinical\ClinicalTaskService;
@@ -45,12 +46,9 @@ class ClinicalTaskController extends Controller
     /**
      * Grade a voice task submission.
      */
-    public function grade(Request $request, TaskSubmission $submission): RedirectResponse
+    public function grade(GradeTaskSubmissionRequest $request, TaskSubmission $submission): RedirectResponse
     {
-        $validated = $request->validate([
-            'score' => ['required', 'integer', 'min:0', 'max:100'],
-            'clinical_feedback' => ['nullable', 'string', 'max:1000'],
-        ]);
+        $validated = $request->validated();
 
         /** @var Admin $admin */
         $admin = auth('admin')->user();

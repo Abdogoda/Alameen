@@ -236,10 +236,7 @@
                         <input type="text" name="title_ar" required placeholder="مثال: دبلوم تأهيل اضطرابات طيف التوحد والتواصل" class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-sm font-bold text-[#012383] dark:text-white outline-none focus:border-[#0B2A8F] bg-slate-50/50 dark:bg-slate-800/50" />
                     </div>
 
-                    <div>
-                        <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">{{ __('عنوان الكورس بالإنجليزية (اختياري):') }}</label>
-                        <input type="text" name="title_en" placeholder="e.g. Diploma in Autism Spectrum & Communication Disorders" class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-sm font-medium text-slate-700 dark:text-slate-200 outline-none focus:border-[#0B2A8F] bg-slate-50/50 dark:bg-slate-800/50" />
-                    </div>
+                    
 
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                         <div>

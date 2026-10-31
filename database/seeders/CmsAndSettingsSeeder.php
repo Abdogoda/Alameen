@@ -28,8 +28,8 @@ class CmsAndSettingsSeeder extends Seeder
             // General & Branding
             [
                 'key' => 'site_name',
-                'value_ar' => 'منصة الأمين للتخاطب وعلاج النطق',
-                'value_en' => 'Al-Ameen Speech & Language Therapy Platform',
+                'value_ar' => 'منصة الأمين',
+                'value_en' => 'Al-Ameen Platform',
                 'group' => 'branding',
             ],
             [

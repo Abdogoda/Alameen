@@ -10,7 +10,7 @@
 @php
     $cmsSettings = app(\App\Services\Cms\SettingsService::class);
     $footerMenu = app(\App\Services\Cms\MenuService::class)->getMenu('footer_quick_links');
-    $siteName = $cmsSettings->get('site_name', config('app.name', 'منصة مركز الأمين'));
+    $siteName = $cmsSettings->get('site_name', __('منصة الأمين'));
     $siteTagline = $cmsSettings->get('site_tagline', __('المنصة العربية المتخصصة في تدريب وتأهيل مهارات النطق والتخاطب، نجمع بين الأسس العلمية المعتمدة والتطبيقات السريرية العملية بإشراف نخبة من كبار أخصائيي التخاطب.'));
     $contactEmail = $cmsSettings->get('contact_email', 'support@alameen.edu.sa');
     $contactPhone = $cmsSettings->get('contact_phone', '+20 100 000 0000');
@@ -213,7 +213,7 @@
         <div class="pt-8 border-t border-blue-900/40 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-blue-200/60 font-medium">
             
             <div class="flex items-center gap-2 text-center md:text-start">
-                <span>© ٢٠٢٦ {{ config('app.name', 'منصة مركز الأمين') }}. {{ __('جميع الحقوق محفوظة.') }}</span>
+                <span>© {{ date('Y') }} {{ $siteName }}. {{ __('جميع الحقوق محفوظة.') }}</span>
             </div>
 
             <!-- Security & Legal -->

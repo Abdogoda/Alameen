@@ -8,7 +8,7 @@
     $announcementEnabled = $cmsSettings->get('announcement_enabled', '0') === '1';
     $announcementText = $cmsSettings->get('announcement_text');
     $announcementUrl = $cmsSettings->get('announcement_url');
-    $siteName = $cmsSettings->get('site_name', __('brand.name'));
+    $siteName = $cmsSettings->get('site_name', __('منصة الأمين'));
     $siteLogo = $cmsSettings->get('site_logo') ?: '/assets/images/logo.png';
 @endphp
 

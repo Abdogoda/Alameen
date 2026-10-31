@@ -50,6 +50,19 @@ Route::post('webhooks/mux', [MuxWebhookController::class, 'handle'])->name('webh
 // Shortcut / fallback redirect for log-viewer to secure admin path
 Route::redirect('log-viewer', '/admin/log-viewer');
 
+// Resilient fallback streaming for storage files when symbolic link is missing (e.g. restricted shared hosting)
+Route::get('storage/{path}', function (string $path) {
+    $fullPath = storage_path('app/public/'.$path);
+    $realStoragePath = realpath(storage_path('app/public'));
+    $realFullPath = realpath($fullPath);
+
+    if (! $realFullPath || ! $realStoragePath || ! str_starts_with($realFullPath, $realStoragePath) || ! file_exists($realFullPath)) {
+        abort(404);
+    }
+
+    return response()->file($realFullPath);
+})->where('path', '.*')->name('storage.fallback');
+
 // -------------------------------------------------------------
 // Customer / Student Authenticated Routes (Guard: web)
 // -------------------------------------------------------------

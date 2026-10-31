@@ -1147,12 +1147,23 @@
                 video.controls = true;
                 video.autoplay = true;
                 video.className = 'w-full h-full';
-                if (playbackUrl.endsWith('.m3u8') && window.Hls && Hls.isSupported()) {
+                let finalUrl = playbackUrl;
+                if (finalUrl.includes('/storage/')) {
+                    finalUrl = '/storage/' + finalUrl.split('/storage/')[1];
+                }
+                video.onerror = function() {
+                    console.warn('Video preview error:', video.error);
+                    const errMsg = document.createElement('div');
+                    errMsg.className = 'p-4 text-center text-xs text-amber-600 bg-amber-50 dark:bg-amber-950/40 rounded-xl m-4 border border-amber-200';
+                    errMsg.textContent = 'تعذر تشغيل ملف الفيديو عبر المتصفح. تأكد من صحة الرابط أو توافق صيغة الملف.';
+                    container.appendChild(errMsg);
+                };
+                if (finalUrl.endsWith('.m3u8') && window.Hls && Hls.isSupported()) {
                     const hls = new Hls();
-                    hls.loadSource(playbackUrl);
+                    hls.loadSource(finalUrl);
                     hls.attachMedia(video);
                 } else {
-                    video.src = playbackUrl;
+                    video.src = finalUrl;
                 }
                 container.appendChild(video);
             } else {

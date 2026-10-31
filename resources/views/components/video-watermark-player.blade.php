@@ -75,8 +75,14 @@
 
     {{-- 5. Direct MP4 / HLS Video --}}
     @elseif(!empty($videoUrl))
+        @php
+            $playbackSrc = $videoUrl;
+            if (str_contains($playbackSrc, '/storage/')) {
+                $playbackSrc = '/storage/' . \Illuminate\Support\Str::after($playbackSrc, '/storage/');
+            }
+        @endphp
         <video 
-            src="{{ $videoUrl }}" 
+            src="{{ $playbackSrc }}" 
             controls 
             preload="metadata"
             class="w-full h-full object-contain absolute inset-0 z-10"

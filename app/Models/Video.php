@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
 
 /**
  * @property int $id
@@ -134,6 +135,10 @@ class Video extends Model
         }
 
         if (! empty($this->video_url)) {
+            if ($this->video_source === 'local' && str_contains($this->video_url, '/storage/')) {
+                return '/storage/'.Str::after($this->video_url, '/storage/');
+            }
+
             return $this->video_url;
         }
 

@@ -46,6 +46,11 @@ php artisan event:cache
 
 # 8. Ensure public storage symlink exists
 echo "🔗 Ensuring storage symlink..."
+if [ ! -L public/storage ]; then
+    rm -rf public/storage
+    ln -sfn ../storage/app/public public/storage || true
+    echo "✅ Storage symlink ensured via bash"
+fi
 php artisan storage:link || true
 
 # 9. Bring Laravel back online

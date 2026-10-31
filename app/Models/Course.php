@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
 
 /**
  * @property int $id
@@ -156,6 +157,10 @@ class Course extends Model
     {
         if ($this->promo_video_source === 'mux' && ! empty($this->mux_playback_id)) {
             return "https://stream.mux.com/{$this->mux_playback_id}.m3u8";
+        }
+
+        if (! empty($this->promo_video_url) && $this->promo_video_source === 'local' && str_contains($this->promo_video_url, '/storage/')) {
+            return '/storage/'.Str::after($this->promo_video_url, '/storage/');
         }
 
         return $this->promo_video_url;

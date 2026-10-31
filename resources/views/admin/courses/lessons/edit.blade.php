@@ -614,10 +614,16 @@
                         processingBanner.classList.add('hidden');
                         successBanner.classList.remove('hidden');
 
+                        // Normalize relative storage URL
+                        let playUrl = result.video_url || '';
+                        if (playUrl.includes('/storage/')) {
+                            playUrl = '/storage/' + playUrl.split('/storage/')[1];
+                        }
+
                         // Populate hidden form inputs
                         document.getElementById('field-video-source').value = result.video_source;
-                        if (result.video_url) {
-                            document.getElementById('input-direct-video-url').value = result.video_url;
+                        if (playUrl) {
+                            document.getElementById('input-direct-video-url').value = playUrl;
                         }
                         if (result.mux_playback_id) {
                             document.getElementById('field-mux-playback-id').value = result.mux_playback_id;
@@ -632,8 +638,8 @@
 
                         // Set preview player
                         const player = document.getElementById('preview-player');
-                        if (result.video_url) {
-                            player.src = result.video_url;
+                        if (playUrl) {
+                            player.src = playUrl;
                             player.load();
                         }
 

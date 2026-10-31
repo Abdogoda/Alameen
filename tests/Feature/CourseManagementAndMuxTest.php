@@ -626,4 +626,50 @@ class CourseManagementAndMuxTest extends TestCase
         $this->assertEquals('local', $uploadResult['driver_used']);
         $this->assertNotNull($uploadResult['video_url']);
     }
+
+    /**
+     * 17. Test storage fallback route serves files and blocks path traversal.
+     */
+    public function test_storage_fallback_route_serves_files_and_blocks_traversal(): void
+    {
+        // Place a real file in storage/app/public
+        $publicDir = storage_path('app/public');
+        if (! file_exists($publicDir)) {
+            mkdir($publicDir, 0755, true);
+        }
+
+        $testFile = $publicDir.'/test_playback.mp4';
+        file_put_contents($testFile, 'fake mp4 content stream');
+
+        try {
+            // Accessible via fallback route
+            $response = $this->get('/storage/test_playback.mp4');
+            $response->assertOk();
+
+            // Missing file yields 404
+            $this->get('/storage/non_existent_video.mp4')->assertNotFound();
+
+            // Directory traversal yields 404
+            $this->get('/storage/../../.env')->assertNotFound();
+        } finally {
+            @unlink($testFile);
+        }
+    }
+
+    /**
+     * 18. Test Video effective playback URL normalizes local storage URLs.
+     */
+    public function test_video_effective_playback_url_normalizes_local_storage_urls(): void
+    {
+        $video = Video::create([
+            'course_id' => $this->course->id,
+            'title_ar' => 'درس تجريبي محلي',
+            'slug' => 'local-test-lesson',
+            'video_source' => 'local',
+            'video_url' => 'https://alameen.test/storage/videos/lessons/lesson_123.mp4',
+            'duration_seconds' => 600,
+        ]);
+
+        $this->assertEquals('/storage/videos/lessons/lesson_123.mp4', $video->effective_playback_url);
+    }
 }

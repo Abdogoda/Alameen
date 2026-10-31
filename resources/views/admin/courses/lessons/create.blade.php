@@ -342,7 +342,23 @@
 
                         {{-- Preview Player --}}
                         <div class="rounded-xl overflow-hidden bg-black aspect-video max-w-lg mx-auto shadow-inner relative">
-                            <video id="preview-player" controls class="size-full"></video>
+                            <video id="preview-player" controls preload="metadata" class="size-full"></video>
+                        </div>
+                        <p id="preview-player-error" class="hidden text-xs text-amber-700 dark:text-amber-400 font-medium text-center py-1.5 bg-amber-50 dark:bg-amber-950/40 rounded-lg border border-amber-200">
+                            {{ __('المعاينة المباشرة تتطلب ترميزاً متوافقاً مع متصفحك، ولكن ملف الفيديو تم رفعه وحفظه بنجاح على السيرفر.') }}
+                        </p>
+
+                        <div class="flex items-center justify-between flex-wrap gap-2 pt-2 border-t border-emerald-200/80 dark:border-emerald-800/80">
+                            <span class="text-xs text-emerald-800 dark:text-emerald-300 font-bold">
+                                {{ __('💡 خطوة أخيرة: اضغط على زر الحفظ لإضافة الدرس للمنهج') }}
+                            </span>
+                            <button 
+                                type="submit" 
+                                class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#012383] to-[#0B2A8F] hover:from-[#0B2A8F] hover:to-[#012383] text-white font-extrabold text-xs shadow-md flex items-center gap-1.5 cursor-pointer active:scale-95"
+                            >
+                                <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                <span>{{ __('حفظ ونشر الدرس في المنهج الآن') }}</span>
+                            </button>
                         </div>
                     </div>
 
@@ -582,10 +598,16 @@
                 document.getElementById('success-message-text').textContent = result.message;
             }
 
+            // Normalize playback URL for relative storage access
+            let playUrl = result.video_url || '';
+            if (playUrl.includes('/storage/')) {
+                playUrl = '/storage/' + playUrl.split('/storage/')[1];
+            }
+
             // Populate form fields
             document.getElementById('field-video-source').value = result.video_source || 'local';
-            if (result.video_url) {
-                document.getElementById('input-external-url').value = result.video_url;
+            if (playUrl) {
+                document.getElementById('input-external-url').value = playUrl;
             }
             if (result.mux_playback_id) {
                 document.getElementById('field-mux-playback-id').value = result.mux_playback_id;
@@ -596,6 +618,14 @@
 
             // Play video preview
             const player = document.getElementById('preview-player');
+            const playerError = document.getElementById('preview-player-error');
+            if (playerError) playerError.classList.add('hidden');
+
+            player.onerror = function() {
+                console.warn('Video preview error:', player.error);
+                if (playerError) playerError.classList.remove('hidden');
+            };
+
             if (result.mux_playback_id) {
                 const streamUrl = `https://stream.mux.com/${result.mux_playback_id}.m3u8`;
                 if (window.Hls && Hls.isSupported()) {
@@ -604,9 +634,12 @@
                     hls.attachMedia(player);
                 } else {
                     player.src = streamUrl;
+                    player.load();
                 }
-            } else if (result.video_url) {
-                player.src = result.video_url;
+            } else if (playUrl) {
+                player.src = playUrl;
+                player.load();
+                player.play().catch(() => {});
             }
         }
     </script>

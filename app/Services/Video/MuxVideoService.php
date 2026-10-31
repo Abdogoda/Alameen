@@ -44,6 +44,8 @@ class MuxVideoService
 
     /**
      * Get details of a direct upload from MUX.
+     *
+     * @return array<string, mixed>|null
      */
     public function getUpload(string $uploadId): ?array
     {
@@ -52,6 +54,8 @@ class MuxVideoService
 
     /**
      * Get details of an asset from MUX.
+     *
+     * @return array<string, mixed>|null
      */
     public function getAsset(string $assetId): ?array
     {

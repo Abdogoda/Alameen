@@ -72,6 +72,8 @@ class VideoServiceManager extends Manager
 
     /**
      * Create direct upload URL using the active or requested driver.
+     *
+     * @return array{id: string, url: string, status: string}|null
      */
     public function createDirectUploadUrl(string $corsOrigin = '*', ?string $driverName = null): ?array
     {

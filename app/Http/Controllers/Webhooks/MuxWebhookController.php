@@ -46,6 +46,8 @@ class MuxWebhookController extends Controller
 
     /**
      * Handle video.asset.ready event.
+     *
+     * @param  array<string, mixed>  $data
      */
     protected function handleAssetReady(array $data): JsonResponse
     {
@@ -61,9 +63,7 @@ class MuxWebhookController extends Controller
         // 1. Locate and update matching Lesson Video
         $video = Video::query()
             ->where(function ($q) use ($assetId, $uploadId, $playbackId) {
-                if ($assetId) {
-                    $q->orWhere('mux_asset_id', $assetId);
-                }
+                $q->where('mux_asset_id', $assetId);
                 if ($uploadId) {
                     $q->orWhere('mux_upload_id', $uploadId);
                 }
@@ -91,9 +91,7 @@ class MuxWebhookController extends Controller
         // 2. Also check if course promo video matches
         $course = Course::query()
             ->where(function ($q) use ($assetId, $playbackId) {
-                if ($assetId) {
-                    $q->orWhere('mux_asset_id', $assetId);
-                }
+                $q->where('mux_asset_id', $assetId);
                 if ($playbackId) {
                     $q->orWhere('mux_playback_id', $playbackId);
                 }
@@ -115,6 +113,8 @@ class MuxWebhookController extends Controller
 
     /**
      * Handle video.upload.asset_created event.
+     *
+     * @param  array<string, mixed>  $data
      */
     protected function handleUploadAssetCreated(array $data): JsonResponse
     {
@@ -130,6 +130,8 @@ class MuxWebhookController extends Controller
 
     /**
      * Handle video.asset.errored event.
+     *
+     * @param  array<string, mixed>  $data
      */
     protected function handleAssetErrored(array $data): JsonResponse
     {

@@ -38,6 +38,10 @@ class LocalDriver implements VideoDriverInterface
         $filename = 'lesson_'.date('Ymd_His').'_'.Str::random(10).'.'.$extension;
 
         $storedPath = $file->storeAs($this->path, $filename, $this->disk);
+        if ($storedPath === false) {
+            throw new \RuntimeException('Failed to store uploaded file.');
+        }
+
         $publicUrl = Storage::disk($this->disk)->url($storedPath);
 
         return [

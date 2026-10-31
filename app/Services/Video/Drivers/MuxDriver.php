@@ -5,12 +5,16 @@ declare(strict_types=1);
 namespace App\Services\Video\Drivers;
 
 use App\Services\Video\Contracts\VideoDriverInterface;
+use GuzzleHttp\Psr7\Utils;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class MuxDriver implements VideoDriverInterface
 {
+    /**
+     * @param  array<int, string>  $playbackPolicy
+     */
     public function __construct(
         protected ?string $tokenId = null,
         protected ?string $tokenSecret = null,
@@ -18,9 +22,9 @@ class MuxDriver implements VideoDriverInterface
         protected array $playbackPolicy = ['public'],
         protected string $corsOrigin = '*'
     ) {
-        $this->tokenId = $this->tokenId ?: config('video.drivers.mux.token_id', env('MUX_TOKEN_ID'));
-        $this->tokenSecret = $this->tokenSecret ?: config('video.drivers.mux.token_secret', env('MUX_TOKEN_SECRET'));
-        $this->baseUrl = config('video.drivers.mux.base_url', 'https://api.mux.com/video/v1');
+        $this->tokenId = $this->tokenId ?: (config('video.drivers.mux.token_id') ? (string) config('video.drivers.mux.token_id') : null);
+        $this->tokenSecret = $this->tokenSecret ?: (config('video.drivers.mux.token_secret') ? (string) config('video.drivers.mux.token_secret') : null);
+        $this->baseUrl = (string) config('video.drivers.mux.base_url', 'https://api.mux.com/video/v1');
     }
 
     public function name(): string
@@ -67,6 +71,9 @@ class MuxDriver implements VideoDriverInterface
         return null;
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function getUpload(string $uploadId): ?array
     {
         if (! $this->isConfigured()) {
@@ -88,6 +95,9 @@ class MuxDriver implements VideoDriverInterface
         return null;
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function getAsset(string $assetId): ?array
     {
         if (! $this->isConfigured()) {
@@ -121,8 +131,12 @@ class MuxDriver implements VideoDriverInterface
         }
 
         $stream = fopen($file->getRealPath(), 'r');
+        if ($stream === false) {
+            throw new \RuntimeException('Failed to open file stream for upload.');
+        }
+
         $uploadResponse = Http::withBody(
-            $stream,
+            Utils::streamFor($stream),
             $file->getMimeType() ?: 'video/mp4'
         )->put($uploadData['url']);
 

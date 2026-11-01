@@ -9,21 +9,21 @@ return [
 
     // Support Channels
     'channelTechTitle' => 'البريد الإلكتروني الرسمي',
-    'channelTechDesc' => 'تواصل مباشر عبر البريد الإلكتروني للاستفسارات الأكاديمية عن الكورس ومتابعة حسابك وشهادتك.',
-    'channelTechAction' => 'support@alameen.edu.sa',
+    'channelTechDesc' => 'تواصل مباشر عبر البريد الإلكتروني للاستفسارات الأكاديمية ومتابعة حسابك وشهادتك.',
+    'channelTechAction' => 'contact@alameen-speech.com',
     'channelTechBtn' => 'مراسلة عبر البريد',
     'channelAcademicTitle' => 'الإرشاد الأكاديمي',
     'channelAcademicDesc' => 'استشارات تخصصية مع محاضري ومختصي التخاطب.',
-    'channelAcademicAction' => 'academic@alameen.edu.sa',
+    'channelAcademicAction' => 'academic@alameen-speech.com',
     'channelAcademicBtn' => 'طلب استشارة أكاديمية',
     'channelWhatsAppTitle' => 'المحادثة المباشرة عبر واتساب',
     'channelWhatsAppDesc' => 'تواصل فوري وسريع مع فريق خدمة الطلاب للرد على استفساراتك وتأكيد التسجيل في كورس التخاطب.',
-    'channelWhatsAppAction' => '+966 50 123 4567',
+    'channelWhatsAppAction' => '+20 100 000 0000',
     'channelWhatsAppBtn' => 'فتح محادثة واتساب',
 
     // Inquiry Form
-    'formHeading' => 'أرسل استفسارك مباشرة',
-    'formSubheading' => 'اختر موضوع الاستفسار وسيقوم الفريق المختص بالتواصل معك.',
+    'formHeading' => 'أرسل لنا رسالة مباشرة',
+    'formSubheading' => 'املأ البيانات وسيقوم فريق الدعم بالتواصل معك في أقرب وقت.',
     'topicLabel' => 'موضوع الاستفسار',
     'topicGeneral' => 'استفسار عام عن المنصة',
     'topicCourse' => 'استفسار عن محتوى الكورسات',
@@ -33,8 +33,8 @@ return [
 
     'nameLabel' => 'الاسم الكامل',
     'labelName' => 'الاسم الكامل',
-    'namePlaceholder' => 'مثال: أحمد محمد السالم',
-    'placeholderName' => 'مثال: أحمد محمد السالم',
+    'namePlaceholder' => 'مثال: أحمد محمود',
+    'placeholderName' => 'مثال: أحمد محمود',
 
     'emailLabel' => 'البريد الإلكتروني',
     'labelEmail' => 'البريد الإلكتروني',
@@ -43,35 +43,35 @@ return [
 
     'phoneLabel' => 'رقم الهاتف / واتساب',
     'labelPhone' => 'رقم الهاتف / واتساب',
-    'phonePlaceholder' => '05xxxxxxxx',
-    'placeholderPhone' => '05xxxxxxxx',
+    'phonePlaceholder' => '01xxxxxxxxx',
+    'placeholderPhone' => '01xxxxxxxxx',
 
     'subjectLabel' => 'موضوع الرسالة',
     'labelSubject' => 'موضوع الرسالة',
     'subjectPlaceholder' => 'اكتب عنواناً مختصراً لطلبك',
     'placeholderSubject' => 'اكتب عنواناً مختصراً لطلبك',
 
-    'messageLabel' => 'تفاصيل الاستفسار',
-    'labelMessage' => 'تفاصيل الاستفسار',
-    'messagePlaceholder' => 'اشرح طلبك أو المشكلة التي تواجهك بالتفصيل...',
-    'placeholderMessage' => 'اشرح طلبك أو المشكلة التي تواجهك بالتفصيل...',
+    'messageLabel' => 'نص الرسالة أو الاستفسار',
+    'labelMessage' => 'نص الرسالة أو الاستفسار',
+    'messagePlaceholder' => 'اكتب استفسارك أو رسالتك بالتفصيل هنا...',
+    'placeholderMessage' => 'اكتب استفسارك أو رسالتك بالتفصيل هنا...',
 
     'attachLabel' => 'إرفاق لقطة شاشة أو ملف توضيحي (اختياري)',
     'attachPlaceholder' => 'اسحب الملف هنا أو انقر للاختيار',
 
-    'sendBtn' => 'إرسال الرسالة الآن',
-    'btnSubmit' => 'إرسال الرسالة الآن',
+    'sendBtn' => 'إرسال الرسالة',
+    'btnSubmit' => 'إرسال الرسالة',
 
     // Companion / Working Hours & Location
-    'officeTitle' => 'المقر الرئيسي وأوقات العمل',
-    'workingHoursTitle' => 'ساعات العمل والرد',
-    'workingDays' => 'الأحد - الخميس',
-    'workingHoursTime' => 'من ٩:٠٠ صباحاً حتى ٦:٠٠ مساءً',
+    'officeTitle' => 'المقر وأوقات العمل',
+    'workingHoursTitle' => 'مواعيد العمل والدعم',
+    'workingDays' => 'السبت - الخميس',
+    'workingHoursTime' => 'من ٩:٠٠ صباحاً حتى ٩:٠٠ مساءً',
     'headquartersTitle' => 'المقر الرئيسي',
-    'headquartersAddress' => 'المملكة العربية السعودية • الرياض',
-    'officeLocationRiyadh' => 'الرياض، المملكة العربية السعودية - طريق الملك فهد',
-    'officeLocationCairo' => 'القاهرة، جمهورية مصر العربية - المعادي التقنية',
-    'workingHours' => 'الأحد إلى الخميس: ٨:٠٠ ص - ١٠:٠٠ م',
+    'headquartersAddress' => 'القاهرة، جمهورية مصر العربية',
+    'officeLocation' => 'القاهرة، جمهورية مصر العربية',
+    'officeLocationCairo' => 'القاهرة، جمهورية مصر العربية',
+    'workingHours' => 'السبت إلى الخميس: ٩:٠٠ ص - ٩:٠٠ م',
 
     // Quick Links
     'quickLinksTitle' => 'روابط مساعدة سريعة',

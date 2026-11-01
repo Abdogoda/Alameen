@@ -12,7 +12,7 @@
     $footerMenu = app(\App\Services\Cms\MenuService::class)->getMenu('footer_quick_links');
     $siteName = $cmsSettings->get('site_name', __('منصة الأمين'));
     $siteTagline = $cmsSettings->get('site_tagline', __('المنصة العربية المتخصصة في تدريب وتأهيل مهارات النطق والتخاطب، نجمع بين الأسس العلمية المعتمدة والتطبيقات السريرية العملية بإشراف نخبة من كبار أخصائيي التخاطب.'));
-    $contactEmail = $cmsSettings->get('contact_email', 'support@alameen.edu.sa');
+    $contactEmail = $cmsSettings->get('contact_email', 'contact@alameen-speech.com');
     $contactPhone = $cmsSettings->get('contact_phone', '+20 100 000 0000');
     $whatsappUrl = $cmsSettings->get('social_whatsapp', 'https://wa.me/201000000000');
     $facebookUrl = $cmsSettings->get('social_facebook');

@@ -53,333 +53,76 @@
             </span>
           </div>
 
-          <!-- Courses Grid (3 Columns) -->
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="catalog-courses-grid">
-            
-            <!-- Course Card 1: Language Development Strategies -->
-            <div class="course-card bg-white border border-[#DEE8F7] rounded-[18px] overflow-hidden shadow-xs hover:shadow-card hover:-translate-y-1 transition-all flex flex-col justify-between" data-category="speech" data-title="استراتيجيات تنمية اللغة">
-              <div>
-                <!-- Thumbnail -->
-                <div class="h-48 w-full bg-[#012383] relative overflow-hidden">
-                  <img src="/assets/images/course-topic-strategies.png" alt="{{ __('landing.course1Title') }}" class="size-full object-cover" />
-                  <div class="absolute top-3 end-3 flex gap-2">
-                    <span class="px-2.5 py-1 rounded-full bg-[#10B77F] text-white text-[11px] font-bold shadow-xs">{{ __('landing.mostPopular') }}</span>
-                    <span class="px-2.5 py-1 rounded-full bg-black/60 text-white text-[11px] font-medium backdrop-blur-xs">{{ __('landing.course1Lessons') }}</span>
-                  </div>
-                </div>
+          @php
+            $courses = \App\Models\Course::query()
+                ->where('is_published', true)
+                ->withCount('videos')
+                ->orderBy('sort_order')
+                ->get();
+          @endphp
 
-                <!-- Body -->
-                <div class="p-5 flex flex-col gap-3">
-                  <div class="flex items-center justify-between text-xs font-bold">
-                    <span class="text-[#0B2A8F] bg-[#EAF1FB] px-2.5 py-0.5 rounded-md">{{ __('landing.speechCategory') }}</span>
-                    <div class="flex items-center gap-1 text-[#F59E0B]">
-                      <span>★ 4.9</span>
-                      <span class="text-slate-400 font-normal">(480)</span>
+          <!-- Courses Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 {{ $courses->count() === 1 ? 'max-w-md mx-auto w-full' : '' }}" id="catalog-courses-grid">
+            @forelse($courses as $course)
+              <div class="course-card bg-white border border-[#DEE8F7] rounded-[18px] overflow-hidden shadow-xs hover:shadow-card hover:-translate-y-1 transition-all flex flex-col justify-between" data-category="speech" data-title="{{ $course->title_ar }}">
+                <div>
+                  <!-- Thumbnail -->
+                  <div class="h-48 w-full bg-[#012383] relative overflow-hidden">
+                    <img src="{{ $course->thumbnail ?: '/assets/images/course-topic-basics.png' }}" alt="{{ app()->getLocale() === 'en' && $course->title_en ? $course->title_en : $course->title_ar }}" class="size-full object-cover" />
+                    <div class="absolute top-3 end-3 flex gap-2">
+                      <span class="px-2.5 py-1 rounded-full bg-[#10B77F] text-white text-[11px] font-bold shadow-xs">{{ __('landing.mostPopular') }}</span>
+                      @if($course->videos_count)
+                        <span class="px-2.5 py-1 rounded-full bg-black/60 text-white text-[11px] font-medium backdrop-blur-xs">{{ $course->videos_count }} {{ __('catalog.lessonsCount') }}</span>
+                      @endif
                     </div>
                   </div>
 
-                  <h3 class="font-['Cairo'] font-bold text-[18px] md:text-[19px] text-[#012383] leading-snug">
-                    {{ __('landing.course1Title') }}
-                  </h3>
-
-                  <p class="text-xs text-[#475569] leading-relaxed line-clamp-2">
-                    {{ __('landing.course1Desc') }}
-                  </p>
-
-                  <div class="flex items-center gap-2 pt-2 border-t border-[#DEE8F7]/60 text-xs text-[#475569]">
-                    <div class="size-6 rounded-full bg-[#EAF1FB] flex items-center justify-center font-bold text-[10px] text-[#0B2A8F]">
-                      د
+                  <!-- Body -->
+                  <div class="p-5 flex flex-col gap-3">
+                    <div class="flex items-center justify-between text-xs font-bold">
+                      <span class="text-[#0B2A8F] bg-[#EAF1FB] px-2.5 py-0.5 rounded-md">{{ __('landing.speechCategory') }}</span>
+                      <div class="flex items-center gap-1 text-[#F59E0B]">
+                        <span>★ 4.9</span>
+                        <span class="text-slate-400 font-normal">(480)</span>
+                      </div>
                     </div>
-                    <span>{{ __('landing.course1Instructor') }}</span>
-                  </div>
-                </div>
-              </div>
 
-              <!-- Footer CTA -->
-              <div class="p-5 pt-0 flex items-center justify-between gap-3">
-                <span class="text-xs font-bold text-emerald-600 bg-[#EEF7F3] px-2.5 py-1 rounded-lg" data-i18n="catalog.includedInPlan">
-                  {{ __('catalog.includedInPlan') }}
-                </span>
-                <a
-                  href="{{ route('courses.show') }}"
-                  class="px-4 py-2 bg-[#012383] hover:bg-[#0B2A8F] text-white text-xs font-bold rounded-xl transition-colors shadow-xs"
-                  data-i18n="catalog.viewCourseDetails"
-                >
-                  {{ __('catalog.viewCourseDetails') }}
-                </a>
-              </div>
-            </div>
+                    <h3 class="font-['Cairo'] font-bold text-[18px] md:text-[19px] text-[#012383] leading-snug">
+                      {{ app()->getLocale() === 'en' && $course->title_en ? $course->title_en : $course->title_ar }}
+                    </h3>
 
-            <!-- Course Card 2: Articulation Disorders Applications -->
-            <div class="course-card bg-white border border-[#DEE8F7] rounded-[18px] overflow-hidden shadow-xs hover:shadow-card hover:-translate-y-1 transition-all flex flex-col justify-between" data-category="speech" data-title="تطبيقات مخارج الحروف">
-              <div>
-                <!-- Thumbnail -->
-                <div class="h-48 w-full bg-[#0B2A8F] relative overflow-hidden">
-                  <img src="/assets/images/course-topic-articulation.png" alt="{{ __('landing.course2Title') }}" class="size-full object-cover" />
-                  <div class="absolute top-3 end-3 flex gap-2">
-                    <span class="px-2.5 py-1 rounded-full bg-amber-500 text-white text-[11px] font-bold shadow-xs">{{ __('landing.featured') }}</span>
-                    <span class="px-2.5 py-1 rounded-full bg-black/60 text-white text-[11px] font-medium backdrop-blur-xs">{{ __('landing.course2Lessons') }}</span>
+                    <p class="text-xs text-[#475569] leading-relaxed line-clamp-2">
+                      {{ app()->getLocale() === 'en' && $course->description_en ? $course->description_en : $course->description_ar }}
+                    </p>
+
+                    <div class="flex items-center gap-2 pt-2 border-t border-[#DEE8F7]/60 text-xs text-[#475569]">
+                      <div class="size-6 rounded-full bg-[#EAF1FB] flex items-center justify-center font-bold text-[10px] text-[#0B2A8F]">
+                        د
+                      </div>
+                      <span>د. سامي المنصور • محاضر التخاطب السريري</span>
+                    </div>
                   </div>
                 </div>
 
-                <!-- Body -->
-                <div class="p-5 flex flex-col gap-3">
-                  <div class="flex items-center justify-between text-xs font-bold">
-                    <span class="text-[#0B2A8F] bg-[#EAF1FB] px-2.5 py-0.5 rounded-md">{{ __('landing.speechCategory') }}</span>
-                    <div class="flex items-center gap-1 text-[#F59E0B]">
-                      <span>★ 4.8</span>
-                      <span class="text-slate-400 font-normal">(310)</span>
-                    </div>
-                  </div>
-
-                  <h3 class="font-['Cairo'] font-bold text-[18px] md:text-[19px] text-[#012383] leading-snug">
-                    {{ __('landing.course2Title') }}
-                  </h3>
-
-                  <p class="text-xs text-[#475569] leading-relaxed line-clamp-2">
-                    {{ __('landing.course2Desc') }}
-                  </p>
-
-                  <div class="flex items-center gap-2 pt-2 border-t border-[#DEE8F7]/60 text-xs text-[#475569]">
-                    <div class="size-6 rounded-full bg-[#EAF1FB] flex items-center justify-center font-bold text-[10px] text-[#0B2A8F]">
-                      أ
-                    </div>
-                    <span>{{ __('landing.course2Instructor') }}</span>
-                  </div>
+                <!-- Footer CTA -->
+                <div class="p-5 pt-0 flex items-center justify-between gap-3">
+                  <span class="text-xs font-bold text-emerald-600 bg-[#EEF7F3] px-2.5 py-1 rounded-lg" data-i18n="catalog.includedInPlan">
+                    {{ __('catalog.includedInPlan') }}
+                  </span>
+                  <a
+                    href="{{ route('courses.show') }}"
+                    class="px-4 py-2 bg-[#012383] hover:bg-[#0B2A8F] text-white text-xs font-bold rounded-xl transition-colors shadow-xs"
+                    data-i18n="catalog.viewCourseDetails"
+                  >
+                    {{ __('catalog.viewCourseDetails') }}
+                  </a>
                 </div>
               </div>
-
-              <!-- Footer CTA -->
-              <div class="p-5 pt-0 flex items-center justify-between gap-3">
-                <span class="text-xs font-bold text-emerald-600 bg-[#EEF7F3] px-2.5 py-1 rounded-lg" data-i18n="catalog.includedInPlan">
-                  {{ __('catalog.includedInPlan') }}
-                </span>
-                <a
-                  href="{{ route('courses.show') }}"
-                  class="px-4 py-2 bg-[#012383] hover:bg-[#0B2A8F] text-white text-xs font-bold rounded-xl transition-colors shadow-xs"
-                  data-i18n="catalog.viewCourseDetails"
-                >
-                  {{ __('catalog.viewCourseDetails') }}
-                </a>
+            @empty
+              <div class="col-span-full flex flex-col items-center justify-center py-12 text-center bg-white border border-[#DEE8F7] rounded-[24px]">
+                <p class="text-sm font-bold text-[#012383]" data-i18n="catalog.noCoursesFound">{{ __('catalog.noCoursesFound') }}</p>
               </div>
-            </div>
-
-            <!-- Course Card 3: Speech Therapy Fundamentals -->
-            <div class="course-card bg-white border border-[#DEE8F7] rounded-[18px] overflow-hidden shadow-xs hover:shadow-card hover:-translate-y-1 transition-all flex flex-col justify-between" data-category="speech" data-title="أساسيات التخاطب">
-              <div>
-                <!-- Thumbnail -->
-                <div class="h-48 w-full bg-[#152D4D] relative overflow-hidden">
-                  <img src="/assets/images/course-topic-basics.png" alt="{{ __('landing.course3Title') }}" class="size-full object-cover" />
-                  <div class="absolute top-3 end-3 flex gap-2">
-                    <span class="px-2.5 py-1 rounded-full bg-blue-600 text-white text-[11px] font-bold shadow-xs">{{ __('landing.fundamental') }}</span>
-                    <span class="px-2.5 py-1 rounded-full bg-black/60 text-white text-[11px] font-medium backdrop-blur-xs">{{ __('landing.course3Lessons') }}</span>
-                  </div>
-                </div>
-
-                <!-- Body -->
-                <div class="p-5 flex flex-col gap-3">
-                  <div class="flex items-center justify-between text-xs font-bold">
-                    <span class="text-[#0B2A8F] bg-[#EAF1FB] px-2.5 py-0.5 rounded-md">{{ __('catalog.scientificBasics') }}</span>
-                    <div class="flex items-center gap-1 text-[#F59E0B]">
-                      <span>★ 4.9</span>
-                      <span class="text-slate-400 font-normal">(520)</span>
-                    </div>
-                  </div>
-
-                  <h3 class="font-['Cairo'] font-bold text-[18px] md:text-[19px] text-[#012383] leading-snug">
-                    {{ __('landing.course3Title') }}
-                  </h3>
-
-                  <p class="text-xs text-[#475569] leading-relaxed line-clamp-2">
-                    {{ __('landing.course3Desc') }}
-                  </p>
-
-                  <div class="flex items-center gap-2 pt-2 border-t border-[#DEE8F7]/60 text-xs text-[#475569]">
-                    <div class="size-6 rounded-full bg-[#EAF1FB] flex items-center justify-center font-bold text-[10px] text-[#0B2A8F]">
-                      س
-                    </div>
-                    <span>{{ __('landing.course3Instructor') }}</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Footer CTA -->
-              <div class="p-5 pt-0 flex items-center justify-between gap-3">
-                <span class="text-xs font-bold text-emerald-600 bg-[#EEF7F3] px-2.5 py-1 rounded-lg" data-i18n="catalog.includedInPlan">
-                  {{ __('catalog.includedInPlan') }}
-                </span>
-                <a
-                  href="{{ route('courses.show') }}"
-                  class="px-4 py-2 bg-[#012383] hover:bg-[#0B2A8F] text-white text-xs font-bold rounded-xl transition-colors shadow-xs"
-                  data-i18n="catalog.viewCourseDetails"
-                >
-                  {{ __('catalog.viewCourseDetails') }}
-                </a>
-              </div>
-            </div>
-
-            <!-- Course Card 4: Stuttering & Fluency Management -->
-            <div class="course-card bg-white border border-[#DEE8F7] rounded-[18px] overflow-hidden shadow-xs hover:shadow-card hover:-translate-y-1 transition-all flex flex-col justify-between" data-category="speech" data-title="{{ __('catalog.course4Title') }}">
-              <div>
-                <!-- Thumbnail -->
-                <div class="h-48 w-full bg-[#0B2A8F] relative overflow-hidden">
-                  <img src="/assets/images/photo1.png" alt="{{ __('catalog.course4Title') }}" class="size-full object-cover" />
-                  <div class="absolute top-3 end-3 flex gap-2">
-                    <span class="px-2.5 py-1 rounded-full bg-emerald-600 text-white text-[11px] font-bold shadow-xs">{{ __('catalog.intermediate') }}</span>
-                    <span class="px-2.5 py-1 rounded-full bg-black/60 text-white text-[11px] font-medium backdrop-blur-xs">{{ __('catalog.course4Lessons') }}</span>
-                  </div>
-                </div>
-
-                <!-- Body -->
-                <div class="p-5 flex flex-col gap-3">
-                  <div class="flex items-center justify-between text-xs font-bold">
-                    <span class="text-[#0B2A8F] bg-[#EAF1FB] px-2.5 py-0.5 rounded-md">{{ __('catalog.categorySpeech') }}</span>
-                    <div class="flex items-center gap-1 text-[#F59E0B]">
-                      <span>★ 4.8</span>
-                      <span class="text-slate-400 font-normal">(195)</span>
-                    </div>
-                  </div>
-
-                  <h3 class="font-['Cairo'] font-bold text-[18px] md:text-[19px] text-[#012383] leading-snug">
-                    {{ __('catalog.course4Title') }}
-                  </h3>
-
-                  <p class="text-xs text-[#475569] leading-relaxed line-clamp-2">
-                    {{ __('catalog.course4Desc') }}
-                  </p>
-
-                  <div class="flex items-center gap-2 pt-2 border-t border-[#DEE8F7]/60 text-xs text-[#475569]">
-                    <div class="size-6 rounded-full bg-[#EAF1FB] flex items-center justify-center font-bold text-[10px] text-[#0B2A8F]">
-                      ع
-                    </div>
-                    <span>{{ __('catalog.course4Instructor') }}</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Footer CTA -->
-              <div class="p-5 pt-0 flex items-center justify-between gap-3">
-                <span class="text-xs font-bold text-emerald-600 bg-[#EEF7F3] px-2.5 py-1 rounded-lg" data-i18n="catalog.includedInPlan">
-                  {{ __('catalog.includedInPlan') }}
-                </span>
-                <a
-                  href="{{ route('courses.show') }}"
-                  class="px-4 py-2 bg-[#012383] hover:bg-[#0B2A8F] text-white text-xs font-bold rounded-xl transition-colors shadow-xs"
-                  data-i18n="catalog.viewCourseDetails"
-                >
-                  {{ __('catalog.viewCourseDetails') }}
-                </a>
-              </div>
-            </div>
-
-            <!-- Course Card 5: Autism Communication -->
-            <div class="course-card bg-white border border-[#DEE8F7] rounded-[18px] overflow-hidden shadow-xs hover:shadow-card hover:-translate-y-1 transition-all flex flex-col justify-between" data-category="speech" data-title="{{ __('catalog.course5Title') }}">
-              <div>
-                <!-- Thumbnail -->
-                <div class="h-48 w-full bg-[#152D4D] relative overflow-hidden">
-                  <img src="/assets/images/photo2.png" alt="{{ __('catalog.course5Title') }}" class="size-full object-cover" />
-                  <div class="absolute top-3 end-3 flex gap-2">
-                    <span class="px-2.5 py-1 rounded-full bg-purple-600 text-white text-[11px] font-bold shadow-xs">{{ __('catalog.advanced') }}</span>
-                    <span class="px-2.5 py-1 rounded-full bg-black/60 text-white text-[11px] font-medium backdrop-blur-xs">{{ __('catalog.course5Lessons') }}</span>
-                  </div>
-                </div>
-
-                <!-- Body -->
-                <div class="p-5 flex flex-col gap-3">
-                  <div class="flex items-center justify-between text-xs font-bold">
-                    <span class="text-[#0B2A8F] bg-[#EAF1FB] px-2.5 py-0.5 rounded-md">{{ __('catalog.categorySpeech') }}</span>
-                    <div class="flex items-center gap-1 text-[#F59E0B]">
-                      <span>★ 5.0</span>
-                      <span class="text-slate-400 font-normal">(340)</span>
-                    </div>
-                  </div>
-
-                  <h3 class="font-['Cairo'] font-bold text-[18px] md:text-[19px] text-[#012383] leading-snug">
-                    {{ __('catalog.course5Title') }}
-                  </h3>
-
-                  <p class="text-xs text-[#475569] leading-relaxed line-clamp-2">
-                    {{ __('catalog.course5Desc') }}
-                  </p>
-
-                  <div class="flex items-center gap-2 pt-2 border-t border-[#DEE8F7]/60 text-xs text-[#475569]">
-                    <div class="size-6 rounded-full bg-[#EAF1FB] flex items-center justify-center font-bold text-[10px] text-[#0B2A8F]">
-                      ن
-                    </div>
-                    <span>{{ __('catalog.course5Instructor') }}</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Footer CTA -->
-              <div class="p-5 pt-0 flex items-center justify-between gap-3">
-                <span class="text-xs font-bold text-emerald-600 bg-[#EEF7F3] px-2.5 py-1 rounded-lg" data-i18n="catalog.includedInPlan">
-                  {{ __('catalog.includedInPlan') }}
-                </span>
-                <a
-                  href="{{ route('courses.show') }}"
-                  class="px-4 py-2 bg-[#012383] hover:bg-[#0B2A8F] text-white text-xs font-bold rounded-xl transition-colors shadow-xs"
-                  data-i18n="catalog.viewCourseDetails"
-                >
-                  {{ __('catalog.viewCourseDetails') }}
-                </a>
-              </div>
-            </div>
-
-            <!-- Course Card 6: Clinical Speech Diagnostics -->
-            <div class="course-card bg-white border border-[#DEE8F7] rounded-[18px] overflow-hidden shadow-xs hover:shadow-card hover:-translate-y-1 transition-all flex flex-col justify-between" data-category="speech" data-title="{{ __('catalog.course6Title') }}">
-              <div>
-                <!-- Thumbnail -->
-                <div class="h-48 w-full bg-[#012383] relative overflow-hidden">
-                  <img src="/assets/images/photo3.png" alt="{{ __('catalog.course6Title') }}" class="size-full object-cover" />
-                  <div class="absolute top-3 end-3 flex gap-2">
-                    <span class="px-2.5 py-1 rounded-full bg-[#10B77F] text-white text-[11px] font-bold shadow-xs">{{ __('catalog.advanced') }}</span>
-                    <span class="px-2.5 py-1 rounded-full bg-black/60 text-white text-[11px] font-medium backdrop-blur-xs">{{ __('catalog.course6Lessons') }}</span>
-                  </div>
-                </div>
-
-                <!-- Body -->
-                <div class="p-5 flex flex-col gap-3">
-                  <div class="flex items-center justify-between text-xs font-bold">
-                    <span class="text-[#0B2A8F] bg-[#EAF1FB] px-2.5 py-0.5 rounded-md">{{ __('catalog.categoryClinical') }}</span>
-                    <div class="flex items-center gap-1 text-[#F59E0B]">
-                      <span>★ 4.9</span>
-                      <span class="text-slate-400 font-normal">(280)</span>
-                    </div>
-                  </div>
-
-                  <h3 class="font-['Cairo'] font-bold text-[18px] md:text-[19px] text-[#012383] leading-snug">
-                    {{ __('catalog.course6Title') }}
-                  </h3>
-
-                  <p class="text-xs text-[#475569] leading-relaxed line-clamp-2">
-                    {{ __('catalog.course6Desc') }}
-                  </p>
-
-                  <div class="flex items-center gap-2 pt-2 border-t border-[#DEE8F7]/60 text-xs text-[#475569]">
-                    <div class="size-6 rounded-full bg-[#EAF1FB] flex items-center justify-center font-bold text-[10px] text-[#0B2A8F]">
-                      م
-                    </div>
-                    <span>{{ __('catalog.course6Instructor') }}</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Footer CTA -->
-              <div class="p-5 pt-0 flex items-center justify-between gap-3">
-                <span class="text-xs font-bold text-emerald-600 bg-[#EEF7F3] px-2.5 py-1 rounded-lg" data-i18n="catalog.includedInPlan">
-                  {{ __('catalog.includedInPlan') }}
-                </span>
-                <a
-                  href="{{ route('courses.show') }}"
-                  class="px-4 py-2 bg-[#012383] hover:bg-[#0B2A8F] text-white text-xs font-bold rounded-xl transition-colors shadow-xs"
-                  data-i18n="catalog.viewCourseDetails"
-                >
-                  {{ __('catalog.viewCourseDetails') }}
-                </a>
-              </div>
-            </div>
-
+            @endforelse
           </div>
 
           <!-- Empty State (Hidden by default) -->

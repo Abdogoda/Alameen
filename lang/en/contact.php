@@ -10,20 +10,20 @@ return [
     // Support Channels
     'channelTechTitle' => 'Official Email Support',
     'channelTechDesc' => 'Direct email communication for academic inquiries about the course and tracking your account and certificate.',
-    'channelTechAction' => 'support@alameen.edu.sa',
+    'channelTechAction' => 'contact@alameen-speech.com',
     'channelTechBtn' => 'Send Email Support',
     'channelAcademicTitle' => 'Academic Counseling',
     'channelAcademicDesc' => 'Clinical inquiries with speech specialists and instructors.',
-    'channelAcademicAction' => 'academic@alameen.edu.sa',
+    'channelAcademicAction' => 'academic@alameen-speech.com',
     'channelAcademicBtn' => 'Request Clinical Consult',
     'channelWhatsAppTitle' => 'WhatsApp Direct Chat',
     'channelWhatsAppDesc' => 'Instant messaging with student services team to answer your questions and confirm registration.',
-    'channelWhatsAppAction' => '+966 50 123 4567',
+    'channelWhatsAppAction' => '+20 100 000 0000',
     'channelWhatsAppBtn' => 'Open WhatsApp Chat',
 
     // Inquiry Form
-    'formHeading' => 'Send Us an Inquiry',
-    'formSubheading' => 'Select your inquiry category and our dedicated specialist will respond promptly.',
+    'formHeading' => 'Send Us a Direct Message',
+    'formSubheading' => 'Fill in your details and our dedicated support team will respond promptly.',
     'topicLabel' => 'Inquiry Subject',
     'topicGeneral' => 'General Platform Inquiry',
     'topicCourse' => 'Course Curriculum & Content',
@@ -33,8 +33,8 @@ return [
 
     'nameLabel' => 'Full Name',
     'labelName' => 'Full Name',
-    'namePlaceholder' => 'e.g., Maryam Ahmed',
-    'placeholderName' => 'e.g., Maryam Ahmed',
+    'namePlaceholder' => 'e.g., Ahmed Mahmoud',
+    'placeholderName' => 'e.g., Ahmed Mahmoud',
 
     'emailLabel' => 'Email Address',
     'labelEmail' => 'Email Address',
@@ -43,35 +43,35 @@ return [
 
     'phoneLabel' => 'Phone / WhatsApp',
     'labelPhone' => 'Phone / WhatsApp',
-    'phonePlaceholder' => '+966 5x xxx xxxx',
-    'placeholderPhone' => '+966 5x xxx xxxx',
+    'phonePlaceholder' => '01xxxxxxxxx',
+    'placeholderPhone' => '01xxxxxxxxx',
 
     'subjectLabel' => 'Subject',
     'labelSubject' => 'Subject',
     'subjectPlaceholder' => 'Brief summary of your inquiry',
     'placeholderSubject' => 'Brief summary of your inquiry',
 
-    'messageLabel' => 'Inquiry Details',
-    'labelMessage' => 'Inquiry Details',
-    'messagePlaceholder' => 'Provide complete details or context of your inquiry...',
-    'placeholderMessage' => 'Provide complete details or context of your inquiry...',
+    'messageLabel' => 'Your Message or Inquiry',
+    'labelMessage' => 'Your Message or Inquiry',
+    'messagePlaceholder' => 'Write your message or inquiry in detail here...',
+    'placeholderMessage' => 'Write your message or inquiry in detail here...',
 
     'attachLabel' => 'Attach Screenshot or Document (Optional)',
     'attachPlaceholder' => 'Drag and drop file here or click to browse',
 
-    'sendBtn' => 'Send Message Now',
-    'btnSubmit' => 'Send Message Now',
+    'sendBtn' => 'Send Message',
+    'btnSubmit' => 'Send Message',
 
     // Companion / Working Hours & Location
-    'officeTitle' => 'Headquarters & Working Hours',
+    'officeTitle' => 'Office & Working Hours',
     'workingHoursTitle' => 'Working & Support Hours',
-    'workingDays' => 'Sunday - Thursday',
-    'workingHoursTime' => '9:00 AM to 6:00 PM',
+    'workingDays' => 'Saturday - Thursday',
+    'workingHoursTime' => '9:00 AM to 9:00 PM',
     'headquartersTitle' => 'Headquarters',
-    'headquartersAddress' => 'Riyadh, Saudi Arabia',
-    'officeLocationRiyadh' => 'Riyadh, Saudi Arabia - King Fahd Road',
-    'officeLocationCairo' => 'Cairo, Egypt - Maadi Technology Park',
-    'workingHours' => 'Sunday to Thursday: 8:00 AM - 10:00 PM',
+    'headquartersAddress' => 'Cairo, Egypt',
+    'officeLocation' => 'Cairo, Egypt',
+    'officeLocationCairo' => 'Cairo, Egypt',
+    'workingHours' => 'Saturday to Thursday: 9:00 AM - 9:00 PM',
 
     // Quick Links
     'quickLinksTitle' => 'Helpful Quick Links',

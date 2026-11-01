@@ -135,10 +135,23 @@ class MuxDriver implements VideoDriverInterface
             throw new \RuntimeException('Failed to open file stream for upload.');
         }
 
-        $uploadResponse = Http::withBody(
-            Utils::streamFor($stream),
-            $file->getMimeType() ?: 'video/mp4'
-        )->put($uploadData['url']);
+        $timeout = (int) config('video.drivers.mux.timeout', 3600);
+        $fileSize = $file->getSize() ?: (file_exists($file->getRealPath()) ? (int) filesize($file->getRealPath()) : null);
+
+        $headers = [
+            'Content-Type' => $file->getMimeType() ?: 'video/mp4',
+        ];
+        if ($fileSize !== null && $fileSize > 0) {
+            $headers['Content-Length'] = (string) $fileSize;
+        }
+
+        $uploadResponse = Http::timeout($timeout)
+            ->connectTimeout(60)
+            ->withHeaders($headers)
+            ->withBody(
+                Utils::streamFor($stream),
+                $file->getMimeType() ?: 'video/mp4'
+            )->put($uploadData['url']);
 
         if (is_resource($stream)) {
             fclose($stream);
@@ -149,13 +162,31 @@ class MuxDriver implements VideoDriverInterface
         }
 
         // Poll briefly for the created asset
-        $uploadStatus = $this->getUpload($uploadData['id']);
-        $assetId = $uploadStatus['asset_id'] ?? null;
+        $assetId = null;
         $playbackId = null;
 
+        for ($attempt = 0; $attempt < 5; $attempt++) {
+            $uploadStatus = $this->getUpload($uploadData['id']);
+            $assetId = $uploadStatus['asset_id'] ?? null;
+            if ($assetId) {
+                break;
+            }
+            if ($attempt < 4) {
+                sleep(1);
+            }
+        }
+
         if ($assetId) {
-            $assetData = $this->getAsset($assetId);
-            $playbackId = $assetData['playback_ids'][0]['id'] ?? null;
+            for ($attempt = 0; $attempt < 3; $attempt++) {
+                $assetData = $this->getAsset($assetId);
+                $playbackId = $assetData['playback_ids'][0]['id'] ?? null;
+                if ($playbackId) {
+                    break;
+                }
+                if ($attempt < 2) {
+                    sleep(1);
+                }
+            }
         }
 
         return [
@@ -165,7 +196,7 @@ class MuxDriver implements VideoDriverInterface
             'mux_asset_id' => $assetId,
             'mux_upload_id' => $uploadData['id'],
             'duration_seconds' => null,
-            'status' => 'ready',
+            'status' => $playbackId ? 'ready' : 'preparing',
         ];
     }
 

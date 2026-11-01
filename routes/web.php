@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\FirebaseAuthController;
 use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Controllers\Auth\PasswordResetOtpController;
 use App\Http\Controllers\LocaleController;
+use App\Http\Controllers\Student\SupportTicketController;
 use App\Http\Controllers\StudentCourseController;
 use App\Http\Controllers\Webhooks\MuxWebhookController;
 use App\Livewire\Notifications\NotificationInbox;
@@ -105,6 +106,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Student Notifications Inbox
     Route::livewire('notifications', NotificationInbox::class)
         ->name('notifications.index');
+
+    // Student Support Tickets & Interactive Messaging
+    Route::get('support', [SupportTicketController::class, 'index'])->name('support.index');
+    Route::get('support/create', [SupportTicketController::class, 'create'])->name('support.create');
+    Route::post('support', [SupportTicketController::class, 'store'])->name('support.store');
+    Route::get('support/{ticket}', [SupportTicketController::class, 'show'])->name('support.show');
+    Route::post('support/{ticket}/reply', [SupportTicketController::class, 'reply'])->name('support.reply');
+    Route::post('support/{ticket}/close', [SupportTicketController::class, 'close'])->name('support.close');
+    Route::post('support/{ticket}/reopen', [SupportTicketController::class, 'reopen'])->name('support.reopen');
+    Route::get('support/{ticket}/poll', [SupportTicketController::class, 'poll'])->name('support.poll');
 });
 
 require __DIR__.'/settings.php';

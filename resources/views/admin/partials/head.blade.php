@@ -66,16 +66,11 @@
     }
     .alameen-content-wrap {
         opacity: 0;
-        transform: translateY(6px);
-        transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
-                    transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
-        will-change: opacity, transform;
+        transition: opacity 0.4s ease-out;
     }
     body.content-ready .alameen-content-wrap,
     #alameen-loader.loader-hidden ~ .alameen-content-wrap {
         opacity: 1 !important;
-        transform: none !important;
-        will-change: auto !important;
     }
     html.dark #alameen-loader,
     [data-theme="dark"] #alameen-loader {

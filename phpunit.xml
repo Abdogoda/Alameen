@@ -32,5 +32,8 @@
         <env name="PULSE_ENABLED" value="false"/>
         <env name="TELESCOPE_ENABLED" value="false"/>
         <env name="NIGHTWATCH_ENABLED" value="false"/>
+        <env name="VIDEO_DRIVER" value="local"/>
+        <env name="MUX_TOKEN_ID" value=""/>
+        <env name="MUX_TOKEN_SECRET" value=""/>
     </php>
 </phpunit>

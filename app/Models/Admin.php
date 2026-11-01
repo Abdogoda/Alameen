@@ -116,6 +116,16 @@ class Admin extends Authenticatable implements PasskeyUser
     }
 
     /**
+     * Support tickets assigned to this admin.
+     *
+     * @return HasMany<SupportTicket, $this>
+     */
+    public function assignedSupportTickets(): HasMany
+    {
+        return $this->hasMany(SupportTicket::class, 'assigned_admin_id');
+    }
+
+    /**
      * Human-friendly role name in Arabic.
      */
     public function getRoleNameAttribute(): string
@@ -238,5 +248,21 @@ class Admin extends Authenticatable implements PasskeyUser
         return Str::length($initials) > 1
             ? Str::substr($initials, 0, 1).Str::substr($initials, -1)
             : $initials;
+    }
+
+    /**
+     * Get avatar URL or null if none set.
+     */
+    public function avatarUrl(): ?string
+    {
+        if (blank($this->avatar)) {
+            return null;
+        }
+
+        if (str_starts_with($this->avatar, 'http://') || str_starts_with($this->avatar, 'https://') || str_starts_with($this->avatar, 'data:')) {
+            return $this->avatar;
+        }
+
+        return asset('storage/'.ltrim($this->avatar, '/'));
     }
 }

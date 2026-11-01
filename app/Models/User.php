@@ -144,6 +144,16 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
     }
 
     /**
+     * Support tickets opened by the student.
+     *
+     * @return HasMany<SupportTicket, $this>
+     */
+    public function supportTickets(): HasMany
+    {
+        return $this->hasMany(SupportTicket::class);
+    }
+
+    /**
      * Get the user's initials
      */
     public function initials(): string
@@ -153,5 +163,21 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
         return Str::length($initials) > 1
             ? Str::substr($initials, 0, 1).Str::substr($initials, -1)
             : $initials;
+    }
+
+    /**
+     * Get avatar URL or null if none set.
+     */
+    public function avatarUrl(): ?string
+    {
+        if (blank($this->avatar)) {
+            return null;
+        }
+
+        if (str_starts_with($this->avatar, 'http://') || str_starts_with($this->avatar, 'https://') || str_starts_with($this->avatar, 'data:')) {
+            return $this->avatar;
+        }
+
+        return asset('storage/'.ltrim($this->avatar, '/'));
     }
 }

@@ -333,51 +333,101 @@
                 </div>
 
                 {{-- Live Progress Container --}}
-                <div id="upload-progress-container" class="hidden p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-[#DEE8F7] dark:border-slate-700 space-y-4">
-                    <div class="flex items-center justify-between flex-wrap gap-2">
+                <div id="upload-progress-container" class="hidden p-5 sm:p-6 rounded-2xl sm:rounded-3xl bg-slate-50/90 dark:bg-slate-800/80 border border-[#DEE8F7] dark:border-slate-700/80 shadow-xs space-y-5 transition-all">
+                    
+                    {{-- File Info Header --}}
+                    <div class="flex items-center justify-between flex-wrap gap-3 pb-3 border-b border-slate-200/70 dark:border-slate-700/60">
                         <div class="flex items-center gap-3 min-w-0">
-                            <div class="size-10 rounded-xl bg-[#012383] text-white flex items-center justify-center shrink-0">
+                            <div class="size-11 rounded-2xl bg-gradient-to-tr from-[#012383] to-[#0B2A8F] text-white flex items-center justify-center shrink-0 shadow-xs ring-4 ring-blue-500/10">
                                 <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
                             </div>
                             <div class="min-w-0">
-                                <span id="progress-file-name" class="font-bold text-xs sm:text-sm text-[#012383] dark:text-white truncate block"></span>
-                                <span id="progress-file-size" class="text-[11px] text-slate-400 block"></span>
+                                <span id="progress-file-name" class="font-bold text-xs sm:text-sm text-slate-800 dark:text-white truncate block max-w-xs sm:max-w-md"></span>
+                                <div class="flex items-center gap-2 mt-0.5">
+                                    <span id="progress-file-size" dir="ltr" class="text-[11px] font-mono font-medium text-slate-400"></span>
+                                    <span class="size-1 rounded-full bg-slate-300 dark:bg-slate-600"></span>
+                                    <span class="text-[11px] text-slate-400 font-medium">{{ __('رفع مجزأ ذكي (Smart Chunks)') }}</span>
+                                </div>
                             </div>
                         </div>
 
-                        <span id="progress-status-badge" class="px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-[#012383] dark:bg-blue-950/60 dark:text-blue-300">
-                            {{ __('جاري الرفع...') }}
-                        </span>
-                    </div>
-
-                    {{-- Progress Bar --}}
-                    <div class="space-y-1.5">
-                        <div class="flex items-center justify-between text-xs font-bold">
-                            <span id="progress-percentage-label" class="text-[#012383] dark:text-blue-300">0%</span>
-                            <span id="progress-chunks-label" class="text-slate-400 font-mono text-[11px]">جاري التجهيز...</span>
-                        </div>
-                        <div class="w-full h-3 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden relative">
-                            <div id="progress-bar-fill" class="h-full bg-gradient-to-r from-[#012383] via-blue-600 to-emerald-500 rounded-full transition-all duration-200 w-0"></div>
+                        {{-- Dynamic Status Badge --}}
+                        <div id="progress-status-badge" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-blue-100/90 text-[#012383] dark:bg-blue-950/70 dark:text-blue-300 border border-blue-200 dark:border-blue-900 transition-all shadow-2xs">
+                            <span class="relative flex size-2 shrink-0">
+                                <span class="animate-ping absolute inline-flex size-full rounded-full bg-blue-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full size-2 bg-blue-600"></span>
+                            </span>
+                            <span id="progress-status-text">{{ __('جاري الرفع...') }}</span>
                         </div>
                     </div>
 
-                    {{-- Metrics Grid --}}
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-1 text-center">
-                        <div class="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-[#DEE8F7]/80 dark:border-slate-700">
-                            <span class="text-[10px] text-slate-400 block font-bold">{{ __('السرعة اللحظية') }}</span>
-                            <span id="metric-speed" class="font-black text-xs sm:text-sm text-slate-700 dark:text-slate-200 mt-0.5 block">-</span>
+                    {{-- Progress Bar & Parts Percentage Section --}}
+                    <div class="space-y-2.5">
+                        <div class="flex items-end justify-between gap-3">
+                            {{-- Parts Counter Pill & Detail --}}
+                            <div class="flex items-center gap-2">
+                                <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200 shadow-2xs">
+                                    <svg class="size-3.5 text-blue-600 dark:text-blue-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                                    <span id="progress-chunks-label">{{ __('جاري التجهيز...') }}</span>
+                                </div>
+                            </div>
+
+                            {{-- Large High-Tech Percentage --}}
+                            <div class="flex items-baseline gap-1 text-left">
+                                <span id="progress-percentage-label" class="text-2xl sm:text-3xl font-black text-[#012383] dark:text-blue-400 font-mono tracking-tight leading-none">0%</span>
+                            </div>
                         </div>
-                        <div class="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-[#DEE8F7]/80 dark:border-slate-700">
-                            <span class="text-[10px] text-slate-400 block font-bold">{{ __('الوقت المتبقي') }}</span>
-                            <span id="metric-eta" class="font-black text-xs sm:text-sm text-slate-700 dark:text-slate-200 mt-0.5 block">-</span>
+
+                        {{-- The Enhanced Progress Bar Track & Shimmering Fill --}}
+                        <div class="w-full h-3.5 sm:h-4 rounded-full bg-slate-200/80 dark:bg-slate-700/80 p-0.5 overflow-hidden shadow-inner relative">
+                            <div id="progress-bar-fill" class="h-full rounded-full bg-gradient-to-r from-[#012383] via-blue-600 to-teal-400 dark:from-blue-600 dark:via-indigo-500 dark:to-cyan-400 transition-all duration-300 ease-out relative overflow-hidden flex items-center justify-end w-0 shadow-xs">
+                                {{-- Shimmer effect overlay --}}
+                                <div class="absolute inset-0 upload-shimmer-stripes opacity-30"></div>
+                                {{-- Leading glow edge --}}
+                                <div class="relative size-2 rounded-full bg-white shadow-xs mx-1 shrink-0 opacity-80"></div>
+                            </div>
                         </div>
-                        <div class="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-[#DEE8F7]/80 dark:border-slate-700">
-                            <span class="text-[10px] text-slate-400 block font-bold">{{ __('الأجزاء المرفوعة') }}</span>
-                            <span id="metric-chunks" class="font-black text-xs sm:text-sm text-[#012383] dark:text-blue-300 mt-0.5 block font-mono">0 / 0</span>
+                    </div>
+
+                    {{-- Metrics Grid (Speed, ETA, Uploaded Chunks & Parts Percentage, Uploaded Size) --}}
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-1 text-center">
+                        {{-- Metric 1: Instant Speed --}}
+                        <div class="p-3 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-700/80 shadow-2xs">
+                            <div class="flex items-center justify-center gap-1.5 text-slate-400 mb-1">
+                                <svg class="size-3.5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                                <span class="text-[11px] font-bold">{{ __('السرعة اللحظية') }}</span>
+                            </div>
+                            <span id="metric-speed" dir="ltr" class="font-black text-xs sm:text-sm text-slate-700 dark:text-slate-200 block font-mono">-</span>
                         </div>
-                        <div class="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-[#DEE8F7]/80 dark:border-slate-700">
-                            <span class="text-[10px] text-slate-400 block font-bold">{{ __('الحجم المرفوع') }}</span>
-                            <span id="metric-uploaded" class="font-black text-xs sm:text-sm text-emerald-600 dark:text-emerald-400 mt-0.5 block">-</span>
+
+                        {{-- Metric 2: Estimated Time Remaining (ETA) --}}
+                        <div class="p-3 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-700/80 shadow-2xs">
+                            <div class="flex items-center justify-center gap-1.5 text-slate-400 mb-1">
+                                <svg class="size-3.5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                <span class="text-[11px] font-bold">{{ __('الوقت المتبقي') }}</span>
+                            </div>
+                            <span id="metric-eta" class="font-black text-xs sm:text-sm text-slate-700 dark:text-slate-200 block font-mono">-</span>
+                        </div>
+
+                        {{-- Metric 3: Uploaded Parts & Parts Percentage --}}
+                        <div class="p-3 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-700/80 shadow-2xs">
+                            <div class="flex items-center justify-center gap-1.5 text-slate-400 mb-1">
+                                <svg class="size-3.5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                                <span class="text-[11px] font-bold">{{ __('الأجزاء المرفوعة') }}</span>
+                            </div>
+                            <div class="flex items-center justify-center gap-1.5 flex-wrap">
+                                <span id="metric-chunks" dir="ltr" class="font-black text-xs sm:text-sm text-[#012383] dark:text-blue-300 font-mono">0 / 0</span>
+                                <span id="metric-parts-pct" class="text-[10px] font-black px-1.5 py-0.5 rounded-md bg-blue-50 text-[#012383] dark:bg-blue-950/70 dark:text-blue-300 font-mono border border-blue-200/60 dark:border-blue-800/60">0%</span>
+                            </div>
+                        </div>
+
+                        {{-- Metric 4: Uploaded Size --}}
+                        <div class="p-3 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-700/80 shadow-2xs">
+                            <div class="flex items-center justify-center gap-1.5 text-slate-400 mb-1">
+                                <svg class="size-3.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2 1.5 3 3.5 3h9c2 0 3.5-1 3.5-3V7c0-2-1.5-3-3.5-3h-9C5.5 4 4 5 4 7z"/></svg>
+                                <span class="text-[11px] font-bold">{{ __('الحجم المرفوع') }}</span>
+                            </div>
+                            <span id="metric-uploaded" dir="ltr" class="font-black text-xs sm:text-sm text-emerald-600 dark:text-emerald-400 block font-mono">-</span>
                         </div>
                     </div>
 
@@ -563,16 +613,17 @@
         function formatBytes(bytes) {
             if (bytes === 0) return '0 B';
             const k = 1024;
-            const sizes = ['B', 'KB', 'MB', 'GB'];
+            const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
             const i = Math.floor(Math.log(bytes) / Math.log(k));
             return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
         }
 
         function formatSeconds(sec) {
-            if (sec < 60) return Math.round(sec) + ' ث';
+            if (sec <= 0 || !isFinite(sec)) return '{{ __("لحظات...") }}';
+            if (sec < 60) return Math.round(sec) + ' {{ __("ث") }}';
             const m = Math.floor(sec / 60);
             const s = Math.round(sec % 60);
-            return `${m} د ${s} ث`;
+            return `${m} {{ __("د") }} ${s} {{ __("ث") }}`;
         }
 
         async function startChunkedUpload(file) {
@@ -588,12 +639,14 @@
             const fileNameEl = document.getElementById('progress-file-name');
             const fileSizeEl = document.getElementById('progress-file-size');
             const statusBadge = document.getElementById('progress-status-badge');
+            const statusText = document.getElementById('progress-status-text');
             const percentLabel = document.getElementById('progress-percentage-label');
             const chunksLabel = document.getElementById('progress-chunks-label');
             const barFill = document.getElementById('progress-bar-fill');
             const speedEl = document.getElementById('metric-speed');
             const etaEl = document.getElementById('metric-eta');
             const chunksEl = document.getElementById('metric-chunks');
+            const partsPctEl = document.getElementById('metric-parts-pct');
             const uploadedEl = document.getElementById('metric-uploaded');
             const processingBanner = document.getElementById('processing-banner');
             const successBanner = document.getElementById('success-banner');
@@ -604,9 +657,13 @@
             successBanner.classList.add('hidden');
 
             fileNameEl.textContent = file.name;
+            fileNameEl.title = file.name;
             fileSizeEl.textContent = formatBytes(file.size);
-            statusBadge.textContent = 'جاري الرفع...';
-            statusBadge.className = 'px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-[#012383]';
+            
+            if (statusBadge) {
+                statusBadge.className = 'inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-blue-100/90 text-[#012383] dark:bg-blue-950/70 dark:text-blue-300 border border-blue-200 dark:border-blue-900 transition-all shadow-2xs';
+            }
+            if (statusText) statusText.textContent = '{{ __("جاري الرفع...") }}';
 
             if (submitBtn) submitBtn.disabled = true;
             uploadStartTime = Date.now();
@@ -630,8 +687,10 @@
                 // If last chunk, show processing state banner right before sending
                 if (chunkIndex === totalChunks - 1) {
                     processingBanner.classList.remove('hidden');
-                    statusBadge.textContent = 'جاري تجميع ومعالجة الفيديو...';
-                    statusBadge.className = 'px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-900 animate-pulse';
+                    if (statusBadge) {
+                        statusBadge.className = 'inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-amber-100 text-amber-900 dark:bg-amber-950/70 dark:text-amber-200 border border-amber-200 dark:border-amber-900 transition-all animate-pulse';
+                    }
+                    if (statusText) statusText.textContent = '{{ __("جاري تجميع ومعالجة الفيديو...") }}';
                 }
 
                 try {
@@ -653,26 +712,30 @@
 
                     uploadedBytes += (end - start);
                     const percent = Math.min(100, Math.round((uploadedBytes / file.size) * 100));
+                    const partsPercent = Math.min(100, Math.round(((chunkIndex + 1) / totalChunks) * 100));
 
                     // Metrics calculation
                     const elapsedSec = (Date.now() - uploadStartTime) / 1000;
                     const bytesPerSec = elapsedSec > 0 ? (uploadedBytes / elapsedSec) : 0;
-                    const remainingBytes = file.size - uploadedBytes;
+                    const remainingBytes = Math.max(0, file.size - uploadedBytes);
                     const etaSec = bytesPerSec > 0 ? (remainingBytes / bytesPerSec) : 0;
 
                     // Update UI
                     percentLabel.textContent = percent + '%';
                     barFill.style.width = percent + '%';
-                    chunksLabel.textContent = `الجزء ${chunkIndex + 1} من ${totalChunks}`;
+                    chunksLabel.textContent = `{{ __("الجزء") }} ${chunkIndex + 1} {{ __("من") }} ${totalChunks} (${partsPercent}%)`;
                     chunksEl.textContent = `${chunkIndex + 1} / ${totalChunks}`;
+                    if (partsPctEl) partsPctEl.textContent = partsPercent + '%';
                     uploadedEl.textContent = `${formatBytes(uploadedBytes)} / ${formatBytes(file.size)}`;
-                    speedEl.textContent = formatBytes(bytesPerSec) + '/ث';
+                    speedEl.textContent = formatBytes(bytesPerSec) + '/s';
                     etaEl.textContent = formatSeconds(etaSec);
 
                     // Final chunk finished -> Processing state
                     if (chunkIndex === totalChunks - 1 && result.status === 'completed') {
-                        statusBadge.textContent = 'اكتمل بنجاح';
-                        statusBadge.className = 'px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800';
+                        if (statusBadge) {
+                            statusBadge.className = 'inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-900 transition-all';
+                        }
+                        if (statusText) statusText.textContent = '{{ __("اكتمل الرفع والمعالجة بنجاح") }}';
                         processingBanner.classList.add('hidden');
                         successBanner.classList.remove('hidden');
 
@@ -694,7 +757,7 @@
 
                         // Update driver badge
                         const driverBadge = document.getElementById('success-driver-badge');
-                        driverBadge.textContent = result.driver_used === 'mux' ? 'منصة MUX' : 'سيرفر المنصة المحلي';
+                        driverBadge.textContent = result.driver_used === 'mux' ? 'منصة MUX' : '{{ __("سيرفر المنصة المحلي") }}';
 
                         // Set preview player
                         const player = document.getElementById('preview-player');
@@ -709,14 +772,18 @@
                     } else if (chunkIndex === totalChunks - 1) {
                         // Merging on server
                         processingBanner.classList.remove('hidden');
-                        statusBadge.textContent = 'جاري المعالجة...';
-                        statusBadge.className = 'px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800';
+                        if (statusBadge) {
+                            statusBadge.className = 'inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-amber-100 text-amber-900 dark:bg-amber-950/70 dark:text-amber-200 border border-amber-200 dark:border-amber-900 transition-all animate-pulse';
+                        }
+                        if (statusText) statusText.textContent = '{{ __("جاري تجميع ومعالجة الفيديو...") }}';
                     }
 
                 } catch (err) {
                     console.error(err);
-                    statusBadge.textContent = 'خطأ في الرفع';
-                    statusBadge.className = 'px-3 py-1 rounded-full text-xs font-bold bg-rose-100 text-rose-800';
+                    if (statusBadge) {
+                        statusBadge.className = 'inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-rose-100 text-rose-800 dark:bg-rose-950/70 dark:text-rose-300 border border-rose-200 transition-all';
+                    }
+                    if (statusText) statusText.textContent = '{{ __("خطأ في الرفع") }}';
                     alert('حدث خطأ أثناء رفع ملف الفيديو: ' + err.message);
                     if (submitBtn) submitBtn.disabled = false;
                     isUploading = false;

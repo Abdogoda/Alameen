@@ -105,7 +105,7 @@ class VideoServiceManager extends Manager
         if ($targetDriver->isConfigured()) {
             try {
                 $result = $targetDriver->handleUpload($file);
-                if (! empty($result['video_url']) || ! empty($result['mux_playback_id'])) {
+                if (! empty($result['video_url']) || ! empty($result['mux_playback_id']) || ! empty($result['mux_upload_id']) || ! empty($result['mux_asset_id'])) {
                     $result['driver_used'] = $targetDriver->name();
 
                     return $result;

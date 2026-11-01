@@ -30,6 +30,7 @@ return [
             'base_url' => env('MUX_BASE_URL', 'https://api.mux.com/video/v1'),
             'playback_policy' => ['public'],
             'cors_origin' => env('MUX_CORS_ORIGIN', '*'),
+            'timeout' => (int) env('MUX_TIMEOUT', 3600),
         ],
 
         'local' => [

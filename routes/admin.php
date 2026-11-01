@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\ReceiptController;
 use App\Http\Controllers\Admin\RoleManagementController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\StudentManagerController;
+use App\Http\Controllers\Admin\SupportTicketController;
 use App\Livewire\Admin\Notifications\NotificationManager;
 use Illuminate\Support\Facades\Route;
 
@@ -123,6 +124,17 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('settings/menus/{menu}/items', [SettingsController::class, 'saveMenuItem'])->name('settings.menus.item');
         Route::post('settings/menus/items/{item}/toggle', [SettingsController::class, 'toggleMenuItem'])->name('settings.menus.item.toggle');
         Route::delete('settings/menus/items/{item}', [SettingsController::class, 'deleteMenuItem'])->name('settings.menus.item.delete');
+
+        // Support Tickets & Live Student Help Desk
+        Route::get('support', [SupportTicketController::class, 'index'])->name('support.index');
+        Route::get('support/{ticket}', [SupportTicketController::class, 'show'])->name('support.show');
+        Route::post('support/{ticket}/reply', [SupportTicketController::class, 'reply'])->name('support.reply');
+        Route::post('support/{ticket}/status', [SupportTicketController::class, 'updateStatus'])->name('support.status.update');
+        Route::post('support/{ticket}/priority', [SupportTicketController::class, 'updatePriority'])->name('support.priority.update');
+        Route::post('support/{ticket}/assign', [SupportTicketController::class, 'assign'])->name('support.assign');
+        Route::post('support/{ticket}/close', [SupportTicketController::class, 'close'])->name('support.close');
+        Route::post('support/{ticket}/reopen', [SupportTicketController::class, 'reopen'])->name('support.reopen');
+        Route::get('support/{ticket}/poll', [SupportTicketController::class, 'poll'])->name('support.poll');
 
         // Admin Notification Broadcasting
         Route::livewire('notifications', NotificationManager::class)->name('notifications.index');

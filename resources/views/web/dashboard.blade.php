@@ -101,6 +101,13 @@
 
         </div>
 
+        @php
+            $enrolledCourses = auth()->check() ? auth()->user()->courses()->withCount('videos')->get() : collect();
+            if ($enrolledCourses->isEmpty()) {
+                $enrolledCourses = \App\Models\Course::query()->where('is_published', true)->withCount('videos')->take(1)->get();
+            }
+        @endphp
+
         <!-- Enrolled Courses Grid -->
         <div class="flex flex-col gap-4 w-full">
             <div class="flex items-center justify-between w-full">
@@ -108,99 +115,51 @@
                     {{ __('كورساتي المسجّلة في البرنامج') }}
                 </h2>
                 <span class="text-xs font-semibold text-slate-500 bg-white border border-[#DEE8F7] px-3 py-1 rounded-full shadow-xs">
-                    {{ __('٣ كورسات مسجّلة') }}
+                    {{ $enrolledCourses->count() }} {{ __('كورس مسجّل') }}
                 </span>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 w-full">
-                
-                <!-- Course 1 -->
-                <div class="bg-white border border-[#DEE8F7] rounded-2xl p-4 flex flex-col justify-between gap-3 shadow-xs hover:shadow-card hover:-translate-y-0.5 transition-all">
-                    <div class="h-32 rounded-xl overflow-hidden relative w-full bg-slate-100 shrink-0">
-                        <img src="/assets/images/course-topic-basics.png" alt="أساسيات التخاطب" class="size-full object-cover pointer-events-none rounded-xl" />
-                        <span class="absolute top-2.5 end-2.5 px-2 py-0.5 rounded-full bg-white/90 backdrop-blur-xs text-[11px] font-bold text-[#0B2A8F] shadow-xs">
-                            {{ __('قيد المشاهدة') }}
-                        </span>
-                    </div>
-                    
-                    <div class="flex flex-col gap-1 text-start w-full">
-                        <h4 class="font-bold text-base text-[#012383]">
-                            {{ __('أساسيات وتطبيقات التخاطب') }}
-                        </h4>
-                        <p class="text-xs text-slate-500">
-                            {{ __('٨ فيديوهات مكتملة • درس قيد المشاهدة') }}
-                        </p>
-                    </div>
-
-                    <div class="flex flex-col gap-1.5 w-full mt-auto pt-2">
-                        <div class="flex items-center justify-between text-xs text-slate-500">
-                            <span>{{ __('تقدّم المشاهدة') }}</span>
-                            <span class="font-bold text-[#0B2A8F]">٤٢٪</span>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 w-full {{ $enrolledCourses->count() === 1 ? 'max-w-md' : '' }}">
+                @forelse($enrolledCourses as $c)
+                    <div class="bg-white border border-[#DEE8F7] rounded-2xl p-4 flex flex-col justify-between gap-3 shadow-xs hover:shadow-card hover:-translate-y-0.5 transition-all">
+                        <div class="h-32 rounded-xl overflow-hidden relative w-full bg-slate-100 shrink-0">
+                            <img src="{{ $c->thumbnail ?: '/assets/images/course-topic-basics.png' }}" alt="{{ $c->title_ar }}" class="size-full object-cover pointer-events-none rounded-xl" />
+                            <span class="absolute top-2.5 end-2.5 px-2 py-0.5 rounded-full bg-white/90 backdrop-blur-xs text-[11px] font-bold text-[#0B2A8F] shadow-xs">
+                                {{ __('قيد المشاهدة') }}
+                            </span>
                         </div>
-                        <div class="bg-[#DEE8F7] h-1.5 rounded-full overflow-hidden w-full">
-                            <div class="bg-[#0B2A8F] h-full rounded-full w-[42%]"></div>
+                        
+                        <div class="flex flex-col gap-1 text-start w-full">
+                            <h4 class="font-bold text-base text-[#012383]">
+                                {{ app()->getLocale() === 'en' && $c->title_en ? $c->title_en : $c->title_ar }}
+                            </h4>
+                            <p class="text-xs text-slate-500">
+                                {{ $c->videos_count ? $c->videos_count . ' ' . __('درساً تدريبياً') : __('برنامج تدريبي سريري متكامل') }}
+                            </p>
                         </div>
-                    </div>
-                </div>
 
-                <!-- Course 2 -->
-                <div class="bg-white border border-[#DEE8F7] rounded-2xl p-4 flex flex-col justify-between gap-3 shadow-xs hover:shadow-card hover:-translate-y-0.5 transition-all">
-                    <div class="h-32 rounded-xl overflow-hidden relative w-full bg-slate-100 shrink-0">
-                        <img src="/assets/images/course-topic-articulation.png" alt="تصحيح مخارج الحروف" class="size-full object-cover pointer-events-none rounded-xl" />
-                        <span class="absolute top-2.5 end-2.5 px-2 py-0.5 rounded-full bg-white/90 backdrop-blur-xs text-[11px] font-bold text-emerald-700 shadow-xs">
-                            {{ __('مستوى متقدم') }}
-                        </span>
-                    </div>
-                    
-                    <div class="flex flex-col gap-1 text-start w-full">
-                        <h4 class="font-bold text-base text-[#012383]">
-                            {{ __('تصحيح اللدغات وعيوب النطق') }}
-                        </h4>
-                        <p class="text-xs text-slate-500">
-                            {{ __('١٢ تدريباً سريرياً معتمداً') }}
-                        </p>
-                    </div>
-
-                    <div class="flex flex-col gap-1.5 w-full mt-auto pt-2">
-                        <div class="flex items-center justify-between text-xs text-slate-500">
-                            <span>{{ __('تقدّم المشاهدة') }}</span>
-                            <span class="font-bold text-[#0B2A8F]">٧٠٪</span>
+                        <div class="flex flex-col gap-1.5 w-full mt-auto pt-2">
+                            <div class="flex items-center justify-between text-xs text-slate-500">
+                                <span>{{ __('تقدّم المشاهدة') }}</span>
+                                <span class="font-bold text-[#0B2A8F]">٤٢٪</span>
+                            </div>
+                            <div class="bg-[#DEE8F7] h-1.5 rounded-full overflow-hidden w-full">
+                                <div class="bg-[#0B2A8F] h-full rounded-full w-[42%]"></div>
+                            </div>
                         </div>
-                        <div class="bg-[#DEE8F7] h-1.5 rounded-full overflow-hidden w-full">
-                            <div class="bg-emerald-600 h-full rounded-full w-[70%]"></div>
+
+                        <div class="pt-2">
+                            <a href="{{ route('courses.show') }}" class="w-full h-9 bg-[#EAF1FB] hover:bg-[#012383] text-[#012383] hover:text-white rounded-xl text-xs font-bold transition-colors flex items-center justify-center gap-1.5">
+                                <span>{{ __('متابعة الكورس') }}</span>
+                                <span class="rtl:rotate-180">→</span>
+                            </a>
                         </div>
                     </div>
-                </div>
-
-                <!-- Course 3 -->
-                <div class="bg-white border border-[#DEE8F7] rounded-2xl p-4 flex flex-col justify-between gap-3 shadow-xs hover:shadow-card hover:-translate-y-0.5 transition-all">
-                    <div class="h-32 rounded-xl overflow-hidden relative w-full bg-slate-100 shrink-0">
-                        <img src="/assets/images/course-topic-strategies.png" alt="استراتيجيات التلعثم" class="size-full object-cover pointer-events-none rounded-xl" />
-                        <span class="absolute top-2.5 end-2.5 px-2 py-0.5 rounded-full bg-white/90 backdrop-blur-xs text-[11px] font-bold text-amber-700 shadow-xs">
-                            {{ __('المستوى القادم') }}
-                        </span>
+                @empty
+                    <div class="col-span-full py-8 text-center text-xs text-slate-400">
+                        {{ __('لا توجد كورسات مسجّلة حالياً') }}
                     </div>
-                    
-                    <div class="flex flex-col gap-1 text-start w-full">
-                        <h4 class="font-bold text-base text-[#012383]">
-                            {{ __('استراتيجيات علاج التلعثم والطلاقة') }}
-                        </h4>
-                        <p class="text-xs text-slate-500">
-                            {{ __('يتطلب اجتياز المستوى الثاني بنسبة ٩٥٪') }}
-                        </p>
-                    </div>
-
-                    <div class="flex flex-col gap-1.5 w-full mt-auto pt-2">
-                        <div class="flex items-center justify-between text-xs text-slate-500">
-                            <span>{{ __('تقدّم المشاهدة') }}</span>
-                            <span class="font-bold text-slate-400">٠٪</span>
-                        </div>
-                        <div class="bg-[#DEE8F7] h-1.5 rounded-full overflow-hidden w-full">
-                            <div class="bg-slate-300 h-full rounded-full w-[0%]"></div>
-                        </div>
-                    </div>
-                </div>
-
+                @endforelse
             </div>
         </div>
 

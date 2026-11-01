@@ -665,40 +665,41 @@
 
         </div>
 
+    <x-slot:modals>
         @if($currentCourse)
         <!-- Modal: Upload Manual Payment Receipt -->
-        <div id="modal-upload-receipt" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs hidden">
-          <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 flex flex-col gap-5 shadow-2xl border border-[#DEE8F7] max-h-[90vh] overflow-y-auto">
-            <div class="flex items-center justify-between border-b border-[#DEE8F7] pb-3">
+        <div id="modal-upload-receipt" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs hidden" onclick="if (event.target === this) this.classList.add('hidden')">
+          <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-lg w-full p-6 sm:p-8 flex flex-col gap-5 shadow-2xl border border-[#DEE8F7] dark:border-slate-800 max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between border-b border-[#DEE8F7] dark:border-slate-800 pb-3">
               <div class="flex items-center gap-2">
-                <span class="size-8 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center font-bold">💳</span>
-                <h3 class="font-['Baloo_Bhaijaan_2'] font-bold text-xl text-[#012383]">{{ __('رفع إيصال سداد الدورة') }}</h3>
+                <span class="size-8 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 flex items-center justify-center font-bold">💳</span>
+                <h3 class="font-['Baloo_Bhaijaan_2'] font-bold text-xl text-[#012383] dark:text-white">{{ __('رفع إيصال سداد الدورة') }}</h3>
               </div>
-              <button type="button" onclick="document.getElementById('modal-upload-receipt').classList.add('hidden')" class="text-slate-400 hover:text-slate-600 cursor-pointer">✕</button>
+              <button type="button" onclick="document.getElementById('modal-upload-receipt').classList.add('hidden')" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer text-lg leading-none">✕</button>
             </div>
 
             <!-- Dynamic Payment Instructions from SettingsService -->
-            <div class="p-4 rounded-2xl bg-slate-50 border border-[#DEE8F7] text-xs text-slate-700 flex flex-col gap-2">
-              <span class="font-bold text-[#012383]">{{ __('بيانات التحويل الحالية:') }}</span>
+            <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-[#DEE8F7] dark:border-slate-700 text-xs text-slate-700 dark:text-slate-300 flex flex-col gap-2">
+              <span class="font-bold text-[#012383] dark:text-blue-300">{{ __('بيانات التحويل الحالية:') }}</span>
               <div class="flex items-center justify-between">
                 <span>📱 {{ __('فودافون كاش:') }}</span>
-                <span class="font-mono font-bold text-rose-700">{{ $cmsSettings->get('vodafone_cash_number', '01012345678') }}</span>
+                <span class="font-mono font-bold text-rose-700 dark:text-rose-400">{{ $cmsSettings->get('vodafone_cash_number', '01012345678') }}</span>
               </div>
               <div class="flex items-center justify-between">
                 <span>⚡ {{ __('إنستاباي (InstaPay):') }}</span>
-                <span class="font-mono font-bold text-purple-700">{{ $cmsSettings->get('instapay_handle', 'alameen@instapay') }}</span>
+                <span class="font-mono font-bold text-purple-700 dark:text-purple-400">{{ $cmsSettings->get('instapay_handle', 'alameen@instapay') }}</span>
               </div>
               <div class="flex items-center justify-between">
                 <span>🏦 {{ __('سعر الدورة:') }}</span>
-                <span class="font-bold text-[#0B2A8F]">{{ number_format((float) $currentCourse->price, 2) }} {{ __('ج.م') }}</span>
+                <span class="font-bold text-[#0B2A8F] dark:text-blue-400">{{ number_format((float) $currentCourse->price, 2) }} {{ __('ج.م') }}</span>
               </div>
             </div>
 
             <form method="POST" action="{{ route('courses.receipt.submit', $currentCourse->id) }}" enctype="multipart/form-data" class="flex flex-col gap-4 text-xs">
               @csrf
               <div>
-                <label class="font-bold text-slate-700 block mb-1">{{ __('وسيلة التحويل:') }}</label>
-                <select name="payment_method" required class="w-full h-11 px-3.5 rounded-xl border border-[#DEE8F7] bg-white font-bold text-slate-800">
+                <label class="font-bold text-slate-700 dark:text-slate-300 block mb-1">{{ __('وسيلة التحويل:') }}</label>
+                <select name="payment_method" required class="w-full h-11 px-3.5 rounded-xl border border-[#DEE8F7] dark:border-slate-700 bg-white dark:bg-slate-800 font-bold text-slate-800 dark:text-slate-100">
                   <option value="vodafone_cash">{{ __('محفظة فودافون كاش (Vodafone Cash)') }}</option>
                   <option value="instapay">{{ __('تطبيق إنستاباي (InstaPay IPA)') }}</option>
                   <option value="bank_transfer">{{ __('تحويل بنكي مباشر (Bank Wire)') }}</option>
@@ -706,28 +707,29 @@
               </div>
 
               <div>
-                <label class="font-bold text-slate-700 block mb-1">{{ __('المبلغ المحول:') }}</label>
-                <input type="number" step="0.01" name="amount" value="{{ $currentCourse->price }}" required class="w-full h-11 px-3.5 rounded-xl border border-[#DEE8F7] bg-white font-bold text-[#012383]" />
+                <label class="font-bold text-slate-700 dark:text-slate-300 block mb-1">{{ __('المبلغ المحول:') }}</label>
+                <input type="number" step="0.01" name="amount" value="{{ $currentCourse->price }}" required class="w-full h-11 px-3.5 rounded-xl border border-[#DEE8F7] dark:border-slate-700 bg-white dark:bg-slate-800 font-bold text-[#012383] dark:text-blue-300" />
               </div>
 
               <div>
-                <label class="font-bold text-slate-700 block mb-1">{{ __('رقم هاتفك المحول منه أو حسابك:') }}</label>
-                <input type="text" name="sender_account" placeholder="e.g. 01012345678" class="w-full h-11 px-3.5 rounded-xl border border-[#DEE8F7] bg-white" />
+                <label class="font-bold text-slate-700 dark:text-slate-300 block mb-1">{{ __('رقم هاتفك المحول منه أو حسابك:') }}</label>
+                <input type="text" name="sender_account" placeholder="e.g. 01012345678" class="w-full h-11 px-3.5 rounded-xl border border-[#DEE8F7] dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100" />
               </div>
 
               <div>
-                <label class="font-bold text-slate-700 block mb-1">{{ __('صورة الإيصال أو لقطة الشاشة:') }}</label>
-                <input type="file" name="receipt_image" accept="image/*" required class="w-full h-11 p-2 rounded-xl border border-[#DEE8F7] bg-white file:mr-2 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-[#EAF1FB] file:text-[#0B2A8F]" />
+                <label class="font-bold text-slate-700 dark:text-slate-300 block mb-1">{{ __('صورة الإيصال أو لقطة الشاشة:') }}</label>
+                <input type="file" name="receipt_image" accept="image/*" required class="w-full h-11 p-2 rounded-xl border border-[#DEE8F7] dark:border-slate-700 bg-white dark:bg-slate-800 file:mr-2 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-[#EAF1FB] file:text-[#0B2A8F] dark:file:bg-slate-700 dark:file:text-blue-300 text-slate-800 dark:text-slate-100" />
               </div>
 
-              <div class="flex items-center justify-end gap-2 pt-2 border-t border-[#DEE8F7]">
-                <button type="button" onclick="document.getElementById('modal-upload-receipt').classList.add('hidden')" class="px-4 h-10 rounded-xl bg-slate-100 text-slate-600 font-bold">{{ __('إلغاء') }}</button>
-                <button type="submit" class="px-6 h-10 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold shadow-xs">{{ __('تأكيد ورفع الإيصال') }}</button>
+              <div class="flex items-center justify-end gap-2 pt-2 border-t border-[#DEE8F7] dark:border-slate-800">
+                <button type="button" onclick="document.getElementById('modal-upload-receipt').classList.add('hidden')" class="px-4 h-10 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 font-bold transition-colors cursor-pointer">{{ __('إلغاء') }}</button>
+                <button type="submit" class="px-6 h-10 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold shadow-xs transition-colors cursor-pointer">{{ __('تأكيد ورفع الإيصال') }}</button>
               </div>
             </form>
           </div>
         </div>
         @endif
+    </x-slot:modals>
 
 </x-layouts::app>
 

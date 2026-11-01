@@ -130,36 +130,10 @@ class MuxDriver implements VideoDriverInterface
             throw new \RuntimeException('Failed to create MUX Direct Upload URL.');
         }
 
-        $stream = fopen($file->getRealPath(), 'r');
-        if ($stream === false) {
-            throw new \RuntimeException('Failed to open file stream for upload.');
-        }
+        $realPath = $file->getRealPath();
+        $mimeType = $file->getMimeType() ?: 'video/mp4';
 
-        $timeout = (int) config('video.drivers.mux.timeout', 3600);
-        $fileSize = $file->getSize() ?: (file_exists($file->getRealPath()) ? (int) filesize($file->getRealPath()) : null);
-
-        $headers = [
-            'Content-Type' => $file->getMimeType() ?: 'video/mp4',
-        ];
-        if ($fileSize !== null && $fileSize > 0) {
-            $headers['Content-Length'] = (string) $fileSize;
-        }
-
-        $uploadResponse = Http::timeout($timeout)
-            ->connectTimeout(60)
-            ->withHeaders($headers)
-            ->withBody(
-                Utils::streamFor($stream),
-                $file->getMimeType() ?: 'video/mp4'
-            )->put($uploadData['url']);
-
-        if (is_resource($stream)) {
-            fclose($stream);
-        }
-
-        if (! $uploadResponse->successful()) {
-            throw new \RuntimeException('Failed to stream video to MUX: '.$uploadResponse->body());
-        }
+        $this->uploadFileToMuxEndpoint($realPath, $uploadData['url'], $mimeType);
 
         // Poll briefly for the created asset
         $assetId = null;
@@ -198,6 +172,129 @@ class MuxDriver implements VideoDriverInterface
             'duration_seconds' => null,
             'status' => $playbackId ? 'ready' : 'preparing',
         ];
+    }
+
+    /**
+     * Upload file to MUX direct upload endpoint using resilient chunked streaming.
+     * MUX direct upload endpoints support standard Google Cloud resumable chunk uploads.
+     * Chunks must be multiples of 256 KiB (262,144 bytes).
+     */
+    protected function uploadFileToMuxEndpoint(string $filePath, string $uploadUrl, string $mimeType): void
+    {
+        $fileSize = (int) filesize($filePath);
+        if ($fileSize <= 0) {
+            throw new \RuntimeException('File size is 0 bytes; cannot upload to MUX.');
+        }
+
+        // MUX requires chunk sizes to be a multiple of 256 KiB (262,144 bytes)
+        // 5 MiB = 5 * 1024 * 1024 = 5,242,880 bytes (20 * 256 KiB)
+        $chunkSize = 5 * 1024 * 1024;
+
+        // If file is smaller than or equal to one chunk, perform single PUT request
+        if ($fileSize <= $chunkSize) {
+            $handle = fopen($filePath, 'rb');
+            if (! $handle) {
+                throw new \RuntimeException('Failed to open file stream for upload.');
+            }
+
+            try {
+                $timeout = (int) config('video.drivers.mux.timeout', 3600);
+                $response = Http::timeout($timeout)
+                    ->connectTimeout(30)
+                    ->withHeaders([
+                        'Content-Type' => $mimeType,
+                        'Content-Length' => (string) $fileSize,
+                    ])
+                    ->withBody(Utils::streamFor($handle), $mimeType)
+                    ->put($uploadUrl);
+
+                if (! $response->successful()) {
+                    throw new \RuntimeException('Failed to stream video to MUX: '.$response->body());
+                }
+            } finally {
+                if (is_resource($handle)) {
+                    fclose($handle);
+                }
+            }
+
+            return;
+        }
+
+        // Resumable Chunked Upload for larger files
+        $handle = fopen($filePath, 'rb');
+        if (! $handle) {
+            throw new \RuntimeException('Failed to open file stream for upload.');
+        }
+
+        try {
+            $offset = 0;
+
+            while ($offset < $fileSize) {
+                $bytesToRead = min($chunkSize, $fileSize - $offset);
+                $chunkData = fread($handle, $bytesToRead);
+
+                if ($chunkData === false || strlen($chunkData) === 0) {
+                    throw new \RuntimeException("Failed to read chunk data at byte offset {$offset}.");
+                }
+
+                $chunkLength = strlen($chunkData);
+                $end = $offset + $chunkLength - 1;
+                $isLastChunk = ($end + 1) >= $fileSize;
+
+                // Retry logic for individual chunk
+                $uploaded = false;
+                $lastError = null;
+
+                for ($retry = 0; $retry < 3; $retry++) {
+                    try {
+                        $response = Http::timeout(180)
+                            ->connectTimeout(30)
+                            ->withOptions([
+                                'http_errors' => false,
+                                'allow_redirects' => false,
+                            ])
+                            ->withHeaders([
+                                'Content-Type' => $mimeType,
+                                'Content-Length' => (string) $chunkLength,
+                                'Content-Range' => "bytes {$offset}-{$end}/{$fileSize}",
+                            ])
+                            ->withBody($chunkData, $mimeType)
+                            ->put($uploadUrl);
+
+                        $status = $response->status();
+
+                        // 308 Resume Incomplete is expected for intermediate chunks; 200/201 for final chunk
+                        if ($isLastChunk) {
+                            if ($status >= 200 && $status < 300) {
+                                $uploaded = true;
+                                break;
+                            }
+                        } else {
+                            if ($status === 308 || ($status >= 200 && $status < 300)) {
+                                $uploaded = true;
+                                break;
+                            }
+                        }
+
+                        $lastError = "HTTP {$status}: ".$response->body();
+                    } catch (\Throwable $e) {
+                        $lastError = $e->getMessage();
+                    }
+
+                    usleep(500000); // 500ms delay before retry
+                }
+
+                if (! $uploaded) {
+                    throw new \RuntimeException("MUX chunk upload failed at bytes {$offset}-{$end}/{$fileSize}: {$lastError}");
+                }
+
+                $offset += $chunkLength;
+            }
+        } finally {
+            if (is_resource($handle)) {
+                fclose($handle);
+            }
+        }
     }
 
     public function parseInput(string $input): array

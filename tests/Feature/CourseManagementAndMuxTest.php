@@ -11,10 +11,13 @@ use App\Models\Level;
 use App\Models\Role;
 use App\Models\Video;
 use App\Services\Video\Contracts\VideoDriverInterface;
+use App\Services\Video\Drivers\MuxDriver;
 use App\Services\Video\MuxVideoService;
 use App\Services\Video\VideoServiceManager;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\Client\Request;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Tests\TestCase;
@@ -671,5 +674,120 @@ class CourseManagementAndMuxTest extends TestCase
         ]);
 
         $this->assertEquals('/storage/videos/lessons/lesson_123.mp4', $video->effective_playback_url);
+    }
+
+    /**
+     * 19. Test MuxDriver handles chunked upload for files exceeding chunk size.
+     */
+    public function test_mux_driver_resilient_chunked_upload(): void
+    {
+        config([
+            'video.drivers.mux.token_id' => 'test-token-id',
+            'video.drivers.mux.token_secret' => 'test-token-secret',
+        ]);
+
+        Http::fake([
+            'https://api.mux.com/video/v1/uploads' => Http::response([
+                'data' => [
+                    'id' => 'upload_chunk_test_123',
+                    'url' => 'https://direct-uploads.mux.com/test_upload',
+                    'status' => 'waiting',
+                ],
+            ], 200),
+            'https://direct-uploads.mux.com/test_upload' => Http::response('', 200),
+            'https://api.mux.com/video/v1/uploads/upload_chunk_test_123' => Http::response([
+                'data' => [
+                    'id' => 'upload_chunk_test_123',
+                    'asset_id' => 'asset_chunk_test_456',
+                    'status' => 'asset_created',
+                ],
+            ], 200),
+            'https://api.mux.com/video/v1/assets/asset_chunk_test_456' => Http::response([
+                'data' => [
+                    'id' => 'asset_chunk_test_456',
+                    'playback_ids' => [
+                        ['id' => 'playback_chunk_test_789', 'policy' => 'public'],
+                    ],
+                ],
+            ], 200),
+        ]);
+
+        /** @var MuxDriver $muxDriver */
+        $muxDriver = app(MuxDriver::class);
+        $this->assertTrue($muxDriver->isConfigured());
+
+        $fakeFile = UploadedFile::fake()->createWithContent('sample_chunk.mp4', str_repeat('A', 1024));
+        $result = $muxDriver->handleUpload($fakeFile);
+
+        $this->assertEquals('mux', $result['video_source']);
+        $this->assertEquals('playback_chunk_test_789', $result['mux_playback_id']);
+        $this->assertEquals('asset_chunk_test_456', $result['mux_asset_id']);
+        $this->assertEquals('https://stream.mux.com/playback_chunk_test_789.m3u8', $result['video_url']);
+    }
+
+    /**
+     * 20. Test MuxDriver splits files larger than 5MB into multiple resumable chunks.
+     */
+    public function test_mux_driver_resilient_multi_chunk_upload(): void
+    {
+        config([
+            'video.drivers.mux.token_id' => 'test-token-id',
+            'video.drivers.mux.token_secret' => 'test-token-secret',
+        ]);
+
+        $chunkRequestCount = 0;
+
+        Http::fake([
+            'https://api.mux.com/video/v1/uploads' => Http::response([
+                'data' => [
+                    'id' => 'upload_multi_chunk_123',
+                    'url' => 'https://direct-uploads.mux.com/multi_upload',
+                    'status' => 'waiting',
+                ],
+            ], 200),
+            'https://direct-uploads.mux.com/multi_upload' => function (Request $request) use (&$chunkRequestCount) {
+                $chunkRequestCount++;
+                $contentRange = $request->header('Content-Range')[0] ?? '';
+
+                if (str_contains($contentRange, 'bytes 0-5242879/')) {
+                    // Intermediate chunk -> 308 Resume Incomplete
+                    return Http::response('', 308, [
+                        'Range' => 'bytes=0-5242879',
+                    ]);
+                }
+
+                // Final chunk -> 200 OK
+                return Http::response('', 200);
+            },
+            'https://api.mux.com/video/v1/uploads/upload_multi_chunk_123' => Http::response([
+                'data' => [
+                    'id' => 'upload_multi_chunk_123',
+                    'asset_id' => 'asset_multi_chunk_456',
+                    'status' => 'asset_created',
+                ],
+            ], 200),
+            'https://api.mux.com/video/v1/assets/asset_multi_chunk_456' => Http::response([
+                'data' => [
+                    'id' => 'asset_multi_chunk_456',
+                    'playback_ids' => [
+                        ['id' => 'playback_multi_chunk_789', 'policy' => 'public'],
+                    ],
+                ],
+            ], 200),
+        ]);
+
+        /** @var MuxDriver $muxDriver */
+        $muxDriver = app(MuxDriver::class);
+
+        // 6MB content (exceeds 5MB chunk threshold)
+        $sixMbContent = str_repeat('B', 6 * 1024 * 1024);
+        $fakeFile = UploadedFile::fake()->createWithContent('large_sample.mp4', $sixMbContent);
+
+        $result = $muxDriver->handleUpload($fakeFile);
+
+        $this->assertEquals(2, $chunkRequestCount, 'File should have been split and uploaded in exactly 2 chunks.');
+        $this->assertEquals('mux', $result['video_source']);
+        $this->assertEquals('playback_multi_chunk_789', $result['mux_playback_id']);
+        $this->assertEquals('asset_multi_chunk_456', $result['mux_asset_id']);
     }
 }

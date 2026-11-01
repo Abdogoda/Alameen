@@ -30,6 +30,26 @@
         background-color: #0B1120 !important;
         color-scheme: dark;
     }
+    @keyframes alameenLoaderSafetyDismiss {
+        0%, 70% {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+        100% {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+    }
+    @keyframes alameenContentSafetyReveal {
+        0%, 55% {
+            opacity: 0;
+        }
+        100% {
+            opacity: 1;
+        }
+    }
     #alameen-loader {
         position: fixed !important;
         inset: 0 !important;
@@ -48,10 +68,11 @@
         justify-content: center !important;
         opacity: 1;
         visibility: visible;
-        transition: opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1),
-                    visibility 0.55s cubic-bezier(0.16, 1, 0.3, 1),
-                    transform 0.55s cubic-bezier(0.16, 1, 0.3, 1),
-                    filter 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+        animation: alameenLoaderSafetyDismiss 1.1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+                    visibility 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+                    transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+                    filter 0.45s cubic-bezier(0.16, 1, 0.3, 1);
         will-change: opacity, transform, filter;
     }
     #alameen-loader.loader-hidden {
@@ -60,9 +81,11 @@
         pointer-events: none !important;
         transform: scale(1.03) !important;
         filter: blur(4px) !important;
+        animation: none !important;
     }
     .alameen-content-wrap {
         opacity: 0;
+        animation: alameenContentSafetyReveal 1.1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         transition: opacity 0.4s ease-out;
     }
     body.content-ready .alameen-content-wrap,
@@ -136,8 +159,6 @@
 @fonts
 
 @include('partials.firebase-config')
-<script src="https://cdn.jsdelivr.net/npm/@mux/mux-player" defer></script>
-<script src="https://cdn.jsdelivr.net/npm/hls.js@latest" defer></script>
 @vite(['resources/css/app.css', 'resources/js/app.js'])
 @fluxAppearance
 

@@ -9,7 +9,6 @@
     <head>
         @include('partials.head')
         <title>{{ filled($title ?? null) ? $title . ' | ' . config('app.name', 'منصة مركز الأمين') : config('app.name', 'منصة مركز الأمين') }}</title>
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="bg-[#FAFCFF] dark:bg-slate-950 min-h-screen text-[#334155] dark:text-slate-100 font-body antialiased selection:bg-[#EAF1FB] selection:text-[#0B2A8F] overflow-x-clip w-full max-w-full relative transition-colors">
         

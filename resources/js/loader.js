@@ -25,17 +25,18 @@ export function initLoader() {
         isDismissed = true;
 
         const elapsed = performance.now() - startTime;
-        const minDisplayTime = 300; // brief brand impression
+        const minDisplayTime = 250; // brief brand impression
         const remaining = Math.max(0, minDisplayTime - elapsed);
 
         setTimeout(() => {
             // Trigger smooth content reveal and loader fade out synchronously
             document.body.classList.add('content-ready');
-            loader.classList.add('loader-hidden');
-
-            setTimeout(() => {
-                loader.style.display = 'none';
-            }, 600);
+            if (loader) {
+                loader.classList.add('loader-hidden');
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                }, 500);
+            }
         }, remaining);
     };
 
@@ -44,7 +45,7 @@ export function initLoader() {
     } else {
         window.addEventListener('load', dismissLoader, { once: true });
         // Fallback safeguard so loader never gets stuck
-        setTimeout(dismissLoader, 1200);
+        setTimeout(dismissLoader, 700);
     }
 
     // Support for Livewire 3 wire:navigate
@@ -58,12 +59,11 @@ export function initLoader() {
     });
 }
 
-// Auto-run on load
+// Auto-run immediately
 if (typeof document !== 'undefined') {
+    initLoader();
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initLoader, { once: true });
-    } else {
-        initLoader();
     }
 }
 

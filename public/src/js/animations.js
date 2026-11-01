@@ -37,16 +37,16 @@
       isDismissed = true;
 
       const elapsed = performance.now() - startTime;
-      const minDisplayTime = 300; // Provide pleasant brand impression
+      const minDisplayTime = 250; // Provide pleasant brand impression
       const remaining = Math.max(0, minDisplayTime - elapsed);
 
       setTimeout(() => {
+        document.body.classList.add('content-ready');
         if (loader) {
-          document.body.classList.add('content-ready');
           loader.classList.add('loader-hidden');
           setTimeout(() => {
             loader.style.display = 'none';
-          }, 600);
+          }, 500);
         }
       }, remaining);
     };
@@ -56,9 +56,12 @@
     } else {
       window.addEventListener('load', dismissLoader, { once: true });
       // Fallback safeguard so loader never blocks navigation
-      setTimeout(dismissLoader, 1200);
+      setTimeout(dismissLoader, 700);
     }
   }
+
+  // Auto-run loader controller immediately
+  initThemedLoader();
 
   // 3. Initialize Top Scroll Progress Bar
   function initScrollProgress() {

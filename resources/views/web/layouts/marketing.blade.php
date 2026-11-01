@@ -45,7 +45,9 @@
         {{ $modals ?? '' }}
 
         <!-- Landing & Animation Scripts -->
+        @if(($active ?? '') === 'home')
         <script type="module" src="/src/js/landing.js"></script>
+        @endif
         <script type="module" src="/src/js/animations.js"></script>
         {{ $scripts ?? '' }}
 

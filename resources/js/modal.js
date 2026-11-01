@@ -42,44 +42,38 @@ export function initModals() {
                     modal.classList.add('modal-hidden');
                 }
             });
-        }
-    });
-
-    // Sync body.modal-open scroll lock whenever modal visibility changes
-    function checkModalState() {
-        const modals = document.querySelectorAll('[id^="modal-"].fixed, .modal-backdrop');
-        let isOpen = false;
-        modals.forEach((m) => {
-            if (
-                m.id !== 'alameen-loader' &&
-                !m.classList.contains('student-sidebar-drawer') &&
-                !m.classList.contains('admin-sidebar-drawer') &&
-                !m.classList.contains('hidden') &&
-                !m.classList.contains('modal-hidden') &&
-                m.style.display !== 'none'
-            ) {
-                isOpen = true;
-            }
-        });
-
-        if (isOpen) {
-            document.documentElement.classList.add('modal-open');
-            document.body.classList.add('modal-open');
-        } else {
             document.documentElement.classList.remove('modal-open');
             document.body.classList.remove('modal-open');
         }
-    }
-
-    const observer = new MutationObserver(checkModalState);
-    observer.observe(document.body, {
-        attributes: true,
-        subtree: true,
-        attributeFilter: ['class', 'style'],
     });
 
-    // Also run initial check
-    checkModalState();
+    // Provide universal safe open/close helpers
+    window.openModal = function (id) {
+        const modal = document.getElementById(id);
+        if (modal) {
+            modal.classList.remove('hidden', 'modal-hidden');
+            modal.style.display = 'flex';
+            document.documentElement.classList.add('modal-open');
+            document.body.classList.add('modal-open');
+            const content = modal.querySelector('.modal-content') || modal;
+            if (content && typeof content.scrollTop !== 'undefined') {
+                content.scrollTop = 0;
+            }
+        }
+    };
+
+    window.closeModal = function (id) {
+        const modal = document.getElementById(id);
+        if (modal) {
+            modal.classList.add('hidden', 'modal-hidden');
+            modal.style.display = 'none';
+        }
+        const openRemaining = document.querySelectorAll('[id^="modal-"].fixed:not(.hidden):not(.modal-hidden), .modal-backdrop:not(.hidden):not(.modal-hidden)');
+        if (openRemaining.length === 0) {
+            document.documentElement.classList.remove('modal-open');
+            document.body.classList.remove('modal-open');
+        }
+    };
 }
 
 // Auto-run if imported

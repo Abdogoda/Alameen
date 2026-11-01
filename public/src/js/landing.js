@@ -10,6 +10,11 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
+  // Only execute on pages containing the landing canvas / hero slider
+  if (!document.getElementById('home') && !document.getElementById('hero-slider')) {
+    return;
+  }
+
   // ==========================================
   // 1. SCROLLSPY & HEADER LINK SYNC
   // ==========================================

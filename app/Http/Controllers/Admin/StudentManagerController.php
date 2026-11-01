@@ -182,7 +182,8 @@ class StudentManagerController extends Controller
     public function enrollCourse(EnrollStudentCourseRequest $request, User $user): RedirectResponse
     {
         $validated = $request->validated();
-        $course = Course::findOrFail($validated['course_id']);
+        /** @var Course $course */
+        $course = Course::query()->findOrFail($validated['course_id']);
         /** @var Admin|null $admin */
         $admin = auth('admin')->user();
         $adminId = $admin?->id;
@@ -238,9 +239,10 @@ class StudentManagerController extends Controller
     public function issueCertificate(IssueStudentCertificateRequest $request, User $user): RedirectResponse
     {
         $validated = $request->validated();
-        $course = Course::findOrFail($validated['course_id']);
+        /** @var Course $course */
+        $course = Course::query()->findOrFail($validated['course_id']);
 
-        $percentage = isset($validated['completion_percentage']) && $validated['completion_percentage'] !== null
+        $percentage = isset($validated['completion_percentage'])
             ? (float) $validated['completion_percentage']
             : null;
 

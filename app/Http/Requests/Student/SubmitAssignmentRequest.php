@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Requests\Student;
 
 use App\Models\ClinicalTask;
+use App\Models\Course;
 use App\Models\User;
 use App\Services\Course\CourseEnrollmentService;
 use Illuminate\Contracts\Validation\ValidationRule;
@@ -24,7 +25,7 @@ class SubmitAssignmentRequest extends FormRequest
             return true;
         }
 
-        if (! $user || ! $task || ! $task->course) {
+        if (! $user || ! $task || ! $task->course instanceof Course) {
             return false;
         }
 

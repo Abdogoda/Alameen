@@ -319,12 +319,6 @@ parameters:
 			path: app/Services/Payment/PaymentReceiptService.php
 
 		-
-			message: '#^Called ''env'' outside of the config directory which returns null when the config is cached, use ''config''\.$#'
-			identifier: larastan.noEnvCallsOutsideOfConfig
-			count: 4
-			path: app/Services/Video/BunnyStreamService.php
-
-		-
 			message: '#^Parameter \#1 \$string of function ucfirst expects string, bool\|string given\.$#'
 			identifier: argument.type
 			count: 1

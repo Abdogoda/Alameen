@@ -60,7 +60,7 @@ class StudentCourseController extends Controller
     /**
      * View lesson with Sequential Video Locking and Dynamic Watermark Player.
      */
-    public function lesson(Request $request, Course|string|null $course = null, Video|string|null $video = null): View|RedirectResponse
+    public function lesson(Request $request, Course|string|null $course = null, Video|string|null $video = null): View|RedirectResponse|JsonResponse
     {
         /** @var User $user */
         $user = $request->user();
@@ -181,7 +181,7 @@ class StudentCourseController extends Controller
 
         $task = $task ?? ClinicalTask::with('course')->first();
 
-        if ($task && $task->course && ! $this->enrollmentService->hasActiveAccess($user, $task->course)) {
+        if ($task && $task->course instanceof Course && ! $this->enrollmentService->hasActiveAccess($user, $task->course)) {
             abort(403, __('لا تملك صلاحية الوصول إلى هذه المهمة السريرية.'));
         }
 

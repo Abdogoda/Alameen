@@ -7,6 +7,7 @@ use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\StudentCourseController;
 use App\Http\Controllers\Webhooks\MuxWebhookController;
 use App\Livewire\Notifications\NotificationInbox;
+use App\Models\User;
 use App\Models\Video;
 use App\Services\Video\VideoProgressService;
 use Illuminate\Support\Facades\Route;
@@ -68,7 +69,7 @@ Route::get('storage/{path}', function (string $path) {
         $admin = auth('admin')->user();
 
         if (! $admin) {
-            if (! $user) {
+            if (! $user instanceof User) {
                 abort(403, __('تسجيل الدخول مطلوب للوصول إلى هذا المحتوى.'));
             }
 

@@ -26,6 +26,9 @@
 >
     {{-- 1. MUX Stream Player --}}
     @if(($videoSource === 'mux' || empty($videoSource)) && !empty($muxPlaybackId))
+        @once
+            <script src="https://cdn.jsdelivr.net/npm/@mux/mux-player"></script>
+        @endonce
         <mux-player 
             playback-id="{{ $muxPlaybackId }}" 
             stream-type="on-demand" 

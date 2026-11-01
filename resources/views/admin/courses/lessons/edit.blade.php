@@ -512,13 +512,38 @@
 
     {{-- Chunked Upload & Processing Client Engine --}}
     <script>
-        const CHUNK_SIZE = 2 * 1024 * 1024; // 2MB binary slices
+        const CHUNK_SIZE = 10 * 1024 * 1024; // 10MB binary slices for high network throughput
         const CHUNK_UPLOAD_URL = "{{ route('admin.courses.videos.chunk.upload', $course) }}";
         const CSRF_TOKEN = "{{ csrf_token() }}";
 
         let currentFile = null;
         let isUploading = false;
         let uploadStartTime = null;
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        async function fetchWithRetry(url, options, maxRetries = 3) {
+            let lastError = null;
+            for (let attempt = 1; attempt <= maxRetries; attempt++) {
+                try {
+                    const response = await fetch(url, options);
+                    if (response.ok) {
+                        return response;
+                    }
+                    const err = await response.json().catch(() => ({ message: `HTTP ${response.status}` }));
+                    lastError = new Error(err.message || 'فشل رفع جزء من الملف');
+                } catch (err) {
+                    lastError = err;
+                }
+
+                if (attempt < maxRetries) {
+                    await sleep(2000 * attempt);
+                }
+            }
+            throw lastError;
+        }
 
         function handleFileDrop(e) {
             e.preventDefault();
@@ -602,15 +627,22 @@
                 formData.append('total_size', file.size);
                 formData.append('file_chunk', chunkBlob);
 
+                // If last chunk, show processing state banner right before sending
+                if (chunkIndex === totalChunks - 1) {
+                    processingBanner.classList.remove('hidden');
+                    statusBadge.textContent = 'جاري تجميع ومعالجة الفيديو...';
+                    statusBadge.className = 'px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-900 animate-pulse';
+                }
+
                 try {
-                    const response = await fetch(CHUNK_UPLOAD_URL, {
+                    const response = await fetchWithRetry(CHUNK_UPLOAD_URL, {
                         method: 'POST',
                         headers: {
                             'X-CSRF-TOKEN': CSRF_TOKEN,
                             'Accept': 'application/json'
                         },
                         body: formData
-                    });
+                    }, 3);
 
                     if (!response.ok) {
                         const err = await response.json().catch(() => ({ message: 'Server error' }));

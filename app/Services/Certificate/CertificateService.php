@@ -93,9 +93,42 @@ class CertificateService
     }
 
     /**
+     * Issue certificate forcefully by an administrator regardless of minimum percentage.
+     */
+    public function forceIssueCertificate(User $user, Course $course, ?float $completionPercentage = null): Certificate
+    {
+        $existing = Certificate::query()
+            ->where('user_id', $user->id)
+            ->where('course_id', $course->id)
+            ->first();
+
+        if ($existing) {
+            return $existing;
+        }
+
+        $percentage = $completionPercentage !== null
+            ? (float) $completionPercentage
+            : max(100.0, $this->progressService->getCourseProgressPercentage($user, $course));
+
+        $code = 'ALM-'.now()->format('Y').'-'.strtoupper(Str::random(8));
+        $verificationUrl = url("/verify-certificate/{$code}");
+        $qrCodeSvg = $this->generateQrSvg($verificationUrl);
+
+        return Certificate::create([
+            'user_id' => $user->id,
+            'course_id' => $course->id,
+            'certificate_code' => $code,
+            'verification_url' => $verificationUrl,
+            'qr_code_svg' => $qrCodeSvg,
+            'completion_percentage' => $percentage,
+            'issued_at' => Carbon::now(),
+        ]);
+    }
+
+    /**
      * Generate portable SVG representation for the verification QR.
      */
-    protected function generateQrSvg(string $data): string
+    public function generateQrSvg(string $data): string
     {
         // Safe, dependency-free SVG QR visual placeholder with encoded payload
         $encodedData = htmlspecialchars($data, ENT_QUOTES, 'UTF-8');

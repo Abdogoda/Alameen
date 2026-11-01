@@ -56,4 +56,11 @@ return [
         'token_secret' => env('MUX_TOKEN_SECRET'),
     ],
 
+    'bunny' => [
+        'pull_zone' => env('BUNNY_STREAM_PULL_ZONE', 'iframe.mediadelivery.net'),
+        'hls_pull_zone' => env('BUNNY_HLS_PULL_ZONE', 'vz-video.b-cdn.net'),
+        'library_id' => env('BUNNY_STREAM_LIBRARY_ID', ''),
+        'security_token_key' => env('BUNNY_SECURITY_TOKEN_KEY', ''),
+    ],
+
 ];

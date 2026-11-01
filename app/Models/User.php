@@ -134,6 +134,16 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
     }
 
     /**
+     * Clinical task submissions by the student.
+     *
+     * @return HasMany<TaskSubmission, $this>
+     */
+    public function taskSubmissions(): HasMany
+    {
+        return $this->hasMany(TaskSubmission::class);
+    }
+
+    /**
      * Get the user's initials
      */
     public function initials(): string

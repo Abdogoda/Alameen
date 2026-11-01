@@ -7,6 +7,8 @@ use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\StudentCourseController;
 use App\Http\Controllers\Webhooks\MuxWebhookController;
 use App\Livewire\Notifications\NotificationInbox;
+use App\Models\Video;
+use App\Services\Video\VideoProgressService;
 use Illuminate\Support\Facades\Route;
 
 // Language Switcher
@@ -58,6 +60,23 @@ Route::get('storage/{path}', function (string $path) {
 
     if (! $realFullPath || ! $realStoragePath || ! str_starts_with($realFullPath, $realStoragePath) || ! file_exists($realFullPath)) {
         abort(404);
+    }
+
+    // Protect private lesson videos from unauthorized direct download
+    if (str_starts_with($path, 'videos/lessons/')) {
+        $user = auth()->user();
+        $admin = auth('admin')->user();
+
+        if (! $admin) {
+            if (! $user) {
+                abort(403, __('تسجيل الدخول مطلوب للوصول إلى هذا المحتوى.'));
+            }
+
+            $video = Video::query()->where('video_url', 'like', '%'.$path.'%')->first();
+            if ($video && ! app(VideoProgressService::class)->canAccessVideo($user, $video)) {
+                abort(403, __('غير مصرح لك بالوصول إلى هذا الفيديو.'));
+            }
+        }
     }
 
     return response()->file($realFullPath);

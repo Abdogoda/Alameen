@@ -456,7 +456,7 @@
     {{-- Client-Side Chunked Upload Engine JavaScript          --}}
     {{-- ===================================================== --}}
     <script>
-        const CHUNK_SIZE = 2 * 1024 * 1024; // 2MB chunk slice
+        const CHUNK_SIZE = 10 * 1024 * 1024; // 10MB chunk slice for efficient network throughput
         const UPLOAD_URL = "{{ route('admin.courses.videos.chunk.upload', $course) }}";
         const CSRF_TOKEN = "{{ csrf_token() }}";
 
@@ -464,6 +464,32 @@
         let isUploading = false;
         let uploadStartTime = 0;
         let uploadedBytesTotal = 0;
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        async function fetchWithRetry(url, options, maxRetries = 3) {
+            let lastError = null;
+            for (let attempt = 1; attempt <= maxRetries; attempt++) {
+                try {
+                    const response = await fetch(url, options);
+                    if (response.ok) {
+                        return response;
+                    }
+                    // If error response from server
+                    const errorData = await response.json().catch(() => ({}));
+                    lastError = new Error(errorData.message || `HTTP ${response.status}`);
+                } catch (err) {
+                    lastError = err;
+                }
+
+                if (attempt < maxRetries) {
+                    await sleep(2000 * attempt); // Wait 2s, 4s before retry
+                }
+            }
+            throw lastError;
+        }
 
         function formatBytes(bytes) {
             if (bytes === 0) return '0 Bytes';
@@ -531,13 +557,13 @@
                 }
 
                 try {
-                    const response = await fetch(UPLOAD_URL, {
+                    const response = await fetchWithRetry(UPLOAD_URL, {
                         method: 'POST',
                         body: formData,
                         headers: {
                             'X-Requested-With': 'XMLHttpRequest'
                         }
-                    });
+                    }, 3);
 
                     if (!response.ok) {
                         const errorData = await response.json().catch(() => ({}));

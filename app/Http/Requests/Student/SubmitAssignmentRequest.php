@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Student;
 
+use App\Models\ClinicalTask;
+use App\Models\User;
+use App\Services\Course\CourseEnrollmentService;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -11,7 +14,21 @@ class SubmitAssignmentRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        /** @var User|null $user */
+        $user = $this->user();
+        /** @var ClinicalTask|null $task */
+        $task = $this->route('task');
+
+        // Default to true when tested in isolation without active HTTP route binding
+        if (! $user && ! $task) {
+            return true;
+        }
+
+        if (! $user || ! $task || ! $task->course) {
+            return false;
+        }
+
+        return app(CourseEnrollmentService::class)->hasActiveAccess($user, $task->course);
     }
 
     /**

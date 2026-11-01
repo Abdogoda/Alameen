@@ -89,7 +89,17 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         // Students & Interns Management
         Route::get('students', [StudentManagerController::class, 'index'])->name('students.index');
+        Route::get('students/{user}', [StudentManagerController::class, 'show'])->name('students.show');
+        Route::put('students/{user}', [StudentManagerController::class, 'update'])->name('students.update');
+        Route::put('students/{user}/password', [StudentManagerController::class, 'updatePassword'])->name('students.password.update');
         Route::post('students/{user}/toggle', [StudentManagerController::class, 'toggleStatus'])->name('students.toggle');
+        Route::post('students/{user}/enroll', [StudentManagerController::class, 'enrollCourse'])->name('students.enroll');
+        Route::put('students/{user}/enrollments/{course}', [StudentManagerController::class, 'updateEnrollment'])->name('students.enrollments.update');
+        Route::delete('students/{user}/enrollments/{course}', [StudentManagerController::class, 'revokeEnrollment'])->name('students.enrollments.destroy');
+        Route::post('students/{user}/certificates', [StudentManagerController::class, 'issueCertificate'])->name('students.certificates.store');
+        Route::delete('students/{user}/certificates/{certificate}', [StudentManagerController::class, 'destroyCertificate'])->name('students.certificates.destroy');
+        Route::post('students/{user}/video-progress/{video}', [StudentManagerController::class, 'updateVideoProgress'])->name('students.video-progress.update');
+        Route::delete('students/{user}', [StudentManagerController::class, 'destroy'])->name('students.destroy');
 
         // Admin Profile & Security Settings
         Route::get('profile', [AdminProfileController::class, 'edit'])->name('profile.edit');

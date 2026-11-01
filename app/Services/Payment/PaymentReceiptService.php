@@ -66,6 +66,10 @@ class PaymentReceiptService
      */
     public function approveReceipt(PaymentReceipt $receipt, Admin $admin): PaymentReceipt
     {
+        if ($receipt->status === 'approved') {
+            return $receipt;
+        }
+
         return DB::transaction(function () use ($receipt, $admin) {
             $receipt->status = 'approved';
             $receipt->reviewed_by = $admin->id;

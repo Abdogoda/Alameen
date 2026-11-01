@@ -24,6 +24,7 @@ use App\Services\Video\VideoServiceManager;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
@@ -302,6 +303,11 @@ class CourseController extends Controller
 
         // 2. Check if all chunks have arrived
         if (! $this->chunkedUploadService->isComplete($uploadId, $totalChunks)) {
+            // Disconnect database connection immediately to prevent connection exhaustion on shared hosting (avoid on sqlite :memory: tests)
+            if (config('database.default') !== 'sqlite') {
+                DB::disconnect();
+            }
+
             return response()->json([
                 'status' => 'chunk_received',
                 'chunk_index' => $chunkIndex,
@@ -312,6 +318,13 @@ class CourseController extends Controller
 
         // 3. All chunks received -> Merge & Process video file
         try {
+            @ini_set('max_execution_time', '0');
+            @set_time_limit(0);
+            @ini_set('memory_limit', '1024M');
+            if (function_exists('ignore_user_abort')) {
+                @ignore_user_abort(true);
+            }
+
             $mergedFile = $this->chunkedUploadService->mergeChunks($uploadId, $totalChunks, $originalFilename);
 
             // Resilient upload: tries configured default driver (e.g. MUX), falls back to local server storage

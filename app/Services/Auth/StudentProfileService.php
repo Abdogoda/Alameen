@@ -14,6 +14,7 @@ class StudentProfileService
      *
      * @param  array{
      *     name?: string,
+     *     email?: string,
      *     phone?: string|null,
      *     country?: string|null,
      *     city?: string|null,
@@ -25,6 +26,7 @@ class StudentProfileService
     {
         $fillable = array_intersect_key($data, array_flip([
             'name',
+            'email',
             'phone',
             'country',
             'city',

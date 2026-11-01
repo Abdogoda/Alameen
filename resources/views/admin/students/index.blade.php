@@ -51,15 +51,18 @@
                     @forelse ($students as $student)
                     <tr class="hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition-colors">
                         <td class="py-4 px-5">
-                            <div class="flex items-center gap-3">
-                                <div class="size-10 rounded-full {{ $student->isActive() ? 'bg-[#EAF1FB] text-[#0B2A8F] dark:bg-blue-950/60 dark:text-blue-300' : 'bg-rose-50 text-rose-600 dark:bg-rose-950/60 dark:text-rose-300' }} flex items-center justify-center font-bold text-sm shrink-0">
+                            <a href="{{ route('admin.students.show', $student) }}" class="flex items-center gap-3 group">
+                                <div class="size-10 rounded-full {{ $student->isActive() ? 'bg-[#EAF1FB] text-[#0B2A8F] dark:bg-blue-950/60 dark:text-blue-300' : 'bg-rose-50 text-rose-600 dark:bg-rose-950/60 dark:text-rose-300' }} flex items-center justify-center font-bold text-sm shrink-0 group-hover:scale-105 transition-transform">
                                     {{ mb_substr($student->name, 0, 1) }}
                                 </div>
                                 <div class="min-w-0">
-                                    <div class="font-bold text-sm text-[#012383] dark:text-blue-400 truncate">{{ $student->name }}</div>
+                                    <div class="font-bold text-sm text-[#012383] dark:text-blue-400 group-hover:text-blue-600 transition-colors truncate flex items-center gap-1.5">
+                                        <span>{{ $student->name }}</span>
+                                        <svg class="size-3.5 opacity-0 group-hover:opacity-100 transition-opacity text-blue-500 shrink-0 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                                    </div>
                                     <div class="text-[11px] text-slate-500 dark:text-slate-400 font-mono truncate">{{ $student->phone ?? '—' }} • {{ $student->email }}</div>
                                 </div>
-                            </div>
+                            </a>
                         </td>
                         <td class="py-4 px-4">
                             <span class="font-bold text-slate-700 dark:text-slate-300">{{ $student->created_at?->format('d/m/Y') }}</span>
@@ -89,25 +92,36 @@
                             @endif
                         </td>
                         <td class="py-4 px-5 text-center">
-                            <form 
-                                method="POST" 
-                                action="{{ route('admin.students.toggle', $student->id) }}"
-                                data-confirm="{{ $student->isActive() ? __('هل أنت متأكد من تعليق حساب هذا الطالب؟') : __('هل أنت متأكد من إعادة تنشيط هذا الحساب؟') }}"
-                                data-confirm-title="{{ $student->isActive() ? __('تعليق حساب الطالب') : __('تنشيط حساب الطالب') }}"
-                                data-confirm-btn="{{ $student->isActive() ? __('نعم، علّق الحساب') : __('نعم، نشّط الحساب') }}"
-                                data-confirm-danger="{{ $student->isActive() ? 'true' : 'false' }}"
-                            >
-                                @csrf
-                                @if($student->isActive())
-                                    <button type="submit" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 dark:bg-rose-950/40 dark:text-rose-300 dark:border-rose-800 transition-colors cursor-pointer">
-                                        {{ __('تعليق الحساب') }}
-                                    </button>
-                                @else
-                                    <button type="submit" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800 transition-colors cursor-pointer">
-                                        {{ __('إعادة التنشيط') }}
-                                    </button>
-                                @endif
-                            </form>
+                            <div class="flex items-center justify-center gap-1.5 flex-wrap">
+                                <a 
+                                    href="{{ route('admin.students.show', $student) }}" 
+                                    class="px-3 py-1.5 rounded-lg text-xs font-bold bg-[#EAF1FB] text-[#012383] hover:bg-[#DEE8F7] dark:bg-blue-950/60 dark:text-blue-300 border border-[#DEE8F7] dark:border-blue-900 transition-colors inline-flex items-center gap-1.5"
+                                    title="{{ __('عرض ملف وتفاصيل الطالب وإدارتها بالكامل') }}"
+                                >
+                                    <svg class="size-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                    <span>{{ __('إدارة وتفاصيل') }}</span>
+                                </a>
+
+                                <form 
+                                    method="POST" 
+                                    action="{{ route('admin.students.toggle', $student->id) }}"
+                                    data-confirm="{{ $student->isActive() ? __('هل أنت متأكد من تعليق حساب هذا الطالب؟') : __('هل أنت متأكد من إعادة تنشيط هذا الحساب؟') }}"
+                                    data-confirm-title="{{ $student->isActive() ? __('تعليق حساب الطالب') : __('تنشيط حساب الطالب') }}"
+                                    data-confirm-btn="{{ $student->isActive() ? __('نعم، علّق الحساب') : __('نعم، نشّط الحساب') }}"
+                                    data-confirm-danger="{{ $student->isActive() ? 'true' : 'false' }}"
+                                >
+                                    @csrf
+                                    @if($student->isActive())
+                                        <button type="submit" class="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 dark:bg-rose-950/40 dark:text-rose-300 dark:border-rose-800 transition-colors cursor-pointer">
+                                            {{ __('تعليق') }}
+                                        </button>
+                                    @else
+                                        <button type="submit" class="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800 transition-colors cursor-pointer">
+                                            {{ __('تنشيط') }}
+                                        </button>
+                                    @endif
+                                </form>
+                            </div>
                         </td>
                     </tr>
                     @empty
@@ -126,16 +140,16 @@
             @forelse ($students as $student)
             <div class="p-4 flex flex-col gap-3">
                 <div class="flex items-start justify-between gap-2">
-                    <div class="flex items-center gap-3 min-w-0">
+                    <a href="{{ route('admin.students.show', $student) }}" class="flex items-center gap-3 min-w-0 group">
                         <div class="size-10 rounded-full {{ $student->isActive() ? 'bg-[#EAF1FB] text-[#0B2A8F] dark:bg-blue-950/60 dark:text-blue-300' : 'bg-rose-50 text-rose-600 dark:bg-rose-950/60 dark:text-rose-300' }} flex items-center justify-center font-bold text-sm shrink-0">
                             {{ mb_substr($student->name, 0, 1) }}
                         </div>
                         <div class="min-w-0">
-                            <div class="font-bold text-sm text-[#012383] dark:text-blue-400 truncate">{{ $student->name }}</div>
+                            <div class="font-bold text-sm text-[#012383] dark:text-blue-400 truncate group-hover:underline">{{ $student->name }}</div>
                             <div class="text-[11px] text-slate-500 dark:text-slate-400 font-mono truncate">{{ $student->phone ?? '—' }}</div>
                             <div class="text-[10px] text-slate-400 font-mono truncate">{{ $student->email }}</div>
                         </div>
-                    </div>
+                    </a>
                     @if($student->isActive())
                         <span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800 shrink-0">
                             {{ __('نشط') }}
@@ -165,26 +179,32 @@
                     </div>
                 </div>
 
-                <form 
-                    method="POST" 
-                    action="{{ route('admin.students.toggle', $student->id) }}" 
-                    data-confirm="{{ $student->isActive() ? __('هل أنت متأكد من تعليق حساب هذا الطالب؟') : __('هل أنت متأكد من إعادة تنشيط هذا الحساب؟') }}"
-                    data-confirm-title="{{ $student->isActive() ? __('تعليق حساب الطالب') : __('تنشيط حساب الطالب') }}"
-                    data-confirm-btn="{{ $student->isActive() ? __('نعم، علّق الحساب') : __('نعم، نشّط الحساب') }}"
-                    data-confirm-danger="{{ $student->isActive() ? 'true' : 'false' }}"
-                    class="pt-1"
-                >
-                    @csrf
-                    @if($student->isActive())
-                        <button type="submit" class="w-full py-2 rounded-xl text-xs font-bold bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 dark:bg-rose-950/40 dark:text-rose-300 dark:border-rose-800 transition-colors cursor-pointer text-center">
-                            {{ __('تعليق الحساب') }}
-                        </button>
-                    @else
-                        <button type="submit" class="w-full py-2 rounded-xl text-xs font-bold bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800 transition-colors cursor-pointer text-center">
-                            {{ __('إعادة التنشيط') }}
-                        </button>
-                    @endif
-                </form>
+                <div class="grid grid-cols-2 gap-2 pt-1">
+                    <a href="{{ route('admin.students.show', $student) }}" class="py-2 rounded-xl text-xs font-bold bg-[#EAF1FB] text-[#012383] hover:bg-[#DEE8F7] dark:bg-blue-950/60 dark:text-blue-300 border border-blue-200 dark:border-blue-900 transition-colors flex items-center justify-center gap-1.5">
+                        <svg class="size-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                        <span>{{ __('إدارة وتفاصيل') }}</span>
+                    </a>
+
+                    <form 
+                        method="POST" 
+                        action="{{ route('admin.students.toggle', $student->id) }}" 
+                        data-confirm="{{ $student->isActive() ? __('هل أنت متأكد من تعليق حساب هذا الطالب؟') : __('هل أنت متأكد من إعادة تنشيط هذا الحساب؟') }}"
+                        data-confirm-title="{{ $student->isActive() ? __('تعليق حساب الطالب') : __('تنشيط حساب الطالب') }}"
+                        data-confirm-btn="{{ $student->isActive() ? __('نعم، علّق الحساب') : __('نعم، نشّط الحساب') }}"
+                        data-confirm-danger="{{ $student->isActive() ? 'true' : 'false' }}"
+                    >
+                        @csrf
+                        @if($student->isActive())
+                            <button type="submit" class="w-full py-2 rounded-xl text-xs font-bold bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 dark:bg-rose-950/40 dark:text-rose-300 dark:border-rose-800 transition-colors cursor-pointer text-center">
+                                {{ __('تعليق الحساب') }}
+                            </button>
+                        @else
+                            <button type="submit" class="w-full py-2 rounded-xl text-xs font-bold bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800 transition-colors cursor-pointer text-center">
+                                {{ __('إعادة التنشيط') }}
+                            </button>
+                        @endif
+                    </form>
+                </div>
             </div>
             @empty
             <div class="text-center py-12 text-slate-400 text-xs">

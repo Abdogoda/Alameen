@@ -60,14 +60,45 @@ class StudentCourseController extends Controller
     /**
      * View lesson with Sequential Video Locking and Dynamic Watermark Player.
      */
-    public function lesson(Request $request, ?Course $course = null, ?Video $video = null): View
+    public function lesson(Request $request, Course|string|null $course = null, Video|string|null $video = null): View|RedirectResponse
     {
         /** @var User $user */
         $user = $request->user();
 
-        // If no course passed, load first enrolled course or default course
-        $course = $course ?? $user->courses()->first() ?? Course::firstOrFail();
+        if (is_string($course)) {
+            $course = Course::query()->where('slug', $course)->orWhere('id', $course)->firstOrFail();
+        }
+
+        // If no course passed, load first active enrolled course or default course
+        $course = $course ?? $user->courses()->wherePivot('status', 'active')->first() ?? Course::firstOrFail();
+
+        if (is_string($video)) {
+            $video = Video::query()->where('course_id', $course->id)
+                ->where(function ($q) use ($video) {
+                    $q->where('slug', $video)->orWhere('id', $video);
+                })->firstOrFail();
+        }
+
         $video = $video ?? $course->videos()->orderBy('sort_order')->firstOrFail();
+
+        // Ensure the requested video belongs to the current course
+        if ($video->course_id !== $course->id) {
+            abort(404, __('الفيديو غير متواجد ضمن هذه الدورة التدريبية.'));
+        }
+
+        // Active subscription check: If not free preview and no active course subscription, redirect
+        $hasCourseAccess = $this->enrollmentService->hasActiveAccess($user, $course);
+        if (! $video->is_free_preview && ! $hasCourseAccess) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'message' => __('انتهت صلاحية اشتراكك في هذه الدورة أو لم يتم تفعيلها بعد.'),
+                    'course_id' => $course->id,
+                ], 403);
+            }
+
+            return redirect()->route('courses.show', $course->slug)
+                ->with('error', __('ليس لديك اشتراك مفعّل في هذه الدورة لمشاهدة هذا الدرس. يرجى الاشتراك للمتابعة.'));
+        }
 
         // 1. Sequential Video Lock Verification
         $canAccess = $this->progressService->canAccessVideo($user, $video);
@@ -149,6 +180,11 @@ class StudentCourseController extends Controller
         $user = $request->user();
 
         $task = $task ?? ClinicalTask::with('course')->first();
+
+        if ($task && $task->course && ! $this->enrollmentService->hasActiveAccess($user, $task->course)) {
+            abort(403, __('لا تملك صلاحية الوصول إلى هذه المهمة السريرية.'));
+        }
+
         $submission = $task ? TaskSubmission::where('task_id', $task->id)->where('user_id', $user->id)->first() : null;
 
         return view('web.pages.assignment', compact('task', 'submission'));
@@ -232,6 +268,10 @@ class StudentCourseController extends Controller
 
         if (! $certificate) {
             return redirect()->route('certificates.index')->with('info', __('لم يتم إصدار شهادة لك بعد. أكمل مشاهدة ٩٥٪ من أي كورس لإصدار شهادتك فوراً.'));
+        }
+
+        if ($certificate->user_id !== $user->id) {
+            abort(403, __('غير مصرح لك باستعراض هذه الشهادة.'));
         }
 
         return view('web.pages.certificate', compact('certificate'));

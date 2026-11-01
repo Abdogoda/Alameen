@@ -474,6 +474,7 @@ class AlameenPlatformIncrementalTest extends TestCase
         $user = User::factory()->create();
         $admin = Admin::create(['name' => 'Supervisor', 'email' => 'sup@test.com', 'password' => 'secret']);
         $course = Course::create(['title_ar' => 'كورس تدريب النطق', 'slug' => 'voice-training']);
+        app(CourseEnrollmentService::class)->enroll($user, $course);
         $task = ClinicalTask::create([
             'course_id' => $course->id,
             'title_ar' => 'تمرين مخارج الحروف اللثوية',

@@ -11,6 +11,7 @@ use App\Models\VideoProgress;
 use App\Services\Cms\SettingsService;
 use App\Services\Course\CourseEnrollmentService;
 use Illuminate\Support\Carbon;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class VideoProgressService
 {
@@ -74,6 +75,12 @@ class VideoProgressService
      */
     public function recordProgress(User $user, Video $video, int $currentWatchedSeconds): VideoProgress
     {
+        if (! $this->canAccessVideo($user, $video)) {
+            throw new AccessDeniedHttpException(
+                __('لا تملك صلاحية الوصول أو تسجيل التقدم لهذا الفيديو.')
+            );
+        }
+
         $progress = VideoProgress::firstOrNew([
             'user_id' => $user->id,
             'video_id' => $video->id,

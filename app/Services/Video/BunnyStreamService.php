@@ -17,9 +17,9 @@ class BunnyStreamService
 
     public function __construct()
     {
-        $this->pullZone = (string) config('services.bunny.pull_zone', env('BUNNY_STREAM_PULL_ZONE', 'iframe.mediadelivery.net'));
-        $this->libraryId = (string) config('services.bunny.library_id', env('BUNNY_STREAM_LIBRARY_ID', ''));
-        $this->securityTokenKey = (string) config('services.bunny.security_token_key', env('BUNNY_SECURITY_TOKEN_KEY', ''));
+        $this->pullZone = (string) config('services.bunny.pull_zone', 'iframe.mediadelivery.net');
+        $this->libraryId = (string) config('services.bunny.library_id', '');
+        $this->securityTokenKey = (string) config('services.bunny.security_token_key', '');
     }
 
     /**
@@ -56,7 +56,7 @@ class BunnyStreamService
             return '';
         }
 
-        $pullDomain = env('BUNNY_HLS_PULL_ZONE', 'vz-video.b-cdn.net');
+        $pullDomain = (string) config('services.bunny.hls_pull_zone', 'vz-video.b-cdn.net');
         $expires = time() + ($expiresInSeconds ?? 7200);
 
         if (! empty($this->securityTokenKey)) {

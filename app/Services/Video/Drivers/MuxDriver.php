@@ -230,7 +230,7 @@ class MuxDriver implements VideoDriverInterface
             $offset = 0;
 
             while ($offset < $fileSize) {
-                $bytesToRead = min($chunkSize, $fileSize - $offset);
+                $bytesToRead = max(1, min($chunkSize, $fileSize - $offset));
                 $chunkData = fread($handle, $bytesToRead);
 
                 if ($chunkData === false || strlen($chunkData) === 0) {

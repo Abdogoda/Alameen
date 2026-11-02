@@ -15,7 +15,7 @@
             </div>
         @endif
 
-        <div class="flex flex-col gap-3 w-full">
+        <div class="flex flex-col gap-5 w-full pt-1">
             <form method="POST" action="{{ route('verification.send') }}" class="w-full">
                 @csrf
                 <button
@@ -31,7 +31,7 @@
                 @csrf
                 <button
                     type="submit"
-                    class="w-full h-11 rounded-xl text-slate-500 hover:text-rose-600 hover:bg-rose-50 text-xs font-bold transition-colors cursor-pointer flex items-center justify-center"
+                    class="w-full h-12 rounded-2xl text-slate-500 hover:text-rose-600 hover:bg-rose-50 text-sm font-bold transition-all duration-200 cursor-pointer flex items-center justify-center"
                     data-test="logout-button"
                 >
                     {{ __('تسجيل الخروج') }}

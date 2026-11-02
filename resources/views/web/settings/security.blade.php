@@ -3,7 +3,7 @@
 
     <flux:heading level="2" class="sr-only">{{ __('Security settings') }}</flux:heading>
 
-    <x-settings.layout :heading="__('Update password')" :subheading="__('Ensure your account is using a long, random password to stay secure')">
+    <x-settings.layout :heading="__('تحديث كلمة المرور وحماية الحساب')" :subheading="__('احرص على استخدام كلمة مرور قوية وغير مكررة للحفاظ على أمان حسابك')">
         <form method="POST" wire:submit="updatePassword" class="mt-6 space-y-6">
             <flux:input
                 wire:model="current_password"
@@ -32,8 +32,15 @@
                 viewable
             />
 
-            <div class="flex items-center gap-4">
-                <flux:button variant="primary" type="submit" data-test="update-password-button">{{ __('Save') }}</flux:button>
+            <div class="flex items-center gap-4 pt-2">
+                <button
+                    type="submit"
+                    class="h-12 px-7 rounded-2xl bg-[#012383] hover:bg-[#0B2A8F] text-white font-['Cairo'] font-bold text-sm shadow-md hover:shadow-lg transition-all duration-200 cursor-pointer active:scale-[0.99] flex items-center justify-center gap-2"
+                    data-test="update-password-button"
+                >
+                    <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                    <span>{{ __('تحديث كلمة المرور') }}</span>
+                </button>
             </div>
         </form>
 

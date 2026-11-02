@@ -1,26 +1,41 @@
 <x-layouts::app :title="__('مركز الدعم والمحادثات')">
     <div class="flex flex-col gap-6 w-full text-start">
         
-        <!-- Header & Call To Action -->
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 w-full">
+        <!-- Header & Breadcrumbs -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 w-full">
             <div class="flex flex-col gap-1 items-start text-start">
-                <p class="font-semibold text-xs text-[#0B2A8F]">
-                    {{ __('مساحة التعلّم / الدعم الفني والرسائل') }}
-                </p>
-                <h1 class="font-['Baloo_Bhaijaan_2'] font-bold text-2xl sm:text-3xl text-[#012383]">
+                <nav class="flex items-center gap-2 text-xs font-semibold text-[#0B2A8F] dark:text-blue-400" aria-label="Breadcrumb">
+                    <a href="{{ route('dashboard') }}" class="hover:underline flex items-center gap-1" wire:navigate>
+                        <svg class="size-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                        <span>{{ __('لوحة الطالب') }}</span>
+                    </a>
+                    <span class="text-slate-300 dark:text-slate-600">/</span>
+                    <span class="text-slate-500 dark:text-slate-400">{{ __('الإشعارات والدعم') }}</span>
+                    <span class="text-slate-300 dark:text-slate-600">/</span>
+                    <span class="text-[#012383] dark:text-white font-bold">{{ __('الدعم والرسائل') }}</span>
+                </nav>
+
+                <h1 class="font-['Baloo_Bhaijaan_2'] font-bold text-2xl sm:text-3xl text-[#012383] dark:text-white leading-tight">
                     {{ __('مركز الدعم والمحادثات المباشرة') }}
                 </h1>
-                <p class="text-xs sm:text-sm text-[#475569]">
+                <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-3xl">
                     {{ __('تواصل مباشرة مع المشرفين السريريين والإدارة، وتابع حلول استفساراتك باحترافية.') }}
                 </p>
             </div>
 
-            <a href="{{ route('support.create') }}" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#012383] to-[#0B2A8F] hover:from-[#0B2A8F] hover:to-[#012383] text-white text-sm font-bold shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 shrink-0">
-                <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                </svg>
-                <span>{{ __('فتح تذكرة دعم جديدة') }}</span>
-            </a>
+            <div class="flex items-center gap-2.5 shrink-0 flex-wrap">
+                <a href="{{ route('support.create') }}" class="h-10 px-5 rounded-xl bg-[#012383] hover:bg-[#0B2A8F] text-white text-xs sm:text-sm font-bold shadow-xs transition-all flex items-center gap-2 cursor-pointer active:scale-95">
+                    <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg>
+                    <span>{{ __('فتح تذكرة دعم جديدة') }}</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- UNIFIED HUB TABS (Internal Navigation Switcher) -->
+        <div class="w-full">
+            <x-hub-tabs active="support" :unread-notifications="$unreadNotificationsCount ?? 0" :unread-support="$unreadSupportCount ?? 0" />
         </div>
 
         @if(session('success'))

@@ -297,6 +297,85 @@
             </div>
         </div>
 
+        {{-- Card 4: Certificate Template & Custom Background --}}
+        <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-2xl sm:rounded-3xl p-5 sm:p-7 shadow-xs space-y-5">
+            <div class="border-b border-[#DEE8F7]/80 dark:border-slate-800 pb-3 flex items-center justify-between">
+                <div>
+                    <h3 class="font-bold text-base sm:text-lg text-[#012383] dark:text-white">{{ __('تصميم وقالب شهادة هذا الكورس') }}</h3>
+                    <p class="text-xs text-slate-400">{{ __('تخصيص القالب أو رفع خلفية شهادة مستقلة لهذا الكورس التدريبي تحديداً') }}</p>
+                </div>
+                <span class="text-xs px-2.5 py-1 rounded-full bg-blue-50 dark:bg-blue-950/40 text-[#012383] dark:text-blue-300 font-bold border border-blue-200 dark:border-blue-800">
+                    {{ __('شهادة إتمام ٩٥٪') }}
+                </span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1.5">
+                        {{ __('قالب الشهادة المعتمد للكورس:') }}
+                    </label>
+                    <select name="certificate_template" class="w-full h-11 px-3 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-bold bg-slate-50/50 dark:bg-slate-800/50 text-[#012383] dark:text-white outline-none">
+                        <option value="default" {{ ($course->certificate_template === 'default' || empty($course->certificate_template)) ? 'selected' : '' }}>
+                            {{ __('استخدام القالب الافتراضي للمنصة') }}
+                        </option>
+                        <option value="royal_gold" {{ $course->certificate_template === 'royal_gold' ? 'selected' : '' }}>
+                            👑 {{ __('الملكي الذهبي (Royal Gold)') }}
+                        </option>
+                        <option value="clinical_emerald" {{ $course->certificate_template === 'clinical_emerald' ? 'selected' : '' }}>
+                            🩺 {{ __('السريري الزمردي (Clinical Emerald)') }}
+                        </option>
+                        <option value="modern_navy" {{ $course->certificate_template === 'modern_navy' ? 'selected' : '' }}>
+                            🎓 {{ __('الأكاديمي العصري (Modern Academic)') }}
+                        </option>
+                        <option value="custom" {{ $course->certificate_template === 'custom' ? 'selected' : '' }}>
+                            🎨 {{ __('قالب مخصص مرفوع للكورس') }}
+                        </option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1.5">
+                        {{ __('رفع خلفية شهادة خاصة بالكورس (A4):') }}
+                    </label>
+                    <input type="file" name="certificate_custom_bg_file" accept="image/png,image/jpeg,image/webp" class="w-full text-xs text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-[#012383] file:text-white hover:file:bg-[#0B2A8F]" />
+                    @if($course->certificate_custom_bg)
+                        <div class="mt-2 text-[11px] text-emerald-600 font-bold flex items-center gap-1">
+                            <span>✓</span>
+                            <a href="{{ $course->certificate_custom_bg }}" target="_blank" class="underline">{{ __('معاينة الخلفية المرفوعة حالياً للكورس') }}</a>
+                        </div>
+                    @endif
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                <div>
+                    <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1.5">
+                        {{ __('اسم المعتمد / المحاضر على الشهادة (اختياري):') }}
+                    </label>
+                    <input 
+                        type="text" 
+                        name="certificate_signatory_name" 
+                        value="{{ old('certificate_signatory_name', $course->certificate_signatory_name) }}" 
+                        placeholder="{{ __('اتركه فارغاً لاستخدام المعتمد الافتراضي للمنصة') }}" 
+                        class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-bold bg-slate-50/50 dark:bg-slate-800/50 text-[#012383] dark:text-white outline-none focus:border-[#012383]" 
+                    />
+                </div>
+
+                <div>
+                    <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1.5">
+                        {{ __('صفة المعتمد (اختياري):') }}
+                    </label>
+                    <input 
+                        type="text" 
+                        name="certificate_signatory_title" 
+                        value="{{ old('certificate_signatory_title', $course->certificate_signatory_title) }}" 
+                        placeholder="{{ __('اتركه فارغاً لاستخدام المسمى الافتراضي') }}" 
+                        class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-bold bg-slate-50/50 dark:bg-slate-800/50 text-[#012383] dark:text-white outline-none focus:border-[#012383]" 
+                    />
+                </div>
+            </div>
+        </div>
+
         {{-- Form Action Buttons --}}
         <div class="flex flex-col-reverse sm:flex-row items-center justify-between gap-4 pt-2">
             {{-- Delete Course Form Button --}}

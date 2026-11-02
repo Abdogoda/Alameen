@@ -5,15 +5,17 @@
     'scripts' => null,
 ])
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}" class="scroll-smooth overflow-x-clip">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}" class="scroll-smooth">
     <head>
         @include('partials.head')
         <title>{{ filled($title ?? null) ? $title . ' | ' . config('app.name', 'منصة مركز الأمين') : config('app.name', 'منصة مركز الأمين') }}</title>
     </head>
-    <body class="bg-[#FAFCFF] dark:bg-slate-950 min-h-screen text-[#334155] dark:text-slate-100 font-body antialiased selection:bg-[#EAF1FB] selection:text-[#0B2A8F] overflow-x-clip w-full max-w-full relative transition-colors">
+    <body class="bg-[#FAFCFF] dark:bg-slate-950 min-h-screen text-[#334155] dark:text-slate-100 font-body antialiased selection:bg-[#EAF1FB] selection:text-[#0B2A8F] w-full max-w-full relative transition-colors">
         
         <!-- Top-Level Pre-Rendered Themed Loader (At the top of everything from 0ms) -->
+        @persist('alameen-loader')
         <x-alameen-loader />
+        @endpersist
 
         <!-- Toast Notification Element -->
         <div

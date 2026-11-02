@@ -1,7 +1,7 @@
 <x-admin-layout::admin
     :title="__('إدارة محتوى الكورس والمستويات')"
     :description="__('تحكم كامل في المستويات، رفع الدروس، ربط المهام، وتعديل السعر ديناميكياً')"
-    contentClass="p-3.5 sm:p-6 lg:p-8 flex flex-col gap-5 sm:gap-6 max-w-[1400px] w-full mx-auto min-w-0"
+    contentClass="p-3.5 sm:p-6 lg:p-8 flex flex-col gap-5 sm:gap-6 w-full min-w-0"
 >
     <x-slot:actions>
         <div class="flex items-center gap-2 flex-wrap">
@@ -65,12 +65,12 @@
     @endif
 
     <!-- Course Card Info Bar with Dynamic Pricing Controller -->
-    <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-2xl sm:rounded-3xl p-4 sm:p-7 shadow-xs flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-5 sm:gap-6 min-w-0">
-        <div class="flex items-start sm:items-center gap-3.5 sm:gap-4 min-w-0">
+    <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-2xl sm:rounded-3xl p-4 sm:p-7 shadow-xs flex flex-col xl:flex-row items-stretch xl:items-center justify-between gap-5 sm:gap-6 min-w-0">
+        <div class="flex items-start sm:items-center gap-3.5 sm:gap-4 min-w-0 flex-1">
             <div class="size-16 sm:size-20 rounded-2xl bg-[#012383] overflow-hidden shrink-0 border border-[#DEE8F7] dark:border-slate-700 shadow-2xs relative">
                 <img src="{{ $course->thumbnail ?: '/assets/images/course-topic-basics.png' }}" alt="{{ $course->title_ar }}" class="size-full object-cover" />
             </div>
-            <div class="space-y-1 text-right min-w-0">
+            <div class="space-y-1 text-right min-w-0 flex-1">
                 <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap text-xs">
                     <span class="px-2.5 py-0.5 rounded-full bg-blue-50 dark:bg-slate-800 text-[#0B2A8F] dark:text-blue-300 text-xs font-bold font-['Cairo']">
                         {{ $course->is_published ? __('الكورس الأساسي النشط') : __('مسودة غير منشورة') }}
@@ -105,7 +105,7 @@
         </div>
 
         <!-- Dynamic Price Badge & Editor Button -->
-        <div class="flex items-center gap-4 bg-slate-50 dark:bg-slate-800/60 p-3.5 sm:p-4 rounded-2xl border border-[#DEE8F7]/80 dark:border-slate-700 w-full lg:w-auto justify-between lg:justify-start shrink-0">
+        <div class="flex items-center gap-4 bg-slate-50 dark:bg-slate-800/60 p-3.5 sm:p-4 rounded-2xl border border-[#DEE8F7]/80 dark:border-slate-700 w-full xl:w-auto justify-between xl:justify-start shrink-0">
             <div class="text-right">
                 <span class="text-[11px] text-slate-400 font-bold block">{{ __('سعر الكورس المعتمد') }}</span>
                 <div class="flex items-baseline gap-2 mt-0.5">

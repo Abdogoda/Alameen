@@ -1,274 +1,525 @@
 /**
- * AL-AMEEN EDUCATIONAL PLATFORM - ANIMATIONS & THEME CONTROLLER
- * Speech Therapy & Phonetics Theme (النطق والتخاطب)
- * Controls: Themed Loader, Scroll Progress, Scroll Reveal, Micro-interactions & Hover Effects
+ * AL-AMEEN PLATFORM - UNIVERSAL ANIMATION & MOTION CONTROLLER
+ * 
+ * Provides smooth, high-performance, accessible animations across the entire system:
+ * 1. ON REFRESH & LOAD:
+ *    - Themed Alameen branded loader dissolution
+ *    - Smooth page entrance fade & slide-up (alameen-page-transition-enter)
+ *    - Cascading staggered entrance for viewport cards and sections
+ * 2. ON SCROLL:
+ *    - Dynamic top scroll progress bar (#alameen-scroll-progress)
+ *    - IntersectionObserver-powered scroll reveals (fade, slide, zoom, stagger)
+ *    - Sticky header backdrop-blur & elevation shadow on scroll (is-scrolled)
+ *    - Floating spring-animated "Back to Top" button (#alameen-back-to-top)
+ * 3. ON NAVIGATE (Livewire wire:navigate & SPA transitions):
+ *    - Sleek glowing top route navigation progress bar (#alameen-nav-progress)
+ *    - Gentle page exit dimming (alameen-navigating-out)
+ *    - Page entrance transition on new view (alameen-page-transition-enter)
+ *    - Automatic DOM re-observation for scroll reveals & micro-interactions
+ *    - Smooth scroll reset & progress bar sync
  */
 
 (function () {
-  'use strict';
+    'use strict';
 
-  // 1. Resolve relative asset root for logo
-  function getLogoPath() {
-    const path = window.location.pathname.toLowerCase();
-    if (path.includes('/dashboard/') || path.includes('/pages/')) {
-      return '../assets/images/logo.png';
+    // Prevent duplicate initialization
+    if (typeof window !== 'undefined' && window.__alameenAnimationsLoaded) {
+        return;
     }
-    return '/assets/images/logo.png';
-  }
-
-  // 2. Initialize Themed Loader
-  function initThemedLoader() {
-    let loader = document.getElementById('alameen-loader');
-    if (!loader) {
-      document.body.classList.add('content-ready');
-      return;
+    if (typeof window !== 'undefined') {
+        window.__alameenAnimationsLoaded = true;
     }
 
-    if (document.documentElement.classList.contains('dark') || document.documentElement.getAttribute('data-theme') === 'dark') {
-      loader.classList.add('dark');
-    }
+    // =========================================================================
+    // 1. TOP ROUTE NAVIGATION PROGRESS BAR (livewire:navigating & page switch)
+    // =========================================================================
+    let navProgressBar = null;
+    let navProgressInterval = null;
+    let navProgressResetTimer = null;
+    let currentNavPercent = 0;
 
-    // Dismiss Loader with smooth ease-out and reveal content
-    const startTime = performance.now();
-    let isDismissed = false;
-
-    const dismissLoader = () => {
-      if (isDismissed) return;
-      isDismissed = true;
-
-      const elapsed = performance.now() - startTime;
-      const minDisplayTime = 250; // Provide pleasant brand impression
-      const remaining = Math.max(0, minDisplayTime - elapsed);
-
-      setTimeout(() => {
-        document.body.classList.add('content-ready');
-        if (loader) {
-          loader.classList.add('loader-hidden');
-          setTimeout(() => {
-            loader.style.display = 'none';
-          }, 500);
+    function getOrCreateNavProgressBar() {
+        if (navProgressBar && document.body.contains(navProgressBar)) {
+            return navProgressBar;
         }
-      }, remaining);
+
+        navProgressBar = document.getElementById('alameen-nav-progress');
+        if (!navProgressBar) {
+            navProgressBar = document.createElement('div');
+            navProgressBar.id = 'alameen-nav-progress';
+            navProgressBar.setAttribute('aria-hidden', 'true');
+            if (document.body) {
+                document.body.prepend(navProgressBar);
+            }
+        }
+        return navProgressBar;
+    }
+
+    const navProgress = {
+        start() {
+            const bar = getOrCreateNavProgressBar();
+            if (!bar) return;
+
+            clearInterval(navProgressInterval);
+            clearTimeout(navProgressResetTimer);
+
+            currentNavPercent = 18;
+            bar.style.transition = 'width 0.15s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease';
+            bar.style.opacity = '1';
+            bar.style.width = currentNavPercent + '%';
+
+            // Indicate navigation state to document
+            document.body.classList.add('alameen-navigating-out');
+
+            // Realistic network progress trickle simulation
+            navProgressInterval = setInterval(() => {
+                if (currentNavPercent < 78) {
+                    const step = Math.max(1, (78 - currentNavPercent) * 0.18);
+                    currentNavPercent += step;
+                    bar.style.width = `${Math.min(78, currentNavPercent)}%`;
+                }
+            }, 180);
+        },
+
+        done() {
+            const bar = getOrCreateNavProgressBar();
+            if (!bar) return;
+
+            clearInterval(navProgressInterval);
+            currentNavPercent = 100;
+            bar.style.transition = 'width 0.16s ease-out, opacity 0.24s ease-out 0.12s';
+            bar.style.width = '100%';
+            bar.style.opacity = '0';
+
+            // Remove navigation state from document
+            document.body.classList.remove('alameen-navigating-out');
+
+            navProgressResetTimer = setTimeout(() => {
+                bar.style.transition = 'none';
+                bar.style.width = '0%';
+                currentNavPercent = 0;
+            }, 380);
+        }
     };
 
-    if (document.readyState === 'complete') {
-      dismissLoader();
-    } else {
-      window.addEventListener('load', dismissLoader, { once: true });
-      // Fallback safeguard so loader never blocks navigation
-      setTimeout(dismissLoader, 700);
-    }
-  }
+    // =========================================================================
+    // 2. TOP SCROLL PROGRESS BAR (Dynamic scroll percentage depth)
+    // =========================================================================
+    let scrollProgressBar = null;
 
-  // Auto-run loader controller immediately
-  initThemedLoader();
-
-  // 3. Initialize Top Scroll Progress Bar
-  function initScrollProgress() {
-    let progressBar = document.getElementById('alameen-scroll-progress');
-    if (!progressBar) {
-      progressBar = document.createElement('div');
-      progressBar.id = 'alameen-scroll-progress';
-      if (document.body) {
-        document.body.prepend(progressBar);
-      }
-    }
-
-    let ticking = false;
-    const updateProgress = () => {
-      const scrollTop = window.scrollY || document.documentElement.scrollTop;
-      const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-      if (docHeight > 0) {
-        const percent = Math.min(100, Math.max(0, (scrollTop / docHeight) * 100));
-        progressBar.style.width = percent + '%';
-      }
-      ticking = false;
-    };
-
-    window.addEventListener(
-      'scroll',
-      () => {
-        if (!ticking) {
-          window.requestAnimationFrame(updateProgress);
-          ticking = true;
-        }
-      },
-      { passive: true }
-    );
-  }
-
-  // 4. Initialize IntersectionObserver for Scroll Reveals
-  function initScrollReveals() {
-    // Select elements to reveal
-    const autoSelectors = [
-      'section',
-      '#landing-frame > div',
-      '.course-card',
-      '.review-card',
-      'aside + main > div',
-      'main > div > div',
-      '.stat-card',
-      '.grid > div',
-      '.reveal-on-scroll'
-    ];
-
-    const elementsToReveal = new Set();
-    autoSelectors.forEach((selector) => {
-      document.querySelectorAll(selector).forEach((el) => {
-        // Skip header, nav, modals, loaders
-        if (
-          !el.closest('header') &&
-          !el.closest('nav') &&
-          !el.closest('#sidebar-overlay') &&
-          !el.closest('#alameen-loader') &&
-          !el.classList.contains('fixed') &&
-          !el.classList.contains('sticky') &&
-          el.id !== 'toast' &&
-          !el.id.includes('modal')
-        ) {
-          elementsToReveal.add(el);
-        }
-      });
-    });
-
-    if ('IntersectionObserver' in window) {
-      const observerOptions = {
-        root: null,
-        rootMargin: '0px 0px -40px 0px',
-        threshold: 0.08
-      };
-
-      const revealObserver = new IntersectionObserver((entries, obs) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('revealed');
-            obs.unobserve(entry.target);
-          }
-        });
-      }, observerOptions);
-
-      elementsToReveal.forEach((el, index) => {
-        if (!el.classList.contains('reveal-on-scroll') && !el.classList.contains('reveal-left') && !el.classList.contains('reveal-right')) {
-          el.classList.add('reveal-on-scroll');
+    function getOrCreateScrollProgressBar() {
+        if (scrollProgressBar && document.body.contains(scrollProgressBar)) {
+            return scrollProgressBar;
         }
 
-        // Stagger grid siblings
-        const parent = el.parentElement;
-        if (parent && (parent.classList.contains('grid') || parent.classList.contains('flex-wrap'))) {
-          const siblingIndex = Array.from(parent.children).indexOf(el);
-          if (siblingIndex > 0) {
-            const delay = Math.min(350, siblingIndex * 80);
-            el.style.transitionDelay = `${delay}ms`;
-          }
+        scrollProgressBar = document.getElementById('alameen-scroll-progress');
+        if (!scrollProgressBar) {
+            scrollProgressBar = document.createElement('div');
+            scrollProgressBar.id = 'alameen-scroll-progress';
+            scrollProgressBar.setAttribute('aria-hidden', 'true');
+            if (document.body) {
+                document.body.prepend(scrollProgressBar);
+            }
         }
-
-        revealObserver.observe(el);
-      });
-    } else {
-      // Fallback for older browsers
-      elementsToReveal.forEach((el) => el.classList.add('revealed'));
-    }
-  }
-
-  // 5. Enhance Hover and Click Micro-Interactions
-  function initHoverMicroInteractions() {
-    // A. Card Lift on Hover
-    const cardSelectors = [
-      '.bg-white.rounded-2xl',
-      '.bg-white.rounded-3xl',
-      '.bg-white.rounded-xl.border',
-      '.bg-white.border.rounded-2xl',
-      '.course-card',
-      '.review-card',
-      'div[class*="shadow-xs"][class*="rounded-2xl"]'
-    ];
-
-    document.querySelectorAll(cardSelectors.join(', ')).forEach((card) => {
-      if (
-        !card.closest('header') &&
-        !card.closest('nav') &&
-        !card.id.includes('modal') &&
-        !card.classList.contains('hover-lift')
-      ) {
-        card.classList.add('hover-lift');
-      }
-    });
-
-    // B. Button Shine Effect
-    const btnSelectors = [
-      'button.bg-\\[\\#012383\\]',
-      'button.bg-\\[\\#0B2A8F\\]',
-      'a.bg-\\[\\#012383\\]',
-      'a.bg-\\[\\#0B2A8F\\]',
-      '.btn-primary',
-      'button[type="submit"]'
-    ];
-
-    document.querySelectorAll(btnSelectors.join(', ')).forEach((btn) => {
-      btn.classList.add('btn-shine');
-    });
-
-    // C. Table Rows Smooth Hover
-    document.querySelectorAll('table tbody tr').forEach((tr) => {
-      tr.classList.add('table-row-hover');
-    });
-
-    // D. Badges & Filter Pills
-    document.querySelectorAll('[data-filter], [data-tab], [data-cat]').forEach((pill) => {
-      pill.classList.add('badge-interactive');
-    });
-  }
-
-  // 6. Floating Back to Top Button
-  function initBackToTop() {
-    let btn = document.getElementById('alameen-back-to-top');
-    if (!btn) {
-      btn = document.createElement('button');
-      btn.id = 'alameen-back-to-top';
-      btn.setAttribute('type', 'button');
-      btn.setAttribute('aria-label', 'العودة إلى أعلى الصفحة');
-      btn.innerHTML = `
-        <svg class="size-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
-        </svg>
-      `;
-      if (document.body) {
-        document.body.appendChild(btn);
-      }
+        return scrollProgressBar;
     }
 
-    window.addEventListener(
-      'scroll',
-      () => {
-        if (window.scrollY > 320) {
-          btn.classList.add('show');
+    function updateScrollProgress() {
+        const bar = getOrCreateScrollProgressBar();
+        if (!bar) return;
+
+        const scrollTop = window.scrollY || document.documentElement.scrollTop || 0;
+        const scrollHeight = document.documentElement.scrollHeight || document.body.scrollHeight || 0;
+        const clientHeight = window.innerHeight || document.documentElement.clientHeight || 0;
+        const maxScroll = scrollHeight - clientHeight;
+
+        if (maxScroll > 10) {
+            const pct = Math.min(100, Math.max(0, (scrollTop / maxScroll) * 100));
+            bar.style.width = `${pct}%`;
         } else {
-          btn.classList.remove('show');
+            bar.style.width = '0%';
         }
-      },
-      { passive: true }
-    );
+    }
 
-    btn.addEventListener('click', () => {
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
+    // =========================================================================
+    // 3. STICKY HEADER ELEVATION & BLUR ON SCROLL
+    // =========================================================================
+    function updateHeaderElevation() {
+        const isScrolled = (window.scrollY || document.documentElement.scrollTop || 0) > 15;
+        const headers = document.querySelectorAll('header, [data-flux-header], .student-header, .admin-header, .sidebar-header, #landing-header');
+        headers.forEach((header) => {
+            if (isScrolled) {
+                header.classList.add('is-scrolled');
+            } else {
+                header.classList.remove('is-scrolled');
+            }
+        });
+    }
+
+    // =========================================================================
+    // 4. FLOATING SPRING "BACK TO TOP" BUTTON
+    // =========================================================================
+    let backToTopButton = null;
+
+    function getOrCreateBackToTopButton() {
+        if (backToTopButton && document.body.contains(backToTopButton)) {
+            return backToTopButton;
+        }
+
+        backToTopButton = document.getElementById('alameen-back-to-top');
+        if (!backToTopButton) {
+            backToTopButton = document.createElement('button');
+            backToTopButton.id = 'alameen-back-to-top';
+            backToTopButton.setAttribute('type', 'button');
+            backToTopButton.setAttribute('aria-label', 'العودة إلى أعلى الصفحة');
+            backToTopButton.innerHTML = `
+                <svg class="size-5 transition-transform duration-200 group-hover:-translate-y-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
+                </svg>
+            `;
+            if (document.body) {
+                document.body.appendChild(backToTopButton);
+            }
+
+            backToTopButton.addEventListener('click', () => {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+        }
+        return backToTopButton;
+    }
+
+    function updateBackToTopVisibility() {
+        const btn = getOrCreateBackToTopButton();
+        if (!btn) return;
+
+        const scrollTop = window.scrollY || document.documentElement.scrollTop || 0;
+        if (scrollTop > 280) {
+            btn.classList.add('show');
+        } else {
+            btn.classList.remove('show');
+        }
+    }
+
+    // Consolidated passive scroll listener (throttled via requestAnimationFrame)
+    let isScrollTicking = false;
+    function handleScroll() {
+        if (!isScrollTicking) {
+            window.requestAnimationFrame(() => {
+                updateScrollProgress();
+                updateHeaderElevation();
+                updateBackToTopVisibility();
+                isScrollTicking = false;
+            });
+            isScrollTicking = true;
+        }
+    }
+
+    // =========================================================================
+    // 5. SCROLL REVEAL ANIMATIONS (IntersectionObserver Engine)
+    // =========================================================================
+    let scrollObserver = null;
+
+    function initScrollReveals() {
+        // Disconnect any existing observer
+        if (scrollObserver) {
+            try {
+                scrollObserver.disconnect();
+            } catch {}
+        }
+
+        const candidateSelectors = [
+            '.reveal-on-scroll',
+            '.reveal-left',
+            '.reveal-right',
+            '.reveal-zoom',
+            '.reveal-fade',
+            '.course-card',
+            '.review-card',
+            '.stat-card',
+            '[data-flux-card]',
+            'main section',
+            '.grid > div:not([data-no-reveal])',
+            '.grid > a:not([data-no-reveal])',
+            'main > div > div:not([data-no-reveal])'
+        ];
+
+        const elementsToObserve = new Set();
+
+        candidateSelectors.forEach((selector) => {
+            document.querySelectorAll(selector).forEach((el) => {
+                // Ignore navigation bars, modals, toast, headers, sidebars
+                if (
+                    !el.closest('header') &&
+                    !el.closest('nav') &&
+                    !el.closest('aside') &&
+                    !el.closest('#sidebar-overlay') &&
+                    !el.closest('#alameen-loader') &&
+                    !el.closest('#alameen-nav-progress') &&
+                    !el.closest('#alameen-scroll-progress') &&
+                    !el.closest('#alameen-back-to-top') &&
+                    !el.classList.contains('fixed') &&
+                    !el.classList.contains('sticky') &&
+                    !el.id.includes('modal') &&
+                    el.id !== 'toast' &&
+                    !el.hasAttribute('data-no-reveal')
+                ) {
+                    elementsToObserve.add(el);
+                }
+            });
+        });
+
+        if ('IntersectionObserver' in window) {
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px 0px -30px 0px',
+                threshold: 0.05
+            };
+
+            scrollObserver = new IntersectionObserver((entries, obs) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('revealed');
+                        obs.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            const windowHeight = window.innerHeight || document.documentElement.clientHeight || 800;
+
+            elementsToObserve.forEach((el) => {
+                // Ensure the base reveal animation class is present
+                if (
+                    !el.classList.contains('reveal-on-scroll') &&
+                    !el.classList.contains('reveal-left') &&
+                    !el.classList.contains('reveal-right') &&
+                    !el.classList.contains('reveal-zoom') &&
+                    !el.classList.contains('reveal-fade')
+                ) {
+                    el.classList.add('reveal-on-scroll');
+                }
+
+                // Stagger siblings inside grids/flex layouts
+                const parent = el.parentElement;
+                if (parent && (parent.classList.contains('grid') || parent.classList.contains('flex-wrap'))) {
+                    const siblingIndex = Array.from(parent.children).indexOf(el);
+                    if (siblingIndex > 0) {
+                        const delay = Math.min(350, siblingIndex * 65);
+                        el.style.transitionDelay = `${delay}ms`;
+                    }
+                }
+
+                // Check if element is already within the initial viewport
+                const rect = el.getBoundingClientRect();
+                if (rect.top < windowHeight - 40 && rect.bottom > 0) {
+                    setTimeout(() => {
+                        el.classList.add('revealed');
+                    }, 60);
+                } else {
+                    scrollObserver.observe(el);
+                }
+            });
+        } else {
+            // Fallback for older browsers
+            elementsToObserve.forEach((el) => el.classList.add('revealed'));
+        }
+    }
+
+    // =========================================================================
+    // 6. MICRO-INTERACTIONS (Card Hover Lift, Button Shine, Table Row Hover)
+    // =========================================================================
+    function initMicroInteractions() {
+        // A. Card Lift on Hover
+        const cardSelectors = [
+            '.bg-white.rounded-2xl',
+            '.bg-white.rounded-3xl',
+            '.bg-white.rounded-xl.border',
+            '.bg-white.border.rounded-2xl',
+            '.course-card',
+            '.review-card',
+            '.stat-card',
+            '[data-flux-card]',
+            'div[class*="shadow-xs"][class*="rounded-2xl"]'
+        ];
+
+        document.querySelectorAll(cardSelectors.join(', ')).forEach((card) => {
+            if (
+                !card.closest('header') &&
+                !card.closest('nav') &&
+                !card.closest('aside') &&
+                !card.id.includes('modal') &&
+                !card.classList.contains('hover-lift') &&
+                !card.hasAttribute('data-no-hover')
+            ) {
+                card.classList.add('hover-lift');
+            }
+        });
+
+        // B. Button Shine Effect on Primary/Accent Buttons
+        const btnSelectors = [
+            'button.bg-\\[\\#012383\\]',
+            'button.bg-\\[\\#0B2A8F\\]',
+            'a.bg-\\[\\#012383\\]',
+            'a.bg-\\[\\#0B2A8F\\]',
+            '.btn-primary',
+            'button[type="submit"]:not(.no-shine)'
+        ];
+
+        document.querySelectorAll(btnSelectors.join(', ')).forEach((btn) => {
+            if (!btn.classList.contains('btn-shine')) {
+                btn.classList.add('btn-shine');
+            }
+        });
+
+        // C. Table Row Smooth Hover Highlight
+        document.querySelectorAll('table tbody tr').forEach((tr) => {
+            if (!tr.classList.contains('table-row-hover')) {
+                tr.classList.add('table-row-hover');
+            }
+        });
+
+        // D. Filter Pills & Interactive Badges
+        document.querySelectorAll('[data-filter], [data-tab], [data-cat]').forEach((pill) => {
+            if (!pill.classList.contains('badge-interactive')) {
+                pill.classList.add('badge-interactive');
+            }
+        });
+    }
+
+    // =========================================================================
+    // 7. PAGE ENTRANCE ANIMATION (On Refresh & On Navigate)
+    // =========================================================================
+    function triggerPageEntrance() {
+        const contentContainers = document.querySelectorAll(
+            '.alameen-content-wrap, main, #landing-frame, [data-flux-container]'
+        );
+
+        contentContainers.forEach((container) => {
+            container.classList.remove('alameen-page-transition-enter');
+            // Trigger reflow to restart animation cleanly
+            void container.offsetWidth;
+            container.classList.add('alameen-page-transition-enter');
+
+            // Cleanup class after animation completes
+            setTimeout(() => {
+                container.classList.remove('alameen-page-transition-enter');
+            }, 600);
+        });
+    }
+
+    // =========================================================================
+    // 8. MASTER INITIALIZATION & EVENT COORDINATION
+    // =========================================================================
+    function initAll() {
+        getOrCreateNavProgressBar();
+        getOrCreateScrollProgressBar();
+        getOrCreateBackToTopButton();
+
+        updateScrollProgress();
+        updateHeaderElevation();
+        updateBackToTopVisibility();
+
+        initScrollReveals();
+        initMicroInteractions();
+    }
+
+    // A. Initial Page Load / Hard Refresh
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+            initAll();
+        }, { once: true });
+    } else {
+        initAll();
+    }
+
+    window.addEventListener('load', () => {
+        updateScrollProgress();
+        updateHeaderElevation();
+        updateBackToTopVisibility();
+        setTimeout(initScrollReveals, 150);
+    }, { once: true });
+
+    // B. Bind Scroll Events
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('resize', handleScroll, { passive: true });
+
+    // C. Livewire 3/4 Lifecycle Events (wire:navigate)
+    document.addEventListener('livewire:navigating', () => {
+        navProgress.start();
     });
-  }
 
-  // 7. Master Initialization
-  function initAll() {
-    initThemedLoader();
-    initScrollProgress();
-    initScrollReveals();
-    initHoverMicroInteractions();
-    initBackToTop();
-  }
+    document.addEventListener('livewire:navigated', () => {
+        navProgress.done();
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initAll);
-  } else {
-    initAll();
-  }
+        // Scroll to top on navigation if no anchor hash
+        if (!window.location.hash) {
+            try {
+                window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+            } catch {
+                window.scrollTo(0, 0);
+            }
+        }
+
+        // Reset scroll progress bar
+        if (scrollProgressBar) {
+            scrollProgressBar.style.width = '0%';
+        }
+
+        // Hide back to top button
+        if (backToTopButton) {
+            backToTopButton.classList.remove('show');
+        }
+
+        // Trigger entrance animation for newly navigated page
+        triggerPageEntrance();
+
+        // Re-initialize reveals and micro-interactions for newly mounted DOM
+        setTimeout(() => {
+            initAll();
+        }, 50);
+    });
+
+    // D. Standard Internal Link Clicks
+    document.addEventListener('click', (event) => {
+        const link = event.target.closest('a');
+        if (!link || !link.href) return;
+
+        if (
+            link.target === '_blank' ||
+            link.hasAttribute('download') ||
+            link.getAttribute('href').startsWith('#') ||
+            link.getAttribute('href').startsWith('javascript:') ||
+            link.getAttribute('href').startsWith('mailto:') ||
+            link.getAttribute('href').startsWith('tel:') ||
+            link.hasAttribute('data-no-animate') ||
+            event.ctrlKey ||
+            event.metaKey ||
+            event.shiftKey ||
+            event.altKey
+        ) {
+            return;
+        }
+
+        try {
+            const linkUrl = new URL(link.href, window.location.origin);
+            if (linkUrl.origin === window.location.origin && linkUrl.pathname !== window.location.pathname) {
+                if (!link.hasAttribute('wire:navigate')) {
+                    navProgress.start();
+                }
+            }
+        } catch {}
+    }, { passive: true });
+
+    // Global exposure
+    if (typeof window !== 'undefined') {
+        window.AlameenAnimations = {
+            navProgress,
+            initScrollReveals,
+            initMicroInteractions,
+            triggerPageEntrance,
+            refresh: initAll
+        };
+    }
 })();

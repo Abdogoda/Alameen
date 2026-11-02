@@ -7,7 +7,6 @@ use App\Http\Controllers\Admin\AdminFirebaseAuthController;
 use App\Http\Controllers\Admin\AdminManagementController;
 use App\Http\Controllers\Admin\AdminPasskeyController;
 use App\Http\Controllers\Admin\AdminProfileController;
-use App\Http\Controllers\Admin\CertificateController;
 use App\Http\Controllers\Admin\ClinicalTaskController;
 use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Admin\ReceiptController;
@@ -80,8 +79,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('tasks', [ClinicalTaskController::class, 'index'])->name('tasks.index');
         Route::post('tasks/{submission}/grade', [ClinicalTaskController::class, 'grade'])->name('tasks.grade');
 
-        // Certificates Approval & Issue (95% standard)
-        Route::get('certificates', [CertificateController::class, 'index'])->name('certificates.index');
+        // Certificates (Redirect to Students Directory)
+        Route::get('certificates', function () {
+            return redirect()->route('admin.students.index')->with('info', __('إدارة الشهادات متاحة حصرياً من خلال الملف الأكاديمي لكل طالب.'));
+        })->name('certificates.index');
 
         // Manual Payment Receipts Verification & Auto-Grant
         Route::get('receipts', [ReceiptController::class, 'index'])->name('receipts.index');

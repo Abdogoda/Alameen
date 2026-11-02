@@ -536,20 +536,28 @@ class AlameenPlatformIncrementalTest extends TestCase
         $certService = app(CertificateService::class);
         $certificate = $certService->issueCertificate($user, $course);
 
-        // Student visits certificates index
-        $indexResponse = $this->actingAs($user)->get(route('certificates.index'));
-        $indexResponse->assertOk();
-        $indexResponse->assertSee($course->title);
+        // Student visits certificates in settings profile
+        $settingsCertResponse = $this->actingAs($user)->get(route('settings.certificates'));
+        $settingsCertResponse->assertOk();
+        $settingsCertResponse->assertSee($course->title);
+        $settingsCertResponse->assertSee($certificate->certificate_code);
 
-        // Student visits certificate presentation view
-        $certResponse = $this->actingAs($user)->get(route('certificates.show', $certificate->id));
-        $certResponse->assertOk();
-        $certResponse->assertSee($certificate->certificate_code);
-        $certResponse->assertSee($user->name);
+        // Legacy student route redirects to profile certificates
+        $legacyIndexResponse = $this->actingAs($user)->get(route('certificates.index'));
+        $legacyIndexResponse->assertRedirect(route('settings.certificates'));
 
-        // Admin visits certificates manager
+        // Public verification page works
+        $verifyResponse = $this->get(route('certificates.verify', $certificate->certificate_code));
+        $verifyResponse->assertOk();
+        $verifyResponse->assertSee($certificate->certificate_code);
+
+        // Admin sees certificate in student show page certificates tab
+        $adminStudentResponse = $this->actingAs($admin, 'admin')->get(route('admin.students.show', $user));
+        $adminStudentResponse->assertOk();
+        $adminStudentResponse->assertSee($certificate->certificate_code);
+
+        // Legacy admin certificates route redirects to students index
         $adminResponse = $this->actingAs($admin, 'admin')->get(route('admin.certificates.index'));
-        $adminResponse->assertOk();
-        $adminResponse->assertSee($certificate->certificate_code);
+        $adminResponse->assertRedirect(route('admin.students.index'));
     }
 }

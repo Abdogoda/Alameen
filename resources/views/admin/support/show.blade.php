@@ -1,7 +1,7 @@
 <x-admin-layout::admin
     :title="__('مساحة محادثة التذكرة: :number', ['number' => $ticket->ticket_number])"
     :description="__('محادثة حية ومباشرة مع الطالب :name مع إمكانية الملاحظات الداخلية وإدارة التذكرة', ['name' => $ticket->user->name])"
-    contentClass="p-3.5 sm:p-6 lg:p-8 flex flex-col gap-5 max-w-[1500px] w-full mx-auto min-w-0"
+    contentClass="p-3.5 sm:p-6 lg:p-8 flex flex-col gap-5 w-full min-w-0"
 >
     <div
         class="flex flex-col gap-4 w-full"

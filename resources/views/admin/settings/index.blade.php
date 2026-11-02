@@ -1,7 +1,7 @@
 <x-admin-layout::admin
     :title="__('إعدادات المنصة ولوحة التحكم والموقع (Control Tower)')"
     :description="__('تحكم شامل وفوري في الهوية، محتوى الموقع، الأسئلة الشائعة، قنوات الدفع، السياسات الأكاديمية والقوائم')"
-    contentClass="p-3.5 sm:p-6 lg:p-8 flex flex-col gap-6 max-w-[1400px] w-full mx-auto min-w-0"
+    contentClass="p-3.5 sm:p-6 lg:p-8 flex flex-col gap-6 w-full min-w-0"
 >
 
     {{-- Notification Alerts --}}
@@ -991,7 +991,6 @@
                 <x-admin::theme-switcher variant="segmented" />
             </div>
         </div>
-
     </div>
 
 </x-admin-layout::admin>

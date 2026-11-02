@@ -19,11 +19,46 @@
   will-change: opacity, transform;
 }
 
+/* Scroll is strictly disabled ONLY when loader is active or when mobile sidebar is open */
+body.alameen-loader-active,
+body.overflow-hidden {
+  overflow: hidden !important;
+}
+
+#alameen-loader {
+  overflow: hidden !important;
+  overscroll-behavior: none !important;
+  touch-action: none !important;
+}
+
 #alameen-loader.loader-hidden {
   opacity: 0 !important;
   visibility: hidden !important;
   pointer-events: none !important;
   transform: scale(1.03) !important;
+  filter: blur(4px) !important;
+}
+
+#alameen-loader.loader-active,
+body.alameen-loader-active #alameen-loader:not(.loader-hidden) {
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  transform: scale(1) !important;
+  filter: none !important;
+  display: flex !important;
+}
+
+body.alameen-loader-active .alameen-content-wrap {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+body.alameen-loader-active #alameen-scroll-progress,
+body.alameen-loader-active #alameen-back-to-top {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
 }
 
 /* Sound Wave Resonator Wrapper */
@@ -415,12 +450,37 @@ html.dark .alameen-eq-bar,
 }
 
 /* Table Row Smooth Highlight */
-tr.table-row-hover {
-  transition: background-color 0.2s ease;
+tr.table-row-hover,
+table tbody tr {
+  transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-tr.table-row-hover:hover {
+tr.table-row-hover:hover,
+table tbody tr.table-row-hover:hover {
   background-color: rgba(234, 241, 251, 0.6) !important;
+}
+
+/* Dark Theme Table Row Hover */
+html.dark tr.table-row-hover:hover,
+html.dark table tbody tr:hover,
+html[data-theme="dark"] tr.table-row-hover:hover,
+html[data-theme="dark"] table tbody tr:hover,
+.dark tr.table-row-hover:hover,
+.dark table tbody tr:hover,
+[data-theme="dark"] tr.table-row-hover:hover,
+[data-theme="dark"] table tbody tr:hover {
+  background-color: rgba(30, 41, 59, 0.75) !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme="light"]) tr.table-row-hover:hover,
+  html:not([data-theme="light"]) table tbody tr:hover,
+  html[data-theme="system"] tr.table-row-hover:hover,
+  html[data-theme="system"] table tbody tr:hover,
+  [data-theme="system"] tr.table-row-hover:hover,
+  [data-theme="system"] table tbody tr:hover {
+    background-color: rgba(30, 41, 59, 0.75) !important;
+  }
 }
 
 /* --------------------------------------------------------------------------
@@ -439,7 +499,7 @@ tr.table-row-hover:hover {
   align-items: center;
   justify-content: center;
   box-shadow: 0 10px 24px -4px rgba(1, 35, 131, 0.35);
-  z-index: 30;
+  z-index: 99990;
   cursor: pointer;
   border: 1px solid rgba(255, 255, 255, 0.2);
   opacity: 0;
@@ -464,13 +524,69 @@ tr.table-row-hover:hover {
   transform: scale(0.95);
 }
 
-/* RTL adjustment if needed */
+/* RTL adjustment */
 html[dir="rtl"] #alameen-back-to-top {
   right: auto;
   left: 28px;
 }
 
-/* Page Entrance Soft Transition */
+html.dark #alameen-back-to-top {
+  background: #0B2A8F;
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 10px 24px -4px rgba(0, 0, 0, 0.55);
+}
+
+html.dark #alameen-back-to-top:hover {
+  background: #2563EB;
+}
+
+/* --------------------------------------------------------------------------
+   6. NAVIGATION & ROUTE PROGRESS BAR (Livewire wire:navigate & page switch)
+   -------------------------------------------------------------------------- */
+#alameen-nav-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  width: 0%;
+  z-index: 9999999;
+  background: linear-gradient(90deg, #012383 0%, #0B2A8F 30%, #2563EB 70%, #10B77F 100%);
+  box-shadow: 0 0 12px rgba(37, 99, 235, 0.8), 0 0 5px rgba(16, 183, 127, 0.6);
+  pointer-events: none;
+  opacity: 0;
+  transform-origin: left;
+}
+
+html[dir="rtl"] #alameen-nav-progress {
+  transform-origin: right;
+}
+
+body.alameen-navigating-out .alameen-content-wrap,
+body.alameen-navigating-out main {
+  opacity: 0.88;
+  transition: opacity 0.16s ease-out;
+  pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   7. PAGE ENTRANCE TRANSITIONS (On Refresh & On Navigate)
+   -------------------------------------------------------------------------- */
+.alameen-page-transition-enter {
+  animation: alameenPageEntrance 0.42s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes alameenPageEntrance {
+  0% {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .page-fade-in {
   animation: pageEntrance 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
@@ -485,3 +601,200 @@ html[dir="rtl"] #alameen-back-to-top {
     transform: translateY(0);
   }
 }
+
+.reveal-fade {
+  opacity: 0;
+  transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal-fade.revealed {
+  opacity: 1 !important;
+}
+
+/* --------------------------------------------------------------------------
+   8. STICKY HEADER ELEVATION (Dynamic scroll state)
+   -------------------------------------------------------------------------- */
+header.is-scrolled,
+[data-flux-header].is-scrolled,
+.student-header.is-scrolled,
+.admin-header.is-scrolled,
+.sidebar-header.is-scrolled,
+#landing-header.is-scrolled {
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  box-shadow: 0 4px 20px -2px rgba(1, 35, 131, 0.08), 0 2px 6px -1px rgba(0, 0, 0, 0.04) !important;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+html.dark header.is-scrolled,
+html.dark [data-flux-header].is-scrolled,
+html.dark .student-header.is-scrolled,
+html.dark .admin-header.is-scrolled,
+html.dark .sidebar-header.is-scrolled,
+html.dark #landing-header.is-scrolled {
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.45) !important;
+}
+
+/* --------------------------------------------------------------------------
+   9. NATIVE BROWSER VIEW TRANSITIONS (Smooth Cross-fade)
+   -------------------------------------------------------------------------- */
+@keyframes alameenViewFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes alameenViewFadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+::view-transition-old(root) {
+  animation: 90ms cubic-bezier(0.4, 0, 1, 1) both alameenViewFadeOut;
+}
+
+::view-transition-new(root) {
+  animation: 220ms cubic-bezier(0, 0, 0.2, 1) 90ms both alameenViewFadeIn;
+}
+
+/* --------------------------------------------------------------------------
+   10. SIDEBAR TABS STAGGERED CASCADE ENTRANCE (One-by-one on refresh & entrance)
+   -------------------------------------------------------------------------- */
+@keyframes alameenSidebarTabInRtl {
+  0% {
+    opacity: 0;
+    transform: translateX(18px) scale(0.97);
+  }
+  60% {
+    opacity: 0.9;
+    transform: translateX(-2px) scale(1.005);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes alameenSidebarTabInLtr {
+  0% {
+    opacity: 0;
+    transform: translateX(-18px) scale(0.97);
+  }
+  60% {
+    opacity: 0.9;
+    transform: translateX(2px) scale(1.005);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+body.alameen-loader-active nav a.sidebar-nav-link,
+body.alameen-loader-active .sidebar-section-title,
+body.alameen-loader-active .sidebar-bottom-section {
+  opacity: 0;
+}
+
+body.content-ready nav a.sidebar-nav-link,
+.sidebar-tab-animate {
+  animation: alameenSidebarTabInRtl 0.42s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+[dir="ltr"] body.content-ready nav a.sidebar-nav-link,
+html[dir="ltr"] body.content-ready nav a.sidebar-nav-link,
+[dir="ltr"] .sidebar-tab-animate,
+html[dir="ltr"] .sidebar-tab-animate {
+  animation-name: alameenSidebarTabInLtr !important;
+}
+
+body.content-ready .sidebar-section-title {
+  animation: alameenSidebarTabInRtl 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: 0.03s;
+}
+
+[dir="ltr"] body.content-ready .sidebar-section-title,
+html[dir="ltr"] body.content-ready .sidebar-section-title {
+  animation-name: alameenSidebarTabInLtr !important;
+}
+
+body.content-ready nav a.sidebar-nav-link:nth-of-type(1),
+.sidebar-tab-animate:nth-of-type(1) {
+  animation-delay: 0.05s;
+}
+
+body.content-ready nav a.sidebar-nav-link:nth-of-type(2),
+.sidebar-tab-animate:nth-of-type(2) {
+  animation-delay: 0.10s;
+}
+
+body.content-ready nav a.sidebar-nav-link:nth-of-type(3),
+.sidebar-tab-animate:nth-of-type(3) {
+  animation-delay: 0.15s;
+}
+
+body.content-ready nav a.sidebar-nav-link:nth-of-type(4),
+.sidebar-tab-animate:nth-of-type(4) {
+  animation-delay: 0.20s;
+}
+
+body.content-ready nav a.sidebar-nav-link:nth-of-type(5),
+.sidebar-tab-animate:nth-of-type(5) {
+  animation-delay: 0.25s;
+}
+
+body.content-ready nav a.sidebar-nav-link:nth-of-type(6),
+.sidebar-tab-animate:nth-of-type(6) {
+  animation-delay: 0.30s;
+}
+
+body.content-ready nav a.sidebar-nav-link:nth-of-type(7),
+.sidebar-tab-animate:nth-of-type(7) {
+  animation-delay: 0.35s;
+}
+
+body.content-ready nav a.sidebar-nav-link:nth-of-type(8),
+.sidebar-tab-animate:nth-of-type(8) {
+  animation-delay: 0.40s;
+}
+
+body.content-ready nav a.sidebar-nav-link:nth-of-type(9),
+.sidebar-tab-animate:nth-of-type(9) {
+  animation-delay: 0.45s;
+}
+
+body.content-ready nav a.sidebar-nav-link:nth-of-type(10),
+.sidebar-tab-animate:nth-of-type(10) {
+  animation-delay: 0.50s;
+}
+
+body.content-ready nav a.sidebar-nav-link:nth-of-type(11),
+.sidebar-tab-animate:nth-of-type(11) {
+  animation-delay: 0.55s;
+}
+
+body.content-ready nav a.sidebar-nav-link:nth-of-type(12),
+.sidebar-tab-animate:nth-of-type(12) {
+  animation-delay: 0.60s;
+}
+
+body.content-ready .sidebar-bottom-section {
+  animation: alameenSidebarTabInRtl 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: 0.46s;
+}
+
+[dir="ltr"] body.content-ready .sidebar-bottom-section,
+html[dir="ltr"] body.content-ready .sidebar-bottom-section {
+  animation-name: alameenSidebarTabInLtr !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.content-ready nav a.sidebar-nav-link,
+  body.content-ready .sidebar-section-title,
+  body.content-ready .sidebar-bottom-section,
+  .sidebar-tab-animate {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+

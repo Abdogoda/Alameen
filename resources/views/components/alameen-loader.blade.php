@@ -27,29 +27,4 @@
     <div class="alameen-loader-track">
         <div class="alameen-loader-indicator"></div>
     </div>
-    <script>
-        (function () {
-            var loader = document.getElementById('alameen-loader');
-            if (!loader) return;
-            var dismiss = function () {
-                document.body.classList.add('content-ready');
-                loader.classList.add('loader-hidden');
-                setTimeout(function () {
-                    if (loader) loader.style.display = 'none';
-                }, 500);
-            };
-            // Automatic safety timeout: dismiss loader after at most 800ms
-            var timer = setTimeout(dismiss, 800);
-            if (document.readyState === 'complete') {
-                clearTimeout(timer);
-                setTimeout(dismiss, 150);
-            } else {
-                window.addEventListener('load', function () {
-                    clearTimeout(timer);
-                    dismiss();
-                }, { once: true });
-            }
-        })();
-    </script>
 </div>
-

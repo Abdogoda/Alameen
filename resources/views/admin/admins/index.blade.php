@@ -98,7 +98,7 @@
                     </thead>
                     <tbody class="divide-y divide-[#DEE8F7] dark:divide-slate-800">
                         @foreach ($admins as $item)
-                            <tr class="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors">
+                            <tr class="hover:bg-slate-50/70 dark:hover:bg-slate-800/70 transition-colors">
                                 <!-- Admin info -->
                                 <td class="py-4 px-4 sm:px-6">
                                     <div class="flex items-center gap-3">

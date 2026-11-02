@@ -1,4 +1,4 @@
-<x-admin-layout::admin :title="__('لوحة الإحصائيات المركزية')">
+<x-admin-layout::admin :title="__('لوحة الإحصائيات المركزية')" contentClass="flex-1 p-3.5 sm:p-6 lg:p-8 w-full min-w-0">
 
     @php
         $totalStudents = \App\Models\User::count();

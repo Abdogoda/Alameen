@@ -25,6 +25,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class StudentManagerController extends Controller
@@ -234,7 +235,7 @@ class StudentManagerController extends Controller
     }
 
     /**
-     * Manually issue an official certificate for a student.
+     * Manually issue an official certificate for a student with uploaded certificate file.
      */
     public function issueCertificate(IssueStudentCertificateRequest $request, User $user): RedirectResponse
     {
@@ -242,13 +243,30 @@ class StudentManagerController extends Controller
         /** @var Course $course */
         $course = Course::query()->findOrFail($validated['course_id']);
 
+        $filePath = null;
+        if ($request->hasFile('certificate_file')) {
+            $file = $request->file('certificate_file');
+            $stored = $file?->store("certificates/{$user->id}", 'public');
+            $filePath = is_string($stored) ? $stored : null;
+        }
+
         $percentage = isset($validated['completion_percentage'])
             ? (float) $validated['completion_percentage']
             : null;
 
-        $certificate = $this->certificateService->forceIssueCertificate($user, $course, $percentage);
+        $issuedAt = ! empty($validated['issued_at'])
+            ? Carbon::parse($validated['issued_at'])
+            : null;
 
-        return back()->with('success', __('تم إصدار وتوثيق الشهادة الأكاديمية برقم كودي (:code) بنجاح.', ['code' => $certificate->certificate_code]));
+        $certificate = $this->certificateService->forceIssueCertificate(
+            $user,
+            $course,
+            $percentage,
+            $filePath,
+            $issuedAt
+        );
+
+        return back()->with('success', __('تم رفع وتوثيق الشهادة بنجاح برقم كودي (:code).', ['code' => $certificate->certificate_code]));
     }
 
     /**
@@ -260,9 +278,13 @@ class StudentManagerController extends Controller
             abort(403);
         }
 
+        if ($certificate->file_path && Storage::disk('public')->exists($certificate->file_path)) {
+            Storage::disk('public')->delete($certificate->file_path);
+        }
+
         $certificate->delete();
 
-        return back()->with('success', __('تم حذف الشهادة الأكاديمية بنجاح.'));
+        return back()->with('success', __('تم حذف الشهادة بنجاح.'));
     }
 
     /**

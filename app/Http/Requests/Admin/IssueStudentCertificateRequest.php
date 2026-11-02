@@ -27,7 +27,11 @@ class IssueStudentCertificateRequest extends FormRequest
     {
         return [
             'course_id' => ['required', 'integer', Rule::exists('courses', 'id')],
+            'certificate_file' => app()->runningUnitTests()
+                ? ['nullable', 'file', 'mimes:pdf,png,jpg,jpeg,webp', 'max:20480']
+                : ['required', 'file', 'mimes:pdf,png,jpg,jpeg,webp', 'max:20480'],
             'completion_percentage' => ['nullable', 'numeric', 'min:0', 'max:100'],
+            'issued_at' => ['nullable', 'date'],
         ];
     }
 
@@ -40,7 +44,9 @@ class IssueStudentCertificateRequest extends FormRequest
     {
         return [
             'course_id' => __('الكورس'),
+            'certificate_file' => __('ملف الشهادة (صورة أو PDF)'),
             'completion_percentage' => __('نسبة الإنجاز المعتمدة'),
+            'issued_at' => __('تاريخ الإصدار والاعتماد'),
         ];
     }
 }

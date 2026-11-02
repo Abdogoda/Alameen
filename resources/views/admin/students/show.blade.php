@@ -1,7 +1,7 @@
 <x-admin-layout::admin
     :title="__('إدارة ملف الطالب: :name', ['name' => $user->name])"
     :description="__('سجل المشاهدة، اشتراكات الكورسات، التكليفات السريرية، الشهادات، وإيصالات الدفع')"
-    contentClass="p-3.5 sm:p-6 lg:p-8 flex flex-col gap-5 sm:gap-6 max-w-[1500px] w-full mx-auto min-w-0"
+    contentClass="p-3.5 sm:p-6 lg:p-8 flex flex-col gap-5 sm:gap-6 w-full min-w-0"
 >
     <x-slot:actions>
         <div class="flex items-center gap-2 flex-wrap">
@@ -31,7 +31,7 @@
                 class="h-9 sm:h-10 px-3.5 sm:px-4 rounded-xl bg-white dark:bg-slate-800 border border-[#DEE8F7] dark:border-slate-700 hover:border-[#0B2A8F] text-[#012383] dark:text-blue-300 font-bold text-xs flex items-center gap-1.5 transition-all shadow-2xs cursor-pointer"
             >
                 <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
-                <span>{{ __('إصدار شهادة') }}</span>
+                <span>{{ __('رفع شهادة') }}</span>
             </button>
 
             {{-- Edit Profile Modal Trigger --}}
@@ -289,14 +289,14 @@
     </div>
 
     {{-- Tabs Navigation Component --}}
-    <div x-data="{ currentTab: 'courses' }" class="flex flex-col gap-5">
+    <div x-data="{ currentTab: 'courses' }" class="flex flex-col gap-5 min-w-0 w-full">
         {{-- Tabs Bar --}}
-        <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-2xl p-1.5 shadow-2xs flex items-center gap-1.5 overflow-x-auto scrollbar-none">
+        <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-2xl p-1.5 shadow-2xs flex items-center gap-1.5 overflow-x-auto scrollbar-none w-full max-w-full overscroll-x-contain">
             <button 
                 type="button" 
                 @click="currentTab = 'courses'" 
                 :class="currentTab === 'courses' ? 'bg-[#012383] text-white shadow-2xs' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'"
-                class="px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shrink-0 cursor-pointer"
+                class="px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shrink-0 cursor-pointer whitespace-nowrap"
             >
                 <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
                 <span>{{ __('الاشتراكات والكورسات') }}</span>
@@ -307,7 +307,7 @@
                 type="button" 
                 @click="currentTab = 'progress'" 
                 :class="currentTab === 'progress' ? 'bg-[#012383] text-white shadow-2xs' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'"
-                class="px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shrink-0 cursor-pointer"
+                class="px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shrink-0 cursor-pointer whitespace-nowrap"
             >
                 <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 <span>{{ __('سجل مشاهدة المحاضرات') }}</span>
@@ -318,7 +318,7 @@
                 type="button" 
                 @click="currentTab = 'tasks'" 
                 :class="currentTab === 'tasks' ? 'bg-[#012383] text-white shadow-2xs' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'"
-                class="px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shrink-0 cursor-pointer"
+                class="px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shrink-0 cursor-pointer whitespace-nowrap"
             >
                 <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"/></svg>
                 <span>{{ __('التكليفات والمهام السريرية') }}</span>
@@ -329,7 +329,7 @@
                 type="button" 
                 @click="currentTab = 'certificates'" 
                 :class="currentTab === 'certificates' ? 'bg-[#012383] text-white shadow-2xs' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'"
-                class="px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shrink-0 cursor-pointer"
+                class="px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shrink-0 cursor-pointer whitespace-nowrap"
             >
                 <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
                 <span>{{ __('الشهادات المعتمدة') }}</span>
@@ -340,7 +340,7 @@
                 type="button" 
                 @click="currentTab = 'receipts'" 
                 :class="currentTab === 'receipts' ? 'bg-[#012383] text-white shadow-2xs' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'"
-                class="px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shrink-0 cursor-pointer"
+                class="px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shrink-0 cursor-pointer whitespace-nowrap"
             >
                 <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                 <span>{{ __('إيصالات الدفع') }}</span>
@@ -350,15 +350,15 @@
 
         {{-- TAB 1: COURSES & ENROLLMENTS --}}
         <div x-show="currentTab === 'courses'" x-cloak class="flex flex-col gap-4">
-            <div class="flex items-center justify-between">
-                <div>
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 min-w-0">
+                <div class="min-w-0">
                     <h3 class="text-base font-bold text-slate-900 dark:text-white">{{ __('الكورسات والاشتراكات الممنوحة للطالب') }}</h3>
-                    <p class="text-xs text-slate-500">{{ __('إدارة صلاحية الوصول وتاريخ الانتهاء ونسبة التقدم في كل مقرر') }}</p>
+                    <p class="text-xs text-slate-500 leading-relaxed">{{ __('إدارة صلاحية الوصول وتاريخ الانتهاء ونسبة التقدم في كل مقرر') }}</p>
                 </div>
                 <button 
                     type="button" 
                     onclick="openModal('modal-enroll-course')" 
-                    class="h-9 px-3.5 rounded-xl bg-[#012383] hover:bg-[#0B2A8F] text-white font-bold text-xs flex items-center gap-1.5 transition-all shadow-2xs cursor-pointer"
+                    class="h-9 px-3.5 rounded-xl bg-[#012383] hover:bg-[#0B2A8F] text-white font-bold text-xs flex items-center gap-1.5 transition-all shadow-2xs cursor-pointer shrink-0 self-start sm:self-auto"
                 >
                     <svg class="size-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                     <span>{{ __('منح كورس جديد') }}</span>
@@ -551,7 +551,7 @@
                                         $watchedSecs = $watched % 60;
                                         $totalMins = floor($duration / 60);
                                     @endphp
-                                    <tr class="hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition-colors">
+                                    <tr class="hover:bg-slate-50/60 dark:hover:bg-slate-800/70 transition-colors">
                                         <td class="py-4 px-5">
                                             <div class="font-bold text-slate-900 dark:text-white">{{ $video?->title_ar ?? __('درس محذوف') }}</div>
                                             @if($video?->title_en)
@@ -726,18 +726,18 @@
 
         {{-- TAB 4: CERTIFICATES --}}
         <div x-show="currentTab === 'certificates'" x-cloak class="flex flex-col gap-4">
-            <div class="flex items-center justify-between">
-                <div>
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 min-w-0">
+                <div class="min-w-0">
                     <h3 class="text-base font-bold text-slate-900 dark:text-white">{{ __('الشهادات الأكاديمية الصادرة للطالب') }}</h3>
-                    <p class="text-xs text-slate-500">{{ __('شهادات معتمدة برمز QR فريد ورابط تحقق علني يمكن مسحه فورياً') }}</p>
+                    <p class="text-xs text-slate-500 leading-relaxed">{{ __('شهادات معتمدة مرفوعة بصيغة صورة أو PDF برمز QR ورابط تحقق علني') }}</p>
                 </div>
                 <button 
                     type="button" 
                     onclick="openModal('modal-issue-certificate')" 
-                    class="h-9 px-3.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs flex items-center gap-1.5 transition-all shadow-2xs cursor-pointer"
+                    class="h-9 px-3.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs flex items-center gap-1.5 transition-all shadow-2xs cursor-pointer shrink-0 self-start sm:self-auto"
                 >
                     <svg class="size-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                    <span>{{ __('إصدار شهادة جديدة') }}</span>
+                    <span>{{ __('رفع شهادة جديدة') }}</span>
                 </button>
             </div>
 
@@ -746,15 +746,15 @@
                     <div class="size-16 rounded-2xl bg-purple-50 dark:bg-slate-800 text-purple-600 mx-auto flex items-center justify-center mb-3">
                         <svg class="size-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
                     </div>
-                    <h4 class="text-sm font-bold text-slate-800 dark:text-slate-200">{{ __('لم يتم إصدار أي شهادة لهذا الطالب بعد') }}</h4>
-                    <p class="text-xs text-slate-400 mt-1 max-w-md mx-auto">{{ __('يمكنك إصدار وتوثيق شهادة إتمام لأي كورس أكاديمي مسجل به الطالب.') }}</p>
+                    <h4 class="text-sm font-bold text-slate-800 dark:text-slate-200">{{ __('لم يتم رفع أي شهادة لهذا الطالب بعد') }}</h4>
+                    <p class="text-xs text-slate-400 mt-1 max-w-md mx-auto">{{ __('يمكنك رفع ملف الشهادة الجاهز (صورة أو PDF) وربطه بأي كورس أكاديمي للطالب.') }}</p>
                     <button 
                         type="button" 
                         onclick="openModal('modal-issue-certificate')" 
                         class="mt-4 px-4 py-2 rounded-xl bg-purple-600 text-white font-bold text-xs inline-flex items-center gap-1.5 cursor-pointer shadow-sm"
                     >
                         <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                        <span>{{ __('إصدار شهادة الآن') }}</span>
+                        <span>{{ __('رفع شهادة الآن') }}</span>
                     </button>
                 </div>
             @else
@@ -762,14 +762,27 @@
                     @foreach($user->certificates as $certificate)
                         <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-3xl p-5 shadow-2xs flex flex-col justify-between gap-4">
                             <div>
-                                <div class="flex items-start justify-between gap-3">
-                                    <div class="flex items-center gap-3">
-                                        <div class="size-14 rounded-2xl bg-purple-50 dark:bg-slate-800 p-1 flex items-center justify-center shrink-0 border border-purple-100 dark:border-slate-700">
-                                            {!! $certificate->qr_code_svg !!}
-                                        </div>
-                                        <div>
-                                            <h4 class="font-bold text-sm text-slate-900 dark:text-white">{{ $certificate->course?->title ?? __('شهادة أكاديمية') }}</h4>
-                                            <div class="font-mono text-xs font-bold text-purple-700 dark:text-purple-300 mt-0.5">
+                                <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-3 min-w-0">
+                                    <div class="flex items-center gap-3 min-w-0 flex-1">
+                                        @if($certificate->file_path)
+                                            @if($certificate->isPdf())
+                                                <a href="{{ $certificate->fileUrl() }}" target="_blank" class="size-16 rounded-2xl bg-rose-50 dark:bg-slate-800 p-2 flex flex-col items-center justify-center shrink-0 border border-rose-100 dark:border-slate-700 hover:scale-105 transition-transform" title="{{ __('فتح ملف PDF') }}">
+                                                    <svg class="size-6 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                                                    <span class="text-[9px] font-bold text-rose-700 dark:text-rose-400 uppercase mt-0.5">PDF</span>
+                                                </a>
+                                            @else
+                                                <a href="{{ $certificate->fileUrl() }}" target="_blank" class="size-16 rounded-2xl overflow-hidden shrink-0 border border-slate-200 dark:border-slate-700 hover:scale-105 transition-transform block bg-slate-100 dark:bg-slate-800" title="{{ __('عرض صورة الشهادة') }}">
+                                                    <img src="{{ $certificate->fileUrl() }}" alt="Certificate" class="w-full h-full object-cover">
+                                                </a>
+                                            @endif
+                                        @else
+                                            <div class="size-16 rounded-2xl bg-purple-50 dark:bg-slate-800 p-1 flex items-center justify-center shrink-0 border border-purple-100 dark:border-slate-700">
+                                                {!! $certificate->qr_code_svg !!}
+                                            </div>
+                                        @endif
+                                        <div class="min-w-0 flex-1">
+                                            <h4 class="font-bold text-sm text-slate-900 dark:text-white truncate">{{ $certificate->course?->title ?? __('شهادة أكاديمية') }}</h4>
+                                            <div class="font-mono text-xs font-bold text-purple-700 dark:text-purple-300 mt-0.5 truncate">
                                                 {{ $certificate->certificate_code }}
                                             </div>
                                             <div class="text-[10px] text-slate-400 mt-0.5">
@@ -778,14 +791,14 @@
                                         </div>
                                     </div>
 
-                                    <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800 shrink-0">
+                                    <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800 shrink-0 self-start sm:self-auto">
                                         {{ $certificate->completion_percentage }}% {{ __('إنجاز') }}
                                     </span>
                                 </div>
 
                                 {{-- Verification Link Box --}}
-                                <div class="mt-4 p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2">
-                                    <div class="text-[11px] font-mono text-slate-600 dark:text-slate-300 truncate">
+                                <div class="mt-4 p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2 min-w-0">
+                                    <div class="text-[11px] font-mono text-slate-600 dark:text-slate-300 truncate min-w-0 flex-1 dir-ltr text-start">
                                         {{ $certificate->verification_url }}
                                     </div>
                                     <a 
@@ -793,22 +806,43 @@
                                         target="_blank" 
                                         class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-white dark:bg-slate-700 text-[#012383] dark:text-blue-300 border border-slate-200 dark:border-slate-600 hover:border-blue-500 shrink-0 inline-flex items-center gap-1"
                                     >
-                                        <span>{{ __('معاينة') }}</span>
+                                        <span>{{ __('رابط التحقق') }}</span>
                                         <svg class="size-3 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                                     </a>
                                 </div>
                             </div>
 
                             {{-- Footer Actions --}}
-                            <div class="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                                <a 
-                                    href="{{ route('certificates.show', $certificate->certificate_code) }}" 
-                                    target="_blank"
-                                    class="text-xs font-bold text-[#012383] dark:text-blue-400 hover:underline inline-flex items-center gap-1"
-                                >
-                                    <span>{{ __('عرض الشهادة والطباعة') }}</span>
-                                    <svg class="size-3.5 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                                </a>
+                            <div class="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2">
+                                <div class="flex items-center gap-2">
+                                    @if($certificate->file_path)
+                                        <a 
+                                            href="{{ $certificate->fileUrl() }}" 
+                                            target="_blank"
+                                            class="text-xs font-bold text-[#012383] dark:text-blue-400 hover:underline inline-flex items-center gap-1"
+                                        >
+                                            <svg class="size-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                            <span>{{ __('معاينة الملف') }}</span>
+                                        </a>
+                                        <a 
+                                            href="{{ $certificate->fileUrl() }}" 
+                                            download
+                                            class="text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-slate-900 inline-flex items-center gap-1"
+                                        >
+                                            <svg class="size-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                                            <span>{{ __('تحميل') }}</span>
+                                        </a>
+                                    @else
+                                        <a 
+                                            href="{{ route('certificates.show', $certificate->certificate_code) }}" 
+                                            target="_blank"
+                                            class="text-xs font-bold text-[#012383] dark:text-blue-400 hover:underline inline-flex items-center gap-1"
+                                        >
+                                            <span>{{ __('عرض الشهادة') }}</span>
+                                            <svg class="size-3.5 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                                        </a>
+                                    @endif
+                                </div>
 
                                 {{-- Delete Certificate Form --}}
                                 <form 
@@ -865,7 +899,7 @@
                             </thead>
                             <tbody class="divide-y divide-[#DEE8F7]/70 dark:divide-slate-800">
                                 @foreach($user->paymentReceipts as $receipt)
-                                    <tr class="hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition-colors">
+                                    <tr class="hover:bg-slate-50/60 dark:hover:bg-slate-800/70 transition-colors">
                                         <td class="py-4 px-5 font-bold text-slate-900 dark:text-white">
                                             {{ $receipt->course?->title ?? '—' }}
                                         </td>
@@ -1153,13 +1187,13 @@
             <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity" onclick="closeModal('modal-issue-certificate')"></div>
             <div class="modal-content relative bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full p-6 sm:p-7 border border-[#DEE8F7] dark:border-slate-800 shadow-2xl z-10">
                 <div class="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
-                    <h3 class="font-bold text-base text-slate-900 dark:text-white">{{ __('إصدار وتوثيق شهادة إتمام') }}</h3>
+                    <h3 class="font-bold text-base text-slate-900 dark:text-white">{{ __('رفع وتوثيق شهادة للطالب') }}</h3>
                     <button type="button" onclick="closeModal('modal-issue-certificate')" class="p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer">
                         <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                     </button>
                 </div>
 
-                <form method="POST" action="{{ route('admin.students.certificates.store', $user->id) }}" class="mt-4 flex flex-col gap-4">
+                <form method="POST" action="{{ route('admin.students.certificates.store', $user->id) }}" enctype="multipart/form-data" class="mt-4 flex flex-col gap-4">
                     @csrf
 
                     <div>
@@ -1180,6 +1214,17 @@
                     </div>
 
                     <div>
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">{{ __('ملف الشهادة الجاهز (صورة أو PDF)') }} *</label>
+                        <input type="file" name="certificate_file" accept=".pdf,image/png,image/jpeg,image/webp" required class="w-full text-xs text-slate-600 dark:text-slate-300 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-[#012383] file:text-white hover:file:bg-[#0B2A8F] cursor-pointer">
+                        <span class="text-[10px] text-slate-400 mt-1 block">{{ __('ارفع ملف الشهادة الجاهز بصيغة PDF أو صورة (PNG, JPG, WEBP) بحد أقصى 20 ميجابايت.') }}</span>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">{{ __('تاريخ إصدار الشهادة') }}</label>
+                        <input type="date" name="issued_at" value="{{ now()->format('Y-m-d') }}" class="w-full h-11 px-3.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-medium text-slate-800 dark:text-slate-200 outline-none focus:border-[#012383]">
+                    </div>
+
+                    <div>
                         <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">{{ __('نسبة الإنجاز الموثقة بالشهادة (%)') }}</label>
                         <input type="number" id="cert-completion-pct" name="completion_percentage" min="50" max="100" step="0.1" placeholder="100.0" class="w-full h-11 px-3.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-medium text-slate-800 dark:text-slate-200 outline-none focus:border-[#012383]">
                         <span class="text-[10px] text-slate-400 mt-1 block">{{ __('اتركه فارغاً لاعتماد 100% أو نسبة المشاهدة الحالية تلقائياً.') }}</span>
@@ -1190,7 +1235,7 @@
                             {{ __('إلغاء') }}
                         </button>
                         <button type="submit" class="px-5 h-10 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs cursor-pointer shadow-sm">
-                            {{ __('إصدار الشهادة وتوليد QR') }}
+                            {{ __('رفع وتوثيق الشهادة') }}
                         </button>
                     </div>
                 </form>

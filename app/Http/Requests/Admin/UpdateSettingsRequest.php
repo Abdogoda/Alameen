@@ -20,10 +20,15 @@ class UpdateSettingsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'settings' => ['required', 'array'],
+            'settings' => ['nullable', 'array'],
             'settings.*.ar' => ['nullable', 'string'],
             'settings.*.en' => ['nullable', 'string'],
             'settings.*.group' => ['nullable', 'string', 'max:50'],
+            'certificate_default_template' => ['nullable', 'string', 'in:royal_gold,clinical_emerald,modern_navy,custom'],
+            'certificate_custom_bg_file' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:10240'],
+            'certificate_stamp_file' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:5120'],
+            'certificate_signatory_name' => ['nullable', 'string', 'max:255'],
+            'certificate_signatory_title' => ['nullable', 'string', 'max:255'],
         ];
     }
 }

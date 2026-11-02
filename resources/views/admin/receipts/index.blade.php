@@ -1,7 +1,7 @@
 <x-admin-layout::admin
     :title="__('إيصالات الدفع اليدوي والتحويلات')"
     :description="__('فحص صور الإيصالات المرفوعة، التحقق من المبالغ، وتفعيل وصول الطلاب للكورس')"
-    contentClass="p-3.5 sm:p-6 lg:p-8 flex flex-col gap-5 sm:gap-6 max-w-[1500px] w-full mx-auto min-w-0"
+    contentClass="p-3.5 sm:p-6 lg:p-8 flex flex-col gap-5 sm:gap-6 w-full min-w-0"
 >
     <x-slot:actions>
         <span class="text-xs font-bold text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 px-3 py-1.5 rounded-xl flex items-center gap-1.5 shrink-0">
@@ -30,16 +30,16 @@
         
         <!-- Filter Pills -->
         <div class="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-none whitespace-nowrap">
-            <a href="{{ route('admin.receipts.index', ['status' => 'all']) }}" class="px-3 sm:px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 {{ ($status ?? 'all') === 'all' ? 'bg-[#012383] text-white' : 'bg-slate-100 dark:bg-slate-800 hover:bg-[#EAF1FB] text-slate-700 dark:text-slate-300' }}">
+            <a href="{{ route('admin.receipts.index', ['status' => 'all']) }}" class="px-3 sm:px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 {{ ($status ?? 'all') === 'all' ? 'bg-[#012383] text-white dark:bg-blue-600' : 'bg-slate-100 dark:bg-slate-800 hover:bg-[#EAF1FB] dark:hover:bg-slate-700 dark:hover:text-white text-slate-700 dark:text-slate-300' }}">
                 {{ __('الكل') }} ({{ $counts['all'] ?? 0 }})
             </a>
-            <a href="{{ route('admin.receipts.index', ['status' => 'pending']) }}" class="px-3 sm:px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 {{ ($status ?? '') === 'pending' ? 'bg-[#012383] text-white' : 'bg-slate-100 dark:bg-slate-800 hover:bg-[#EAF1FB] text-slate-700 dark:text-slate-300' }}">
+            <a href="{{ route('admin.receipts.index', ['status' => 'pending']) }}" class="px-3 sm:px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 {{ ($status ?? '') === 'pending' ? 'bg-[#012383] text-white dark:bg-blue-600' : 'bg-slate-100 dark:bg-slate-800 hover:bg-[#EAF1FB] dark:hover:bg-slate-700 dark:hover:text-white text-slate-700 dark:text-slate-300' }}">
                 {{ __('بانتظار الاعتماد') }} ({{ $counts['pending'] ?? 0 }})
             </a>
-            <a href="{{ route('admin.receipts.index', ['status' => 'approved']) }}" class="px-3 sm:px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 {{ ($status ?? '') === 'approved' ? 'bg-[#012383] text-white' : 'bg-slate-100 dark:bg-slate-800 hover:bg-[#EAF1FB] text-slate-700 dark:text-slate-300' }}">
+            <a href="{{ route('admin.receipts.index', ['status' => 'approved']) }}" class="px-3 sm:px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 {{ ($status ?? '') === 'approved' ? 'bg-[#012383] text-white dark:bg-blue-600' : 'bg-slate-100 dark:bg-slate-800 hover:bg-[#EAF1FB] dark:hover:bg-slate-700 dark:hover:text-white text-slate-700 dark:text-slate-300' }}">
                 {{ __('معتمدة') }} ({{ $counts['approved'] ?? 0 }})
             </a>
-            <a href="{{ route('admin.receipts.index', ['status' => 'rejected']) }}" class="px-3 sm:px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 {{ ($status ?? '') === 'rejected' ? 'bg-[#012383] text-white' : 'bg-slate-100 dark:bg-slate-800 hover:bg-[#EAF1FB] text-slate-700 dark:text-slate-300' }}">
+            <a href="{{ route('admin.receipts.index', ['status' => 'rejected']) }}" class="px-3 sm:px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 {{ ($status ?? '') === 'rejected' ? 'bg-[#012383] text-white dark:bg-blue-600' : 'bg-slate-100 dark:bg-slate-800 hover:bg-[#EAF1FB] dark:hover:bg-slate-700 dark:hover:text-white text-slate-700 dark:text-slate-300' }}">
                 {{ __('مرفوضة') }} ({{ $counts['rejected'] ?? 0 }})
             </a>
         </div>
@@ -76,7 +76,7 @@
                 </thead>
                 <tbody id="receipts-table-body" class="divide-y divide-[#DEE8F7]/70 dark:divide-slate-800 text-xs">
                     @forelse($receipts as $receipt)
-                        <tr id="receipt-row-{{ $receipt->id }}" data-status="{{ $receipt->status }}" class="hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition-colors">
+                        <tr id="receipt-row-{{ $receipt->id }}" data-status="{{ $receipt->status }}" class="hover:bg-slate-50/60 dark:hover:bg-slate-800/70 transition-colors">
                             <td class="py-4 px-5">
                                 <div class="font-bold text-sm text-[#012383] dark:text-blue-400">{{ $receipt->user?->name ?? __('مستخدم محذوف') }}</div>
                                 <div class="text-[11px] text-slate-500 dark:text-slate-400 font-mono">{{ $receipt->user?->phone ?? $receipt->sender_account ?? '—' }} • {{ $receipt->user?->email }}</div>

@@ -147,6 +147,14 @@ class CourseController extends Controller
             $validated['mux_playback_id'] = $parsed['mux_playback_id'];
         }
 
+        // Handle custom certificate background upload
+        if ($request->hasFile('certificate_custom_bg_file')) {
+            $path = $request->file('certificate_custom_bg_file')->store('certificates/templates', 'public');
+            if (is_string($path)) {
+                $validated['certificate_custom_bg'] = Storage::url($path);
+            }
+        }
+
         $course->update($validated);
 
         return back()->with('success', __('تم تحديث بيانات الكورس التدريبي بنجاح.'));

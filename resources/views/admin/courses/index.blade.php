@@ -1,7 +1,7 @@
 <x-admin-layout::admin
     :title="__('دليل وإدارة الكورسات التدريبية')"
     :description="__('عرض شامل لكافة الكورسات، إنشاء دورات جديدة، وتخصيص المناهج والمستويات')"
-    contentClass="p-3.5 sm:p-6 lg:p-8 flex flex-col gap-6 max-w-[1400px] w-full mx-auto min-w-0"
+    contentClass="p-3.5 sm:p-6 lg:p-8 flex flex-col gap-6 w-full min-w-0"
 >
     <x-slot:actions>
         <button 

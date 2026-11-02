@@ -1,7 +1,7 @@
 <x-admin-layout::admin
     :title="__('مركز تصحيح المهام والتقييم السريري')"
     :description="__('مراجعة حلول الطلاب للمهام السريرية الملحقة بالفيديوهات ورصد الدرجات وإرسال الملاحظات التوجيهية')"
-    contentClass="p-3.5 sm:p-6 lg:p-8 flex flex-col gap-5 sm:gap-6 max-w-[1500px] w-full mx-auto min-w-0"
+    contentClass="p-3.5 sm:p-6 lg:p-8 flex flex-col gap-5 sm:gap-6 w-full min-w-0"
 >
     <x-slot:actions>
         <span class="text-xs font-bold text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800 px-3 py-1.5 rounded-xl flex items-center gap-1.5 self-start sm:self-auto">
@@ -46,13 +46,13 @@
     <!-- Filters Toolbar -->
     <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-3xl p-3 sm:p-4 shadow-xs">
         <div class="flex items-center gap-2 overflow-x-auto scrollbar-none whitespace-nowrap pb-1 sm:pb-0">
-            <a href="{{ route('admin.tasks.index', ['status' => 'all']) }}" class="px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 {{ $status === 'all' ? 'bg-[#012383] text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-[#EAF1FB]' }}">
+            <a href="{{ route('admin.tasks.index', ['status' => 'all']) }}" class="px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 {{ $status === 'all' ? 'bg-[#012383] text-white dark:bg-blue-600' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-[#EAF1FB] dark:hover:bg-slate-700 dark:hover:text-white' }}">
                 {{ __('جميع المهام') }} ({{ $counts['all'] ?? 0 }})
             </a>
-            <a href="{{ route('admin.tasks.index', ['status' => 'pending']) }}" class="px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 {{ $status === 'pending' ? 'bg-[#012383] text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-[#EAF1FB]' }}">
+            <a href="{{ route('admin.tasks.index', ['status' => 'pending']) }}" class="px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 {{ $status === 'pending' ? 'bg-[#012383] text-white dark:bg-blue-600' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-[#EAF1FB] dark:hover:bg-slate-700 dark:hover:text-white' }}">
                 {{ __('بانتظار التصحيح') }} ({{ $counts['pending'] ?? 0 }})
             </a>
-            <a href="{{ route('admin.tasks.index', ['status' => 'graded']) }}" class="px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 {{ $status === 'graded' ? 'bg-[#012383] text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-[#EAF1FB]' }}">
+            <a href="{{ route('admin.tasks.index', ['status' => 'graded']) }}" class="px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 {{ $status === 'graded' ? 'bg-[#012383] text-white dark:bg-blue-600' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-[#EAF1FB] dark:hover:bg-slate-700 dark:hover:text-white' }}">
                 {{ __('مُقيّمة ومُعتمدة') }} ({{ $counts['graded'] ?? 0 }})
             </a>
         </div>
@@ -76,7 +76,7 @@
                 </thead>
                 <tbody id="tasks-table-body" class="divide-y divide-[#DEE8F7]/70 dark:divide-slate-800 text-xs">
                     @forelse ($submissions as $sub)
-                    <tr class="hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition-colors">
+                    <tr class="hover:bg-slate-50/60 dark:hover:bg-slate-800/70 transition-colors">
                         <td class="py-4 px-5">
                             <div class="font-bold text-sm text-[#012383] dark:text-blue-400">{{ $sub->user?->name ?? '—' }}</div>
                             <div class="text-[11px] text-slate-400 font-mono">{{ $sub->user?->email }}</div>

@@ -1,7 +1,7 @@
 <x-admin-layout::admin
     :title="__('دليل الطلاب والتحكم بصلاحيات الوصول')"
     :description="__('إدارة حسابات الدارسين، تتبع ساعات المشاهدة، ومنح أو إلغاء صلاحية الوصول لكورس التخاطب')"
-    contentClass="p-3.5 sm:p-6 lg:p-8 flex flex-col gap-5 sm:gap-6 max-w-[1500px] w-full mx-auto min-w-0"
+    contentClass="p-3.5 sm:p-6 lg:p-8 flex flex-col gap-5 sm:gap-6 w-full min-w-0"
 >
     <x-slot:actions>
         <span class="text-xs font-bold text-[#012383] dark:text-blue-400 bg-[#EAF1FB] dark:bg-slate-800 border border-[#DEE8F7] dark:border-slate-700 px-3 py-1.5 rounded-xl self-start sm:self-auto">
@@ -12,21 +12,21 @@
     <!-- Filters & Live Search Toolbar -->
     <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-3xl p-3 sm:p-4 shadow-xs flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4">
         <div class="flex items-center gap-2 overflow-x-auto scrollbar-none whitespace-nowrap pb-1 sm:pb-0">
-            <a href="{{ route('admin.students.index', ['status' => 'all', 'search' => $search]) }}" class="px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 {{ $status === 'all' ? 'bg-[#012383] text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-[#EAF1FB]' }}">
+            <a href="{{ route('admin.students.index', ['status' => 'all', 'search' => $search]) }}" class="px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 {{ $status === 'all' ? 'bg-[#012383] text-white dark:bg-blue-600' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-[#EAF1FB] dark:hover:bg-slate-700 dark:hover:text-white' }}">
                 {{ __('جميع الطلاب') }} ({{ $counts['all'] ?? 0 }})
             </a>
-            <a href="{{ route('admin.students.index', ['status' => 'active', 'search' => $search]) }}" class="px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 {{ $status === 'active' ? 'bg-[#012383] text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-[#EAF1FB]' }}">
+            <a href="{{ route('admin.students.index', ['status' => 'active', 'search' => $search]) }}" class="px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 {{ $status === 'active' ? 'bg-[#012383] text-white dark:bg-blue-600' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-[#EAF1FB] dark:hover:bg-slate-700 dark:hover:text-white' }}">
                 {{ __('نشط ومفعل') }} ({{ $counts['active'] ?? 0 }})
             </a>
-            <a href="{{ route('admin.students.index', ['status' => 'suspended', 'search' => $search]) }}" class="px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 {{ $status === 'suspended' ? 'bg-[#012383] text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-[#EAF1FB]' }}">
+            <a href="{{ route('admin.students.index', ['status' => 'suspended', 'search' => $search]) }}" class="px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 {{ $status === 'suspended' ? 'bg-[#012383] text-white dark:bg-blue-600' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-[#EAF1FB] dark:hover:bg-slate-700 dark:hover:text-white' }}">
                 {{ __('ملغي الصلاحية') }} ({{ $counts['suspended'] ?? 0 }})
             </a>
         </div>
 
         <form method="GET" action="{{ route('admin.students.index') }}" class="relative w-full sm:w-80">
             <input type="hidden" name="status" value="{{ $status }}">
-            <input type="text" name="search" value="{{ $search }}" placeholder="{{ __('ابحث بالاسم، البريد أو الهاتف...') }}" class="w-full h-11 ps-4 pe-10 rounded-xl border border-[#DEE8F7] dark:border-slate-800 text-xs font-medium text-slate-700 dark:text-slate-200 outline-none focus:border-[#0B2A8F] bg-slate-50/50 dark:bg-slate-800/50" />
-            <button type="submit" class="absolute end-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#0B2A8F]">
+            <input type="text" name="search" value="{{ $search }}" placeholder="{{ __('ابحث بالاسم، البريد أو الهاتف...') }}" class="w-full h-11 ps-4 pe-10 rounded-xl border border-[#DEE8F7] dark:border-slate-800 text-xs font-medium text-slate-700 dark:text-slate-200 outline-none focus:border-[#0B2A8F] dark:focus:border-blue-500 bg-slate-50/50 dark:bg-slate-800/50" />
+            <button type="submit" class="absolute end-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#0B2A8F] dark:hover:text-blue-400 transition-colors">
                 <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
             </button>
         </form>
@@ -49,35 +49,35 @@
                 </thead>
                 <tbody id="students-table-body" class="divide-y divide-[#DEE8F7]/70 dark:divide-slate-800 text-xs">
                     @forelse ($students as $student)
-                    <tr class="hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition-colors">
+                    <tr class="hover:bg-slate-50/60 dark:hover:bg-slate-800/70 transition-colors group/row">
                         <td class="py-4 px-5">
                             <a href="{{ route('admin.students.show', $student) }}" class="flex items-center gap-3 group">
-                                <div class="size-10 rounded-full {{ $student->isActive() ? 'bg-[#EAF1FB] text-[#0B2A8F] dark:bg-blue-950/60 dark:text-blue-300' : 'bg-rose-50 text-rose-600 dark:bg-rose-950/60 dark:text-rose-300' }} flex items-center justify-center font-bold text-sm shrink-0 group-hover:scale-105 transition-transform">
+                                <div class="size-10 rounded-full {{ $student->isActive() ? 'bg-[#EAF1FB] text-[#0B2A8F] dark:bg-blue-950/60 dark:text-blue-300 dark:group-hover:bg-blue-900/80 dark:group-hover:text-blue-200' : 'bg-rose-50 text-rose-600 dark:bg-rose-950/60 dark:text-rose-300 dark:group-hover:bg-rose-900/80 dark:group-hover:text-rose-200' }} flex items-center justify-center font-bold text-sm shrink-0 group-hover:scale-105 transition-all">
                                     {{ mb_substr($student->name, 0, 1) }}
                                 </div>
                                 <div class="min-w-0">
-                                    <div class="font-bold text-sm text-[#012383] dark:text-blue-400 group-hover:text-blue-600 transition-colors truncate flex items-center gap-1.5">
+                                    <div class="font-bold text-sm text-[#012383] dark:text-blue-400 group-hover:text-blue-600 dark:group-hover:text-blue-300 transition-colors truncate flex items-center gap-1.5">
                                         <span>{{ $student->name }}</span>
-                                        <svg class="size-3.5 opacity-0 group-hover:opacity-100 transition-opacity text-blue-500 shrink-0 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                                        <svg class="size-3.5 opacity-0 group-hover:opacity-100 transition-opacity text-blue-500 dark:text-blue-400 shrink-0 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                                     </div>
-                                    <div class="text-[11px] text-slate-500 dark:text-slate-400 font-mono truncate">{{ $student->phone ?? '—' }} • {{ $student->email }}</div>
+                                    <div class="text-[11px] text-slate-500 dark:text-slate-400 group-hover/row:text-slate-600 dark:group-hover/row:text-slate-300 font-mono truncate transition-colors">{{ $student->phone ?? '—' }} • {{ $student->email }}</div>
                                 </div>
                             </a>
                         </td>
                         <td class="py-4 px-4">
-                            <span class="font-bold text-slate-700 dark:text-slate-300">{{ $student->created_at?->format('d/m/Y') }}</span>
-                            <div class="text-[10px] text-slate-400">{{ $student->created_at?->diffForHumans() }}</div>
+                            <span class="font-bold text-slate-700 dark:text-slate-300 group-hover/row:text-slate-900 dark:group-hover/row:text-white transition-colors">{{ $student->created_at?->format('d/m/Y') }}</span>
+                            <div class="text-[10px] text-slate-400 group-hover/row:text-slate-500 dark:group-hover/row:text-slate-300 transition-colors">{{ $student->created_at?->diffForHumans() }}</div>
                         </td>
                         <td class="py-4 px-4">
-                            <span class="font-bold text-sm text-[#012383] dark:text-blue-400">{{ $student->courses->count() }} {{ __('كورس') }}</span>
+                            <span class="font-bold text-sm text-[#012383] dark:text-blue-400 group-hover/row:text-blue-600 dark:group-hover/row:text-blue-300 transition-colors">{{ $student->courses->count() }} {{ __('كورس') }}</span>
                             @if($student->certificates->count() > 0)
                                 <div class="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold">🎓 {{ $student->certificates->count() }} {{ __('شهادة معتمدة') }}</div>
                             @endif
                         </td>
                         <td class="py-4 px-4">
-                            <span class="font-medium text-slate-700 dark:text-slate-300">{{ $student->city ?? '—' }}</span>
+                            <span class="font-medium text-slate-700 dark:text-slate-300 group-hover/row:text-slate-900 dark:group-hover/row:text-white transition-colors">{{ $student->city ?? '—' }}</span>
                             @if($student->country)
-                                <div class="text-[10px] text-slate-400">{{ $student->country }}</div>
+                                <div class="text-[10px] text-slate-400 group-hover/row:text-slate-500 dark:group-hover/row:text-slate-300 transition-colors">{{ $student->country }}</div>
                             @endif
                         </td>
                         <td class="py-4 px-4 text-center">
@@ -95,7 +95,7 @@
                             <div class="flex items-center justify-center gap-1.5 flex-wrap">
                                 <a 
                                     href="{{ route('admin.students.show', $student) }}" 
-                                    class="px-3 py-1.5 rounded-lg text-xs font-bold bg-[#EAF1FB] text-[#012383] hover:bg-[#DEE8F7] dark:bg-blue-950/60 dark:text-blue-300 border border-[#DEE8F7] dark:border-blue-900 transition-colors inline-flex items-center gap-1.5"
+                                    class="px-3 py-1.5 rounded-lg text-xs font-bold bg-[#EAF1FB] text-[#012383] hover:bg-[#DEE8F7] dark:bg-blue-950/60 dark:text-blue-300 dark:hover:bg-blue-900/60 dark:hover:text-blue-200 border border-[#DEE8F7] dark:border-blue-900 dark:hover:border-blue-700 transition-colors inline-flex items-center gap-1.5"
                                     title="{{ __('عرض ملف وتفاصيل الطالب وإدارتها بالكامل') }}"
                                 >
                                     <svg class="size-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
@@ -112,11 +112,11 @@
                                 >
                                     @csrf
                                     @if($student->isActive())
-                                        <button type="submit" class="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 dark:bg-rose-950/40 dark:text-rose-300 dark:border-rose-800 transition-colors cursor-pointer">
+                                        <button type="submit" class="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 dark:bg-rose-950/40 dark:text-rose-300 dark:border-rose-800 dark:hover:bg-rose-900/60 dark:hover:text-rose-200 transition-colors cursor-pointer">
                                             {{ __('تعليق') }}
                                         </button>
                                     @else
-                                        <button type="submit" class="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800 transition-colors cursor-pointer">
+                                        <button type="submit" class="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800 dark:hover:bg-emerald-900/60 dark:hover:text-emerald-200 transition-colors cursor-pointer">
                                             {{ __('تنشيط') }}
                                         </button>
                                     @endif
@@ -180,7 +180,7 @@
                 </div>
 
                 <div class="grid grid-cols-2 gap-2 pt-1">
-                    <a href="{{ route('admin.students.show', $student) }}" class="py-2 rounded-xl text-xs font-bold bg-[#EAF1FB] text-[#012383] hover:bg-[#DEE8F7] dark:bg-blue-950/60 dark:text-blue-300 border border-blue-200 dark:border-blue-900 transition-colors flex items-center justify-center gap-1.5">
+                    <a href="{{ route('admin.students.show', $student) }}" class="py-2 rounded-xl text-xs font-bold bg-[#EAF1FB] text-[#012383] hover:bg-[#DEE8F7] dark:bg-blue-950/60 dark:text-blue-300 dark:hover:bg-blue-900/60 dark:hover:text-blue-200 border border-blue-200 dark:border-blue-900 dark:hover:border-blue-700 transition-colors flex items-center justify-center gap-1.5">
                         <svg class="size-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                         <span>{{ __('إدارة وتفاصيل') }}</span>
                     </a>
@@ -195,11 +195,11 @@
                     >
                         @csrf
                         @if($student->isActive())
-                            <button type="submit" class="w-full py-2 rounded-xl text-xs font-bold bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 dark:bg-rose-950/40 dark:text-rose-300 dark:border-rose-800 transition-colors cursor-pointer text-center">
+                            <button type="submit" class="w-full py-2 rounded-xl text-xs font-bold bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 dark:bg-rose-950/40 dark:text-rose-300 dark:border-rose-800 dark:hover:bg-rose-900/60 dark:hover:text-rose-200 transition-colors cursor-pointer text-center">
                                 {{ __('تعليق الحساب') }}
                             </button>
                         @else
-                            <button type="submit" class="w-full py-2 rounded-xl text-xs font-bold bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800 transition-colors cursor-pointer text-center">
+                            <button type="submit" class="w-full py-2 rounded-xl text-xs font-bold bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800 dark:hover:bg-emerald-900/60 dark:hover:text-emerald-200 transition-colors cursor-pointer text-center">
                                 {{ __('إعادة التنشيط') }}
                             </button>
                         @endif

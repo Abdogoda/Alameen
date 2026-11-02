@@ -95,14 +95,31 @@ class CertificateService
     /**
      * Issue certificate forcefully by an administrator regardless of minimum percentage.
      */
-    public function forceIssueCertificate(User $user, Course $course, ?float $completionPercentage = null): Certificate
-    {
+    public function forceIssueCertificate(
+        User $user,
+        Course $course,
+        ?float $completionPercentage = null,
+        ?string $filePath = null,
+        ?Carbon $issuedAt = null
+    ): Certificate {
         $existing = Certificate::query()
             ->where('user_id', $user->id)
             ->where('course_id', $course->id)
             ->first();
 
         if ($existing) {
+            if ($filePath) {
+                $existing->file_path = $filePath;
+                $existing->pdf_path = $filePath;
+            }
+            if ($completionPercentage !== null) {
+                $existing->completion_percentage = (float) $completionPercentage;
+            }
+            if ($issuedAt !== null) {
+                $existing->issued_at = $issuedAt;
+            }
+            $existing->save();
+
             return $existing;
         }
 
@@ -120,8 +137,10 @@ class CertificateService
             'certificate_code' => $code,
             'verification_url' => $verificationUrl,
             'qr_code_svg' => $qrCodeSvg,
+            'file_path' => $filePath,
+            'pdf_path' => $filePath,
             'completion_percentage' => $percentage,
-            'issued_at' => Carbon::now(),
+            'issued_at' => $issuedAt ?? Carbon::now(),
         ]);
     }
 

@@ -40,6 +40,10 @@ class UpdateCourseRequest extends FormRequest
             'promo_video_url' => ['nullable', 'string', 'max:1000'],
             'promo_video_file' => ['nullable', 'file', 'mimetypes:video/mp4,video/quicktime,video/webm,video/x-matroska', 'max:512000'],
             'is_published' => ['nullable', 'boolean'],
+            'certificate_template' => ['nullable', 'string', 'in:default,royal_gold,clinical_emerald,modern_navy,custom'],
+            'certificate_custom_bg_file' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:10240'],
+            'certificate_signatory_name' => ['nullable', 'string', 'max:255'],
+            'certificate_signatory_title' => ['nullable', 'string', 'max:255'],
         ];
     }
 }

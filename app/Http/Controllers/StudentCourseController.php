@@ -13,6 +13,7 @@ use App\Models\Course;
 use App\Models\TaskSubmission;
 use App\Models\User;
 use App\Models\Video;
+use App\Models\VideoProgress;
 use App\Services\Certificate\CertificateService;
 use App\Services\Clinical\ClinicalTaskService;
 use App\Services\Course\CourseEnrollmentService;
@@ -35,6 +36,232 @@ class StudentCourseController extends Controller
         protected CertificateService $certificateService,
         protected ClinicalTaskService $clinicalTaskService
     ) {}
+
+    /**
+     * Display student academic dashboard with live statistics,
+     * resume learning hero, and enrolled courses.
+     */
+    public function dashboard(Request $request): View
+    {
+        /** @var User|null $user */
+        $user = $request->user();
+
+        $enrolledCourses = $user ? $user->courses()
+            ->with(['videos' => fn ($q) => $q->orderBy('sort_order')])
+            ->get() : collect();
+
+        $allPublishedCourses = Course::query()
+            ->where('is_published', true)
+            ->withCount('videos')
+            ->orderBy('sort_order')
+            ->get();
+
+        $certificates = $user ? $user->certificates()->get()->keyBy('course_id') : collect();
+        $taskSubmissionsCount = $user ? $user->taskSubmissions()->count() : 0;
+
+        $myCoursesData = [];
+        $totalCompletedLessonsCount = 0;
+        $totalCourseVideosCount = 0;
+        $lastWatchedOverall = null;
+        $lastWatchedCourse = null;
+        $lastWatchedVideo = null;
+
+        foreach ($enrolledCourses as $course) {
+            $progressPct = $user ? $this->progressService->getCourseProgressPercentage($user, $course) : 0;
+            $videos = $course->videos;
+            $totalVideos = $videos->count();
+            $totalCourseVideosCount += $totalVideos;
+            $videoIds = $videos->pluck('id')->all();
+
+            $completedVideoIds = $user ? VideoProgress::query()
+                ->where('user_id', $user->id)
+                ->whereIn('video_id', $videoIds)
+                ->where('is_completed', true)
+                ->pluck('video_id')
+                ->all() : [];
+
+            $completedCount = count($completedVideoIds);
+            $totalCompletedLessonsCount += $completedCount;
+
+            $lastWatched = $user ? VideoProgress::query()
+                ->where('user_id', $user->id)
+                ->whereIn('video_id', $videoIds)
+                ->orderByDesc('last_watched_at')
+                ->first() : null;
+
+            if ($lastWatched) {
+                if (! $lastWatchedOverall || ($lastWatched->last_watched_at && $lastWatched->last_watched_at > $lastWatchedOverall->last_watched_at)) {
+                    $lastWatchedOverall = $lastWatched;
+                    $lastWatchedCourse = $course;
+                    $lastWatchedVideo = $videos->firstWhere('id', $lastWatched->video_id);
+                }
+            }
+
+            $resumeVideo = null;
+            if ($lastWatched) {
+                $resumeVideo = $videos->firstWhere('id', $lastWatched->video_id);
+            }
+            if (! $resumeVideo) {
+                $resumeVideo = $videos->firstWhere(fn ($v) => ! in_array($v->id, $completedVideoIds, true))
+                    ?? $videos->first();
+            }
+
+            $cert = $certificates->get($course->id);
+
+            $myCoursesData[] = [
+                'course' => $course,
+                'progress' => $progressPct,
+                'total_lessons' => $totalVideos,
+                'completed_lessons' => $completedCount,
+                'resume_video' => $resumeVideo,
+                'certificate' => $cert,
+                'is_eligible_for_cert' => $progressPct >= CertificateService::MIN_PROGRESS_FOR_CERTIFICATE,
+                'status' => $course->pivot->status ?? 'active',
+                'expires_at' => $course->pivot->access_expires_at ?? null,
+            ];
+        }
+
+        $isDemo = false;
+        if (! $lastWatchedVideo && count($myCoursesData) > 0) {
+            $lastWatchedCourse = $myCoursesData[0]['course'];
+            $lastWatchedVideo = $myCoursesData[0]['resume_video'];
+        } elseif (count($myCoursesData) === 0 && $allPublishedCourses->isNotEmpty()) {
+            $lastWatchedCourse = $allPublishedCourses->first();
+            $lastWatchedVideo = $lastWatchedCourse->videos->first();
+            $isDemo = true;
+        }
+
+        $totalEnrolled = count($myCoursesData);
+        $completedCoursesCount = count(array_filter($myCoursesData, fn ($c) => $c['progress'] >= 100));
+        $inProgressCoursesCount = count(array_filter($myCoursesData, fn ($c) => $c['progress'] > 0 && $c['progress'] < 100));
+        $avgProgress = $totalEnrolled > 0
+            ? round(array_sum(array_column($myCoursesData, 'progress')) / $totalEnrolled, 1)
+            : 0;
+
+        $stats = [
+            'total_enrolled' => $totalEnrolled,
+            'completed_courses' => $completedCoursesCount,
+            'in_progress_courses' => $inProgressCoursesCount,
+            'completed_lessons' => $totalCompletedLessonsCount,
+            'total_lessons' => $totalCourseVideosCount,
+            'avg_progress' => $avgProgress,
+            'certificates_count' => $certificates->count(),
+            'tasks_count' => $taskSubmissionsCount,
+        ];
+
+        $suggestedCourses = $allPublishedCourses
+            ->whereNotIn('id', $enrolledCourses->pluck('id')->all())
+            ->take(3);
+
+        return view('web.dashboard', compact(
+            'enrolledCourses',
+            'myCoursesData',
+            'stats',
+            'lastWatchedCourse',
+            'lastWatchedVideo',
+            'lastWatchedOverall',
+            'suggestedCourses',
+            'isDemo'
+        ));
+    }
+
+    /**
+     * Display courses:
+     * - If guest: public marketing catalog (web.pages.courses)
+     * - If authenticated student: dashboard my courses & progress workspace (web.pages.my-courses)
+     */
+    public function index(Request $request): View
+    {
+        $allCourses = Course::query()
+            ->where('is_published', true)
+            ->withCount('videos')
+            ->orderBy('sort_order')
+            ->get();
+
+        /** @var User|null $user */
+        $user = $request->user();
+
+        if (! $user) {
+            return view('web.pages.courses', compact('allCourses'));
+        }
+
+        $enrolledCourses = $user->courses()
+            ->with(['videos' => fn ($q) => $q->orderBy('sort_order')])
+            ->get();
+
+        $certificates = $user->certificates()->get()->keyBy('course_id');
+
+        $myCoursesData = [];
+        $totalCompletedLessonsCount = 0;
+
+        foreach ($enrolledCourses as $course) {
+            $progressPct = $this->progressService->getCourseProgressPercentage($user, $course);
+            $videos = $course->videos;
+            $totalVideos = $videos->count();
+            $videoIds = $videos->pluck('id')->all();
+
+            $completedVideoIds = VideoProgress::query()
+                ->where('user_id', $user->id)
+                ->whereIn('video_id', $videoIds)
+                ->where('is_completed', true)
+                ->pluck('video_id')
+                ->all();
+
+            $completedCount = count($completedVideoIds);
+            $totalCompletedLessonsCount += $completedCount;
+
+            // Find last watched or next up video to continue
+            $lastWatched = VideoProgress::query()
+                ->where('user_id', $user->id)
+                ->whereIn('video_id', $videoIds)
+                ->orderByDesc('last_watched_at')
+                ->first();
+
+            $resumeVideo = null;
+            if ($lastWatched) {
+                $resumeVideo = $videos->firstWhere('id', $lastWatched->video_id);
+            }
+            if (! $resumeVideo) {
+                $resumeVideo = $videos->firstWhere(fn ($v) => ! in_array($v->id, $completedVideoIds, true))
+                    ?? $videos->first();
+            }
+
+            $cert = $certificates->get($course->id);
+
+            $myCoursesData[] = [
+                'course' => $course,
+                'progress' => $progressPct,
+                'total_lessons' => $totalVideos,
+                'completed_lessons' => $completedCount,
+                'resume_video' => $resumeVideo,
+                'certificate' => $cert,
+                'is_eligible_for_cert' => $progressPct >= CertificateService::MIN_PROGRESS_FOR_CERTIFICATE,
+                'status' => $course->pivot->status ?? 'active',
+                'expires_at' => $course->pivot->access_expires_at ?? null,
+            ];
+        }
+
+        $totalEnrolled = count($myCoursesData);
+        $completedCount = count(array_filter($myCoursesData, fn ($c) => $c['progress'] >= 100));
+        $inProgressCount = count(array_filter($myCoursesData, fn ($c) => $c['progress'] > 0 && $c['progress'] < 100));
+        $notStartedCount = count(array_filter($myCoursesData, fn ($c) => $c['progress'] == 0));
+        $avgProgress = $totalEnrolled > 0
+            ? round(array_sum(array_column($myCoursesData, 'progress')) / $totalEnrolled, 1)
+            : 0;
+
+        $stats = [
+            'total_enrolled' => $totalEnrolled,
+            'completed' => $completedCount,
+            'in_progress' => $inProgressCount,
+            'not_started' => $notStartedCount,
+            'completed_lessons' => $totalCompletedLessonsCount,
+            'avg_progress' => $avgProgress,
+        ];
+
+        $enrolledCourseIds = $enrolledCourses->pluck('id')->all();
+
+        return view('web.pages.my-courses', compact('myCoursesData', 'allCourses', 'stats', 'enrolledCourseIds'));
+    }
 
     /**
      * Submit a manual payment receipt for a course.
@@ -231,49 +458,34 @@ class StudentCourseController extends Controller
     }
 
     /**
-     * Certificates index showing eligibility progress across enrolled courses.
+     * Redirect to profile certificates tab.
      */
-    public function certificates(Request $request): View
+    public function certificates(Request $request): RedirectResponse
     {
-        /** @var User $user */
-        $user = $request->user();
-
-        $courses = $user->courses()->with('videos')->get();
-        $certificates = $user->certificates()->with('course')->get();
-
-        $courseProgressData = [];
-        foreach ($courses as $c) {
-            $pct = $this->progressService->getCourseProgressPercentage($user, $c);
-            $cert = $certificates->firstWhere('course_id', $c->id);
-            $courseProgressData[] = [
-                'course' => $c,
-                'progress' => $pct,
-                'certificate' => $cert,
-                'is_eligible' => $pct >= CertificateService::MIN_PROGRESS_FOR_CERTIFICATE,
-            ];
-        }
-
-        return view('web.pages.certificates', compact('courses', 'certificates', 'courseProgressData'));
+        return redirect()->route('settings.certificates');
     }
 
     /**
-     * View full certificate ready for presentation and print.
+     * Redirect to profile certificates tab.
      */
-    public function certificate(Request $request, ?Certificate $certificate = null): View
+    public function certificate(Request $request, ?Certificate $certificate = null): RedirectResponse
+    {
+        return redirect()->route('settings.certificates');
+    }
+
+    /**
+     * Display student certificates inside profile settings.
+     */
+    public function studentCertificates(Request $request): View
     {
         /** @var User $user */
         $user = $request->user();
 
-        $certificate = $certificate ?? $user->certificates()->latest()->first();
+        $certificates = $user->certificates()
+            ->with('course')
+            ->orderByDesc('issued_at')
+            ->get();
 
-        if (! $certificate) {
-            return redirect()->route('certificates.index')->with('info', __('لم يتم إصدار شهادة لك بعد. أكمل مشاهدة ٩٥٪ من أي كورس لإصدار شهادتك فوراً.'));
-        }
-
-        if ($certificate->user_id !== $user->id) {
-            abort(403, __('غير مصرح لك باستعراض هذه الشهادة.'));
-        }
-
-        return view('web.pages.certificate', compact('certificate'));
+        return view('web.settings.certificates', compact('certificates'));
     }
 }

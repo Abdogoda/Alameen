@@ -348,7 +348,7 @@
                                 default => 'bg-blue-50 text-blue-600 dark:bg-blue-950/40 dark:text-blue-400',
                             };
                         @endphp
-                        <tr class="hover:bg-zinc-50/60 dark:hover:bg-zinc-800/40">
+                        <tr class="hover:bg-zinc-50/60 dark:hover:bg-zinc-800/70 transition-colors">
                             <td class="px-5 py-3.5">
                                 @if ($user)
                                     <div class="font-semibold text-zinc-900 dark:text-zinc-100">{{ $user->name }}</div>

@@ -39,7 +39,7 @@ Route::middleware('guest')->group(function () {
 // Public Web Pages (Marketing & Catalogue)
 // -------------------------------------------------------------
 Route::view('/', 'web.welcome')->name('home');
-Route::view('courses', 'web.pages.courses')->name('courses.index');
+Route::get('courses', [StudentCourseController::class, 'index'])->name('courses.index');
 Route::view('course-details', 'web.pages.course-details')->name('courses.show');
 Route::view('reviews', 'web.pages.reviews')->name('reviews.index');
 Route::view('contact', 'web.pages.contact')->name('contact');
@@ -88,7 +88,7 @@ Route::get('storage/{path}', function (string $path) {
 // Customer / Student Authenticated Routes (Guard: web)
 // -------------------------------------------------------------
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::view('dashboard', 'web.dashboard')->name('dashboard');
+    Route::get('dashboard', [StudentCourseController::class, 'dashboard'])->name('dashboard');
 
     // Secure Lesson Playback with Dynamic Watermark & Sequential Locking
     Route::get('lesson/{course?}/{video?}', [StudentCourseController::class, 'lesson'])->name('lessons.show');
@@ -97,8 +97,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('assignment/{task?}', [StudentCourseController::class, 'assignment'])->name('assignments.index');
     Route::post('assignment/{task}/submit', [StudentCourseController::class, 'submitAssignment'])->name('assignments.submit');
-    Route::get('certificates', [StudentCourseController::class, 'certificates'])->name('certificates.index');
-    Route::get('certificate/{certificate?}', [StudentCourseController::class, 'certificate'])->name('certificates.show');
+    Route::get('certificates', fn () => redirect()->route('settings.certificates'))->name('certificates.index');
+    Route::get('certificate/{certificate?}', fn () => redirect()->route('settings.certificates'))->name('certificates.show');
     Route::view('grades', 'web.pages.grades')->name('grades.index');
     Route::view('result', 'web.pages.result')->name('results.show');
     Route::view('user-profile', 'web.pages.profile')->name('user.profile');

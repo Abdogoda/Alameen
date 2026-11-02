@@ -1,10 +1,5 @@
 parameters:
 	ignoreErrors:
-		-
-			message: '#^Method App\\Http\\Controllers\\StudentCourseController\:\:certificate\(\) should return Illuminate\\View\\View but returns Illuminate\\Http\\RedirectResponse\.$#'
-			identifier: return.type
-			count: 1
-			path: app/Http/Controllers/StudentCourseController.php
 
 		-
 			message: '#^Parameter \$audioFile of method App\\Services\\Clinical\\ClinicalTaskService\:\:submitRecording\(\) expects Illuminate\\Http\\UploadedFile\|string, array\<int, Illuminate\\Http\\UploadedFile\>\|Illuminate\\Http\\UploadedFile\|string given\.$#'

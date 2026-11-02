@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
@@ -29,6 +30,7 @@ use Illuminate\Support\Str;
  * @property string|null $mux_asset_id
  * @property bool $is_published
  * @property int $sort_order
+ * @property Pivot|null $pivot
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
@@ -48,6 +50,10 @@ use Illuminate\Support\Str;
     'mux_asset_id',
     'is_published',
     'sort_order',
+    'certificate_template',
+    'certificate_custom_bg',
+    'certificate_signatory_name',
+    'certificate_signatory_title',
 ])]
 class Course extends Model
 {

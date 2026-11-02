@@ -53,6 +53,40 @@
     --color-accent-foreground: #ffffff;
 }
 
+/* Table Row Smooth Highlight */
+tr.table-row-hover,
+table tbody tr {
+    transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+tr.table-row-hover:hover,
+table tbody tr.table-row-hover:hover {
+    background-color: rgba(234, 241, 251, 0.6) !important;
+}
+
+/* Dark Theme Table Row Hover */
+html.dark tr.table-row-hover:hover,
+html.dark table tbody tr:hover,
+html[data-theme="dark"] tr.table-row-hover:hover,
+html[data-theme="dark"] table tbody tr:hover,
+.dark tr.table-row-hover:hover,
+.dark table tbody tr:hover,
+[data-theme="dark"] tr.table-row-hover:hover,
+[data-theme="dark"] table tbody tr:hover {
+    background-color: rgba(30, 41, 59, 0.75) !important;
+}
+
+@media (prefers-color-scheme: dark) {
+    html:not([data-theme="light"]) tr.table-row-hover:hover,
+    html:not([data-theme="light"]) table tbody tr:hover,
+    html[data-theme="system"] tr.table-row-hover:hover,
+    html[data-theme="system"] table tbody tr:hover,
+    [data-theme="system"] tr.table-row-hover:hover,
+    [data-theme="system"] table tbody tr:hover {
+        background-color: rgba(30, 41, 59, 0.75) !important;
+    }
+}
+
 /* Ensure buttons on dark/navy backgrounds have pure white text (excluding light background buttons) */
 button[class*="bg-[#012383]"]:not([class*="bg-blue-"]):not([class*="bg-white"]):not([class*="bg-slate-"]),
 button[class*="bg-[#0B2A8F]"]:not([class*="bg-blue-"]):not([class*="bg-white"]):not([class*="bg-slate-"]),
@@ -189,8 +223,14 @@ html.dark section#home {
 }
 
 html.dark .from-\[\#FAFCFF\],
+html.dark .from-\[\#EAF1FB\],
 html.dark .from-white {
     --tw-gradient-from: #0B1120 var(--tw-gradient-from-position) !important;
+}
+
+html.dark .via-\[\#F4F8FD\],
+html.dark .via-white {
+    --tw-gradient-stops: var(--tw-gradient-from), #0F172A var(--tw-gradient-via-position, 50%), var(--tw-gradient-to) !important;
 }
 
 html.dark .to-white,
@@ -616,59 +656,177 @@ html.dark footer div:has(img[src*="logo.png"]) {
 /* ========================================================
    Admin & Student Dashboard Responsive Enhancements
    ======================================================== */
+html {
+    scrollbar-gutter: stable;
+}
+
 body.overflow-hidden {
     overflow: hidden !important;
     overscroll-behavior: none !important;
 }
 
-.admin-sidebar-drawer,
-.student-sidebar-drawer {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    inset-block: 0;
-    inset-inline-start: 0;
-    z-index: 50 !important;
-    width: 280px;
-    max-width: 85vw;
-    height: 100vh;
-    height: 100dvh;
-    max-height: 100vh;
-    max-height: 100dvh;
-    overflow: hidden !important;
-    display: flex !important;
-    flex-direction: column !important;
-    overscroll-behavior: contain !important;
-    touch-action: pan-y;
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
+/* ========================================================
+   Sidebar Drawer System (Mobile Offcanvas + Desktop Sticky)
+   ======================================================== */
 
-[dir="ltr"] .admin-sidebar-drawer:not(.is-open),
-[dir="ltr"] .student-sidebar-drawer:not(.is-open) {
-    transform: translateX(-100%);
-}
-
-[dir="rtl"] .admin-sidebar-drawer:not(.is-open),
-[dir="rtl"] .student-sidebar-drawer:not(.is-open) {
-    transform: translateX(100%);
-}
-
-.admin-sidebar-drawer.is-open,
-.student-sidebar-drawer.is-open {
-    transform: translateX(0) !important;
-    visibility: visible !important;
-    pointer-events: auto !important;
-}
-
+/* Mobile Drawer (< 1024px) */
 @media (max-width: 1023.98px) {
-    .admin-sidebar-drawer:not(.is-open),
-    .student-sidebar-drawer:not(.is-open) {
-        visibility: hidden;
+    .admin-sidebar-drawer,
+    .student-sidebar-drawer {
+        position: fixed !important;
+        top: 0 !important;
+        bottom: 0 !important;
+        inset-block: 0 !important;
+        inset-inline-start: 0 !important;
+        width: 280px !important;
+        min-width: 280px !important;
+        max-width: 85vw !important;
+        height: 100vh !important;
+        height: 100dvh !important;
+        max-height: 100vh !important;
+        max-height: 100dvh !important;
+        z-index: 70 !important;
+        overflow: hidden !important;
+        display: flex !important;
+        flex-direction: column !important;
+        box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.3) !important;
+        overscroll-behavior: contain !important;
+        touch-action: pan-y;
+        will-change: transform;
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
+        /* Closing: smooth swift 0.24s slide-out */
+        transition: transform 0.24s cubic-bezier(0.25, 1, 0.5, 1),
+                    visibility 0.24s linear !important;
+    }
+
+    [dir="ltr"] .admin-sidebar-drawer:not(.is-open),
+    [dir="ltr"] .student-sidebar-drawer:not(.is-open) {
+        transform: translate3d(-100%, 0, 0) !important;
+        visibility: hidden !important;
         pointer-events: none !important;
+    }
+
+    [dir="rtl"] .admin-sidebar-drawer:not(.is-open),
+    [dir="rtl"] .student-sidebar-drawer:not(.is-open) {
+        transform: translate3d(100%, 0, 0) !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+    }
+
+    /* Opening: instantaneous zero-delay 0.24s spring-like slide-in */
+    .admin-sidebar-drawer.is-open,
+    .student-sidebar-drawer.is-open {
+        transform: translate3d(0, 0, 0) !important;
+        visibility: visible !important;
+        pointer-events: auto !important;
+        transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+                    visibility 0s linear 0s !important;
+    }
+
+    /* Guard: On mobile, all labels, brand text, and titles are ALWAYS fully visible (never collapsed) */
+    .admin-sidebar-drawer .sidebar-label,
+    .student-sidebar-drawer .sidebar-label,
+    .admin-sidebar-drawer .sidebar-brand-text,
+    .student-sidebar-drawer .sidebar-brand-text,
+    .admin-sidebar-drawer .sidebar-section-title,
+    .student-sidebar-drawer .sidebar-section-title,
+    .admin-sidebar-drawer .sidebar-user-text,
+    .student-sidebar-drawer .sidebar-user-text,
+    .admin-sidebar-drawer .sidebar-user-chevron,
+    .student-sidebar-drawer .sidebar-user-chevron {
+        display: block !important;
+        opacity: 1 !important;
+        max-width: none !important;
+        visibility: visible !important;
+        white-space: normal !important;
+    }
+
+    .admin-sidebar-drawer .sidebar-brand-link,
+    .student-sidebar-drawer .sidebar-brand-link {
+        display: flex !important;
+        justify-content: flex-start !important;
+        padding: 0 !important;
+    }
+
+    .admin-sidebar-drawer .sidebar-header,
+    .student-sidebar-drawer .sidebar-header {
+        padding-inline: 1rem !important;
+        justify-content: space-between !important;
+    }
+
+    .admin-sidebar-drawer .sidebar-nav-link,
+    .student-sidebar-drawer .sidebar-nav-link {
+        justify-content: flex-start !important;
+        padding-inline: 0.875rem !important;
+        width: 100% !important;
+        height: auto !important;
+    }
+
+    .admin-sidebar-drawer .sidebar-bottom-section,
+    .student-sidebar-drawer .sidebar-bottom-section {
+        display: flex !important;
+        justify-content: space-between !important;
+        padding: 0.75rem 1rem !important;
+    }
+
+    .admin-sidebar-drawer .sidebar-user-btn,
+    .student-sidebar-drawer .sidebar-user-btn {
+        width: 100% !important;
+        height: auto !important;
+        justify-content: flex-start !important;
+        padding: 0.5rem 0.75rem !important;
+    }
+
+    /* Disable tab stagger delays on mobile to ensure zero-lag instant display */
+    .admin-sidebar-drawer nav a.sidebar-nav-link,
+    .student-sidebar-drawer nav a.sidebar-nav-link,
+    .admin-sidebar-drawer .sidebar-section-title,
+    .student-sidebar-drawer .sidebar-section-title,
+    .admin-sidebar-drawer .sidebar-bottom-section,
+    .student-sidebar-drawer .sidebar-bottom-section,
+    .sidebar-tab-animate {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+        transition-delay: 0s !important;
+        animation-delay: 0s !important;
     }
 }
 
+/* Desktop Sidebar (>= 1024px) */
 @media (min-width: 1024px) {
+    .admin-sidebar-drawer,
+    .student-sidebar-drawer {
+        position: sticky !important;
+        top: 0 !important;
+        bottom: 0 !important;
+        inset-block: 0 !important;
+        height: 100vh !important;
+        height: 100dvh !important;
+        max-height: 100vh !important;
+        max-height: 100dvh !important;
+        transform: translate3d(0, 0, 0) !important;
+        visibility: visible !important;
+        pointer-events: auto !important;
+        z-index: 45 !important;
+        flex-shrink: 0 !important;
+        max-width: none !important;
+        overflow: hidden !important;
+        display: flex !important;
+        flex-direction: column !important;
+        overscroll-behavior: contain !important;
+        transition: width 0.24s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    }
+
+    .admin-sidebar-drawer:not(.is-collapsed),
+    .student-sidebar-drawer:not(.is-collapsed) {
+        width: 280px !important;
+        min-width: 280px !important;
+    }
+
+    .admin-sidebar-drawer.is-collapsed,
+    html.sidebar-collapsed .admin-sidebar-drawer,
     .student-sidebar-drawer.is-collapsed,
     html.sidebar-collapsed .student-sidebar-drawer {
         width: 72px !important;
@@ -681,21 +839,66 @@ body.overflow-hidden {
         flex-direction: column !important;
     }
 
+    /* Smooth label transition when collapsing/expanding on desktop */
+    .admin-sidebar-drawer .sidebar-label,
+    .student-sidebar-drawer .sidebar-label,
+    .admin-sidebar-drawer .sidebar-brand-text,
+    .student-sidebar-drawer .sidebar-brand-text,
+    .admin-sidebar-drawer .sidebar-section-title,
+    .student-sidebar-drawer .sidebar-section-title,
+    .admin-sidebar-drawer .sidebar-user-text,
+    .student-sidebar-drawer .sidebar-user-text,
+    .admin-sidebar-drawer .sidebar-user-chevron,
+    .student-sidebar-drawer .sidebar-user-chevron {
+        white-space: nowrap;
+        overflow: hidden;
+        transition: opacity 0.16s ease, max-width 0.24s ease;
+    }
+
+    .admin-sidebar-drawer:not(.is-collapsed) .sidebar-label,
+    .student-sidebar-drawer:not(.is-collapsed) .sidebar-label,
+    .admin-sidebar-drawer:not(.is-collapsed) .sidebar-brand-text,
+    .student-sidebar-drawer:not(.is-collapsed) .sidebar-brand-text,
+    .admin-sidebar-drawer:not(.is-collapsed) .sidebar-section-title,
+    .student-sidebar-drawer:not(.is-collapsed) .sidebar-section-title,
+    .admin-sidebar-drawer:not(.is-collapsed) .sidebar-user-text,
+    .student-sidebar-drawer:not(.is-collapsed) .sidebar-user-text,
+    .admin-sidebar-drawer:not(.is-collapsed) .sidebar-user-chevron,
+    .student-sidebar-drawer:not(.is-collapsed) .sidebar-user-chevron {
+        opacity: 1;
+        max-width: 200px;
+    }
+
     /* Hide text labels, badges, and brand text in collapsed state */
+    .admin-sidebar-drawer.is-collapsed .sidebar-label,
+    html.sidebar-collapsed .admin-sidebar-drawer .sidebar-label,
     .student-sidebar-drawer.is-collapsed .sidebar-label,
     html.sidebar-collapsed .student-sidebar-drawer .sidebar-label,
+    .admin-sidebar-drawer.is-collapsed .sidebar-brand-text,
+    html.sidebar-collapsed .admin-sidebar-drawer .sidebar-brand-text,
     .student-sidebar-drawer.is-collapsed .sidebar-brand-text,
     html.sidebar-collapsed .student-sidebar-drawer .sidebar-brand-text,
+    .admin-sidebar-drawer.is-collapsed .sidebar-section-title,
+    html.sidebar-collapsed .admin-sidebar-drawer .sidebar-section-title,
     .student-sidebar-drawer.is-collapsed .sidebar-section-title,
     html.sidebar-collapsed .student-sidebar-drawer .sidebar-section-title,
+    .admin-sidebar-drawer.is-collapsed .sidebar-user-text,
+    html.sidebar-collapsed .admin-sidebar-drawer .sidebar-user-text,
     .student-sidebar-drawer.is-collapsed .sidebar-user-text,
     html.sidebar-collapsed .student-sidebar-drawer .sidebar-user-text,
+    .admin-sidebar-drawer.is-collapsed .sidebar-user-chevron,
+    html.sidebar-collapsed .admin-sidebar-drawer .sidebar-user-chevron,
     .student-sidebar-drawer.is-collapsed .sidebar-user-chevron,
     html.sidebar-collapsed .student-sidebar-drawer .sidebar-user-chevron {
         display: none !important;
+        opacity: 0 !important;
+        max-width: 0 !important;
+        pointer-events: none !important;
     }
 
     /* Keep user bottom section visible and centered when collapsed */
+    .admin-sidebar-drawer.is-collapsed .sidebar-bottom-section,
+    html.sidebar-collapsed .admin-sidebar-drawer .sidebar-bottom-section,
     .student-sidebar-drawer.is-collapsed .sidebar-bottom-section,
     html.sidebar-collapsed .student-sidebar-drawer .sidebar-bottom-section {
         padding: 8px !important;
@@ -703,6 +906,8 @@ body.overflow-hidden {
         justify-content: center !important;
     }
 
+    .admin-sidebar-drawer.is-collapsed .sidebar-user-btn,
+    html.sidebar-collapsed .admin-sidebar-drawer .sidebar-user-btn,
     .student-sidebar-drawer.is-collapsed .sidebar-user-btn,
     html.sidebar-collapsed .student-sidebar-drawer .sidebar-user-btn {
         padding: 0 !important;
@@ -713,6 +918,8 @@ body.overflow-hidden {
         border-radius: 12px !important;
     }
 
+    .admin-sidebar-drawer.is-collapsed .sidebar-bottom-section [x-show="sidebarUserMenuOpen"],
+    html.sidebar-collapsed .admin-sidebar-drawer .sidebar-bottom-section [x-show="sidebarUserMenuOpen"],
     .student-sidebar-drawer.is-collapsed .sidebar-bottom-section [x-show="sidebarUserMenuOpen"],
     html.sidebar-collapsed .student-sidebar-drawer .sidebar-bottom-section [x-show="sidebarUserMenuOpen"] {
         inset-inline-start: 12px !important;
@@ -721,6 +928,8 @@ body.overflow-hidden {
     }
 
     /* Center nav items when collapsed */
+    .admin-sidebar-drawer.is-collapsed .sidebar-nav-link,
+    html.sidebar-collapsed .admin-sidebar-drawer .sidebar-nav-link,
     .student-sidebar-drawer.is-collapsed .sidebar-nav-link,
     html.sidebar-collapsed .student-sidebar-drawer .sidebar-nav-link {
         justify-content: center !important;
@@ -732,6 +941,8 @@ body.overflow-hidden {
     }
 
     /* Center the logo in collapsed state */
+    .admin-sidebar-drawer.is-collapsed .sidebar-brand-link,
+    html.sidebar-collapsed .admin-sidebar-drawer .sidebar-brand-link,
     .student-sidebar-drawer.is-collapsed .sidebar-brand-link,
     html.sidebar-collapsed .student-sidebar-drawer .sidebar-brand-link {
         justify-content: center !important;
@@ -739,6 +950,8 @@ body.overflow-hidden {
     }
 
     /* Reduce header padding when collapsed */
+    .admin-sidebar-drawer.is-collapsed .sidebar-header,
+    html.sidebar-collapsed .admin-sidebar-drawer .sidebar-header,
     .student-sidebar-drawer.is-collapsed .sidebar-header,
     html.sidebar-collapsed .student-sidebar-drawer .sidebar-header {
         padding-inline: 0 !important;
@@ -746,35 +959,49 @@ body.overflow-hidden {
     }
 
     /* Reduce scroll area padding when collapsed */
+    .admin-sidebar-drawer.is-collapsed .alameen-sidebar-scroll,
+    html.sidebar-collapsed .admin-sidebar-drawer .alameen-sidebar-scroll,
     .student-sidebar-drawer.is-collapsed .alameen-sidebar-scroll,
     html.sidebar-collapsed .student-sidebar-drawer .alameen-sidebar-scroll {
         padding-inline: 8px !important;
     }
+}
 
-    .admin-sidebar-drawer,
-    .student-sidebar-drawer {
-        position: sticky !important;
-        top: 0 !important;
-        bottom: 0 !important;
-        inset-block: 0 !important;
-        height: 100vh !important;
-        height: 100dvh !important;
-        max-height: 100vh !important;
-        max-height: 100dvh !important;
-        transform: translateX(0) !important;
-        visibility: visible !important;
-        pointer-events: auto !important;
-        z-index: 45 !important;
-        max-width: none !important;
-        overflow: hidden !important;
-        display: flex !important;
-        flex-direction: column !important;
-        overscroll-behavior: contain !important;
+/* ========================================================
+   Header and Sidebar Header Synchronization
+   Guarantees both take the exact same height and border alignment
+   ======================================================== */
+.admin-sidebar-drawer .sidebar-header,
+.student-sidebar-drawer .sidebar-header,
+.admin-sticky-header,
+header.admin-sticky-header,
+.student-sticky-header,
+header.student-sticky-header {
+    height: 4rem !important; /* 64px */
+    min-height: 4rem !important;
+    max-height: 4rem !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    align-items: center !important;
+    flex-shrink: 0 !important;
+}
+
+@media (max-width: 639.98px) {
+    .admin-sidebar-drawer .sidebar-header,
+    .student-sidebar-drawer .sidebar-header,
+    .admin-sticky-header,
+    header.admin-sticky-header,
+    .student-sticky-header,
+    header.student-sticky-header {
+        height: 3.5rem !important; /* 56px */
+        min-height: 3.5rem !important;
+        max-height: 3.5rem !important;
     }
 }
 
 /* Sticky Admin Top Header */
-.admin-sticky-header {
+.admin-sticky-header,
+.student-sticky-header {
     position: sticky !important;
     top: 0 !important;
     z-index: 40 !important;
@@ -782,8 +1009,56 @@ body.overflow-hidden {
     -webkit-backdrop-filter: blur(12px) !important;
 }
 
-html, body {
+/* ========================================================
+   Bidirectional Scrollbar Placement Architecture
+   - Arabic (RTL): Scrollbar strictly at LEFT of screen (opposite right sidebar)
+   - English (LTR): Scrollbar strictly at RIGHT of screen (opposite left sidebar)
+   ======================================================== */
+html.alameen-dashboard-layout,
+body.alameen-dashboard-layout {
+    height: 100vh !important;
+    height: 100dvh !important;
+    overflow: hidden !important;
+}
+
+.alameen-dashboard-layout .alameen-content-wrap {
+    height: 100vh !important;
+    height: 100dvh !important;
+    max-height: 100vh !important;
+    max-height: 100dvh !important;
+    overflow: hidden !important;
+}
+
+.alameen-dashboard-layout .alameen-content-wrap > main {
+    height: 100vh !important;
+    height: 100dvh !important;
+    max-height: 100vh !important;
+    max-height: 100dvh !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    overscroll-behavior: contain !important;
+    -webkit-overflow-scrolling: touch !important;
+}
+
+/* In Arabic (RTL): Main container flows RTL so its vertical scrollbar is on the LEFT edge of the screen */
+html[dir="rtl"] .alameen-dashboard-layout .alameen-content-wrap > main,
+[dir="rtl"] .alameen-dashboard-layout .alameen-content-wrap > main {
+    direction: rtl !important;
+}
+
+/* In English (LTR): Main container flows LTR so its vertical scrollbar is on the RIGHT edge of the screen */
+html[dir="ltr"] .alameen-dashboard-layout .alameen-content-wrap > main,
+[dir="ltr"] .alameen-dashboard-layout .alameen-content-wrap > main {
+    direction: ltr !important;
+}
+
+/* Content containers prevent horizontal overflow while preserving bidirectional viewport scrollbar positioning */
+.alameen-content-wrap,
+main,
+.page-container,
+.site-wrapper {
     overflow-x: clip;
+    max-width: 100%;
 }
 
 /* ========================================================
@@ -984,8 +1259,100 @@ button[aria-label*="إشعار"]:hover svg {
 }
 
 /* ========================================================
-   Enhanced Modern Sidebar & Clean Scrollbar Architecture
+   Universal Modern Scrollbar System (Dark & Light Theme)
+   - Strict opposing-side placement relative to sidebar
+   - Enhanced rich contrast floating pill design in dark mode
    ======================================================== */
+
+/* 1. Global Viewport & Container Scrollbar Rules (Firefox & Standard CSS) */
+:root {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(203, 213, 225, 0.85) rgba(248, 250, 252, 0.85);
+}
+
+html.dark,
+.dark,
+[data-theme="dark"] {
+    color-scheme: dark;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(100, 116, 139, 0.7) #0B1120;
+}
+
+/* 2. WebKit / Blink (Chrome, Edge, Safari, Opera) Global Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(248, 250, 252, 0.8);
+    border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: rgba(203, 213, 225, 0.85);
+    border-radius: 9999px;
+    border: 2px solid rgba(248, 250, 252, 0.8);
+    transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(148, 163, 184, 0.95);
+}
+
+::-webkit-scrollbar-thumb:active {
+    background-color: #012383;
+}
+
+::-webkit-scrollbar-corner {
+    background: transparent;
+}
+
+/* 3. Enhanced Dark Theme Scrollbar Palette & Glowing Pill Hover */
+html.dark ::-webkit-scrollbar,
+.dark ::-webkit-scrollbar,
+[data-theme="dark"] ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+html.dark ::-webkit-scrollbar-track,
+.dark ::-webkit-scrollbar-track,
+[data-theme="dark"] ::-webkit-scrollbar-track {
+    background: #0B1120;
+    border-radius: 9999px;
+}
+
+html.dark ::-webkit-scrollbar-thumb,
+.dark ::-webkit-scrollbar-thumb,
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+    background-color: rgba(100, 116, 139, 0.65); /* Elegant floating slate pill */
+    border-radius: 9999px;
+    border: 2px solid #0B1120; /* Recessed gutter matching canvas #0B1120 */
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+html.dark ::-webkit-scrollbar-thumb:hover,
+.dark ::-webkit-scrollbar-thumb:hover,
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+    background-color: #60A5FA; /* Electric blue high-contrast accent */
+    box-shadow: 0 0 10px rgba(96, 165, 250, 0.5);
+}
+
+html.dark ::-webkit-scrollbar-thumb:active,
+.dark ::-webkit-scrollbar-thumb:active,
+[data-theme="dark"] ::-webkit-scrollbar-thumb:active {
+    background-color: #3B82F6;
+    box-shadow: 0 0 12px rgba(59, 130, 246, 0.7);
+}
+
+html.dark ::-webkit-scrollbar-corner,
+.dark ::-webkit-scrollbar-corner,
+[data-theme="dark"] ::-webkit-scrollbar-corner {
+    background: #0B1120;
+}
+
+/* 4. Sidebar Dedicated Internal Scrollbar */
 .alameen-sidebar-scroll {
     overflow-y: auto !important;
     overflow-x: hidden !important;
@@ -997,7 +1364,7 @@ button[aria-label*="إشعار"]:hover svg {
 
 html.dark .alameen-sidebar-scroll,
 .dark .alameen-sidebar-scroll {
-    scrollbar-color: rgba(71, 85, 105, 0.7) transparent;
+    scrollbar-color: rgba(100, 116, 139, 0.65) transparent;
 }
 
 .alameen-sidebar-scroll::-webkit-scrollbar {
@@ -1022,17 +1389,18 @@ html.dark .alameen-sidebar-scroll,
 
 html.dark .alameen-sidebar-scroll::-webkit-scrollbar-thumb,
 .dark .alameen-sidebar-scroll::-webkit-scrollbar-thumb {
-    background-color: rgba(71, 85, 105, 0.65);
+    background-color: rgba(100, 116, 139, 0.6);
 }
 
 html.dark .alameen-sidebar-scroll:hover::-webkit-scrollbar-thumb,
 html.dark .alameen-sidebar-scroll::-webkit-scrollbar-thumb:hover,
 .dark .alameen-sidebar-scroll:hover::-webkit-scrollbar-thumb,
 .dark .alameen-sidebar-scroll::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(100, 116, 139, 0.95);
+    background-color: #60A5FA;
+    box-shadow: 0 0 8px rgba(96, 165, 250, 0.45);
 }
 
-/* Custom scrollbars for responsive tables & filter bars */
+/* 5. Utility Scrollbar Classes */
 .scrollbar-none::-webkit-scrollbar {
     display: none;
 }
@@ -1042,14 +1410,14 @@ html.dark .alameen-sidebar-scroll::-webkit-scrollbar-thumb:hover,
 }
 
 .scrollbar-thin::-webkit-scrollbar {
-    width: 5px;
-    height: 5px;
+    width: 6px;
+    height: 6px;
 }
 .scrollbar-thin::-webkit-scrollbar-track {
     background: transparent;
 }
 .scrollbar-thin::-webkit-scrollbar-thumb {
-    background-color: rgba(203, 213, 225, 0.65);
+    background-color: rgba(203, 213, 225, 0.7);
     border-radius: 9999px;
     transition: background-color 0.2s ease-in-out;
 }
@@ -1058,11 +1426,12 @@ html.dark .alameen-sidebar-scroll::-webkit-scrollbar-thumb:hover,
 }
 html.dark .scrollbar-thin::-webkit-scrollbar-thumb,
 .dark .scrollbar-thin::-webkit-scrollbar-thumb {
-    background-color: rgba(71, 85, 105, 0.65);
+    background-color: rgba(100, 116, 139, 0.6);
 }
 html.dark .scrollbar-thin::-webkit-scrollbar-thumb:hover,
 .dark .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(100, 116, 139, 0.95);
+    background-color: #60A5FA;
+    box-shadow: 0 0 8px rgba(96, 165, 250, 0.45);
 }
 .scrollbar-thin {
     scrollbar-width: thin;
@@ -1070,7 +1439,7 @@ html.dark .scrollbar-thin::-webkit-scrollbar-thumb:hover,
 }
 html.dark .scrollbar-thin,
 .dark .scrollbar-thin {
-    scrollbar-color: rgba(71, 85, 105, 0.7) transparent;
+    scrollbar-color: rgba(100, 116, 139, 0.65) transparent;
 }
 
 /* Settings Workspace Responsive Split Layout */
@@ -1111,5 +1480,399 @@ html.dark .scrollbar-thin,
     animation: upload-shimmer 0.9s linear infinite;
 }
 
+/* ==========================================================================
+   AL-AMEEN PLATFORM - UNIVERSAL ANIMATION & MOTION SYSTEM
+   ========================================================================== */
 
+/* 0. THEMED LOADER ACTIVE & NAVIGATION COVER STATES */
+body.alameen-loader-active,
+body.overflow-hidden {
+    overflow: hidden !important;
+}
+
+#alameen-loader {
+    overflow: hidden !important;
+    overscroll-behavior: none !important;
+    touch-action: none !important;
+}
+
+#alameen-loader.loader-active,
+body.alameen-loader-active #alameen-loader:not(.loader-hidden) {
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    transform: scale(1) !important;
+    filter: none !important;
+    display: flex !important;
+}
+
+body.alameen-loader-active .alameen-content-wrap {
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+body.alameen-loader-active #alameen-scroll-progress,
+body.alameen-loader-active #alameen-back-to-top {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
+
+/* 1. TOP ROUTE NAVIGATION PROGRESS BAR (livewire:navigating & page switch) */
+#alameen-nav-progress {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 3px !important;
+    width: 0%;
+    z-index: 9999999 !important;
+    background: linear-gradient(90deg, #012383 0%, #0B2A8F 30%, #2563EB 70%, #10B77F 100%) !important;
+    box-shadow: 0 0 12px rgba(37, 99, 235, 0.8), 0 0 5px rgba(16, 183, 127, 0.6) !important;
+    pointer-events: none !important;
+    opacity: 0;
+    transform-origin: left;
+}
+
+html[dir="rtl"] #alameen-nav-progress {
+    transform-origin: right !important;
+}
+
+body.alameen-navigating-out .alameen-content-wrap,
+body.alameen-navigating-out main {
+    opacity: 0.88 !important;
+    transition: opacity 0.16s ease-out !important;
+    pointer-events: none;
+}
+
+/* 2. TOP SCROLL PROGRESS BAR (Dynamic scroll percentage depth) */
+#alameen-scroll-progress {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 3px !important;
+    width: 0%;
+    z-index: 9999998 !important;
+    background: linear-gradient(90deg, #012383 0%, #0B2A8F 30%, #2563EB 70%, #10B77F 100%) !important;
+    box-shadow: 0 1px 8px rgba(1, 35, 131, 0.35) !important;
+    transition: width 0.08s ease-out !important;
+    pointer-events: none !important;
+}
+
+/* 3. PAGE ENTRANCE TRANSITION (On Refresh & On Navigate) */
+.alameen-page-transition-enter {
+    animation: alameenPageEntrance 0.42s cubic-bezier(0.16, 1, 0.3, 1) both !important;
+}
+
+@keyframes alameenPageEntrance {
+    0% {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 4. SCROLL REVEAL UTILITIES (IntersectionObserver-Driven) */
+.reveal-on-scroll {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1), transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
+}
+
+.reveal-on-scroll.revealed {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+}
+
+.reveal-left {
+    opacity: 0;
+    transform: translateX(-28px);
+    transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1), transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
+}
+
+.reveal-left.revealed {
+    opacity: 1 !important;
+    transform: translateX(0) !important;
+}
+
+.reveal-right {
+    opacity: 0;
+    transform: translateX(28px);
+    transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1), transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
+}
+
+.reveal-right.revealed {
+    opacity: 1 !important;
+    transform: translateX(0) !important;
+}
+
+.reveal-zoom {
+    opacity: 0;
+    transform: scale(0.94);
+    transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1), transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
+}
+
+.reveal-zoom.revealed {
+    opacity: 1 !important;
+    transform: scale(1) !important;
+}
+
+.reveal-fade {
+    opacity: 0;
+    transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity;
+}
+
+.reveal-fade.revealed {
+    opacity: 1 !important;
+}
+
+/* 5. FLOATING SPRING "BACK TO TOP" BUTTON */
+#alameen-back-to-top {
+    position: fixed !important;
+    bottom: 28px !important;
+    right: 28px !important;
+    width: 46px !important;
+    height: 46px !important;
+    border-radius: 14px !important;
+    background: #012383 !important;
+    color: #FFFFFF !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: 0 10px 24px -4px rgba(1, 35, 131, 0.35) !important;
+    z-index: 99990 !important;
+    cursor: pointer !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(16px) scale(0.9) !important;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+#alameen-back-to-top.show {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translateY(0) scale(1) !important;
+}
+
+#alameen-back-to-top:hover {
+    background: #0B2A8F !important;
+    transform: translateY(-3px) scale(1.05) !important;
+    box-shadow: 0 14px 28px -4px rgba(1, 35, 131, 0.45) !important;
+}
+
+#alameen-back-to-top:active {
+    transform: scale(0.95) !important;
+}
+
+html[dir="rtl"] #alameen-back-to-top {
+    right: auto !important;
+    left: 28px !important;
+}
+
+html.dark #alameen-back-to-top {
+    background: #0B2A8F !important;
+    border-color: rgba(255, 255, 255, 0.15) !important;
+    box-shadow: 0 10px 24px -4px rgba(0, 0, 0, 0.55) !important;
+}
+
+html.dark #alameen-back-to-top:hover {
+    background: #2563EB !important;
+}
+
+/* 6. STICKY HEADER ELEVATION (Dynamic scroll state) */
+header.is-scrolled,
+[data-flux-header].is-scrolled,
+.student-header.is-scrolled,
+.admin-header.is-scrolled,
+.sidebar-header.is-scrolled,
+#landing-header.is-scrolled {
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    box-shadow: 0 4px 20px -2px rgba(1, 35, 131, 0.08), 0 2px 6px -1px rgba(0, 0, 0, 0.04) !important;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+html.dark header.is-scrolled,
+html.dark [data-flux-header].is-scrolled,
+html.dark .student-header.is-scrolled,
+html.dark .admin-header.is-scrolled,
+html.dark .sidebar-header.is-scrolled,
+html.dark #landing-header.is-scrolled {
+    box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.45) !important;
+}
+
+/* 7. NATIVE BROWSER VIEW TRANSITIONS */
+@keyframes alameenViewFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes alameenViewFadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+::view-transition-old(root) {
+    animation: 90ms cubic-bezier(0.4, 0, 1, 1) both alameenViewFadeOut;
+}
+
+::view-transition-new(root) {
+    animation: 220ms cubic-bezier(0, 0, 0.2, 1) 90ms both alameenViewFadeIn;
+}
+
+/* ==========================================================================
+   8. SIDEBAR TABS STAGGERED CASCADE ENTRANCE (One-by-one on refresh & entrance)
+   ========================================================================== */
+
+@keyframes alameenSidebarTabInRtl {
+    0% {
+        opacity: 0;
+        transform: translateX(18px) scale(0.97);
+    }
+    60% {
+        opacity: 0.9;
+        transform: translateX(-2px) scale(1.005);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+    }
+}
+
+@keyframes alameenSidebarTabInLtr {
+    0% {
+        opacity: 0;
+        transform: translateX(-18px) scale(0.97);
+    }
+    60% {
+        opacity: 0.9;
+        transform: translateX(2px) scale(1.005);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+    }
+}
+
+/* While loader is active on refresh, prepare sidebar tabs hidden */
+body.alameen-loader-active nav a.sidebar-nav-link,
+body.alameen-loader-active .sidebar-section-title,
+body.alameen-loader-active .sidebar-bottom-section {
+    opacity: 0;
+}
+
+/* When content is ready, reveal tabs with smooth staggered cascade */
+body.content-ready nav a.sidebar-nav-link,
+.sidebar-tab-animate {
+    animation: alameenSidebarTabInRtl 0.42s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+[dir="ltr"] body.content-ready nav a.sidebar-nav-link,
+html[dir="ltr"] body.content-ready nav a.sidebar-nav-link,
+[dir="ltr"] .sidebar-tab-animate,
+html[dir="ltr"] .sidebar-tab-animate {
+    animation-name: alameenSidebarTabInLtr !important;
+}
+
+body.content-ready .sidebar-section-title {
+    animation: alameenSidebarTabInRtl 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: 0.03s;
+}
+
+[dir="ltr"] body.content-ready .sidebar-section-title,
+html[dir="ltr"] body.content-ready .sidebar-section-title {
+    animation-name: alameenSidebarTabInLtr !important;
+}
+
+/* 1-by-1 Stagger timing for each tab */
+body.content-ready nav a.sidebar-nav-link:nth-of-type(1),
+.sidebar-tab-animate:nth-of-type(1) {
+    animation-delay: 0.05s;
+}
+
+body.content-ready nav a.sidebar-nav-link:nth-of-type(2),
+.sidebar-tab-animate:nth-of-type(2) {
+    animation-delay: 0.10s;
+}
+
+body.content-ready nav a.sidebar-nav-link:nth-of-type(3),
+.sidebar-tab-animate:nth-of-type(3) {
+    animation-delay: 0.15s;
+}
+
+body.content-ready nav a.sidebar-nav-link:nth-of-type(4),
+.sidebar-tab-animate:nth-of-type(4) {
+    animation-delay: 0.20s;
+}
+
+body.content-ready nav a.sidebar-nav-link:nth-of-type(5),
+.sidebar-tab-animate:nth-of-type(5) {
+    animation-delay: 0.25s;
+}
+
+body.content-ready nav a.sidebar-nav-link:nth-of-type(6),
+.sidebar-tab-animate:nth-of-type(6) {
+    animation-delay: 0.30s;
+}
+
+body.content-ready nav a.sidebar-nav-link:nth-of-type(7),
+.sidebar-tab-animate:nth-of-type(7) {
+    animation-delay: 0.35s;
+}
+
+body.content-ready nav a.sidebar-nav-link:nth-of-type(8),
+.sidebar-tab-animate:nth-of-type(8) {
+    animation-delay: 0.40s;
+}
+
+body.content-ready nav a.sidebar-nav-link:nth-of-type(9),
+.sidebar-tab-animate:nth-of-type(9) {
+    animation-delay: 0.45s;
+}
+
+body.content-ready nav a.sidebar-nav-link:nth-of-type(10),
+.sidebar-tab-animate:nth-of-type(10) {
+    animation-delay: 0.50s;
+}
+
+body.content-ready nav a.sidebar-nav-link:nth-of-type(11),
+.sidebar-tab-animate:nth-of-type(11) {
+    animation-delay: 0.55s;
+}
+
+body.content-ready nav a.sidebar-nav-link:nth-of-type(12),
+.sidebar-tab-animate:nth-of-type(12) {
+    animation-delay: 0.60s;
+}
+
+body.content-ready .sidebar-bottom-section {
+    animation: alameenSidebarTabInRtl 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: 0.46s;
+}
+
+[dir="ltr"] body.content-ready .sidebar-bottom-section,
+html[dir="ltr"] body.content-ready .sidebar-bottom-section {
+    animation-name: alameenSidebarTabInLtr !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body.content-ready nav a.sidebar-nav-link,
+    body.content-ready .sidebar-section-title,
+    body.content-ready .sidebar-bottom-section,
+    .sidebar-tab-animate {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+    }
+}
 

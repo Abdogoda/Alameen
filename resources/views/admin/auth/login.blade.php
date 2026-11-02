@@ -11,6 +11,10 @@
     @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/passkeys.js'])
 </head>
 <body class="bg-[#FAFCFF] dark:bg-[#0B1120] min-h-screen text-[#1E293B] dark:text-slate-100 flex flex-col justify-center items-center px-3.5 py-6 sm:px-6 lg:px-10 font-['Cairo'] antialiased relative selection:bg-[#0B2A8F]/10 selection:text-[#0B2A8F] overflow-x-hidden">
+    <!-- Top-Level Pre-Rendered Themed Loader -->
+    @persist('alameen-loader')
+    <x-alameen-loader />
+    @endpersist
 
     <!-- Language & Theme Switcher & Home Return in Corner -->
     <div class="fixed top-3 sm:top-6 end-3 sm:end-8 z-30 flex items-center gap-2 sm:gap-2.5">
@@ -36,7 +40,7 @@
     </div>
 
     <!-- Main Container with dedicated mobile horizontal padding and top clearance -->
-    <div class="w-full max-w-md relative z-10 my-auto pt-16 pb-8 sm:py-10 px-1 sm:px-0">
+    <div class="w-full max-w-md relative z-10 my-auto pt-16 pb-8 sm:py-10 px-1 sm:px-0 alameen-content-wrap">
         
         <!-- Header Branding -->
         <div class="flex flex-col items-center text-center mb-6 sm:mb-7">

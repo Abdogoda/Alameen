@@ -65,7 +65,14 @@ class SupportTicketController extends Controller
             'closed' => $user->supportTickets()->where('status', 'closed')->count(),
         ];
 
-        return view('web.support.index', compact('tickets', 'counts', 'status', 'search'));
+        $unreadNotificationsCount = $user->unreadNotifications()->count();
+        $unreadSupportCount = SupportMessage::whereHas('ticket', fn ($q) => $q->where('user_id', $user->id))
+            ->where('sender_type', Admin::class)
+            ->where('type', 'message')
+            ->whereNull('read_at')
+            ->count();
+
+        return view('web.support.index', compact('tickets', 'counts', 'status', 'search', 'unreadNotificationsCount', 'unreadSupportCount'));
     }
 
     /**

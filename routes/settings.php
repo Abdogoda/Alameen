@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\StudentCourseController;
 use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Profile;
 use App\Livewire\Settings\Security;
@@ -9,6 +10,7 @@ Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
 
     Route::livewire('settings/profile', Profile::class)->name('profile.edit');
+    Route::get('settings/certificates', [StudentCourseController::class, 'studentCertificates'])->name('settings.certificates');
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {

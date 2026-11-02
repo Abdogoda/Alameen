@@ -1,7 +1,7 @@
 <x-admin-layout::admin
     :title="__('إدارة تذاكر الدعم والرسائل المباشرة')"
     :description="__('متابعة استفسارات ومشاكل الطلاب، التوجيه السريري والأكاديمي، والدعم الفني المباشر')"
-    contentClass="p-3.5 sm:p-6 lg:p-8 flex flex-col gap-5 sm:gap-6 max-w-[1500px] w-full mx-auto min-w-0"
+    contentClass="p-3.5 sm:p-6 lg:p-8 flex flex-col gap-5 sm:gap-6 w-full min-w-0"
 >
     <x-slot:actions>
         <span class="text-xs font-bold text-blue-800 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 px-3.5 py-2 rounded-xl flex items-center gap-2 shrink-0">
@@ -143,7 +143,7 @@
                     </thead>
                     <tbody class="divide-y divide-[#DEE8F7] dark:divide-slate-800">
                         @foreach($tickets as $ticket)
-                            <tr class="hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition-colors {{ $ticket->unread_user_count > 0 ? 'bg-amber-50/40 dark:bg-amber-950/20' : '' }}">
+                            <tr class="hover:bg-slate-50/60 dark:hover:bg-slate-800/70 transition-colors {{ $ticket->unread_user_count > 0 ? 'bg-amber-50/40 dark:bg-amber-950/20' : '' }}">
                                 
                                 <!-- Ticket Number -->
                                 <td class="py-4 px-4 whitespace-nowrap font-mono font-bold text-[#012383] dark:text-blue-400">

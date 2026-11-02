@@ -29,29 +29,17 @@
                 document.documentElement.classList.remove('dark');
             }
             document.documentElement.setAttribute('data-theme', stored);
+            if (localStorage.getItem('admin_sidebar_collapsed') === 'true' && window.innerWidth >= 1024) {
+                document.documentElement.classList.add('sidebar-collapsed');
+            }
         } catch (e) {}
     })();
 </script>
 <style>
-    @keyframes alameenLoaderSafetyDismiss {
-        0%, 70% {
-            opacity: 1;
-            visibility: visible;
-            pointer-events: auto;
-        }
-        100% {
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-        }
-    }
-    @keyframes alameenContentSafetyReveal {
-        0%, 55% {
-            opacity: 0;
-        }
-        100% {
-            opacity: 1;
-        }
+    /* Scroll is strictly disabled ONLY when loader is active or when mobile sidebar is open */
+    body.alameen-loader-active,
+    body.overflow-hidden {
+        overflow: hidden !important;
     }
     #alameen-loader {
         position: fixed !important;
@@ -64,36 +52,35 @@
         height: 100vh !important;
         height: 100dvh !important;
         z-index: 999999 !important;
+        overflow: hidden !important;
+        overscroll-behavior: none !important;
+        touch-action: none !important;
         background: radial-gradient(circle at center, #FFFFFF 0%, #FAFCFF 60%, #EAF1FB 100%);
-        display: flex !important;
+        display: none;
         flex-direction: column !important;
         align-items: center !important;
         justify-content: center !important;
-        opacity: 1;
-        visibility: visible;
-        animation: alameenLoaderSafetyDismiss 1.1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1),
-                    visibility 0.45s cubic-bezier(0.16, 1, 0.3, 1),
-                    transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
-                    filter 0.45s cubic-bezier(0.16, 1, 0.3, 1);
-        will-change: opacity, transform, filter;
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                    visibility 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                    transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        will-change: opacity, transform;
     }
     #alameen-loader.loader-hidden {
         opacity: 0 !important;
         visibility: hidden !important;
         pointer-events: none !important;
-        transform: scale(1.03) !important;
-        filter: blur(4px) !important;
-        animation: none !important;
+        transform: scale(1.02) !important;
     }
-    .alameen-content-wrap {
-        opacity: 0;
-        animation: alameenContentSafetyReveal 1.1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        transition: opacity 0.4s ease-out;
-    }
-    body.content-ready .alameen-content-wrap,
-    #alameen-loader.loader-hidden ~ .alameen-content-wrap {
+    #alameen-loader.loader-active,
+    body.alameen-loader-active #alameen-loader {
         opacity: 1 !important;
+        visibility: visible !important;
+        pointer-events: auto !important;
+        transform: scale(1) !important;
+        display: flex !important;
     }
     html.dark #alameen-loader,
     [data-theme="dark"] #alameen-loader {

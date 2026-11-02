@@ -453,12 +453,37 @@ body.modal-open {
 }
 
 /* Table Row Smooth Highlight */
-tr.table-row-hover {
-  transition: background-color 0.2s ease;
+tr.table-row-hover,
+table tbody tr {
+  transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-tr.table-row-hover:hover {
+tr.table-row-hover:hover,
+table tbody tr.table-row-hover:hover {
   background-color: rgba(234, 241, 251, 0.6) !important;
+}
+
+/* Dark Theme Table Row Hover */
+html.dark tr.table-row-hover:hover,
+html.dark table tbody tr:hover,
+html[data-theme="dark"] tr.table-row-hover:hover,
+html[data-theme="dark"] table tbody tr:hover,
+.dark tr.table-row-hover:hover,
+.dark table tbody tr:hover,
+[data-theme="dark"] tr.table-row-hover:hover,
+[data-theme="dark"] table tbody tr:hover {
+  background-color: rgba(30, 41, 59, 0.75) !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme="light"]) tr.table-row-hover:hover,
+  html:not([data-theme="light"]) table tbody tr:hover,
+  html[data-theme="system"] tr.table-row-hover:hover,
+  html[data-theme="system"] table tbody tr:hover,
+  [data-theme="system"] tr.table-row-hover:hover,
+  [data-theme="system"] table tbody tr:hover {
+    background-color: rgba(30, 41, 59, 0.75) !important;
+  }
 }
 
 /* --------------------------------------------------------------------------
@@ -532,6 +557,31 @@ html[dir="rtl"] #alameen-back-to-top {
   overflow: hidden !important;
   display: flex !important;
   flex-direction: column !important;
+}
+
+/* Ensure Sidebar Brand Top and Top Header share the exact same height and border alignment */
+.admin-sidebar-drawer .sidebar-header,
+.student-sidebar-drawer .sidebar-header,
+.admin-sticky-header,
+header.admin-sticky-header {
+  height: 4rem !important; /* 64px */
+  min-height: 4rem !important;
+  max-height: 4rem !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  align-items: center !important;
+  flex-shrink: 0 !important;
+}
+
+@media (max-width: 639.98px) {
+  .admin-sidebar-drawer .sidebar-header,
+  .student-sidebar-drawer .sidebar-header,
+  .admin-sticky-header,
+  header.admin-sticky-header {
+    height: 3.5rem !important; /* 56px */
+    min-height: 3.5rem !important;
+    max-height: 3.5rem !important;
+  }
 }
 
 .alameen-sidebar-scroll {

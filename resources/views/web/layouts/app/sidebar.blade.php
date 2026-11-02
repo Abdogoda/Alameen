@@ -4,13 +4,13 @@
     'scripts' => null,
 ])
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}" class="overflow-x-clip">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}" class="alameen-dashboard-layout">
     <head>
         @include('partials.head')
         <title>{{ filled($title ?? null) ? $title . ' | ' . config('app.name', 'منصة الأمين') : config('app.name', 'منصة الأمين') }}</title>
     </head>
     <body
-        class="bg-[#F8FAFC] text-[#334155] min-h-screen flex flex-col font-['Cairo'] antialiased selection:bg-[#EAF1FB] selection:text-[#0B2A8F] overflow-x-clip w-full max-w-full relative"
+        class="bg-[#F8FAFC] text-[#334155] min-h-screen flex flex-col font-['Cairo'] antialiased selection:bg-[#EAF1FB] selection:text-[#0B2A8F] w-full max-w-full relative alameen-dashboard-layout"
         x-data="{
             mobileSidebarOpen: false,
             desktopSidebarOpen: !document.documentElement.classList.contains('sidebar-collapsed'),
@@ -30,27 +30,30 @@
             }
         }"
         @keydown.window.escape="mobileSidebarOpen = false"
+        @resize.window.debounce.100ms="if (window.innerWidth >= 1024) mobileSidebarOpen = false"
         :class="{ 'overflow-hidden': mobileSidebarOpen }"
     >
         
         <!-- Top-Level Pre-Rendered Themed Loader (At the top of everything from 0ms) -->
+        @persist('alameen-loader')
         <x-alameen-loader />
+        @endpersist
 
         <div class="flex-1 flex flex-row min-h-screen w-full max-w-full overflow-x-clip relative alameen-content-wrap">
             
-            <!-- Mobile Sidebar Overlay (z-40 so it stays beneath the z-50 drawer) -->
+            <!-- Mobile Sidebar Overlay (z-[60] so it stays above sticky header and page, but beneath drawer z-[70]) -->
             <div
                 x-show="mobileSidebarOpen"
                 x-cloak
-                x-transition:enter="transition-opacity ease-linear duration-300"
+                x-transition:enter="transition-opacity ease-out duration-250"
                 x-transition:enter-start="opacity-0"
                 x-transition:enter-end="opacity-100"
-                x-transition:leave="transition-opacity ease-linear duration-300"
+                x-transition:leave="transition-opacity ease-in duration-200"
                 x-transition:leave-start="opacity-100"
                 x-transition:leave-end="opacity-0"
-                @click="mobileSidebarOpen = false"
+                @click.stop="mobileSidebarOpen = false"
                 @touchmove.prevent
-                class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-40 lg:hidden"
+                class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-[60] lg:hidden touch-manipulation"
                 style="display: none;"
             ></div>
 
@@ -60,9 +63,9 @@
             <aside
                 :class="{
                     'is-open': mobileSidebarOpen,
-                    'is-collapsed': !desktopSidebarOpen
+                    'is-collapsed': !desktopSidebarOpen && window.innerWidth >= 1024
                 }"
-                class="student-sidebar-drawer z-50 bg-white dark:bg-slate-900 border-e border-[#DEE8F7] dark:border-slate-800 flex flex-col shrink-0 shadow-xl lg:shadow-none select-none overflow-hidden"
+                class="student-sidebar-drawer z-[70] bg-white dark:bg-slate-900 border-e border-[#DEE8F7] dark:border-slate-800 flex flex-col shrink-0 shadow-2xl lg:shadow-none select-none overflow-hidden"
             >
                 <!-- Platform Brand & Role Badge (Matches top header height: h-14 sm:h-16) -->
                 <div class="h-14 sm:h-16 px-4 sm:px-5 border-b border-[#DEE8F7] dark:border-slate-800 flex items-center justify-between shrink-0 bg-white dark:bg-slate-900 sidebar-header">
@@ -70,16 +73,16 @@
                         <div class="size-9 sm:size-10 rounded-xl bg-[#EAF1FB] dark:bg-slate-800 flex items-center justify-center p-1.5 shrink-0 border border-[#DEE8F7] dark:border-slate-700 shadow-xs group-hover:scale-105 transition-transform duration-200">
                             <img src="/assets/images/logo.png" alt="{{ config('app.name', 'منصة الأمين') }}" class="size-full object-contain pointer-events-none" />
                         </div>
-                        <div class="min-w-0 sidebar-brand-text">
-                            <span class="font-['Baloo_Bhaijaan_2'] font-extrabold text-base sm:text-lg leading-tight text-[#012383] dark:text-white block truncate">
+                        <div class="min-w-0 sidebar-brand-text flex flex-col justify-center">
+                            <span class="font-['Baloo_Bhaijaan_2'] font-extrabold text-sm sm:text-base leading-tight text-[#012383] dark:text-white block truncate">
                                 {{ config('app.name', 'منصة الأمين') }}
                             </span>
-                            <span class="text-[10px] sm:text-[11px] font-bold text-[#0B2A8F] dark:text-blue-300 bg-[#EAF1FB] dark:bg-slate-800 px-2 py-0.5 rounded-full inline-block leading-none mt-0.5">
+                            <span class="text-[9.5px] sm:text-[10px] font-bold text-[#0B2A8F] dark:text-blue-300 bg-[#EAF1FB] dark:bg-slate-800 px-2 py-0.5 rounded-full inline-block leading-none mt-0.5 truncate max-w-full">
                                 {{ __('بوابة الطالب الأكاديمية') }}
                             </span>
                         </div>
                     </a>
-                    <button type="button" @click="mobileSidebarOpen = false" class="lg:hidden p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer shrink-0" aria-label="{{ __('إغلاق القائمة') }}">
+                    <button type="button" @click.stop.prevent="mobileSidebarOpen = false" class="lg:hidden p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer shrink-0 touch-manipulation" aria-label="{{ __('إغلاق القائمة') }}">
                         <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                     </button>
                 </div>
@@ -142,51 +145,30 @@
                             <span class="flex-1 text-start sidebar-label">{{ __('درجاتي وتقييماتي') }}</span>
                         </a>
 
-                        <!-- صندوق الإشعارات (Livewire Backend) -->
+                        @php
+                            $studentUnreadSupportCount = auth()->check() ? \App\Models\SupportMessage::whereHas('ticket', fn($q) => $q->where('user_id', auth()->id()))->where('sender_type', \App\Models\Admin::class)->where('type', 'message')->whereNull('read_at')->count() : 0;
+                            $studentUnreadNotificationsCount = auth()->check() ? auth()->user()->unreadNotifications()->count() : 0;
+                            $totalUnreadHubCount = $studentUnreadSupportCount + $studentUnreadNotificationsCount;
+                        @endphp
+                        <!-- الإشعارات والدعم (مركز التواصل والتنبيهات الموحد) -->
                         <a
                             href="{{ route('notifications.index') }}"
                             @click="if (window.innerWidth < 1024) mobileSidebarOpen = false"
-                            class="sidebar-nav-link flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-sm transition-colors {{ request()->routeIs('notifications.*') ? 'bg-[#012383] text-white font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-[#EAF1FB]/60 dark:hover:bg-slate-800 hover:text-[#012383] dark:hover:text-white' }}"
+                            class="sidebar-nav-link flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-sm transition-colors {{ request()->routeIs('notifications.*', 'support.*') ? 'bg-[#012383] text-white font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-[#EAF1FB]/60 dark:hover:bg-slate-800 hover:text-[#012383] dark:hover:text-white' }}"
                             wire:navigate
-                            :title="!desktopSidebarOpen && window.innerWidth >= 1024 ? '{{ __('صندوق الإشعارات') }}' : ''"
+                            :title="!desktopSidebarOpen && window.innerWidth >= 1024 ? '{{ __('الإشعارات والدعم') }}' : ''"
                         >
-                            <svg class="size-5 shrink-0 {{ request()->routeIs('notifications.*') ? 'text-white' : 'text-slate-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
-                            <span class="flex-1 text-start sidebar-label">{{ __('صندوق الإشعارات') }}</span>
-                        </a>
-
-                        @php
-                            $studentUnreadSupportCount = auth()->check() ? \App\Models\SupportMessage::whereHas('ticket', fn($q) => $q->where('user_id', auth()->id()))->where('sender_type', \App\Models\Admin::class)->where('type', 'message')->whereNull('read_at')->count() : 0;
-                        @endphp
-                        <!-- الدعم الفني والرسائل المباشرة -->
-                        <a
-                            href="{{ route('support.index') }}"
-                            @click="if (window.innerWidth < 1024) mobileSidebarOpen = false"
-                            class="sidebar-nav-link flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-sm transition-colors {{ request()->routeIs('support.*') ? 'bg-[#012383] text-white font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-[#EAF1FB]/60 dark:hover:bg-slate-800 hover:text-[#012383] dark:hover:text-white' }}"
-                            wire:navigate
-                            :title="!desktopSidebarOpen && window.innerWidth >= 1024 ? '{{ __('الدعم الفني والرسائل') }}' : ''"
-                        >
-                            <svg class="size-5 shrink-0 {{ request()->routeIs('support.*') ? 'text-white' : 'text-slate-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                            <svg class="size-5 shrink-0 {{ request()->routeIs('notifications.*', 'support.*') ? 'text-white' : 'text-slate-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
                             </svg>
-                            <span class="flex-1 text-start sidebar-label">{{ __('الدعم والرسائل') }}</span>
-                            @if($studentUnreadSupportCount > 0)
-                                <span class="min-w-5 h-5 px-1.5 flex items-center justify-center text-[11px] font-black rounded-full bg-[#F2AE2E] text-slate-900 animate-pulse shrink-0">
-                                    {{ $studentUnreadSupportCount }}
+                            <span class="flex-1 text-start sidebar-label">{{ __('الإشعارات والدعم') }}</span>
+                            @if($totalUnreadHubCount > 0)
+                                <span class="min-w-5 h-5 px-1.5 flex items-center justify-center text-[11px] font-black rounded-full {{ $studentUnreadSupportCount > 0 ? 'bg-[#F2AE2E] text-slate-900' : 'bg-rose-500 text-white' }} animate-pulse shrink-0">
+                                    {{ $totalUnreadHubCount }}
                                 </span>
                             @endif
                         </a>
 
-                        <!-- شهاداتي المعتمدة -->
-                        <a
-                            href="{{ route('certificates.index') }}"
-                            @click="if (window.innerWidth < 1024) mobileSidebarOpen = false"
-                            class="sidebar-nav-link flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-sm transition-colors {{ request()->routeIs('certificates.*') ? 'bg-[#012383] text-white font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-[#EAF1FB]/60 dark:hover:bg-slate-800 hover:text-[#012383] dark:hover:text-white' }}"
-                            wire:navigate
-                            :title="!desktopSidebarOpen && window.innerWidth >= 1024 ? '{{ __('شهاداتي المعتمدة') }}' : ''"
-                        >
-                            <svg class="size-5 shrink-0 {{ request()->routeIs('certificates.*') ? 'text-white' : 'text-slate-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-                            <span class="flex-1 text-start sidebar-label">{{ __('شهاداتي المعتمدة') }}</span>
-                        </a>
 
                         <!-- إعدادات الحساب -->
                         <a
@@ -348,21 +330,21 @@
             <!-- ============================================== -->
             <!-- MAIN CONTENT WORKSPACE                         -->
             <!-- ============================================== -->
-            <main class="flex-1 flex flex-col min-w-0 w-full max-w-full overflow-x-clip bg-[#F8FAFC]">
+            <main class="flex-1 flex flex-col min-w-0 bg-[#F8FAFC] dark:bg-[#0B1120]">
                 
                 <!-- Top Admin/User Header -->
-                <header class="h-14 sm:h-16 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-[#DEE8F7] dark:border-slate-800 px-3 sm:px-6 lg:px-8 flex items-center justify-between gap-2 sm:gap-4 sticky top-0 z-30 w-full max-w-full shadow-2xs">
+                <header class="student-sticky-header h-14 sm:h-16 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-[#DEE8F7] dark:border-slate-800 px-3 sm:px-6 lg:px-8 flex items-center justify-between gap-2 sm:gap-4 sticky top-0 z-30 w-full max-w-full shadow-2xs shrink-0">
                     
                     <!-- Sidebar Toggle Button (Mobile + Desktop) -->
                     <div class="flex items-center gap-2 shrink-0">
                         <button
                             type="button"
-                            @click="toggleSidebar()"
-                            class="size-8 sm:size-10 rounded-xl border border-[#DEE8F7] bg-white hover:bg-[#EAF1FB] dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white flex items-center justify-center text-slate-600 hover:text-[#012383] transition-all duration-200 cursor-pointer shadow-xs shrink-0 group"
+                            @click.stop.prevent="toggleSidebar()"
+                            class="size-8 sm:size-10 rounded-xl border border-[#DEE8F7] bg-white hover:bg-[#EAF1FB] dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white flex items-center justify-center text-slate-600 hover:text-[#012383] transition-all duration-200 cursor-pointer shadow-xs shrink-0 group touch-manipulation"
                             :title="desktopSidebarOpen ? '{{ __('طي / إخفاء القائمة الجانبية') }}' : '{{ __('إظهار القائمة الجانبية') }}'"
                             aria-label="{{ __('تبديل القائمة الجانبية') }}"
                         >
-                            <svg class="size-4 sm:size-5 text-slate-600 group-hover:text-[#012383] dark:text-slate-300 dark:group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="size-4 sm:size-5 text-slate-600 group-hover:text-[#012383] dark:text-slate-300 dark:group-hover:text-white transition-colors pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
                             </svg>
                         </button>
@@ -476,21 +458,6 @@
                                     <span>{{ __('الصفحة الرئيسية') }}</span>
                                     <span class="ms-auto text-[10px] text-slate-400">↗</span>
                                 </a>
-
-                                <div class="border-t border-[#DEE8F7] dark:border-slate-800 my-1"></div>
-
-                                <form method="POST" action="{{ route('logout') }}" class="w-full">
-                                    @csrf
-                                    <button type="submit" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold text-rose-600 hover:bg-rose-50 hover:text-rose-700 dark:text-rose-400 dark:hover:bg-rose-950/40 dark:hover:text-rose-300 transition-colors cursor-pointer text-start group">
-                                        <span class="flex items-center gap-2">
-                                            <svg class="size-4 rtl:rotate-180 text-rose-500 group-hover:text-rose-600 transition-transform group-hover:-translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
-                                            <span>{{ __('تسجيل الخروج') }}</span>
-                                        </span>
-                                        <span class="text-[10px] text-rose-400 group-hover:text-rose-600 transition-colors font-semibold">↵</span>
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
 
                                 <div class="border-t border-[#DEE8F7] dark:border-slate-800 my-1"></div>
 

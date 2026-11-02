@@ -400,7 +400,7 @@
         @endphp
 
         <!-- Courses Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 {{ $courses->count() === 1 ? 'max-w-md mx-auto w-full' : '' }}" id="catalog-courses-grid">
+        <div class="grid gap-6 w-full {{ $courses->count() === 1 ? 'grid-cols-1 max-w-md mx-auto' : ($courses->count() === 2 ? 'grid-cols-1 md:grid-cols-2 max-w-3xl mx-auto' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3') }}" id="catalog-courses-grid">
           @forelse($courses as $course)
             <div class="reveal-on-scroll course-card bg-white border border-[#DEE8F7] hover:border-[#0B2A8F] rounded-[20px] overflow-hidden shadow-xs hover:shadow-card hover:-translate-y-1.5 transition-all flex flex-col justify-between" data-category="speech" data-title="{{ $course->title_ar }}">
               <div>

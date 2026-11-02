@@ -6,7 +6,9 @@
     <body class="bg-[#fafcff] dark:bg-[#0B1120] min-h-screen text-[#475569] dark:text-slate-200 font-['Cairo'] antialiased flex flex-col justify-center items-center selection:bg-[#0b2a8f]/10 selection:text-[#0b2a8f] relative px-4 sm:px-6 lg:px-10 py-6">
         
         <!-- Top-Level Pre-Rendered Themed Loader (At the top of everything from 0ms) -->
+        @persist('alameen-loader')
         <x-alameen-loader />
+        @endpersist
 
         <!-- Subtle Top-Corner Controls (Language Switcher & Return to Home) -->
         <div class="fixed top-3 sm:top-6 end-3 sm:end-8 z-30 flex items-center gap-2 sm:gap-3">

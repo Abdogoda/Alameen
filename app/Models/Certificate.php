@@ -30,8 +30,11 @@ use Illuminate\Support\Carbon;
     'verification_url',
     'qr_code_svg',
     'pdf_path',
+    'file_path',
     'completion_percentage',
     'issued_at',
+    'template',
+    'custom_bg',
 ])]
 class Certificate extends Model
 {
@@ -55,5 +58,54 @@ class Certificate extends Model
     public function course(): BelongsTo
     {
         return $this->belongsTo(Course::class);
+    }
+
+    /**
+     * Get the public asset URL of the uploaded certificate file (Image or PDF).
+     */
+    public function fileUrl(): ?string
+    {
+        $path = $this->file_path ?: $this->pdf_path;
+        if (! $path) {
+            return null;
+        }
+
+        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+            return $path;
+        }
+
+        return asset('storage/'.ltrim($path, '/'));
+    }
+
+    /**
+     * Check if the certificate file is a PDF.
+     */
+    public function isPdf(): bool
+    {
+        $path = $this->file_path ?: $this->pdf_path;
+
+        return $path ? str_ends_with(strtolower($path), '.pdf') : false;
+    }
+
+    /**
+     * Check if the certificate file is an image.
+     */
+    public function isImage(): bool
+    {
+        $path = $this->file_path ?: $this->pdf_path;
+        if (! $path) {
+            return false;
+        }
+        $ext = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+
+        return in_array($ext, ['png', 'jpg', 'jpeg', 'webp', 'svg']);
+    }
+
+    /**
+     * Get readable file extension or type.
+     */
+    public function fileType(): string
+    {
+        return $this->isPdf() ? 'PDF' : ($this->isImage() ? 'IMAGE' : 'FILE');
     }
 }

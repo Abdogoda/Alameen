@@ -10,12 +10,14 @@ use App\Http\Requests\Admin\SaveMenuItemRequest;
 use App\Http\Requests\Admin\ToggleMenuItemRequest;
 use App\Http\Requests\Admin\UpdateContentBlockRequest;
 use App\Http\Requests\Admin\UpdateSettingsRequest;
+use App\Models\Certificate;
 use App\Models\ContentBlock;
 use App\Models\Menu;
 use App\Models\MenuItem;
 use App\Services\Cms\MenuService;
 use App\Services\Cms\SettingsService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class SettingsController extends Controller
@@ -133,7 +135,21 @@ class SettingsController extends Controller
 
         $menus = Menu::with('items')->get();
 
-        return view('admin.settings.index', compact('settings', 'heroBlock', 'aboutBlock', 'faqBlock', 'menus'));
+        $sampleCertificate = Certificate::with(['user', 'course'])->latest()->first();
+        if (! $sampleCertificate) {
+            $sampleCertificate = new Certificate([
+                'user_id' => 1,
+                'certificate_code' => 'ALM-2026-XMKGR2NJ',
+                'verification_url' => url('/verify-certificate/ALM-2026-XMKGR2NJ'),
+                'completion_percentage' => 100.0,
+                'issued_at' => now(),
+                'qr_code_svg' => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" class="size-full"><rect width="100" height="100" fill="#fff"/><rect x="10" y="10" width="30" height="30" fill="#012383"/><rect x="60" y="10" width="30" height="30" fill="#012383"/><rect x="10" y="60" width="30" height="30" fill="#012383"/><rect x="20" y="20" width="10" height="10" fill="#fff"/><rect x="70" y="20" width="10" height="10" fill="#fff"/><rect x="20" y="70" width="10" height="10" fill="#fff"/><rect x="45" y="45" width="20" height="20" fill="#012383"/></svg>',
+            ]);
+            $sampleCertificate->setRelation('user', (object) ['name' => 'Abdo Goda']);
+            $sampleCertificate->setRelation('course', (object) ['title' => 'دبلوم أساسيات وتطبيقات التخاطب وتنمية اللغة']);
+        }
+
+        return view('admin.settings.index', compact('settings', 'heroBlock', 'aboutBlock', 'faqBlock', 'menus', 'sampleCertificate'));
     }
 
     /**
@@ -153,6 +169,40 @@ class SettingsController extends Controller
                     group: $value['group'] ?? 'general'
                 );
             }
+        }
+
+        // Handle certificate custom template background upload
+        if ($request->hasFile('certificate_custom_bg_file')) {
+            $path = $request->file('certificate_custom_bg_file')->store('certificates/templates', 'public');
+            if (is_string($path)) {
+                $url = Storage::url($path);
+                $this->settingsService->set('certificate_custom_bg', $url, $url, 'certificates');
+            }
+        }
+
+        // Handle certificate official stamp image upload
+        if ($request->hasFile('certificate_stamp_file')) {
+            $path = $request->file('certificate_stamp_file')->store('certificates/stamps', 'public');
+            if (is_string($path)) {
+                $url = Storage::url($path);
+                $this->settingsService->set('certificate_stamp_image', $url, $url, 'certificates');
+            }
+        }
+
+        // Handle certificate template selection and signatories
+        if ($request->filled('certificate_default_template')) {
+            $tpl = (string) $request->input('certificate_default_template');
+            $this->settingsService->set('certificate_default_template', $tpl, $tpl, 'certificates');
+        }
+
+        if ($request->filled('certificate_signatory_name')) {
+            $name = (string) $request->input('certificate_signatory_name');
+            $this->settingsService->set('certificate_signatory_name', $name, $name, 'certificates');
+        }
+
+        if ($request->filled('certificate_signatory_title')) {
+            $title = (string) $request->input('certificate_signatory_title');
+            $this->settingsService->set('certificate_signatory_title', $title, $title, 'certificates');
         }
 
         return back()->with('success', __('تم حفظ وتحديث إعدادات المنصة وتفريغ الكاش الفوري بنجاح.'));

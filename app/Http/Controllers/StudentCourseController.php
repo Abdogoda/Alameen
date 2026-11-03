@@ -314,7 +314,7 @@ class StudentCourseController extends Controller
 
         if (! $video) {
             $curriculumVideos = $this->progressService->getCurriculumVideos($course);
-            $completedIds = $user ? $this->progressService->getCompletedVideoIds($user, $course) : [];
+            $completedIds = $this->progressService->getCompletedVideoIds($user, $course);
             $video = $curriculumVideos->first(fn ($v) => ! in_array($v->id, $completedIds, true))
                 ?? $curriculumVideos->first()
                 ?? $course->publishedVideos()->firstOrFail();
@@ -360,15 +360,7 @@ class StudentCourseController extends Controller
         $watermarkPayload = $this->bunnyService->getWatermarkPayload($user, $request->ip());
 
         // 5. Curriculum and progress status map (batch loaded, 0 N+1)
-        $curriculumStatus = $user
-            ? $this->progressService->getCurriculumStatus($user, $course)
-            : [
-                'completed_video_ids' => [],
-                'accessible_video_ids' => $course->publishedVideos()->where('is_free_preview', true)->pluck('id')->all(),
-                'completed_level_ids' => [],
-                'accessible_level_ids' => $course->publishedLevels()->take(1)->pluck('id')->all(),
-                'current_video_id' => $video->id,
-            ];
+        $curriculumStatus = $this->progressService->getCurriculumStatus($user, $course);
 
         $videos = $this->progressService->getCurriculumVideos($course);
         $publishedLevels = $course->publishedLevels()

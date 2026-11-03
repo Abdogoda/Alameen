@@ -281,6 +281,35 @@ class CourseManagementAndMuxTest extends TestCase
         ]);
     }
 
+    public function test_admin_can_add_lesson_with_task_when_title_en_is_omitted(): void
+    {
+        $level = Level::create([
+            'course_id' => $this->course->id,
+            'title_ar' => 'المستوى التدريبي',
+            'sort_order' => 1,
+        ]);
+
+        $response = $this->actingAs($this->admin, 'admin')
+            ->post(route('admin.courses.videos.store', $this->course), [
+                'level_id' => $level->id,
+                'title_ar' => 'محاضرة بدون عنوان إنجليزي',
+                'duration_minutes' => 15,
+                'video_url' => 'https://stream.mux.com/sampleMuxPlaybackId456.m3u8',
+                'task_title_ar' => 'مهمة سريرية مرفقة بالدرس',
+                'task_instructions_ar' => 'تعليمات المهمة',
+            ]);
+
+        $response->assertRedirect();
+
+        $video = Video::where('title_ar', 'محاضرة بدون عنوان إنجليزي')->firstOrFail();
+        $this->assertDatabaseHas('clinical_tasks', [
+            'course_id' => $this->course->id,
+            'video_id' => $video->id,
+            'title_ar' => 'مهمة سريرية مرفقة بالدرس',
+            'title_en' => null,
+        ]);
+    }
+
     /**
      * 8. Test MuxVideoService parsing various video sources.
      */

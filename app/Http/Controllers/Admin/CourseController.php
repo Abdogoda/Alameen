@@ -116,7 +116,7 @@ class CourseController extends Controller
             $validated['promo_video_source'] = 'mux';
             $validated['promo_video_url'] = "https://stream.mux.com/{$validated['mux_playback_id']}.m3u8";
             $validated['mux_playback_id'] = $validated['mux_playback_id'];
-            $validated['mux_asset_id'] = $validated['mux_asset_id'] ?? $course->mux_asset_id;
+            $validated['mux_asset_id'] = $validated['mux_asset_id'] ?? null;
         } elseif (! empty($validated['promo_video_url'])) {
             $parsed = $this->muxService->parseVideoInput($validated['promo_video_url']);
             $validated['promo_video_source'] = $parsed['video_source'];
@@ -680,7 +680,7 @@ class CourseController extends Controller
                 'course_id' => $course->id,
                 'video_id' => $video->id,
                 'title_ar' => $validated['task_title_ar'],
-                'title_en' => $validated['title_en'] ? 'Task: '.$validated['title_en'] : null,
+                'title_en' => ! empty($validated['title_en']) ? 'Task: '.$validated['title_en'] : null,
                 'instructions_ar' => $validated['task_instructions_ar'] ?? __('قم بتسجيل مقطع صوتي يوضح التطبيق العملي للدرس.'),
                 'max_score' => 100,
             ]);

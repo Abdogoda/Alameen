@@ -412,7 +412,7 @@
                             <div class="h-44 rounded-t-2xl overflow-hidden relative w-full bg-[#012383] shrink-0">
                                 <img
                                     src="/assets/images/course-topic-basics.png"
-                                    alt="دبلوم أساسيات وتطبيقات التخاطب وتنمية اللغة"
+                                    alt="{{ __('دبلوم أساسيات وتطبيقات التخاطب وتنمية اللغة') }}"
                                     class="size-full object-cover group-hover:scale-105 transition-transform duration-300"
                                 />
                                 <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20"></div>

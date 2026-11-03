@@ -10,9 +10,11 @@ use App\Http\Requests\Admin\StoreCourseRequest;
 use App\Http\Requests\Admin\StoreLevelRequest;
 use App\Http\Requests\Admin\StoreVideoRequest;
 use App\Http\Requests\Admin\UpdateCoursePriceRequest;
+use App\Http\Requests\Admin\UpdateCoursePromoMuxRequest;
 use App\Http\Requests\Admin\UpdateCourseRequest;
 use App\Http\Requests\Admin\UpdateLevelRequest;
 use App\Http\Requests\Admin\UpdateVideoRequest;
+use App\Http\Requests\Admin\UploadCoursePromoChunkRequest;
 use App\Http\Requests\Admin\UploadLessonChunkRequest;
 use App\Models\ClinicalTask;
 use App\Models\Course;
@@ -72,8 +74,9 @@ class CourseController extends Controller
     public function edit(Course $course): View
     {
         $course->loadCount(['levels', 'videos', 'users']);
+        $isMuxConfigured = $this->videoManager->isMuxConfigured();
 
-        return view('admin.courses.edit', compact('course'));
+        return view('admin.courses.edit', compact('course', 'isMuxConfigured'));
     }
 
     /**
@@ -104,11 +107,24 @@ class CourseController extends Controller
             $validated['promo_video_url'] = $uploadResult['video_url'];
             $validated['mux_playback_id'] = $uploadResult['mux_playback_id'];
             $validated['mux_asset_id'] = $uploadResult['mux_asset_id'];
+        } elseif (! empty($validated['promo_video_source']) && $validated['promo_video_source'] === 'local' && ! empty($validated['promo_video_url'])) {
+            $validated['promo_video_source'] = 'local';
+            $validated['promo_video_url'] = $validated['promo_video_url'];
+            $validated['mux_playback_id'] = null;
+            $validated['mux_asset_id'] = null;
+        } elseif (! empty($validated['mux_playback_id'])) {
+            $validated['promo_video_source'] = 'mux';
+            $validated['promo_video_url'] = "https://stream.mux.com/{$validated['mux_playback_id']}.m3u8";
+            $validated['mux_playback_id'] = $validated['mux_playback_id'];
+            $validated['mux_asset_id'] = $validated['mux_asset_id'] ?? $course->mux_asset_id;
         } elseif (! empty($validated['promo_video_url'])) {
             $parsed = $this->muxService->parseVideoInput($validated['promo_video_url']);
             $validated['promo_video_source'] = $parsed['video_source'];
             $validated['promo_video_url'] = $parsed['video_url'];
             $validated['mux_playback_id'] = $parsed['mux_playback_id'];
+            if ($parsed['video_source'] !== 'mux') {
+                $validated['mux_asset_id'] = null;
+            }
         }
 
         $course = Course::create($validated);
@@ -142,11 +158,24 @@ class CourseController extends Controller
             $validated['promo_video_url'] = $uploadResult['video_url'];
             $validated['mux_playback_id'] = $uploadResult['mux_playback_id'];
             $validated['mux_asset_id'] = $uploadResult['mux_asset_id'];
+        } elseif (! empty($validated['promo_video_source']) && $validated['promo_video_source'] === 'local' && ! empty($validated['promo_video_url'])) {
+            $validated['promo_video_source'] = 'local';
+            $validated['promo_video_url'] = $validated['promo_video_url'];
+            $validated['mux_playback_id'] = null;
+            $validated['mux_asset_id'] = null;
+        } elseif (! empty($validated['mux_playback_id'])) {
+            $validated['promo_video_source'] = 'mux';
+            $validated['promo_video_url'] = "https://stream.mux.com/{$validated['mux_playback_id']}.m3u8";
+            $validated['mux_playback_id'] = $validated['mux_playback_id'];
+            $validated['mux_asset_id'] = $validated['mux_asset_id'] ?? $course->mux_asset_id;
         } elseif (! empty($validated['promo_video_url'])) {
             $parsed = $this->muxService->parseVideoInput($validated['promo_video_url']);
             $validated['promo_video_source'] = $parsed['video_source'];
             $validated['promo_video_url'] = $parsed['video_url'];
             $validated['mux_playback_id'] = $parsed['mux_playback_id'];
+            if ($parsed['video_source'] !== 'mux') {
+                $validated['mux_asset_id'] = null;
+            }
         }
 
         // Handle custom certificate background upload
@@ -208,6 +237,7 @@ class CourseController extends Controller
 
         $validated['course_id'] = $course->id;
         $validated['sort_order'] = $validated['sort_order'] ?? (($course->levels()->max('sort_order') ?? 0) + 1);
+        $validated['is_published'] = $request->boolean('is_published', true);
 
         $course->levels()->create($validated);
 
@@ -220,10 +250,27 @@ class CourseController extends Controller
     public function updateLevel(UpdateLevelRequest $request, Course $course, Level $level): RedirectResponse
     {
         $validated = $request->validated();
+        $validated['is_published'] = $request->has('is_published')
+            ? $request->boolean('is_published')
+            : $level->is_published;
 
         $level->update($validated);
 
         return back()->with('success', __('تم تحديث المستوى التدريبي بنجاح.'));
+    }
+
+    /**
+     * Toggle publish status of a curriculum level.
+     */
+    public function togglePublishLevel(Course $course, Level $level): RedirectResponse
+    {
+        $level->update(['is_published' => ! $level->is_published]);
+
+        $statusMsg = $level->is_published
+            ? __('تم نشر المستوى التدريبي بنجاح.')
+            : __('تم إخفاء المستوى التدريبي وتحويله إلى مسودة بنجاح.');
+
+        return back()->with('success', $statusMsg);
     }
 
     /**
@@ -371,6 +418,117 @@ class CourseController extends Controller
     }
 
     /**
+     * Handle asynchronous chunked promo video file upload with real-time progress and resilient processing.
+     */
+    public function uploadPromoChunk(UploadCoursePromoChunkRequest $request, Course $course): JsonResponse
+    {
+        $validated = $request->validated();
+
+        $uploadId = $this->chunkedUploadService->sanitizeUploadId($validated['upload_id']);
+        $chunkIndex = (int) $validated['chunk_index'];
+        $totalChunks = (int) $validated['total_chunks'];
+        $originalFilename = $validated['original_filename'];
+
+        // 1. Save this chunk
+        $this->chunkedUploadService->saveChunk($uploadId, $chunkIndex, $request->file('file_chunk'));
+
+        // 2. Check if all chunks have arrived
+        if (! $this->chunkedUploadService->isComplete($uploadId, $totalChunks)) {
+            if (config('database.default') !== 'sqlite') {
+                DB::disconnect();
+            }
+
+            return response()->json([
+                'status' => 'chunk_received',
+                'chunk_index' => $chunkIndex,
+                'total_chunks' => $totalChunks,
+                'progress_percentage' => round((($chunkIndex + 1) / $totalChunks) * 100, 1),
+            ]);
+        }
+
+        // 3. All chunks received -> Merge & Process promo video file
+        try {
+            @ini_set('max_execution_time', '0');
+            @set_time_limit(0);
+            @ini_set('memory_limit', '1024M');
+            if (function_exists('ignore_user_abort')) {
+                @ignore_user_abort(true);
+            }
+
+            $mergedFile = $this->chunkedUploadService->mergeChunks($uploadId, $totalChunks, $originalFilename);
+
+            // Process video locally for instant response & zero gateway timeouts
+            $uploadResult = $this->videoManager->handleVideoUpload($mergedFile, 'local');
+
+            // Clean up temporary merged file
+            @unlink($mergedFile->getRealPath());
+
+            // If replacing old MUX promo video asset, clean it up
+            if (! empty($course->mux_asset_id) && ! empty($uploadResult['mux_asset_id']) && $course->mux_asset_id !== $uploadResult['mux_asset_id']) {
+                $this->muxService->deleteAsset($course->mux_asset_id);
+            }
+
+            // Immediately update course promo video fields
+            $course->update([
+                'promo_video_source' => $uploadResult['video_source'],
+                'promo_video_url' => $uploadResult['video_url'],
+                'mux_playback_id' => $uploadResult['mux_playback_id'] ?? null,
+                'mux_asset_id' => $uploadResult['mux_asset_id'] ?? null,
+            ]);
+
+            $previewToken = null;
+            if (! empty($uploadResult['mux_playback_id'])) {
+                $previewToken = app(MuxTokenService::class)->generatePlaybackToken($uploadResult['mux_playback_id']);
+            }
+
+            return response()->json([
+                'status' => 'completed',
+                'message' => $uploadResult['driver_used'] === 'mux'
+                    ? __('تمت معالجة وتهيئة الفيديو التعريفي بنجاح عبر MUX.')
+                    : __('تم حفظ ومعالجة الفيديو التعريفي بنجاح على سيرفر المنصة المحلي.'),
+                'driver_used' => $uploadResult['driver_used'],
+                'promo_video_source' => $uploadResult['video_source'],
+                'promo_video_url' => $uploadResult['video_url'],
+                'mux_playback_id' => $uploadResult['mux_playback_id'] ?? null,
+                'mux_asset_id' => $uploadResult['mux_asset_id'] ?? null,
+                'playback_token' => $previewToken,
+                'original_filename' => $originalFilename,
+            ]);
+        } catch (\Throwable $e) {
+            $this->chunkedUploadService->cleanup($uploadId);
+
+            return response()->json([
+                'status' => 'error',
+                'message' => __('حدث خطأ أثناء معالجة وتجميع ملف الفيديو: :error', ['error' => $e->getMessage()]),
+            ], 500);
+        }
+    }
+
+    /**
+     * Update course promo video attributes from client-side MUX direct upload.
+     */
+    public function updatePromoMux(UpdateCoursePromoMuxRequest $request, Course $course): JsonResponse
+    {
+        $validated = $request->validated();
+
+        if (! empty($course->mux_asset_id) && ! empty($validated['mux_asset_id']) && $course->mux_asset_id !== $validated['mux_asset_id']) {
+            $this->muxService->deleteAsset($course->mux_asset_id);
+        }
+
+        $course->update([
+            'promo_video_source' => 'mux',
+            'promo_video_url' => "https://stream.mux.com/{$validated['mux_playback_id']}.m3u8",
+            'mux_playback_id' => $validated['mux_playback_id'],
+            'mux_asset_id' => $validated['mux_asset_id'] ?? null,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => __('تم ربط الفيديو التعريفي بمنصة MUX بنجاح.'),
+        ]);
+    }
+
+    /**
      * Handle asynchronous chunked video file upload with real-time progress and resilient processing.
      */
     public function uploadLessonChunk(UploadLessonChunkRequest $request, Course $course): JsonResponse
@@ -477,11 +635,12 @@ class CourseController extends Controller
             'level_id' => $validated['level_id'] ?? null,
             'title_ar' => $validated['title_ar'],
             'title_en' => $validated['title_en'] ?? null,
-            'slug' => Str::slug($validated['title_en'] ?: 'lesson-'.Str::random(6)),
+            'slug' => Str::slug(($validated['title_en'] ?? null) ?: 'lesson-'.Str::random(6)),
             'duration_seconds' => $durationSeconds,
             'min_completion_percentage' => (int) ($validated['min_completion_percentage'] ?? 80),
             'sort_order' => $validated['sort_order'] ?? (($course->videos()->max('sort_order') ?? 0) + 1),
             'is_free_preview' => $request->boolean('is_free_preview', false),
+            'is_published' => $request->boolean('is_published', true),
             'video_source' => $validated['video_source'] ?? 'link',
             'video_url' => $validated['video_url'] ?? null,
             'mux_playback_id' => $validated['mux_playback_id'] ?? null,
@@ -542,6 +701,7 @@ class CourseController extends Controller
             'title_ar' => $validated['title_ar'],
             'title_en' => $validated['title_en'] ?? $video->title_en,
             'is_free_preview' => $request->boolean('is_free_preview', false),
+            'is_published' => $request->has('is_published') ? $request->boolean('is_published') : $video->is_published,
         ];
 
         if ($request->filled('min_completion_percentage')) {
@@ -628,6 +788,20 @@ class CourseController extends Controller
         $video->delete();
 
         return back()->with('success', __('تم حذف الدرس بنجاح ومزامنة الحذف مع سحابة MUX.'));
+    }
+
+    /**
+     * Toggle publish status of a video/lesson.
+     */
+    public function togglePublishVideo(Course $course, Video $video): RedirectResponse
+    {
+        $video->update(['is_published' => ! $video->is_published]);
+
+        $statusMsg = $video->is_published
+            ? __('تم نشر الدرس بنجاح.')
+            : __('تم إخفاء الدرس وتحويله إلى مسودة بنجاح.');
+
+        return back()->with('success', $statusMsg);
     }
 
     /**
@@ -751,6 +925,13 @@ class CourseController extends Controller
             if ($firstVideo) {
                 $firstVideo->update(['is_free_preview' => true]);
             }
+        }
+
+        $publishPolicy = $validated['publish_policy'] ?? 'keep';
+        if ($publishPolicy === 'publish_all') {
+            (clone $query)->update(['is_published' => true]);
+        } elseif ($publishPolicy === 'unpublish_all') {
+            (clone $query)->update(['is_published' => false]);
         }
 
         if (! empty($validated['target_level_id'])) {

@@ -174,6 +174,23 @@
                     </div>
                 </label>
             </div>
+
+            {{-- Publish Toggle --}}
+            <div class="pt-1">
+                <label class="flex items-center gap-3 p-3 rounded-xl bg-emerald-50/40 dark:bg-slate-800/40 border border-emerald-200/60 dark:border-slate-700/60 cursor-pointer hover:border-emerald-500 transition-all">
+                    <input 
+                        type="checkbox" 
+                        name="is_published" 
+                        value="1" 
+                        {{ old('is_published', '1') ? 'checked' : '' }} 
+                        class="size-4.5 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer" 
+                    />
+                    <div>
+                        <span class="text-xs font-bold text-emerald-800 dark:text-emerald-300 block">{{ __('نشر الدرس فوراً (افتراضي)') }}</span>
+                        <span class="text-[11px] text-slate-500 dark:text-slate-400">{{ __('عند التفعيل يظهر الدرس للطلاب في المنهج وبوابة التعلم، وفي حال التعطيل يظل كمسودة مخفية تماماً عن الطلاب') }}</span>
+                    </div>
+                </label>
+            </div>
         </div>
 
         {{-- ===================================================== --}}
@@ -427,7 +444,7 @@
                     name="video_url" 
                     id="input-external-url" 
                     value="{{ old('video_url') }}" 
-                    placeholder="https://stream.mux.com/XXXXX.m3u8 أو معرّف MUX أو رابط YouTube / Vimeo / HLS" 
+                    placeholder="{{ __('https://stream.mux.com/XXXXX.m3u8 أو معرّف MUX أو رابط YouTube / Vimeo / HLS') }}" 
                     class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-mono text-slate-700 dark:text-slate-200 outline-none focus:border-[#0B2A8F] bg-slate-50/50 dark:bg-slate-800/50" 
                 />
                 <p class="text-[11px] text-slate-400">
@@ -462,7 +479,7 @@
                     type="text" 
                     name="task_title_ar" 
                     value="{{ old('task_title_ar') }}" 
-                    placeholder="مثال: تسجيل مقطع صوتي يوضح مخارج أصوات الحروف اللثوية" 
+                    placeholder="{{ __('مثال: تسجيل مقطع صوتي يوضح مخارج أصوات الحروف اللثوية') }}" 
                     class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200 outline-none focus:border-[#0B2A8F] bg-slate-50/50 dark:bg-slate-800/50" 
                 />
             </div>
@@ -474,7 +491,7 @@
                 <textarea 
                     name="task_instructions_ar" 
                     rows="2" 
-                    placeholder="المعايير السريرية المطلوبة، نموذج النطق، ومدة التسجيل الصوتي الموصى بها..." 
+                    placeholder="{{ __('المعايير السريرية المطلوبة، نموذج النطق، ومدة التسجيل الصوتي الموصى بها...') }}" 
                     class="w-full p-3.5 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-medium text-slate-700 dark:text-slate-200 outline-none focus:border-[#0B2A8F] resize-none bg-slate-50/50 dark:bg-slate-800/50"
                 >{{ old('task_instructions_ar') }}</textarea>
             </div>

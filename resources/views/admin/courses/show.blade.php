@@ -182,7 +182,16 @@
                                     <h4 class="font-bold text-sm sm:text-base text-[#012383] dark:text-blue-400">
                                         {{ $level->title_ar }}
                                     </h4>
-                                    <span class="px-2 py-0.5 rounded-md bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 text-[11px] font-bold">
+                                    @if($level->is_published)
+                                        <span class="px-2 py-0.5 rounded-md bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 text-[11px] font-bold border border-emerald-200 dark:border-emerald-800 flex items-center gap-1">
+                                            <span class="size-1.5 rounded-full bg-emerald-500"></span> {{ __('منشور للطلاب') }}
+                                        </span>
+                                    @else
+                                        <span class="px-2 py-0.5 rounded-md bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 text-[11px] font-bold border border-amber-200 dark:border-amber-800 flex items-center gap-1">
+                                            <span class="size-1.5 rounded-full bg-amber-500"></span> {{ __('مسودة غير منشورة') }}
+                                        </span>
+                                    @endif
+                                    <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-[11px] font-bold">
                                         {{ __(':count دروس', ['count' => $level->videos->count()]) }}
                                     </span>
                                     <span class="px-2 py-0.5 rounded-md bg-purple-50 dark:bg-purple-950/40 text-purple-700 dark:text-purple-400 text-[11px] font-bold">
@@ -219,9 +228,26 @@
                                 <span>{{ __('إضافة درس') }}</span>
                             </a>
 
+                            <form action="{{ route('admin.courses.levels.toggle-publish', [$course, $level]) }}" method="POST" class="inline">
+                                @csrf
+                                <button 
+                                    type="submit" 
+                                    class="px-2.5 py-1.5 rounded-xl border text-xs font-bold transition-all shadow-2xs hover:shadow-xs flex items-center gap-1 cursor-pointer {{ $level->is_published ? 'bg-white dark:bg-slate-800 border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/40' : 'bg-amber-50 dark:bg-amber-950/40 border-amber-300 dark:border-amber-700 text-amber-800 dark:text-amber-300 hover:bg-amber-100' }}"
+                                    title="{{ $level->is_published ? __('إلغاء نشر هذا المستوى (إخفاؤه عن الطلاب)') : __('نشر هذا المستوى (إتاحته للطلاب)') }}"
+                                >
+                                    @if($level->is_published)
+                                        <svg class="size-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                        <span class="hidden xl:inline">{{ __('إلغاء النشر') }}</span>
+                                    @else
+                                        <svg class="size-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"/></svg>
+                                        <span class="hidden xl:inline">{{ __('نشر') }}</span>
+                                    @endif
+                                </button>
+                            </form>
+
                             <button 
                                 type="button" 
-                                onclick="openEditLevelModal({{ $level->id }}, '{{ addslashes($level->title_ar) }}', '{{ addslashes($level->description_ar ?? '') }}', {{ $level->sort_order }})" 
+                                onclick="openEditLevelModal({{ $level->id }}, '{{ addslashes($level->title_ar) }}', '{{ addslashes($level->description_ar ?? '') }}', {{ $level->sort_order }}, {{ $level->is_published ? 1 : 0 }})" 
                                 class="p-2 text-slate-400 hover:text-[#012383] dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer" 
                                 title="{{ __('تعديل المستوى') }}"
                             >
@@ -296,6 +322,17 @@
                                             @if($video->is_free_preview)
                                                 <span class="px-1.5 py-0.2 rounded-md bg-amber-100 dark:bg-amber-950/50 text-amber-800 dark:text-amber-300 text-[10px] font-bold">{{ __('معاينة مجانية') }}</span>
                                             @endif
+
+                                            {{-- Publish Status Badge --}}
+                                            @if($video->is_published)
+                                                <span class="px-2 py-0.2 rounded-md bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 text-[10px] font-bold border border-emerald-200 dark:border-emerald-800 flex items-center gap-1">
+                                                    <span class="size-1.5 rounded-full bg-emerald-500"></span> {{ __('منشور للطلاب') }}
+                                                </span>
+                                            @else
+                                                <span class="px-2 py-0.2 rounded-md bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 text-[10px] font-bold border border-amber-200 dark:border-amber-800 flex items-center gap-1">
+                                                    <span class="size-1.5 rounded-full bg-amber-500"></span> {{ __('مسودة مخفية') }}
+                                                </span>
+                                            @endif
                                         </div>
 
                                         <div class="flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 mt-0.5 flex-wrap">
@@ -340,10 +377,26 @@
                                         </span>
                                     @endif
 
+                                    {{-- Quick Publish Toggle Button --}}
+                                    <form action="{{ route('admin.courses.videos.toggle-publish', [$course, $video]) }}" method="POST" class="inline">
+                                        @csrf
+                                        <button 
+                                            type="submit" 
+                                            class="p-1.5 rounded-lg transition-colors cursor-pointer {{ $video->is_published ? 'text-emerald-600 hover:text-amber-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/40' : 'text-amber-600 hover:text-emerald-600 hover:bg-amber-50 dark:hover:bg-amber-950/40' }}" 
+                                            title="{{ $video->is_published ? __('إلغاء نشر هذا الدرس (إخفاؤه عن الطلاب)') : __('نشر هذا الدرس للطلاب') }}"
+                                        >
+                                            @if($video->is_published)
+                                                <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                            @else
+                                                <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"/></svg>
+                                            @endif
+                                        </button>
+                                    </form>
+
                                     {{-- Quick Single Video Settings Button --}}
                                     <button 
                                         type="button" 
-                                        onclick="openSingleVideoSettingsModal({{ $video->id }}, '{{ addslashes($video->title_ar) }}', {{ $video->min_completion_percentage }}, {{ $video->is_free_preview ? 1 : 0 }}, {{ $video->level_id }})" 
+                                        onclick="openSingleVideoSettingsModal({{ $video->id }}, '{{ addslashes($video->title_ar) }}', {{ $video->min_completion_percentage }}, {{ $video->is_free_preview ? 1 : 0 }}, {{ $video->level_id ?? 'null' }}, {{ $video->is_published ? 1 : 0 }})" 
                                         class="p-1.5 text-slate-400 hover:text-[#012383] dark:hover:text-blue-400 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer" 
                                         title="{{ __('إعدادات هذا الدرس') }}"
                                     >
@@ -531,6 +584,13 @@
                         </label>
                     </div>
 
+                    <div class="flex items-center gap-2">
+                        <input type="checkbox" name="is_published" id="edit-lesson-published" value="1" class="size-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer" />
+                        <label for="edit-lesson-published" class="text-xs font-medium text-slate-600 dark:text-slate-300 cursor-pointer">
+                            {{ __('نشر الدرس وإتاحته للطلاب في المنهج') }}
+                        </label>
+                    </div>
+
                     <div class="flex flex-col-reverse sm:flex-row items-center justify-end gap-2 pt-2 border-t border-[#DEE8F7] dark:border-slate-800">
                         <button type="button" onclick="closeModal('modal-edit-lesson')" class="w-full sm:w-auto px-4 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold text-xs cursor-pointer">
                             {{ __('إلغاء') }}
@@ -564,12 +624,19 @@
                     @csrf
                     <div>
                         <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">{{ __('عنوان المستوى الجديد:') }} <span class="text-rose-500">*</span></label>
-                        <input type="text" name="title_ar" required placeholder="مثال: المستوى الخامس: استراتيجيات التدخل المبكر" class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-sm font-bold text-[#012383] dark:text-white outline-none focus:border-[#0B2A8F] bg-slate-50/50 dark:bg-slate-800/50" />
+                        <input type="text" name="title_ar" required placeholder="{{ __('مثال: المستوى الخامس: استراتيجيات التدخل المبكر') }}" class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-sm font-bold text-[#012383] dark:text-white outline-none focus:border-[#0B2A8F] bg-slate-50/50 dark:bg-slate-800/50" />
                     </div>
 
                     <div>
                         <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">{{ __('وصف موجز للمستوى:') }}</label>
-                        <textarea name="description_ar" rows="2" placeholder="أهداف المستوى والمحاور السريرية المندرجة تحته..." class="w-full p-3.5 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-medium text-slate-700 dark:text-slate-200 outline-none focus:border-[#0B2A8F] resize-none bg-slate-50/50 dark:bg-slate-800/50"></textarea>
+                        <textarea name="description_ar" rows="2" placeholder="{{ __('أهداف المستوى والمحاور السريرية المندرجة تحته...') }}" class="w-full p-3.5 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-medium text-slate-700 dark:text-slate-200 outline-none focus:border-[#0B2A8F] resize-none bg-slate-50/50 dark:bg-slate-800/50"></textarea>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <input type="checkbox" name="is_published" id="add-level-published" value="1" checked class="size-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer" />
+                        <label for="add-level-published" class="text-xs font-medium text-slate-600 dark:text-slate-300 cursor-pointer">
+                            {{ __('نشر المستوى وإتاحته للطلاب فوراً (افتراضي)') }}
+                        </label>
                     </div>
 
                     <div class="flex flex-col-reverse sm:flex-row items-center justify-end gap-2 pt-2">
@@ -605,6 +672,13 @@
                     <div>
                         <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">{{ __('وصف المستوى:') }}</label>
                         <textarea name="description_ar" id="edit-level-desc" rows="2" class="w-full p-3.5 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-medium text-slate-700 dark:text-slate-200 outline-none focus:border-[#0B2A8F] resize-none bg-slate-50/50 dark:bg-slate-800/50"></textarea>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <input type="checkbox" name="is_published" id="edit-level-published" value="1" class="size-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer" />
+                        <label for="edit-level-published" class="text-xs font-medium text-slate-600 dark:text-slate-300 cursor-pointer">
+                            {{ __('نشر المستوى وإتاحته للطلاب في المنهج') }}
+                        </label>
                     </div>
 
                     <div class="flex flex-col-reverse sm:flex-row items-center justify-end gap-2 pt-2">
@@ -661,7 +735,7 @@
                             <svg class="size-4" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"/></svg>
                         </div>
                         <div>
-                            <h4 id="preview-video-title" class="font-bold text-sm sm:text-base text-white">معاينة الفيديو</h4>
+                            <h4 id="preview-video-title" class="font-bold text-sm sm:text-base text-white">{{ __('معاينة الفيديو') }}</h4>
                             <span id="preview-video-source" class="text-[11px] font-mono text-emerald-400">MUX Stream</span>
                         </div>
                     </div>
@@ -794,6 +868,40 @@
                         </div>
                     </div>
 
+                    {{-- Publication Policy --}}
+                    <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-[#DEE8F7] dark:border-slate-700 space-y-2.5">
+                        <label class="text-xs font-bold text-[#012383] dark:text-blue-300 block flex items-center gap-1.5">
+                            <svg class="size-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                            <span>{{ __('حالة النشر للطلاب:') }}</span>
+                        </label>
+
+                        <div class="space-y-2">
+                            <label class="flex items-center gap-2.5 p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-[#DEE8F7] dark:border-slate-700 cursor-pointer hover:border-[#0B2A8F] transition-all">
+                                <input type="radio" name="publish_policy" value="keep" checked class="size-4 text-[#012383] focus:ring-[#012383] cursor-pointer" />
+                                <div>
+                                    <span class="text-xs font-bold text-slate-700 dark:text-slate-200 block">{{ __('الاحتفاظ بالحالة الحالية دون تغيير') }}</span>
+                                    <span class="text-[11px] text-slate-400">{{ __('لا يتم تغيير وضع النشر للدروس المستهدفة') }}</span>
+                                </div>
+                            </label>
+
+                            <label class="flex items-center gap-2.5 p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-[#DEE8F7] dark:border-slate-700 cursor-pointer hover:border-[#0B2A8F] transition-all">
+                                <input type="radio" name="publish_policy" value="publish_all" class="size-4 text-emerald-600 focus:ring-emerald-500 cursor-pointer" />
+                                <div>
+                                    <span class="text-xs font-bold text-emerald-700 dark:text-emerald-400 block">{{ __('نشر الكل للطلاب (إتاحة فورية)') }}</span>
+                                    <span class="text-[11px] text-slate-400">{{ __('تظهر الدروس للطلاب في المنهج وبوابة التعلم') }}</span>
+                                </div>
+                            </label>
+
+                            <label class="flex items-center gap-2.5 p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-[#DEE8F7] dark:border-slate-700 cursor-pointer hover:border-[#0B2A8F] transition-all">
+                                <input type="radio" name="publish_policy" value="unpublish_all" class="size-4 text-amber-600 focus:ring-amber-500 cursor-pointer" />
+                                <div>
+                                    <span class="text-xs font-bold text-amber-700 dark:text-amber-400 block">{{ __('إلغاء النشر (تحويل إلى مسودات مخفية)') }}</span>
+                                    <span class="text-[11px] text-slate-400">{{ __('تُخفى الدروس تماماً عن الطلاب في المنهج وبوابة التعلم') }}</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
                     {{-- 3. Optional Move to Level --}}
                     <div id="video-settings-level-selector" class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-[#DEE8F7] dark:border-slate-700 space-y-2">
                         <label class="text-xs font-bold text-[#012383] dark:text-blue-300 block flex items-center gap-1.5">
@@ -903,15 +1011,18 @@
             }
         }
 
-        function openEditLevelModal(levelId, title, desc, sortOrder) {
+        function openEditLevelModal(levelId, title, desc, sortOrder, isPublished) {
             const form = document.getElementById('form-edit-level');
             form.action = `/admin/courses/{{ $course->id }}/levels/${levelId}`;
             document.getElementById('edit-level-title').value = title;
             document.getElementById('edit-level-desc').value = desc;
+            if (document.getElementById('edit-level-published')) {
+                document.getElementById('edit-level-published').checked = isPublished !== undefined ? !!isPublished : true;
+            }
             openModal('modal-edit-level');
         }
 
-        function openEditLessonModal(videoId, title, durationMinutes, url, muxId, taskTitle, levelId, minCompletion, isPreview) {
+        function openEditLessonModal(videoId, title, durationMinutes, url, muxId, taskTitle, levelId, minCompletion, isPreview, isPublished) {
             const form = document.getElementById('form-edit-lesson');
             form.action = `/admin/courses/{{ $course->id }}/videos/${videoId}`;
             document.getElementById('edit-lesson-title').value = title;
@@ -920,6 +1031,9 @@
             document.getElementById('edit-lesson-url').value = muxId || url;
             document.getElementById('edit-lesson-task').value = taskTitle;
             document.getElementById('edit-lesson-preview').checked = !!isPreview;
+            if (document.getElementById('edit-lesson-published')) {
+                document.getElementById('edit-lesson-published').checked = isPublished !== undefined ? !!isPublished : true;
+            }
             if (document.getElementById('edit-lesson-level')) {
                 document.getElementById('edit-lesson-level').value = levelId;
             }
@@ -1041,7 +1155,7 @@
         }
 
         // Scope 4: Specific Single Video Settings Modal
-        function openSingleVideoSettingsModal(videoId, title, minCompletion, isPreview, levelId) {
+        function openSingleVideoSettingsModal(videoId, title, minCompletion, isPreview, levelId, isPublished) {
             document.getElementById('video-settings-scope').value = 'specific';
             document.getElementById('video-settings-level-id').value = '';
             
@@ -1062,8 +1176,18 @@
                 else if (r.value === 'keep') r.checked = true;
             });
 
+            const publishRadios = document.querySelectorAll('input[name="publish_policy"]');
+            publishRadios.forEach(r => {
+                if (isPublished !== undefined) {
+                    if (isPublished && r.value === 'publish_all') r.checked = true;
+                    else if (!isPublished && r.value === 'unpublish_all') r.checked = true;
+                } else if (r.value === 'keep') {
+                    r.checked = true;
+                }
+            });
+
             const targetLevel = document.getElementById('video-settings-target-level');
-            if (targetLevel) targetLevel.value = levelId || '';
+            if (targetLevel) targetLevel.value = (levelId && levelId !== 'null') ? levelId : '';
 
             document.getElementById('video-settings-modal-title').textContent = `{{ __("إعدادات الدرس:") }} ${title}`;
             document.getElementById('video-settings-modal-subtitle').textContent = '{{ __("تحكم كامل في نسبة المشاهدة والمعاينة والمستوى") }}';

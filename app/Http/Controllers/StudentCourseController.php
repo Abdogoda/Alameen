@@ -51,12 +51,12 @@ class StudentCourseController extends Controller
         $user = $request->user();
 
         $enrolledCourses = $user ? $user->courses()
-            ->with(['videos' => fn ($q) => $q->orderBy('sort_order')])
+            ->with(['publishedVideos'])
             ->get() : collect();
 
         $allPublishedCourses = Course::query()
             ->where('is_published', true)
-            ->withCount('videos')
+            ->withCount(['videos' => fn ($q) => $q->published()])
             ->orderBy('sort_order')
             ->get();
 
@@ -72,7 +72,7 @@ class StudentCourseController extends Controller
 
         foreach ($enrolledCourses as $course) {
             $progressPct = $user ? $this->progressService->getCourseProgressPercentage($user, $course) : 0;
-            $videos = $course->videos;
+            $videos = $course->publishedVideos;
             $totalVideos = $videos->count();
             $totalCourseVideosCount += $totalVideos;
             $videoIds = $videos->pluck('id')->all();
@@ -131,7 +131,7 @@ class StudentCourseController extends Controller
             $lastWatchedVideo = $myCoursesData[0]['resume_video'];
         } elseif (count($myCoursesData) === 0 && $allPublishedCourses->isNotEmpty()) {
             $lastWatchedCourse = $allPublishedCourses->first();
-            $lastWatchedVideo = $lastWatchedCourse->videos->first();
+            $lastWatchedVideo = $lastWatchedCourse->publishedVideos->first();
             $isDemo = true;
         }
 
@@ -178,7 +178,7 @@ class StudentCourseController extends Controller
     {
         $allCourses = Course::query()
             ->where('is_published', true)
-            ->withCount('videos')
+            ->withCount(['videos' => fn ($q) => $q->published()])
             ->orderBy('sort_order')
             ->get();
 
@@ -190,7 +190,7 @@ class StudentCourseController extends Controller
         }
 
         $enrolledCourses = $user->courses()
-            ->with(['videos' => fn ($q) => $q->orderBy('sort_order')])
+            ->with(['publishedVideos'])
             ->get();
 
         $certificates = $user->certificates()->get()->keyBy('course_id');
@@ -200,7 +200,7 @@ class StudentCourseController extends Controller
 
         foreach ($enrolledCourses as $course) {
             $progressPct = $this->progressService->getCourseProgressPercentage($user, $course);
-            $videos = $course->videos;
+            $videos = $course->publishedVideos;
             $totalVideos = $videos->count();
             $videoIds = $videos->pluck('id')->all();
 
@@ -304,17 +304,25 @@ class StudentCourseController extends Controller
         $course = $course ?? $user->courses()->wherePivot('status', 'active')->first() ?? Course::firstOrFail();
 
         if (is_string($video)) {
-            $video = Video::query()->where('course_id', $course->id)
+            $video = Video::query()
+                ->published()
+                ->where('course_id', $course->id)
                 ->where(function ($q) use ($video) {
                     $q->where('slug', $video)->orWhere('id', $video);
                 })->firstOrFail();
         }
 
-        $video = $video ?? $course->videos()->orderBy('sort_order')->firstOrFail();
+        if (! $video) {
+            $curriculumVideos = $this->progressService->getCurriculumVideos($course);
+            $completedIds = $user ? $this->progressService->getCompletedVideoIds($user, $course) : [];
+            $video = $curriculumVideos->first(fn ($v) => ! in_array($v->id, $completedIds, true))
+                ?? $curriculumVideos->first()
+                ?? $course->publishedVideos()->firstOrFail();
+        }
 
-        // Ensure the requested video belongs to the current course
-        if ($video->course_id !== $course->id) {
-            abort(404, __('الفيديو غير متواجد ضمن هذه الدورة التدريبية.'));
+        // Ensure the requested video belongs to the current course and is published
+        if ($video->course_id !== $course->id || ! $video->is_published || ($video->level && ! $video->level->is_published)) {
+            abort(404, __('هذا الدرس غير متوفر أو غير منشور حالياً.'));
         }
 
         // Active subscription check: If not free preview and no active course subscription, redirect
@@ -331,7 +339,7 @@ class StudentCourseController extends Controller
                 ->with('error', __('ليس لديك اشتراك مفعّل في هذه الدورة لمشاهدة هذا الدرس. يرجى الاشتراك للمتابعة.'));
         }
 
-        // 1. Sequential Video Lock Verification
+        // 1. Sequential Video & Level Lock Verification
         $canAccess = $this->progressService->canAccessVideo($user, $video);
 
         // 2. Generate cryptographically signed MUX tokens (RS256) for maximum security
@@ -351,21 +359,38 @@ class StudentCourseController extends Controller
         // 4. Prepare watermark payload for Anti Screen-Recording Canvas Overlay
         $watermarkPayload = $this->bunnyService->getWatermarkPayload($user, $request->ip());
 
-        // 5. Progress list for all course videos
-        $videos = $course->videos()->orderBy('sort_order')->get();
+        // 5. Curriculum and progress status map (batch loaded, 0 N+1)
+        $curriculumStatus = $user
+            ? $this->progressService->getCurriculumStatus($user, $course)
+            : [
+                'completed_video_ids' => [],
+                'accessible_video_ids' => $course->publishedVideos()->where('is_free_preview', true)->pluck('id')->all(),
+                'completed_level_ids' => [],
+                'accessible_level_ids' => $course->publishedLevels()->take(1)->pluck('id')->all(),
+                'current_video_id' => $video->id,
+            ];
+
+        $videos = $this->progressService->getCurriculumVideos($course);
+        $publishedLevels = $course->publishedLevels()
+            ->with(['publishedVideos' => fn ($q) => $q->orderBy('sort_order')->orderBy('id')])
+            ->orderBy('sort_order')
+            ->orderBy('id')
+            ->get();
         $currentProgress = $video->progressForUser($user->id);
 
         return view('web.pages.lesson', compact(
             'course',
             'video',
             'videos',
+            'publishedLevels',
             'canAccess',
             'embedUrl',
             'playbackToken',
             'storyboardToken',
             'thumbnailToken',
             'watermarkPayload',
-            'currentProgress'
+            'currentProgress',
+            'curriculumStatus'
         ));
     }
 
@@ -377,7 +402,7 @@ class StudentCourseController extends Controller
         /** @var User|null $user */
         $user = $request->user();
 
-        if (! $user || ! $this->progressService->canAccessVideo($user, $video)) {
+        if (! $user || ! $video->is_published || ($video->level && ! $video->level->is_published) || ! $this->progressService->canAccessVideo($user, $video)) {
             return response()->json([
                 'success' => false,
                 'message' => __('غير مصرح لك بمشاهدة هذا الفيديو أو انتهت صلاحية اشتراكك.'),

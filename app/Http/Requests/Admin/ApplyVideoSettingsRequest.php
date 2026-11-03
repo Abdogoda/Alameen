@@ -28,6 +28,7 @@ class ApplyVideoSettingsRequest extends FormRequest
             'bulk_action' => ['nullable', 'string', 'in:update_settings,move_level,delete'],
             'min_completion_percentage' => ['nullable', 'integer', 'min:1', 'max:100'],
             'free_preview_policy' => ['nullable', 'string', 'in:keep,enable_all,disable_all,first_only'],
+            'publish_policy' => ['nullable', 'string', 'in:keep,publish_all,unpublish_all'],
         ];
     }
 }

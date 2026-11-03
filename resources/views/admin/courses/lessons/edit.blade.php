@@ -175,6 +175,23 @@
                     </div>
                 </label>
             </div>
+
+            {{-- Publish Toggle --}}
+            <div class="pt-1">
+                <label class="flex items-center gap-3 p-3 rounded-xl bg-emerald-50/40 dark:bg-slate-800/40 border border-emerald-200/60 dark:border-slate-700/60 cursor-pointer hover:border-emerald-500 transition-all">
+                    <input 
+                        type="checkbox" 
+                        name="is_published" 
+                        value="1" 
+                        {{ old('is_published', $video->is_published) ? 'checked' : '' }} 
+                        class="size-4.5 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer" 
+                    />
+                    <div>
+                        <span class="text-xs font-bold text-emerald-800 dark:text-emerald-300 block">{{ __('نشر الدرس للطلاب') }}</span>
+                        <span class="text-[11px] text-slate-500 dark:text-slate-400">{{ __('عند تفعيل النشر يظهر الدرس للطلاب في المنهج وبوابة التعلم، وفي حال التعطيل يظل كمسودة مخفية تماماً عن الطلاب') }}</span>
+                    </div>
+                </label>
+            </div>
         </div>
 
         {{-- ===================================================== --}}

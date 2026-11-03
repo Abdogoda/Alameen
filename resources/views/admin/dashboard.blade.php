@@ -165,7 +165,7 @@
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#DEE8F7] dark:border-slate-800 pb-4">
                         <div class="flex items-center gap-3 min-w-0">
                             <div class="size-12 rounded-xl bg-blue-50 dark:bg-slate-800 flex items-center justify-center shrink-0 border border-blue-100 dark:border-slate-700">
-                                <img src="/assets/images/course-topic-basics.png" alt="كورس التخاطب" class="size-full object-cover rounded-xl" onerror="this.src='/assets/images/logo.png'" />
+                                <img src="/assets/images/course-topic-basics.png" alt="{{ __('كورس التخاطب') }}" class="size-full object-cover rounded-xl" onerror="this.src='/assets/images/logo.png'" />
                             </div>
                             <div class="min-w-0">
                                 <div class="flex items-center gap-2">

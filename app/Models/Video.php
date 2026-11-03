@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Services\Video\VideoProgressService;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -31,6 +33,7 @@ use Illuminate\Support\Str;
  * @property int $min_completion_percentage
  * @property int $sort_order
  * @property bool $is_free_preview
+ * @property bool $is_published
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
@@ -51,10 +54,20 @@ use Illuminate\Support\Str;
     'min_completion_percentage',
     'sort_order',
     'is_free_preview',
+    'is_published',
 ])]
 class Video extends Model
 {
     use HasFactory;
+
+    /**
+     * The model's default values for attributes.
+     *
+     * @var array<string, mixed>
+     */
+    protected $attributes = [
+        'is_published' => true,
+    ];
 
     protected function casts(): array
     {
@@ -65,7 +78,25 @@ class Video extends Model
             'min_completion_percentage' => 'integer',
             'sort_order' => 'integer',
             'is_free_preview' => 'boolean',
+            'is_published' => 'boolean',
         ];
+    }
+
+    /**
+     * Scope query to only published videos (and where level, if assigned, is published).
+     *
+     * @param  Builder<Video>  $query
+     * @return Builder<Video>
+     */
+    public function scopePublished(Builder $query): Builder
+    {
+        return $query->where('videos.is_published', true)
+            ->where(function (Builder $q) {
+                $q->whereNull('videos.level_id')
+                    ->orWhereHas('level', function (Builder $lq) {
+                        $lq->where('levels.is_published', true);
+                    });
+            });
     }
 
     public function getTitleAttribute(): string
@@ -125,6 +156,22 @@ class Video extends Model
     public function progressForUser(int $userId): ?VideoProgress
     {
         return $this->progress()->where('user_id', $userId)->first();
+    }
+
+    /**
+     * Check if a specific student has completed this video.
+     */
+    public function isCompletedBy(User $user): bool
+    {
+        return app(VideoProgressService::class)->isVideoCompleted($user, $this);
+    }
+
+    /**
+     * Check if a specific student can access this video.
+     */
+    public function canBeAccessedBy(User $user): bool
+    {
+        return app(VideoProgressService::class)->canAccessVideo($user, $this);
     }
 
     /**

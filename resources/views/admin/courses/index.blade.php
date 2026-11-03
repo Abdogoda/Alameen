@@ -235,7 +235,7 @@
                     
                     <div>
                         <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">{{ __('عنوان الكورس بالعربية:') }} <span class="text-rose-500">*</span></label>
-                        <input type="text" name="title_ar" required placeholder="مثال: دبلوم تأهيل اضطرابات طيف التوحد والتواصل" class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-sm font-bold text-[#012383] dark:text-white outline-none focus:border-[#0B2A8F] bg-slate-50/50 dark:bg-slate-800/50" />
+                        <input type="text" name="title_ar" required placeholder="{{ __('مثال: دبلوم تأهيل اضطرابات طيف التوحد والتواصل') }}" class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-sm font-bold text-[#012383] dark:text-white outline-none focus:border-[#0B2A8F] bg-slate-50/50 dark:bg-slate-800/50" />
                     </div>
 
                     
@@ -257,7 +257,7 @@
 
                     <div>
                         <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">{{ __('وصف الكورس بالعربية:') }}</label>
-                        <textarea name="description_ar" rows="2" placeholder="نبذة عن البرنامج التدريبي ومخرجات التعلم والشهادة المعتمدة..." class="w-full p-3.5 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-medium text-slate-700 dark:text-slate-200 outline-none focus:border-[#0B2A8F] resize-none bg-slate-50/50 dark:bg-slate-800/50"></textarea>
+                        <textarea name="description_ar" rows="2" placeholder="{{ __('نبذة عن البرنامج التدريبي ومخرجات التعلم والشهادة المعتمدة...') }}" class="w-full p-3.5 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-medium text-slate-700 dark:text-slate-200 outline-none focus:border-[#0B2A8F] resize-none bg-slate-50/50 dark:bg-slate-800/50"></textarea>
                     </div>
 
                     {{-- Promo Video Source Options (MUX vs Link) --}}
@@ -274,7 +274,7 @@
                             </div>
                             <div>
                                 <span class="text-[11px] font-bold text-slate-500 block mb-1">{{ __('الخيار ٢: رابط MUX أو معرّف بث أو YouTube') }}</span>
-                                <input type="text" name="promo_video_url" placeholder="https://stream.mux.com/... أو رابط فيديو" class="w-full h-10 px-3 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-mono text-slate-700 dark:text-slate-200 outline-none focus:border-[#0B2A8F] bg-white dark:bg-slate-800" />
+                                <input type="text" name="promo_video_url" placeholder="{{ __('https://stream.mux.com/... أو رابط فيديو') }}" class="w-full h-10 px-3 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-mono text-slate-700 dark:text-slate-200 outline-none focus:border-[#0B2A8F] bg-white dark:bg-slate-800" />
                             </div>
                         </div>
                     </div>

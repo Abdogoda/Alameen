@@ -591,7 +591,7 @@
 
                                 <!-- Keyboard Shortcut Tip + Send Button -->
                                 <div class="flex items-center gap-2.5">
-                                    <span class="hidden sm:inline text-[11px] text-slate-400 font-semibold">Ctrl + Enter للإرسال</span>
+                                    <span class="hidden sm:inline text-[11px] text-slate-400 font-semibold">{{ __('Ctrl + Enter للإرسال') }}</span>
 
                                     <button
                                         type="submit"

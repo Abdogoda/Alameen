@@ -6,15 +6,9 @@
           
           <!-- Page Introduction -->
           <div class="flex flex-col gap-[2px] items-start text-start w-full overflow-clip">
-            <p class="font-['Cairo'] font-medium text-[12px] leading-[1.8] text-[#0B2A8F] w-full text-start" data-i18n="profile.breadcrumb">
-              مساحة التعلّم  /  حسابي
-            </p>
-            <h1 class="font-['Baloo_Bhaijaan_2'] font-bold text-[34px] leading-[1.45] text-[#012383] w-full text-start" data-i18n="profile.pageTitle">
-              حسابي
-            </h1>
-            <p class="font-['Cairo'] font-medium text-[14px] leading-[1.8] text-[#475569] w-full text-start" data-i18n="profile.pageDesc">
-              إدارة بياناتك الشخصية، كلمة المرور، وتفضيلات الإشعارات.
-            </p>
+            <p class="font-['Cairo'] font-medium text-[12px] leading-[1.8] text-[#0B2A8F] w-full text-start" data-i18n="profile.breadcrumb">{{ __('profile.breadcrumb') }}</p>
+            <h1 class="font-['Baloo_Bhaijaan_2'] font-bold text-[34px] leading-[1.45] text-[#012383] w-full text-start" data-i18n="profile.pageTitle">{{ __('profile.pageTitle') }}</h1>
+            <p class="font-['Cairo'] font-medium text-[14px] leading-[1.8] text-[#475569] w-full text-start" data-i18n="profile.pageDesc">{{ __('profile.pageDesc') }}</p>
           </div>
 
           <!-- Profile Hero Card (Clean & Focused) -->
@@ -29,7 +23,7 @@
                 <button
                   type="button"
                   id="avatar-upload-btn"
-                  title="تغيير الصورة"
+                  title="{{ __('profile.changeAvatar') }}"
                   class="absolute inset-0 rounded-full bg-black/40 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
                 >
                   <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -41,17 +35,15 @@
 
               <div class="flex flex-col gap-1.5 text-start">
                 <div class="flex items-center gap-3">
-                  <h2 class="font-bold text-xl text-[#012383]" data-i18n="header.studentName">أحمد إبراهيم السالم</h2>
+                  <h2 class="font-bold text-xl text-[#012383]" data-i18n="header.studentName">{{ auth()->check() ? auth()->user()->name : __('header.studentName') }}</h2>
                   <span class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-[#EEF7F3] text-emerald-700 text-xs font-bold">
                     <span class="size-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <span data-i18n="profile.studentRole">طالب مسجل</span>
+                    <span data-i18n="profile.studentRole">{{ __('profile.studentRole') }}</span>
                   </span>
                 </div>
-                <p class="text-xs text-[#475569]">ahmed.ibrahim@example.com</p>
+                <p class="text-xs text-[#475569]">{{ auth()->check() ? auth()->user()->email : 'ahmed.ibrahim@example.com' }}</p>
                 <div class="flex items-center gap-2 mt-0.5">
-                  <span class="bg-[#EAF1FB] text-[#0B2A8F] text-[11px] font-bold px-2.5 py-1 rounded-full" data-i18n="profile.joinedDate">
-                    تاريخ الانضمام: أكتوبر ٢٠٢٦
-                  </span>
+                  <span class="bg-[#EAF1FB] text-[#0B2A8F] text-[11px] font-bold px-2.5 py-1 rounded-full" data-i18n="profile.joinedDate">{{ __('profile.joinedDate') }}</span>
                 </div>
               </div>
             </div>
@@ -67,7 +59,7 @@
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
-                <span data-i18n="profile.changeAvatar">تغيير الصورة</span>
+                <span data-i18n="profile.changeAvatar">{{ __('profile.changeAvatar') }}</span>
               </button>
             </div>
 
@@ -83,40 +75,34 @@
                 data-tab="personal"
                 class="profile-tab-btn active px-4 py-2 rounded-xl text-xs font-bold transition-all bg-[#012383] text-white cursor-pointer"
                 data-i18n="profile.tabPersonal"
-              >
-                البيانات الشخصية
-              </button>
+              >{{ __('profile.tabPersonal') }}</button>
               <button
                 type="button"
                 data-tab="security"
                 class="profile-tab-btn px-4 py-2 rounded-xl text-xs font-bold transition-all text-[#475569] hover:bg-[#EAF1FB] cursor-pointer"
                 data-i18n="profile.tabSecurity"
-              >
-                كلمة المرور والأمان
-              </button>
+              >{{ __('profile.tabSecurity') }}</button>
               <button
                 type="button"
                 data-tab="notifications"
                 class="profile-tab-btn px-4 py-2 rounded-xl text-xs font-bold transition-all text-[#475569] hover:bg-[#EAF1FB] cursor-pointer"
                 data-i18n="profile.tabNotifications"
-              >
-                تفضيلات الإشعارات
-              </button>
+              >{{ __('profile.tabNotifications') }}</button>
             </div>
 
             <!-- Tab 1: Personal Info -->
             <div id="tab-personal" class="profile-tab-content flex flex-col gap-5">
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div class="flex flex-col gap-1.5 text-start">
-                  <label class="text-xs font-bold text-[#012383]" data-i18n="profile.fullNameLabel">الاسم الكامل</label>
+                  <label class="text-xs font-bold text-[#012383]" data-i18n="profile.fullNameLabel">{{ __('profile.fullNameLabel') }}</label>
                   <input
                     type="text"
-                    value="أحمد إبراهيم السالم"
+                    value="{{ auth()->user()?->name ?? __('header.studentName') }}"
                     class="bg-[#FAFCFF] border border-[#DEE8F7] rounded-xl px-4 py-2.5 text-xs text-[#012383] font-medium outline-none transition-all focus:border-[#0B2A8F] focus:ring-2 focus:ring-[#0B2A8F]/15"
                   />
                 </div>
                 <div class="flex flex-col gap-1.5 text-start">
-                  <label class="text-xs font-bold text-[#012383]" data-i18n="profile.emailLabel">البريد الإلكتروني</label>
+                  <label class="text-xs font-bold text-[#012383]" data-i18n="profile.emailLabel">{{ __('profile.emailLabel') }}</label>
                   <input
                     type="email"
                     value="ahmed.ibrahim@example.com"
@@ -127,7 +113,7 @@
 
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div class="flex flex-col gap-1.5 text-start">
-                  <label class="text-xs font-bold text-[#012383]" data-i18n="profile.phoneLabel">رقم الجوال</label>
+                  <label class="text-xs font-bold text-[#012383]" data-i18n="profile.phoneLabel">{{ __('profile.phoneLabel') }}</label>
                   <input
                     type="tel"
                     value="+966 54 987 6543"
@@ -135,7 +121,7 @@
                   />
                 </div>
                 <div class="flex flex-col gap-1.5 text-start">
-                  <label class="text-xs font-bold text-[#012383]" data-i18n="profile.cityLabel">المدينة والدولة</label>
+                  <label class="text-xs font-bold text-[#012383]" data-i18n="profile.cityLabel">{{ __('profile.cityLabel') }}</label>
                   <input
                     type="text"
                     value="الرياض، المملكة العربية السعودية"
@@ -145,13 +131,13 @@
               </div>
 
               <div class="flex flex-col gap-1.5 text-start">
-                <label class="text-xs font-bold text-[#012383]" data-i18n="profile.bioLabel">نبذة تعريفية</label>
+                <label class="text-xs font-bold text-[#012383]" data-i18n="profile.bioLabel">{{ __('profile.bioLabel') }}</label>
                 <textarea
                   rows="3"
                   class="bg-[#FAFCFF] border border-[#DEE8F7] rounded-xl p-3.5 text-xs text-[#012383] font-medium outline-none transition-all focus:border-[#0B2A8F] focus:ring-2 focus:ring-[#0B2A8F]/15 resize-none leading-relaxed"
                   data-i18n-placeholder="profile.bioPlaceholder"
-                  placeholder="اكتب نبذة تعريفية مختصرة عن اهتماماتك في علوم التخاطب والتعلم..."
-                >طالب ودارس في علوم التخاطب واضطرابات النطق، أتابع كورس منصة مركز الأمين للتطبيق العملي واكتساب الخبرة السريرية المعتمدة.</textarea>
+                  placeholder="{{ __('اكتب نبذة تعريفية مختصرة عن اهتماماتك في علوم التخاطب والتعلم...') }}"
+                >{{ auth()->user()?->bio ?? __('طالب ودارس في علوم التخاطب واضطرابات النطق، أتابع كورس منصة مركز الأمين للتطبيق العملي واكتساب الخبرة السريرية المعتمدة.') }}</textarea>
               </div>
             </div>
 
@@ -159,7 +145,7 @@
             <div id="tab-security" class="profile-tab-content hidden flex-col gap-4">
               <div class="max-w-md flex flex-col gap-4 text-start">
                 <div class="flex flex-col gap-1.5">
-                  <label class="text-xs font-bold text-[#012383]" data-i18n="profile.currentPasswordLabel">كلمة المرور الحالية</label>
+                  <label class="text-xs font-bold text-[#012383]" data-i18n="profile.currentPasswordLabel">{{ __('profile.currentPasswordLabel') }}</label>
                   <input
                     type="password"
                     placeholder="••••••••"
@@ -167,7 +153,7 @@
                   />
                 </div>
                 <div class="flex flex-col gap-1.5">
-                  <label class="text-xs font-bold text-[#012383]" data-i18n="profile.newPasswordLabel">كلمة المرور الجديدة</label>
+                  <label class="text-xs font-bold text-[#012383]" data-i18n="profile.newPasswordLabel">{{ __('profile.newPasswordLabel') }}</label>
                   <input
                     type="password"
                     placeholder="أدخل كلمة المرور الجديدة"
@@ -175,7 +161,7 @@
                   />
                 </div>
                 <div class="flex flex-col gap-1.5">
-                  <label class="text-xs font-bold text-[#012383]" data-i18n="profile.confirmNewPasswordLabel">تأكيد كلمة المرور الجديدة</label>
+                  <label class="text-xs font-bold text-[#012383]" data-i18n="profile.confirmNewPasswordLabel">{{ __('profile.confirmNewPasswordLabel') }}</label>
                   <input
                     type="password"
                     placeholder="أعد إدخال كلمة المرور الجديدة"
@@ -187,9 +173,7 @@
                   <svg class="size-4 text-[#0B2A8F] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  <p class="text-[11px] text-[#012383] font-medium leading-relaxed" data-i18n="profile.passwordHint">
-                    يجب أن تتكون كلمة المرور من ٨ خانات على الأقل وتتضمن أرقامًا وحروفًا.
-                  </p>
+                  <p class="text-[11px] text-[#012383] font-medium leading-relaxed" data-i18n="profile.passwordHint">{{ __('profile.passwordHint') }}</p>
                 </div>
               </div>
             </div>
@@ -199,8 +183,8 @@
               
               <div class="p-4 rounded-xl border border-[#DEE8F7] bg-[#FAFCFF] flex items-center justify-between gap-4">
                 <div class="text-start">
-                  <h4 class="text-xs font-bold text-[#012383]" data-i18n="profile.notifNewLessons">إشعارات الدروس والمحتوى الجديد</h4>
-                  <p class="text-[11px] text-[#475569] mt-0.5" data-i18n="profile.notifNewLessonsDesc">تنبيهك فور إضافة دروس وفيديوهات جديدة في كورساتك المسجلة.</p>
+                  <h4 class="text-xs font-bold text-[#012383]" data-i18n="profile.notifNewLessons">{{ __('profile.notifNewLessons') }}</h4>
+                  <p class="text-[11px] text-[#475569] mt-0.5" data-i18n="profile.notifNewLessonsDesc">{{ __('profile.notifNewLessonsDesc') }}</p>
                 </div>
                 <label class="relative inline-flex items-center cursor-pointer shrink-0">
                   <input type="checkbox" checked class="sr-only peer" />
@@ -210,8 +194,8 @@
 
               <div class="p-4 rounded-xl border border-[#DEE8F7] bg-[#FAFCFF] flex items-center justify-between gap-4">
                 <div class="text-start">
-                  <h4 class="text-xs font-bold text-[#012383]" data-i18n="profile.notifAssignments">إشعارات تقييم المهام والواجبات</h4>
-                  <p class="text-[11px] text-[#475569] mt-0.5" data-i18n="profile.notifAssignmentsDesc">تنبيهك عند استلام تقييم وملاحظات المحاضر على واجباتك المرسلة.</p>
+                  <h4 class="text-xs font-bold text-[#012383]" data-i18n="profile.notifAssignments">{{ __('profile.notifAssignments') }}</h4>
+                  <p class="text-[11px] text-[#475569] mt-0.5" data-i18n="profile.notifAssignmentsDesc">{{ __('profile.notifAssignmentsDesc') }}</p>
                 </div>
                 <label class="relative inline-flex items-center cursor-pointer shrink-0">
                   <input type="checkbox" checked class="sr-only peer" />
@@ -221,8 +205,8 @@
 
               <div class="p-4 rounded-xl border border-[#DEE8F7] bg-[#FAFCFF] flex items-center justify-between gap-4">
                 <div class="text-start">
-                  <h4 class="text-xs font-bold text-[#012383]" data-i18n="profile.notifReminders">إشعارات التذكير بمتابعة التعلّم</h4>
-                  <p class="text-[11px] text-[#475569] mt-0.5" data-i18n="profile.notifRemindersDesc">تذكيرات أسبوعية خفيفة لمساعدتك على إكمال مسارك التعليمي.</p>
+                  <h4 class="text-xs font-bold text-[#012383]" data-i18n="profile.notifReminders">{{ __('profile.notifReminders') }}</h4>
+                  <p class="text-[11px] text-[#475569] mt-0.5" data-i18n="profile.notifRemindersDesc">{{ __('profile.notifRemindersDesc') }}</p>
                 </div>
                 <label class="relative inline-flex items-center cursor-pointer shrink-0">
                   <input type="checkbox" checked class="sr-only peer" />
@@ -239,17 +223,13 @@
                 id="profile-cancel-btn"
                 class="px-5 py-2.5 rounded-full text-xs font-bold text-[#475569] hover:bg-[#EAF1FB] transition-colors cursor-pointer"
                 data-i18n="profile.cancelBtn"
-              >
-                إلغاء
-              </button>
+              >{{ __('profile.cancelBtn') }}</button>
               <button
                 type="button"
                 id="profile-save-btn"
                 class="px-7 py-2.5 rounded-full text-xs font-bold bg-[#012383] text-white hover:bg-[#0B2A8F] transition-all shadow-sm hover:shadow-md cursor-pointer"
                 data-i18n="profile.saveChangesBtn"
-              >
-                حفظ التغييرات
-              </button>
+              >{{ __('profile.saveChangesBtn') }}</button>
             </div>
 
           </div>

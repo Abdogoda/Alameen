@@ -28,6 +28,7 @@ class StoreVideoRequest extends FormRequest
             'min_completion_percentage' => ['nullable', 'integer', 'min:1', 'max:100'],
             'sort_order' => ['nullable', 'integer', 'min:1'],
             'is_free_preview' => ['nullable', 'boolean'],
+            'is_published' => ['nullable', 'boolean'],
             'video_source' => ['nullable', 'string', 'max:50'],
             'video_source_type' => ['nullable', 'string', 'in:mux_upload,link,mux_playback_id,bunny,local'],
             'video_url' => ['nullable', 'string', 'max:1000'],

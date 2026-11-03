@@ -202,7 +202,7 @@
                         type="text"
                         wire:model="titleAr"
                         dir="rtl"
-                        placeholder="مثال: إشعار أعمال صيانة للنظام"
+                        placeholder="{{ __('مثال: إشعار أعمال صيانة للنظام') }}"
                         class="w-full rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 px-3 py-2 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-accent"
                     />
                 </div>
@@ -232,7 +232,7 @@
                         wire:model="bodyAr"
                         rows="3"
                         dir="rtl"
-                        placeholder="تفاصيل الإشعار باللغة العربية..."
+                        placeholder="{{ __('تفاصيل الإشعار باللغة العربية...') }}"
                         class="w-full rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 px-3 py-2 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-accent"
                     ></textarea>
                 </div>
@@ -272,7 +272,7 @@
                     <input
                         type="text"
                         wire:model="actionTextAr"
-                        placeholder="مثال: عرض التفاصيل"
+                        placeholder="{{ __('مثال: عرض التفاصيل') }}"
                         class="w-full rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 px-3 py-2 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-accent"
                     />
                 </div>
@@ -327,9 +327,9 @@
                         <th class="px-5 py-3 text-start">{{ __('notifications.admin.recipient') }}</th>
                         <th class="px-5 py-3 text-start">{{ __('notifications.admin.title_label') }}</th>
                         <th class="px-5 py-3 text-start">{{ __('notifications.admin.type') }}</th>
-                        <th class="px-5 py-3 text-start">{{ __('Status') }}</th>
-                        <th class="px-5 py-3 text-start">{{ __('Date') }}</th>
-                        <th class="px-5 py-3 text-end">{{ __('Actions') }}</th>
+                        <th class="px-5 py-3 text-start">{{ __('الحالة') }}</th>
+                        <th class="px-5 py-3 text-start">{{ __('التاريخ') }}</th>
+                        <th class="px-5 py-3 text-end">{{ __('الإجراءات') }}</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-zinc-100 dark:divide-zinc-800 text-zinc-700 dark:text-zinc-300">
@@ -385,7 +385,7 @@
                                     wire:click="deleteNotification('{{ $item->id }}')"
                                     wire:confirm="{{ __('notifications.admin.delete_confirm') }}"
                                     class="p-1.5 rounded-lg text-zinc-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition cursor-pointer"
-                                    title="{{ __('Delete') }}"
+                                    title="{{ __('حذف') }}"
                                 >
                                     <flux:icon.trash class="size-4" />
                                 </button>
@@ -453,7 +453,7 @@
                             wire:click="deleteNotification('{{ $item->id }}')"
                             wire:confirm="{{ __('notifications.admin.delete_confirm') }}"
                             class="p-1.5 rounded-lg text-zinc-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition cursor-pointer"
-                            title="{{ __('Delete') }}"
+                            title="{{ __('حذف') }}"
                         >
                             <flux:icon.trash class="size-4" />
                         </button>

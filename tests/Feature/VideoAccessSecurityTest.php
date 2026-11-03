@@ -10,6 +10,7 @@ use App\Models\Video;
 use App\Services\Course\CourseEnrollmentService;
 use App\Services\Video\VideoProgressService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class VideoAccessSecurityTest extends TestCase
@@ -223,5 +224,75 @@ class VideoAccessSecurityTest extends TestCase
         );
 
         $response->assertNotFound();
+    }
+
+    /**
+     * Lesson page renders with watermark canvas and does not expose direct download links.
+     */
+    public function test_video_player_renders_without_exposing_download_or_direct_links(): void
+    {
+        $user = User::factory()->create();
+        $this->enrollmentService->enroll($user, $this->course);
+
+        $secureVideo = Video::create([
+            'course_id' => $this->course->id,
+            'title_ar' => 'محاضرة آمنة',
+            'slug' => 'secure-lecture',
+            'mux_playback_id' => 'mux-sec-123',
+            'video_source' => 'mux',
+            'duration_seconds' => 300,
+            'min_completion_percentage' => 80,
+            'sort_order' => 0,
+            'is_free_preview' => true,
+            'is_published' => true,
+        ]);
+
+        $response = $this->actingAs($user)->get(
+            route('lessons.show', [$this->course->slug, $secureVideo->slug])
+        );
+
+        $response->assertOk();
+        // Check that watermark canvas is rendered
+        $response->assertSee('x-ref="watermarkCanvas"', false);
+        // Check that controlslist nodownload is present
+        $response->assertSee('nodownload', false);
+        // Check that anti-screen recording shield is present
+        $response->assertSee('shieldActive', false);
+        // Ensure no direct download link or raw stream link is presented as a downloadable anchor
+        $response->assertDontSee('download="'.$secureVideo->slug.'"', false);
+    }
+
+    /**
+     * Storage fallback returns secure non-downloadable inline streaming headers.
+     */
+    public function test_storage_video_streaming_returns_secure_anti_download_headers(): void
+    {
+        // Create a dummy video file in public storage for testing
+        Storage::disk('public')->put('videos/lessons/test_lecture.mp4', 'dummy_video_stream');
+
+        $user = User::factory()->create();
+        $this->enrollmentService->enroll($user, $this->course);
+
+        // Sort order 0 so it is the very first video and accessible
+        $storedVideo = Video::create([
+            'course_id' => $this->course->id,
+            'title_ar' => 'محاضرة التخزين',
+            'slug' => 'stored-lecture',
+            'video_url' => '/storage/videos/lessons/test_lecture.mp4',
+            'duration_seconds' => 600,
+            'min_completion_percentage' => 80,
+            'sort_order' => 0,
+            'is_free_preview' => true,
+            'is_published' => true,
+        ]);
+
+        $response = $this->actingAs($user)->get('/storage/videos/lessons/test_lecture.mp4');
+
+        $response->assertOk();
+        $response->assertHeader('Content-Disposition', 'inline');
+        $response->assertHeader('X-Content-Type-Options', 'nosniff');
+        $response->assertHeader('X-Robots-Tag', 'noindex, nofollow, noarchive');
+
+        Storage::disk('public')->delete('videos/lessons/test_lecture.mp4');
     }
 }

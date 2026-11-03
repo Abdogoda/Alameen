@@ -25,6 +25,7 @@ class UpdateLevelRequest extends FormRequest
             'description_ar' => ['nullable', 'string'],
             'description_en' => ['nullable', 'string'],
             'sort_order' => ['nullable', 'integer', 'min:1'],
+            'is_published' => ['nullable', 'boolean'],
         ];
     }
 }

@@ -34,6 +34,7 @@ class UpdateVideoRequest extends FormRequest
             'bunny_video_id' => ['nullable', 'string', 'max:255'],
             'video_file' => ['nullable', 'file', 'mimetypes:video/mp4,video/quicktime,video/webm,video/x-matroska', 'max:1048576'],
             'is_free_preview' => ['nullable', 'boolean'],
+            'is_published' => ['nullable', 'boolean'],
             'task_title_ar' => ['nullable', 'string', 'max:255'],
             'task_instructions_ar' => ['nullable', 'string'],
         ];

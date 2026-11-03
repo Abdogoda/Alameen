@@ -4,15 +4,9 @@
           
           <!-- Page Introduction (Node 1155:17917) -->
           <div class="flex flex-col gap-[4px] items-start text-start w-full" data-node-id="1155:17917">
-            <p class="font-['Cairo'] font-semibold text-[12px] leading-[1.8] text-[#0B2A8F] text-start w-full" data-i18n="courses.breadcrumb" data-node-id="1155:17918">
-              {{ __('courses.breadcrumb') }}
-            </p>
-            <h1 class="font-['Cairo'] font-bold text-[28px] sm:text-[32px] leading-[1.3] text-[#012383] text-start w-full" data-i18n="courses.courseTitle" data-node-id="1155:17919">
-              {{ __('courses.courseTitle') }}
-            </h1>
-            <p class="font-['Cairo'] font-medium text-[13px] sm:text-[14px] leading-[1.7] text-[#475569] text-start w-full" data-i18n="courses.courseSubtitle" data-node-id="1155:17920">
-              {{ __('courses.courseSubtitle') }}
-            </p>
+            <p class="font-['Cairo'] font-semibold text-[12px] leading-[1.8] text-[#0B2A8F] text-start w-full" data-i18n="courses.breadcrumb" data-node-id="1155:17918">{{ __('courses.breadcrumb') }}</p>
+            <h1 class="font-['Cairo'] font-bold text-[28px] sm:text-[32px] leading-[1.3] text-[#012383] text-start w-full" data-i18n="courses.courseTitle" data-node-id="1155:17919">{{ __('courses.courseTitle') }}</h1>
+            <p class="font-['Cairo'] font-medium text-[13px] sm:text-[14px] leading-[1.7] text-[#475569] text-start w-full" data-i18n="courses.courseSubtitle" data-node-id="1155:17920">{{ __('courses.courseSubtitle') }}</p>
           </div>
 
           <!-- Course Progress Overview Card (Node 1155:17921) -->
@@ -28,9 +22,7 @@
                 <div class="bg-[#DEE8F7] h-[8px] rounded-full w-full relative overflow-hidden" data-node-id="1155:17942">
                   <div class="bg-gradient-to-r from-[#0B2A8F] to-[#012383] h-full rounded-full w-[42%]" data-node-id="1155:17943"></div>
                 </div>
-                <p class="font-['Cairo'] font-medium text-[12px] sm:text-[13px] text-[#475569] text-start w-full" data-i18n="courses.progressMeta" data-node-id="1155:17944">
-                  {{ __('courses.progressMeta') }}
-                </p>
+                <p class="font-['Cairo'] font-medium text-[12px] sm:text-[13px] text-[#475569] text-start w-full" data-i18n="courses.progressMeta" data-node-id="1155:17944">{{ __('courses.progressMeta') }}</p>
               </div>
 
 @php
@@ -68,32 +60,20 @@
               
               <!-- Section Heading (Node 1155:18001) -->
               <div class="flex items-center justify-between text-start w-full" data-node-id="1155:18001">
-                <h2 class="font-['Cairo'] font-bold text-[19px] sm:text-[20px] leading-[1.4] text-[#012383]" data-i18n="courses.curriculumTitle" data-node-id="1155:18003">
-                  {{ __('courses.curriculumTitle') }}
-                </h2>
-                <p class="font-['Cairo'] font-medium text-[12px] sm:text-[13px] text-[#475569] bg-white border border-[#DEE8F7] px-3 py-0.5 rounded-full whitespace-nowrap" data-i18n="courses.curriculumMeta" data-node-id="1155:18002">
-                  {{ __('courses.curriculumMeta') }}
-                </p>
+                <h2 class="font-['Cairo'] font-bold text-[19px] sm:text-[20px] leading-[1.4] text-[#012383]" data-i18n="courses.curriculumTitle" data-node-id="1155:18003">{{ __('courses.curriculumTitle') }}</h2>
+                <p class="font-['Cairo'] font-medium text-[12px] sm:text-[13px] text-[#475569] bg-white border border-[#DEE8F7] px-3 py-0.5 rounded-full whitespace-nowrap" data-i18n="courses.curriculumMeta" data-node-id="1155:18002">{{ __('courses.curriculumMeta') }}</p>
               </div>
-              <p class="font-['Cairo'] font-medium text-[12px] leading-[1.8] text-[#475569] text-start w-full" data-i18n="courses.curriculumDesc" data-node-id="1155:18004">
-                {{ __('courses.curriculumDesc') }}
-              </p>
+              <p class="font-['Cairo'] font-medium text-[12px] leading-[1.8] text-[#475569] text-start w-full" data-i18n="courses.curriculumDesc" data-node-id="1155:18004">{{ __('courses.curriculumDesc') }}</p>
 
               <!-- Level 1 (Node 1155:18005 - 100% Completed) -->
               <div class="bg-white border border-[#DEE8F7] rounded-[16px] overflow-hidden w-full" data-node-id="1155:18005">
                 <div class="bg-[#FAFCFF] p-[20px] flex flex-col gap-[10px] w-full" data-node-id="1155:18006">
                   <div class="flex gap-[12px] items-center w-full" data-node-id="1155:18007">
                     <div class="flex-1 flex flex-col gap-[2px] items-start text-start" data-node-id="1155:18010">
-                      <h4 class="font-['Cairo'] font-bold text-[18px] leading-[1.8] text-[#012383]" data-i18n="courses.level1Title" data-node-id="1155:18011">
-                        {{ __('courses.level1Title') }}
-                      </h4>
-                      <p class="font-['Cairo'] font-medium text-[12px] leading-[1.8] text-[#475569]" data-i18n="courses.level1Meta" data-node-id="1155:18012">
-                        {{ __('courses.level1Meta') }}
-                      </p>
+                      <h4 class="font-['Cairo'] font-bold text-[18px] leading-[1.8] text-[#012383]" data-i18n="courses.level1Title" data-node-id="1155:18011">{{ __('courses.level1Title') }}</h4>
+                      <p class="font-['Cairo'] font-medium text-[12px] leading-[1.8] text-[#475569]" data-i18n="courses.level1Meta" data-node-id="1155:18012">{{ __('courses.level1Meta') }}</p>
                     </div>
-                    <span class="font-['Cairo'] font-bold text-[13px] leading-[1.8] text-[#0B2A8F] whitespace-nowrap" data-i18n="courses.level1Percent" data-node-id="1155:18009">
-                      {{ __('courses.level1Percent') }}
-                    </span>
+                    <span class="font-['Cairo'] font-bold text-[13px] leading-[1.8] text-[#0B2A8F] whitespace-nowrap" data-i18n="courses.level1Percent" data-node-id="1155:18009">{{ __('courses.level1Percent') }}</span>
                     <div class="size-[18px] shrink-0 relative cursor-pointer" data-node-id="1155:19374">
                       <img src="/assets/images/icon-chevron-up.svg" alt="" class="size-full" />
                     </div>
@@ -109,18 +89,18 @@
                     <img src="/assets/images/icon-check-green.svg" alt="" class="size-[16px]" />
                   </div>
                   <div class="flex-1 flex flex-col gap-[2px] items-start text-start" data-node-id="1155:18023">
-                    <h5 class="font-['Cairo'] font-semibold text-[14px] text-[#012383]" data-i18n="courses.l1Title">مدخل إلى التواصل والتخاطب</h5>
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.duration20min">٢٠ دقيقة</p>
+                    <h5 class="font-['Cairo'] font-semibold text-[14px] text-[#012383]" data-i18n="courses.l1Title">{{ __('courses.l1Title') }}</h5>
+                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.duration20min">{{ __('courses.duration20min') }}</p>
                   </div>
                   <div class="w-[140px] flex flex-col gap-[5px] items-start" data-node-id="1155:18019">
-                    <p class="font-['Cairo'] font-semibold text-[12px] text-[#216350]" data-i18n="courses.lessonCompleted">مكتمل • ١٠٠٪</p>
+                    <p class="font-['Cairo'] font-semibold text-[12px] text-[#216350]" data-i18n="courses.lessonCompleted">{{ __('courses.lessonCompleted') }}</p>
                     <div class="bg-[#DEE8F7] h-[7px] rounded-full w-full relative overflow-hidden">
                       <div class="bg-[#0B2A8F] h-[7px] rounded-full w-full"></div>
                     </div>
                   </div>
                   <div class="w-[143px] flex flex-col gap-[2px] items-end text-end" data-node-id="1155:18016">
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.taskL1">مهمة الدرس ١</p>
-                    <p class="font-['Cairo'] font-medium text-[12px] text-[#475569]" data-i18n="courses.taskGraded">مُقيّمة</p>
+                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.taskL1">{{ __('courses.taskL1') }}</p>
+                    <p class="font-['Cairo'] font-medium text-[12px] text-[#475569]" data-i18n="courses.taskGraded">{{ __('courses.taskGraded') }}</p>
                   </div>
                 </div>
 
@@ -130,18 +110,18 @@
                     <img src="/assets/images/icon-check-green.svg" alt="" class="size-[16px]" />
                   </div>
                   <div class="flex-1 flex flex-col gap-[2px] items-start text-start" data-node-id="1155:18036">
-                    <h5 class="font-['Cairo'] font-semibold text-[14px] text-[#012383]" data-i18n="courses.l2Title">مكوّنات عملية التواصل</h5>
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.duration20min">٢٠ دقيقة</p>
+                    <h5 class="font-['Cairo'] font-semibold text-[14px] text-[#012383]" data-i18n="courses.l2Title">{{ __('courses.l2Title') }}</h5>
+                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.duration20min">{{ __('courses.duration20min') }}</p>
                   </div>
                   <div class="w-[140px] flex flex-col gap-[5px] items-start" data-node-id="1155:18032">
-                    <p class="font-['Cairo'] font-semibold text-[12px] text-[#216350]" data-i18n="courses.lessonCompleted">مكتمل • ١٠٠٪</p>
+                    <p class="font-['Cairo'] font-semibold text-[12px] text-[#216350]" data-i18n="courses.lessonCompleted">{{ __('courses.lessonCompleted') }}</p>
                     <div class="bg-[#DEE8F7] h-[7px] rounded-full w-full relative overflow-hidden">
                       <div class="bg-[#0B2A8F] h-[7px] rounded-full w-full"></div>
                     </div>
                   </div>
                   <div class="w-[143px] flex flex-col gap-[2px] items-end text-end" data-node-id="1155:18029">
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.taskL2">مهمة الدرس ٢</p>
-                    <p class="font-['Cairo'] font-medium text-[12px] text-[#475569]" data-i18n="courses.taskGraded">مُقيّمة</p>
+                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.taskL2">{{ __('courses.taskL2') }}</p>
+                    <p class="font-['Cairo'] font-medium text-[12px] text-[#475569]" data-i18n="courses.taskGraded">{{ __('courses.taskGraded') }}</p>
                   </div>
                 </div>
 
@@ -151,18 +131,18 @@
                     <img src="/assets/images/icon-check-green.svg" alt="" class="size-[16px]" />
                   </div>
                   <div class="flex-1 flex flex-col gap-[2px] items-start text-start" data-node-id="1155:18049">
-                    <h5 class="font-['Cairo'] font-semibold text-[14px] text-[#012383]" data-i18n="courses.l3Title">الإنصات والملاحظة</h5>
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.duration20min">٢٠ دقيقة</p>
+                    <h5 class="font-['Cairo'] font-semibold text-[14px] text-[#012383]" data-i18n="courses.l3Title">{{ __('courses.l3Title') }}</h5>
+                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.duration20min">{{ __('courses.duration20min') }}</p>
                   </div>
                   <div class="w-[140px] flex flex-col gap-[5px] items-start" data-node-id="1155:18045">
-                    <p class="font-['Cairo'] font-semibold text-[12px] text-[#216350]" data-i18n="courses.lessonCompleted">مكتمل • ١٠٠٪</p>
+                    <p class="font-['Cairo'] font-semibold text-[12px] text-[#216350]" data-i18n="courses.lessonCompleted">{{ __('courses.lessonCompleted') }}</p>
                     <div class="bg-[#DEE8F7] h-[7px] rounded-full w-full relative overflow-hidden">
                       <div class="bg-[#0B2A8F] h-[7px] rounded-full w-full"></div>
                     </div>
                   </div>
                   <div class="w-[143px] flex flex-col gap-[2px] items-end text-end" data-node-id="1155:18042">
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.taskL3">مهمة الدرس ٣</p>
-                    <p class="font-['Cairo'] font-medium text-[12px] text-[#475569]" data-i18n="courses.taskGraded">مُقيّمة</p>
+                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.taskL3">{{ __('courses.taskL3') }}</p>
+                    <p class="font-['Cairo'] font-medium text-[12px] text-[#475569]" data-i18n="courses.taskGraded">{{ __('courses.taskGraded') }}</p>
                   </div>
                 </div>
 
@@ -172,18 +152,18 @@
                     <img src="/assets/images/icon-check-green.svg" alt="" class="size-[16px]" />
                   </div>
                   <div class="flex-1 flex flex-col gap-[2px] items-start text-start" data-node-id="1155:18062">
-                    <h5 class="font-['Cairo'] font-semibold text-[14px] text-[#012383]" data-i18n="courses.l4Title">بيئة التعلّم الداعمة</h5>
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.duration20min">٢٠ دقيقة</p>
+                    <h5 class="font-['Cairo'] font-semibold text-[14px] text-[#012383]" data-i18n="courses.l4Title">{{ __('courses.l4Title') }}</h5>
+                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.duration20min">{{ __('courses.duration20min') }}</p>
                   </div>
                   <div class="w-[140px] flex flex-col gap-[5px] items-start" data-node-id="1155:18058">
-                    <p class="font-['Cairo'] font-semibold text-[12px] text-[#216350]" data-i18n="courses.lessonCompleted">مكتمل • ١٠٠٪</p>
+                    <p class="font-['Cairo'] font-semibold text-[12px] text-[#216350]" data-i18n="courses.lessonCompleted">{{ __('courses.lessonCompleted') }}</p>
                     <div class="bg-[#DEE8F7] h-[7px] rounded-full w-full relative overflow-hidden">
                       <div class="bg-[#0B2A8F] h-[7px] rounded-full w-full"></div>
                     </div>
                   </div>
                   <div class="w-[143px] flex flex-col gap-[2px] items-end text-end" data-node-id="1155:18055">
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.taskL4">مهمة الدرس ٤</p>
-                    <p class="font-['Cairo'] font-medium text-[12px] text-[#475569]" data-i18n="courses.taskGraded">مُقيّمة</p>
+                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.taskL4">{{ __('courses.taskL4') }}</p>
+                    <p class="font-['Cairo'] font-medium text-[12px] text-[#475569]" data-i18n="courses.taskGraded">{{ __('courses.taskGraded') }}</p>
                   </div>
                 </div>
 
@@ -193,18 +173,18 @@
                     <img src="/assets/images/icon-check-green.svg" alt="" class="size-[16px]" />
                   </div>
                   <div class="flex-1 flex flex-col gap-[2px] items-start text-start" data-node-id="1155:18075">
-                    <h5 class="font-['Cairo'] font-semibold text-[14px] text-[#012383]" data-i18n="courses.l5Title">مراجعة المفاهيم الأساسية</h5>
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.duration20min">٢٠ دقيقة</p>
+                    <h5 class="font-['Cairo'] font-semibold text-[14px] text-[#012383]" data-i18n="courses.l5Title">{{ __('courses.l5Title') }}</h5>
+                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.duration20min">{{ __('courses.duration20min') }}</p>
                   </div>
                   <div class="w-[140px] flex flex-col gap-[5px] items-start" data-node-id="1155:18071">
-                    <p class="font-['Cairo'] font-semibold text-[12px] text-[#216350]" data-i18n="courses.lessonCompleted">مكتمل • ١٠٠٪</p>
+                    <p class="font-['Cairo'] font-semibold text-[12px] text-[#216350]" data-i18n="courses.lessonCompleted">{{ __('courses.lessonCompleted') }}</p>
                     <div class="bg-[#DEE8F7] h-[7px] rounded-full w-full relative overflow-hidden">
                       <div class="bg-[#0B2A8F] h-[7px] rounded-full w-full"></div>
                     </div>
                   </div>
                   <div class="w-[143px] flex flex-col gap-[2px] items-end text-end" data-node-id="1155:18068">
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.taskL5">مهمة الدرس ٥</p>
-                    <p class="font-['Cairo'] font-medium text-[12px] text-[#475569]" data-i18n="courses.taskGraded">مُقيّمة</p>
+                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.taskL5">{{ __('courses.taskL5') }}</p>
+                    <p class="font-['Cairo'] font-medium text-[12px] text-[#475569]" data-i18n="courses.taskGraded">{{ __('courses.taskGraded') }}</p>
                   </div>
                 </div>
 
@@ -215,16 +195,10 @@
                 <div class="bg-[#FAFCFF] p-[20px] flex flex-col gap-[10px] w-full" data-node-id="1155:18081">
                   <div class="flex gap-[12px] items-center w-full" data-node-id="1155:18082">
                     <div class="flex-1 flex flex-col gap-[2px] items-start text-start" data-node-id="1155:18085">
-                      <h4 class="font-['Cairo'] font-bold text-[18px] leading-[1.8] text-[#012383]" data-i18n="courses.level2Title" data-node-id="1155:18086">
-                        المستوى الثاني: مهارات الصوت والاستماع
-                      </h4>
-                      <p class="font-['Cairo'] font-medium text-[12px] leading-[1.8] text-[#475569]" data-i18n="courses.level2Meta" data-node-id="1155:18087">
-                        ٥ فيديوهات • ١٠٠ دقيقة • ٥ مهام
-                      </p>
+                      <h4 class="font-['Cairo'] font-bold text-[18px] leading-[1.8] text-[#012383]" data-i18n="courses.level2Title" data-node-id="1155:18086">{{ __('courses.level2Title') }}</h4>
+                      <p class="font-['Cairo'] font-medium text-[12px] leading-[1.8] text-[#475569]" data-i18n="courses.level2Meta" data-node-id="1155:18087">{{ __('courses.level2Meta') }}</p>
                     </div>
-                    <span class="font-['Cairo'] font-bold text-[13px] leading-[1.8] text-[#0B2A8F] whitespace-nowrap" data-i18n="courses.level2Percent" data-node-id="1155:18084">
-                      ٦٨٪
-                    </span>
+                    <span class="font-['Cairo'] font-bold text-[13px] leading-[1.8] text-[#0B2A8F] whitespace-nowrap" data-i18n="courses.level2Percent" data-node-id="1155:18084">{{ __('courses.level2Percent') }}</span>
                     <div class="size-[18px] shrink-0 relative cursor-pointer" data-node-id="1155:19392">
                       <img src="/assets/images/icon-chevron-up.svg" alt="" class="size-full" />
                     </div>
@@ -240,18 +214,18 @@
                     <img src="/assets/images/icon-check-green.svg" alt="" class="size-[16px]" />
                   </div>
                   <div class="flex-1 flex flex-col gap-[2px] items-start text-start" data-node-id="1155:18098">
-                    <h5 class="font-['Cairo'] font-semibold text-[14px] text-[#012383]" data-i18n="courses.l6Title">التنفس ودعم الصوت</h5>
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.duration20min">٢٠ دقيقة</p>
+                    <h5 class="font-['Cairo'] font-semibold text-[14px] text-[#012383]" data-i18n="courses.l6Title">{{ __('courses.l6Title') }}</h5>
+                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.duration20min">{{ __('courses.duration20min') }}</p>
                   </div>
                   <div class="w-[140px] flex flex-col gap-[5px] items-start" data-node-id="1155:18094">
-                    <p class="font-['Cairo'] font-semibold text-[12px] text-[#216350]" data-i18n="courses.lessonCompleted">مكتمل • ١٠٠٪</p>
+                    <p class="font-['Cairo'] font-semibold text-[12px] text-[#216350]" data-i18n="courses.lessonCompleted">{{ __('courses.lessonCompleted') }}</p>
                     <div class="bg-[#DEE8F7] h-[7px] rounded-full w-full relative overflow-hidden">
                       <div class="bg-[#0B2A8F] h-[7px] rounded-full w-full"></div>
                     </div>
                   </div>
                   <div class="w-[143px] flex flex-col gap-[2px] items-end text-end" data-node-id="1155:18091">
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.taskL6">مهمة الدرس ٦</p>
-                    <p class="font-['Cairo'] font-medium text-[12px] text-[#475569]" data-i18n="courses.taskGraded">مُقيّمة</p>
+                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.taskL6">{{ __('courses.taskL6') }}</p>
+                    <p class="font-['Cairo'] font-medium text-[12px] text-[#475569]" data-i18n="courses.taskGraded">{{ __('courses.taskGraded') }}</p>
                   </div>
                 </div>
 
@@ -261,18 +235,18 @@
                     <img src="/assets/images/icon-check-green.svg" alt="" class="size-[16px]" />
                   </div>
                   <div class="flex-1 flex flex-col gap-[2px] items-start text-start" data-node-id="1155:18111">
-                    <h5 class="font-['Cairo'] font-semibold text-[14px] text-[#012383]" data-i18n="courses.l7Title">الإيقاع وسرعة الكلام</h5>
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.duration20min">٢٠ دقيقة</p>
+                    <h5 class="font-['Cairo'] font-semibold text-[14px] text-[#012383]" data-i18n="courses.l7Title">{{ __('courses.l7Title') }}</h5>
+                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.duration20min">{{ __('courses.duration20min') }}</p>
                   </div>
                   <div class="w-[140px] flex flex-col gap-[5px] items-start" data-node-id="1155:18107">
-                    <p class="font-['Cairo'] font-semibold text-[12px] text-[#216350]" data-i18n="courses.lessonCompleted">مكتمل • ١٠٠٪</p>
+                    <p class="font-['Cairo'] font-semibold text-[12px] text-[#216350]" data-i18n="courses.lessonCompleted">{{ __('courses.lessonCompleted') }}</p>
                     <div class="bg-[#DEE8F7] h-[7px] rounded-full w-full relative overflow-hidden">
                       <div class="bg-[#0B2A8F] h-[7px] rounded-full w-full"></div>
                     </div>
                   </div>
                   <div class="w-[143px] flex flex-col gap-[2px] items-end text-end" data-node-id="1155:18104">
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.taskL7">مهمة الدرس ٧</p>
-                    <p class="font-['Cairo'] font-medium text-[12px] text-[#475569]" data-i18n="courses.taskPending">بانتظار المراجعة</p>
+                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.taskL7">{{ __('courses.taskL7') }}</p>
+                    <p class="font-['Cairo'] font-medium text-[12px] text-[#475569]" data-i18n="courses.taskPending">{{ __('courses.taskPending') }}</p>
                   </div>
                 </div>
 
@@ -282,18 +256,18 @@
                     <img src="/assets/images/icon-check-green.svg" alt="" class="size-[16px]" />
                   </div>
                   <div class="flex-1 flex flex-col gap-[2px] items-start text-start" data-node-id="1155:18124">
-                    <h5 class="font-['Cairo'] font-semibold text-[14px] text-[#012383]" data-i18n="courses.l8Title">التمييز السمعي</h5>
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.duration20min">٢٠ دقيقة</p>
+                    <h5 class="font-['Cairo'] font-semibold text-[14px] text-[#012383]" data-i18n="courses.l8Title">{{ __('courses.l8Title') }}</h5>
+                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.duration20min">{{ __('courses.duration20min') }}</p>
                   </div>
                   <div class="w-[140px] flex flex-col gap-[5px] items-start" data-node-id="1155:18120">
-                    <p class="font-['Cairo'] font-semibold text-[12px] text-[#216350]" data-i18n="courses.lessonCompleted">مكتمل • ١٠٠٪</p>
+                    <p class="font-['Cairo'] font-semibold text-[12px] text-[#216350]" data-i18n="courses.lessonCompleted">{{ __('courses.lessonCompleted') }}</p>
                     <div class="bg-[#DEE8F7] h-[7px] rounded-full w-full relative overflow-hidden">
                       <div class="bg-[#0B2A8F] h-[7px] rounded-full w-full"></div>
                     </div>
                   </div>
                   <div class="w-[143px] flex flex-col gap-[2px] items-end text-end" data-node-id="1155:18117">
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.taskL8">مهمة الدرس ٨</p>
-                    <p class="font-['Cairo'] font-bold text-[12px] text-[#0B2A8F]" data-i18n="courses.taskNotSubmitted">لم تُسلّم</p>
+                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.taskL8">{{ __('courses.taskL8') }}</p>
+                    <p class="font-['Cairo'] font-bold text-[12px] text-[#0B2A8F]" data-i18n="courses.taskNotSubmitted">{{ __('courses.taskNotSubmitted') }}</p>
                   </div>
                 </div>
 
@@ -307,18 +281,18 @@
                     ٩
                   </div>
                   <div class="flex-1 flex flex-col gap-[2px] items-start text-start" data-node-id="1155:18137">
-                    <h5 class="font-['Cairo'] font-bold text-[14px] text-[#012383]" data-i18n="courses.l9Title" data-node-id="1155:18138">تدريبات الوعي الصوتي</h5>
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.l9Meta" data-node-id="1155:18139">٢٠ دقيقة • الموضع المحفوظ ٠٨:٠٠</p>
+                    <h5 class="font-['Cairo'] font-bold text-[14px] text-[#012383]" data-i18n="courses.l9Title" data-node-id="1155:18138">{{ __('courses.l9Title') }}</h5>
+                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.l9Meta" data-node-id="1155:18139">{{ __('courses.l9Meta') }}</p>
                   </div>
                   <div class="w-[140px] flex flex-col gap-[5px] items-start" data-node-id="1155:18133">
-                    <p class="font-['Cairo'] font-semibold text-[12px] text-[#0B2A8F]" data-i18n="courses.lessonInProgress">قيد المشاهدة • ٤٠٪</p>
+                    <p class="font-['Cairo'] font-semibold text-[12px] text-[#0B2A8F]" data-i18n="courses.lessonInProgress">{{ __('courses.lessonInProgress') }}</p>
                     <div class="bg-[#DEE8F7] h-[7px] rounded-full w-full relative overflow-hidden" data-node-id="1155:18135">
                       <div class="bg-[#0B2A8F] h-[7px] rounded-full w-[40%]" data-node-id="1155:18136"></div>
                     </div>
                   </div>
                   <div class="w-[143px] flex flex-col gap-[2px] items-end text-end" data-node-id="1155:18130">
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.taskL9">مهمة الدرس ٩</p>
-                    <p class="font-['Cairo'] font-medium text-[12px] text-[#475569]" data-i18n="courses.taskAfterVideo">بعد إكمال الفيديو</p>
+                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.taskL9">{{ __('courses.taskL9') }}</p>
+                    <p class="font-['Cairo'] font-medium text-[12px] text-[#475569]" data-i18n="courses.taskAfterVideo">{{ __('courses.taskAfterVideo') }}</p>
                   </div>
                 </a>
 
@@ -328,16 +302,16 @@
                     ١٠
                   </div>
                   <div class="flex-1 flex flex-col gap-[2px] items-start text-start" data-node-id="1155:18149">
-                    <h5 class="font-['Cairo'] font-semibold text-[14px] text-[#012383]" data-i18n="courses.l10Title">مراجعة المهارات الصوتية</h5>
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.duration20min">٢٠ دقيقة</p>
+                    <h5 class="font-['Cairo'] font-semibold text-[14px] text-[#012383]" data-i18n="courses.l10Title">{{ __('courses.l10Title') }}</h5>
+                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.duration20min">{{ __('courses.duration20min') }}</p>
                   </div>
                   <div class="w-[140px] flex flex-col gap-[5px] items-start" data-node-id="1155:18146">
-                    <p class="font-['Cairo'] font-semibold text-[12px] text-[#0B2A8F]" data-i18n="courses.lessonNotStarted">لم يبدأ • ٠٪</p>
+                    <p class="font-['Cairo'] font-semibold text-[12px] text-[#0B2A8F]" data-i18n="courses.lessonNotStarted">{{ __('courses.lessonNotStarted') }}</p>
                     <div class="bg-[#DEE8F7] h-[7px] rounded-full w-full relative overflow-hidden" data-node-id="1155:18148"></div>
                   </div>
                   <div class="w-[143px] flex flex-col gap-[2px] items-end text-end" data-node-id="1155:18143">
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.taskL10">مهمة الدرس ١٠</p>
-                    <p class="font-['Cairo'] font-medium text-[12px] text-[#475569]" data-i18n="courses.taskAfterVideo">بعد إكمال الفيديو</p>
+                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.taskL10">{{ __('courses.taskL10') }}</p>
+                    <p class="font-['Cairo'] font-medium text-[12px] text-[#475569]" data-i18n="courses.taskAfterVideo">{{ __('courses.taskAfterVideo') }}</p>
                   </div>
                 </div>
 
@@ -348,16 +322,10 @@
                 <div class="bg-[#FAFCFF] p-[20px] flex flex-col gap-[10px] w-full" data-node-id="1155:18155">
                   <div class="flex gap-[12px] items-center w-full" data-node-id="1155:18156">
                     <div class="flex-1 flex flex-col gap-[2px] items-start text-start" data-node-id="1155:18159">
-                      <h4 class="font-['Cairo'] font-bold text-[18px] leading-[1.8] text-[#012383]" data-i18n="courses.level3Title" data-node-id="1155:18160">
-                        المستوى الثالث: بناء مهارات اللغة
-                      </h4>
-                      <p class="font-['Cairo'] font-medium text-[12px] leading-[1.8] text-[#475569]" data-i18n="courses.level3Meta" data-node-id="1155:18161">
-                        ٥ فيديوهات • ١٠٠ دقيقة • ٥ مهام
-                      </p>
+                      <h4 class="font-['Cairo'] font-bold text-[18px] leading-[1.8] text-[#012383]" data-i18n="courses.level3Title" data-node-id="1155:18160">{{ __('courses.level3Title') }}</h4>
+                      <p class="font-['Cairo'] font-medium text-[12px] leading-[1.8] text-[#475569]" data-i18n="courses.level3Meta" data-node-id="1155:18161">{{ __('courses.level3Meta') }}</p>
                     </div>
-                    <span class="font-['Cairo'] font-bold text-[13px] leading-[1.8] text-[#0B2A8F] whitespace-nowrap" data-i18n="courses.level3Percent" data-node-id="1155:18158">
-                      ٠٪
-                    </span>
+                    <span class="font-['Cairo'] font-bold text-[13px] leading-[1.8] text-[#0B2A8F] whitespace-nowrap" data-i18n="courses.level3Percent" data-node-id="1155:18158">{{ __('courses.level3Percent') }}</span>
                     <div class="size-[18px] shrink-0 relative cursor-pointer" data-node-id="1155:19404">
                       <img src="/assets/images/icon-chevron-up.svg" alt="" class="size-full" />
                     </div>
@@ -372,16 +340,16 @@
                     ١١
                   </div>
                   <div class="flex-1 flex flex-col gap-[2px] items-start text-start">
-                    <h5 class="font-['Cairo'] font-semibold text-[14px] text-[#012383]" data-i18n="courses.l11Title">الانتباه المشترك</h5>
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.duration20min">٢٠ دقيقة</p>
+                    <h5 class="font-['Cairo'] font-semibold text-[14px] text-[#012383]" data-i18n="courses.l11Title">{{ __('courses.l11Title') }}</h5>
+                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.duration20min">{{ __('courses.duration20min') }}</p>
                   </div>
                   <div class="w-[140px] flex flex-col gap-[5px] items-start">
-                    <p class="font-['Cairo'] font-semibold text-[12px] text-[#0B2A8F]" data-i18n="courses.lessonNotStarted">لم يبدأ • ٠٪</p>
+                    <p class="font-['Cairo'] font-semibold text-[12px] text-[#0B2A8F]" data-i18n="courses.lessonNotStarted">{{ __('courses.lessonNotStarted') }}</p>
                     <div class="bg-[#DEE8F7] h-[7px] rounded-full w-full"></div>
                   </div>
                   <div class="w-[143px] flex flex-col gap-[2px] items-end text-end">
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.taskL11">مهمة الدرس ١١</p>
-                    <p class="font-['Cairo'] font-medium text-[12px] text-[#475569]" data-i18n="courses.taskAfterVideo">بعد إكمال الفيديو</p>
+                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.taskL11">{{ __('courses.taskL11') }}</p>
+                    <p class="font-['Cairo'] font-medium text-[12px] text-[#475569]" data-i18n="courses.taskAfterVideo">{{ __('courses.taskAfterVideo') }}</p>
                   </div>
                 </div>
 
@@ -391,16 +359,16 @@
                     ١٢
                   </div>
                   <div class="flex-1 flex flex-col gap-[2px] items-start text-start">
-                    <h5 class="font-['Cairo'] font-semibold text-[14px] text-[#012383]" data-i18n="courses.l12Title">التقليد اللفظي</h5>
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.duration20min">٢٠ دقيقة</p>
+                    <h5 class="font-['Cairo'] font-semibold text-[14px] text-[#012383]" data-i18n="courses.l12Title">{{ __('courses.l12Title') }}</h5>
+                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.duration20min">{{ __('courses.duration20min') }}</p>
                   </div>
                   <div class="w-[140px] flex flex-col gap-[5px] items-start">
-                    <p class="font-['Cairo'] font-semibold text-[12px] text-[#0B2A8F]" data-i18n="courses.lessonNotStarted">لم يبدأ • ٠٪</p>
+                    <p class="font-['Cairo'] font-semibold text-[12px] text-[#0B2A8F]" data-i18n="courses.lessonNotStarted">{{ __('courses.lessonNotStarted') }}</p>
                     <div class="bg-[#DEE8F7] h-[7px] rounded-full w-full"></div>
                   </div>
                   <div class="w-[143px] flex flex-col gap-[2px] items-end text-end">
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.taskL12">مهمة الدرس ١٢</p>
-                    <p class="font-['Cairo'] font-medium text-[12px] text-[#475569]" data-i18n="courses.taskAfterVideo">بعد إكمال الفيديو</p>
+                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.taskL12">{{ __('courses.taskL12') }}</p>
+                    <p class="font-['Cairo'] font-medium text-[12px] text-[#475569]" data-i18n="courses.taskAfterVideo">{{ __('courses.taskAfterVideo') }}</p>
                   </div>
                 </div>
 
@@ -410,16 +378,16 @@
                     ١٣
                   </div>
                   <div class="flex-1 flex flex-col gap-[2px] items-start text-start">
-                    <h5 class="font-['Cairo'] font-semibold text-[14px] text-[#012383]" data-i18n="courses.l13Title">توسيع المفردات</h5>
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.duration20min">٢٠ دقيقة</p>
+                    <h5 class="font-['Cairo'] font-semibold text-[14px] text-[#012383]" data-i18n="courses.l13Title">{{ __('courses.l13Title') }}</h5>
+                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.duration20min">{{ __('courses.duration20min') }}</p>
                   </div>
                   <div class="w-[140px] flex flex-col gap-[5px] items-start">
-                    <p class="font-['Cairo'] font-semibold text-[12px] text-[#0B2A8F]" data-i18n="courses.lessonNotStarted">لم يبدأ • ٠٪</p>
+                    <p class="font-['Cairo'] font-semibold text-[12px] text-[#0B2A8F]" data-i18n="courses.lessonNotStarted">{{ __('courses.lessonNotStarted') }}</p>
                     <div class="bg-[#DEE8F7] h-[7px] rounded-full w-full"></div>
                   </div>
                   <div class="w-[143px] flex flex-col gap-[2px] items-end text-end">
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.taskL13">مهمة الدرس ١٣</p>
-                    <p class="font-['Cairo'] font-medium text-[12px] text-[#475569]" data-i18n="courses.taskAfterVideo">بعد إكمال الفيديو</p>
+                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.taskL13">{{ __('courses.taskL13') }}</p>
+                    <p class="font-['Cairo'] font-medium text-[12px] text-[#475569]" data-i18n="courses.taskAfterVideo">{{ __('courses.taskAfterVideo') }}</p>
                   </div>
                 </div>
 
@@ -429,16 +397,16 @@
                     ١٤
                   </div>
                   <div class="flex-1 flex flex-col gap-[2px] items-start text-start">
-                    <h5 class="font-['Cairo'] font-semibold text-[14px] text-[#012383]" data-i18n="courses.l14Title">بناء الجملة البسيطة</h5>
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.duration20min">٢٠ دقيقة</p>
+                    <h5 class="font-['Cairo'] font-semibold text-[14px] text-[#012383]" data-i18n="courses.l14Title">{{ __('courses.l14Title') }}</h5>
+                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.duration20min">{{ __('courses.duration20min') }}</p>
                   </div>
                   <div class="w-[140px] flex flex-col gap-[5px] items-start">
-                    <p class="font-['Cairo'] font-semibold text-[12px] text-[#0B2A8F]" data-i18n="courses.lessonNotStarted">لم يبدأ • ٠٪</p>
+                    <p class="font-['Cairo'] font-semibold text-[12px] text-[#0B2A8F]" data-i18n="courses.lessonNotStarted">{{ __('courses.lessonNotStarted') }}</p>
                     <div class="bg-[#DEE8F7] h-[7px] rounded-full w-full"></div>
                   </div>
                   <div class="w-[143px] flex flex-col gap-[2px] items-end text-end">
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.taskL14">مهمة الدرس ١٤</p>
-                    <p class="font-['Cairo'] font-medium text-[12px] text-[#475569]" data-i18n="courses.taskAfterVideo">بعد إكمال الفيديو</p>
+                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.taskL14">{{ __('courses.taskL14') }}</p>
+                    <p class="font-['Cairo'] font-medium text-[12px] text-[#475569]" data-i18n="courses.taskAfterVideo">{{ __('courses.taskAfterVideo') }}</p>
                   </div>
                 </div>
 
@@ -448,16 +416,16 @@
                     ١٥
                   </div>
                   <div class="flex-1 flex flex-col gap-[2px] items-start text-start">
-                    <h5 class="font-['Cairo'] font-semibold text-[14px] text-[#012383]" data-i18n="courses.l15Title">توظيف الأسئلة</h5>
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.duration20min">٢٠ دقيقة</p>
+                    <h5 class="font-['Cairo'] font-semibold text-[14px] text-[#012383]" data-i18n="courses.l15Title">{{ __('courses.l15Title') }}</h5>
+                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.duration20min">{{ __('courses.duration20min') }}</p>
                   </div>
                   <div class="w-[140px] flex flex-col gap-[5px] items-start">
-                    <p class="font-['Cairo'] font-semibold text-[12px] text-[#0B2A8F]" data-i18n="courses.lessonNotStarted">لم يبدأ • ٠٪</p>
+                    <p class="font-['Cairo'] font-semibold text-[12px] text-[#0B2A8F]" data-i18n="courses.lessonNotStarted">{{ __('courses.lessonNotStarted') }}</p>
                     <div class="bg-[#DEE8F7] h-[7px] rounded-full w-full"></div>
                   </div>
                   <div class="w-[143px] flex flex-col gap-[2px] items-end text-end">
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.taskL15">مهمة الدرس ١٥</p>
-                    <p class="font-['Cairo'] font-medium text-[12px] text-[#475569]" data-i18n="courses.taskAfterVideo">بعد إكمال الفيديو</p>
+                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.taskL15">{{ __('courses.taskL15') }}</p>
+                    <p class="font-['Cairo'] font-medium text-[12px] text-[#475569]" data-i18n="courses.taskAfterVideo">{{ __('courses.taskAfterVideo') }}</p>
                   </div>
                 </div>
 
@@ -468,16 +436,10 @@
                 <div class="bg-[#FAFCFF] p-[20px] flex flex-col gap-[10px] w-full">
                   <div class="flex gap-[12px] items-center w-full">
                     <div class="flex-1 flex flex-col gap-[2px] items-start text-start">
-                      <h4 class="font-['Cairo'] font-bold text-[18px] leading-[1.8] text-[#012383]" data-i18n="courses.level4Title">
-                        المستوى الرابع: التطبيق والممارسة
-                      </h4>
-                      <p class="font-['Cairo'] font-medium text-[12px] leading-[1.8] text-[#475569]" data-i18n="courses.level4Meta">
-                        ٥ فيديوهات • ١٠٠ دقيقة • ٥ مهام
-                      </p>
+                      <h4 class="font-['Cairo'] font-bold text-[18px] leading-[1.8] text-[#012383]" data-i18n="courses.level4Title">{{ __('courses.level4Title') }}</h4>
+                      <p class="font-['Cairo'] font-medium text-[12px] leading-[1.8] text-[#475569]" data-i18n="courses.level4Meta">{{ __('courses.level4Meta') }}</p>
                     </div>
-                    <span class="font-['Cairo'] font-bold text-[13px] leading-[1.8] text-[#0B2A8F] whitespace-nowrap" data-i18n="courses.level4Percent">
-                      ٠٪
-                    </span>
+                    <span class="font-['Cairo'] font-bold text-[13px] leading-[1.8] text-[#0B2A8F] whitespace-nowrap" data-i18n="courses.level4Percent">{{ __('courses.level4Percent') }}</span>
                     <div class="size-[18px] shrink-0 relative cursor-pointer">
                       <img src="/assets/images/icon-chevron-up.svg" alt="" class="size-full" />
                     </div>
@@ -492,16 +454,16 @@
                     ١٦
                   </div>
                   <div class="flex-1 flex flex-col gap-[2px] items-start text-start">
-                    <h5 class="font-['Cairo'] font-semibold text-[14px] text-[#012383]" data-i18n="courses.l16Title">اختيار أنشطة التدريب</h5>
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.duration20min">٢٠ دقيقة</p>
+                    <h5 class="font-['Cairo'] font-semibold text-[14px] text-[#012383]" data-i18n="courses.l16Title">{{ __('courses.l16Title') }}</h5>
+                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.duration20min">{{ __('courses.duration20min') }}</p>
                   </div>
                   <div class="w-[140px] flex flex-col gap-[5px] items-start">
-                    <p class="font-['Cairo'] font-semibold text-[12px] text-[#0B2A8F]" data-i18n="courses.lessonNotStarted">لم يبدأ • ٠٪</p>
+                    <p class="font-['Cairo'] font-semibold text-[12px] text-[#0B2A8F]" data-i18n="courses.lessonNotStarted">{{ __('courses.lessonNotStarted') }}</p>
                     <div class="bg-[#DEE8F7] h-[7px] rounded-full w-full"></div>
                   </div>
                   <div class="w-[143px] flex flex-col gap-[2px] items-end text-end">
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.taskL16">مهمة الدرس ١٦</p>
-                    <p class="font-['Cairo'] font-medium text-[12px] text-[#475569]" data-i18n="courses.taskAfterVideo">بعد إكمال الفيديو</p>
+                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.taskL16">{{ __('courses.taskL16') }}</p>
+                    <p class="font-['Cairo'] font-medium text-[12px] text-[#475569]" data-i18n="courses.taskAfterVideo">{{ __('courses.taskAfterVideo') }}</p>
                   </div>
                 </div>
 
@@ -511,16 +473,16 @@
                     ١٧
                   </div>
                   <div class="flex-1 flex flex-col gap-[2px] items-start text-start">
-                    <h5 class="font-['Cairo'] font-semibold text-[14px] text-[#012383]" data-i18n="courses.l17Title">تدرج صعوبة النشاط</h5>
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.duration20min">٢٠ دقيقة</p>
+                    <h5 class="font-['Cairo'] font-semibold text-[14px] text-[#012383]" data-i18n="courses.l17Title">{{ __('courses.l17Title') }}</h5>
+                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.duration20min">{{ __('courses.duration20min') }}</p>
                   </div>
                   <div class="w-[140px] flex flex-col gap-[5px] items-start">
-                    <p class="font-['Cairo'] font-semibold text-[12px] text-[#0B2A8F]" data-i18n="courses.lessonNotStarted">لم يبدأ • ٠٪</p>
+                    <p class="font-['Cairo'] font-semibold text-[12px] text-[#0B2A8F]" data-i18n="courses.lessonNotStarted">{{ __('courses.lessonNotStarted') }}</p>
                     <div class="bg-[#DEE8F7] h-[7px] rounded-full w-full"></div>
                   </div>
                   <div class="w-[143px] flex flex-col gap-[2px] items-end text-end">
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.taskL17">مهمة الدرس ١٧</p>
-                    <p class="font-['Cairo'] font-medium text-[12px] text-[#475569]" data-i18n="courses.taskAfterVideo">بعد إكمال الفيديو</p>
+                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.taskL17">{{ __('courses.taskL17') }}</p>
+                    <p class="font-['Cairo'] font-medium text-[12px] text-[#475569]" data-i18n="courses.taskAfterVideo">{{ __('courses.taskAfterVideo') }}</p>
                   </div>
                 </div>
 
@@ -530,16 +492,16 @@
                     ١٨
                   </div>
                   <div class="flex-1 flex flex-col gap-[2px] items-start text-start">
-                    <h5 class="font-['Cairo'] font-semibold text-[14px] text-[#012383]" data-i18n="courses.l18Title">تسجيل الملاحظات</h5>
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.duration20min">٢٠ دقيقة</p>
+                    <h5 class="font-['Cairo'] font-semibold text-[14px] text-[#012383]" data-i18n="courses.l18Title">{{ __('courses.l18Title') }}</h5>
+                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.duration20min">{{ __('courses.duration20min') }}</p>
                   </div>
                   <div class="w-[140px] flex flex-col gap-[5px] items-start">
-                    <p class="font-['Cairo'] font-semibold text-[12px] text-[#0B2A8F]" data-i18n="courses.lessonNotStarted">لم يبدأ • ٠٪</p>
+                    <p class="font-['Cairo'] font-semibold text-[12px] text-[#0B2A8F]" data-i18n="courses.lessonNotStarted">{{ __('courses.lessonNotStarted') }}</p>
                     <div class="bg-[#DEE8F7] h-[7px] rounded-full w-full"></div>
                   </div>
                   <div class="w-[143px] flex flex-col gap-[2px] items-end text-end">
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.taskL18">مهمة الدرس ١٨</p>
-                    <p class="font-['Cairo'] font-medium text-[12px] text-[#475569]" data-i18n="courses.taskAfterVideo">بعد إكمال الفيديو</p>
+                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.taskL18">{{ __('courses.taskL18') }}</p>
+                    <p class="font-['Cairo'] font-medium text-[12px] text-[#475569]" data-i18n="courses.taskAfterVideo">{{ __('courses.taskAfterVideo') }}</p>
                   </div>
                 </div>
 
@@ -549,16 +511,16 @@
                     ١٩
                   </div>
                   <div class="flex-1 flex flex-col gap-[2px] items-start text-start">
-                    <h5 class="font-['Cairo'] font-semibold text-[14px] text-[#012383]" data-i18n="courses.l19Title">مراجعة التقدم</h5>
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.duration20min">٢٠ دقيقة</p>
+                    <h5 class="font-['Cairo'] font-semibold text-[14px] text-[#012383]" data-i18n="courses.l19Title">{{ __('courses.l19Title') }}</h5>
+                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.duration20min">{{ __('courses.duration20min') }}</p>
                   </div>
                   <div class="w-[140px] flex flex-col gap-[5px] items-start">
-                    <p class="font-['Cairo'] font-semibold text-[12px] text-[#0B2A8F]" data-i18n="courses.lessonNotStarted">لم يبدأ • ٠٪</p>
+                    <p class="font-['Cairo'] font-semibold text-[12px] text-[#0B2A8F]" data-i18n="courses.lessonNotStarted">{{ __('courses.lessonNotStarted') }}</p>
                     <div class="bg-[#DEE8F7] h-[7px] rounded-full w-full"></div>
                   </div>
                   <div class="w-[143px] flex flex-col gap-[2px] items-end text-end">
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.taskL19">مهمة الدرس ١٩</p>
-                    <p class="font-['Cairo'] font-medium text-[12px] text-[#475569]" data-i18n="courses.taskAfterVideo">بعد إكمال الفيديو</p>
+                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.taskL19">{{ __('courses.taskL19') }}</p>
+                    <p class="font-['Cairo'] font-medium text-[12px] text-[#475569]" data-i18n="courses.taskAfterVideo">{{ __('courses.taskAfterVideo') }}</p>
                   </div>
                 </div>
 
@@ -568,16 +530,16 @@
                     ٢٠
                   </div>
                   <div class="flex-1 flex flex-col gap-[2px] items-start text-start">
-                    <h5 class="font-['Cairo'] font-semibold text-[14px] text-[#012383]" data-i18n="courses.l20Title">خطة الممارسة المستمرة</h5>
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.duration20min">٢٠ دقيقة</p>
+                    <h5 class="font-['Cairo'] font-semibold text-[14px] text-[#012383]" data-i18n="courses.l20Title">{{ __('courses.l20Title') }}</h5>
+                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.duration20min">{{ __('courses.duration20min') }}</p>
                   </div>
                   <div class="w-[140px] flex flex-col gap-[5px] items-start">
-                    <p class="font-['Cairo'] font-semibold text-[12px] text-[#0B2A8F]" data-i18n="courses.lessonNotStarted">لم يبدأ • ٠٪</p>
+                    <p class="font-['Cairo'] font-semibold text-[12px] text-[#0B2A8F]" data-i18n="courses.lessonNotStarted">{{ __('courses.lessonNotStarted') }}</p>
                     <div class="bg-[#DEE8F7] h-[7px] rounded-full w-full"></div>
                   </div>
                   <div class="w-[143px] flex flex-col gap-[2px] items-end text-end">
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.taskL20">مهمة الدرس ٢٠</p>
-                    <p class="font-['Cairo'] font-medium text-[12px] text-[#475569]" data-i18n="courses.taskAfterVideo">بعد إكمال الفيديو</p>
+                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569]" data-i18n="courses.taskL20">{{ __('courses.taskL20') }}</p>
+                    <p class="font-['Cairo'] font-medium text-[12px] text-[#475569]" data-i18n="courses.taskAfterVideo">{{ __('courses.taskAfterVideo') }}</p>
                   </div>
                 </div>
 
@@ -591,68 +553,40 @@
               <!-- Widget 1: Current Place Card (Node 1155:17947) -->
               <div class="bg-white border border-[#DEE8F7] rounded-[16px] p-[24px] flex flex-col gap-[16px] w-full" data-node-id="1155:17947">
                 <div class="bg-[#EAF1FB] rounded-full px-[10px] py-[3px] w-fit" data-node-id="1155:17948">
-                  <p class="font-['Cairo'] font-bold text-[12px] leading-[1.8] text-[#0B2A8F]" data-i18n="courses.companionBadge" data-node-id="1155:17949">
-                    درسك الحالي
-                  </p>
+                  <p class="font-['Cairo'] font-bold text-[12px] leading-[1.8] text-[#0B2A8F]" data-i18n="courses.companionBadge" data-node-id="1155:17949">{{ __('courses.companionBadge') }}</p>
                 </div>
-                <h3 class="font-['Baloo_Bhaijaan_2'] font-bold text-[21px] leading-[1.45] text-[#012383] text-start" data-i18n="courses.companionTitle" data-node-id="1155:17950">
-                  تدريبات الوعي الصوتي
-                </h3>
-                <p class="font-['Cairo'] font-medium text-[13px] leading-[1.8] text-[#475569] text-start" data-i18n="courses.companionLevel" data-node-id="1155:17951">
-                  المستوى الثاني • الدرس ٩
-                </p>
-                <p class="font-['Cairo'] font-medium text-[13px] leading-[1.8] text-[#475569] text-start" data-i18n="courses.companionDesc" data-node-id="1155:17952">
-                  توقّفت عند ٠٨:٠٠ من ٢٠:٠٠، ويمكنك المتابعة من الموضع نفسه بعد تسجيل الدخول.
-                </p>
+                <h3 class="font-['Baloo_Bhaijaan_2'] font-bold text-[21px] leading-[1.45] text-[#012383] text-start" data-i18n="courses.companionTitle" data-node-id="1155:17950">{{ __('courses.companionTitle') }}</h3>
+                <p class="font-['Cairo'] font-medium text-[13px] leading-[1.8] text-[#475569] text-start" data-i18n="courses.companionLevel" data-node-id="1155:17951">{{ __('courses.companionLevel') }}</p>
+                <p class="font-['Cairo'] font-medium text-[13px] leading-[1.8] text-[#475569] text-start" data-i18n="courses.companionDesc" data-node-id="1155:17952">{{ __('courses.companionDesc') }}</p>
                 <a
                   href="{{ route('lessons.show') }}"
                   class="bg-[#0B2A8F] border border-[#0B2A8F] rounded-[10px] h-[46px] w-full flex items-center justify-center px-[18px] py-[8px] text-white font-['Cairo'] font-bold text-[14px] hover:bg-[#012383] transition-colors"
                   data-i18n="courses.companionResumeBtn"
                   data-node-id="1155:17953"
-                >
-                  متابعة من ٠٨:٠٠
-                </a>
+                >{{ __('courses.companionResumeBtn') }}</a>
               </div>
 
               <!-- Widget 2: Course Tasks Overview (Node 1155:17968) -->
               <div class="bg-white border border-[#DEE8F7] rounded-[16px] p-[24px] flex flex-col gap-[16px] w-full" data-node-id="1155:17968">
-                <h3 class="font-['Baloo_Bhaijaan_2'] font-bold text-[22px] leading-[1.45] text-[#012383] text-start" data-i18n="courses.tasksOverviewTitle" data-node-id="1155:17970">
-                  مهام الكورس
-                </h3>
-                <p class="font-['Cairo'] font-medium text-[14px] leading-[1.8] text-[#475569] text-start" data-i18n="courses.tasksMeta1" data-node-id="1155:17971">
-                  ٢٠ مهمة؛ واحدة لكل فيديو
-                </p>
-                <p class="font-['Cairo'] font-medium text-[13px] leading-[1.8] text-[#475569] text-start" data-i18n="courses.tasksMeta2" data-node-id="1155:17972">
-                  ٦ مُقيّمة
-                </p>
-                <p class="font-['Cairo'] font-medium text-[13px] leading-[1.8] text-[#475569] text-start" data-i18n="courses.tasksMeta3" data-node-id="1155:17973">
-                  ١ بانتظار المراجعة
-                </p>
-                <p class="font-['Cairo'] font-medium text-[13px] leading-[1.8] text-[#475569] text-start" data-i18n="courses.tasksMeta4" data-node-id="1155:17974">
-                  ١ متاحة ولم تُسلّم
-                </p>
-                <p class="font-['Cairo'] font-medium text-[13px] leading-[1.8] text-[#475569] text-start" data-i18n="courses.tasksMeta5" data-node-id="1155:17975">
-                  ١٢ متاحة بعد إكمال فيديوهاتها
-                </p>
+                <h3 class="font-['Baloo_Bhaijaan_2'] font-bold text-[22px] leading-[1.45] text-[#012383] text-start" data-i18n="courses.tasksOverviewTitle" data-node-id="1155:17970">{{ __('courses.tasksOverviewTitle') }}</h3>
+                <p class="font-['Cairo'] font-medium text-[14px] leading-[1.8] text-[#475569] text-start" data-i18n="courses.tasksMeta1" data-node-id="1155:17971">{{ __('courses.tasksMeta1') }}</p>
+                <p class="font-['Cairo'] font-medium text-[13px] leading-[1.8] text-[#475569] text-start" data-i18n="courses.tasksMeta2" data-node-id="1155:17972">{{ __('courses.tasksMeta2') }}</p>
+                <p class="font-['Cairo'] font-medium text-[13px] leading-[1.8] text-[#475569] text-start" data-i18n="courses.tasksMeta3" data-node-id="1155:17973">{{ __('courses.tasksMeta3') }}</p>
+                <p class="font-['Cairo'] font-medium text-[13px] leading-[1.8] text-[#475569] text-start" data-i18n="courses.tasksMeta4" data-node-id="1155:17974">{{ __('courses.tasksMeta4') }}</p>
+                <p class="font-['Cairo'] font-medium text-[13px] leading-[1.8] text-[#475569] text-start" data-i18n="courses.tasksMeta5" data-node-id="1155:17975">{{ __('courses.tasksMeta5') }}</p>
                 <a
                   href="{{ route('assignments.index') }}"
                   class="bg-white border border-[#DEE8F7] rounded-[10px] h-[46px] w-full flex items-center justify-center px-[18px] py-[8px] text-[#0B2A8F] font-['Cairo'] font-bold text-[14px] hover:bg-[#EAF1FB] transition-colors"
                   data-i18n="courses.openTask8Btn"
                   data-node-id="1155:17976"
-                >
-                  فتح مهمة الدرس ٨
-                </a>
+                >{{ __('courses.openTask8Btn') }}</a>
               </div>
 
               <!-- Widget 3: Info Callout Note (Node 1155:17991) -->
               <div class="bg-[#EAF1FB] rounded-[10px] p-[18px] flex gap-[14px] items-center w-full" data-node-id="1155:17991">
                 <div class="flex-1 flex flex-col gap-[4px] items-start text-start" data-node-id="3118:154">
-                  <p class="font-['Cairo'] font-bold text-[15px] leading-[1.8] text-[#012383] text-start" data-i18n="courses.noteTitle" data-node-id="1155:17993">
-                    المشاهدة ليست الدرجة
-                  </p>
-                  <p class="font-['Cairo'] font-medium text-[13px] leading-[1.8] text-[#475569] text-start" data-i18n="courses.noteDesc" data-node-id="1155:17994">
-                    نسبة المشاهدة تحتسب من مدة الفيديو. تسليم الم  همة وتقييمها حالتان منفصلتان، ولا يغيّران نسبة المشاهدة.
-                  </p>
+                  <p class="font-['Cairo'] font-bold text-[15px] leading-[1.8] text-[#012383] text-start" data-i18n="courses.noteTitle" data-node-id="1155:17993">{{ __('courses.noteTitle') }}</p>
+                  <p class="font-['Cairo'] font-medium text-[13px] leading-[1.8] text-[#475569] text-start" data-i18n="courses.noteDesc" data-node-id="1155:17994">{{ __('courses.noteDesc') }}</p>
                 </div>
                 <div class="size-[20px] shrink-0 relative" data-node-id="1155:19368">
                   <img src="/assets/images/icon-info-circle.svg" alt="" class="size-full" />

@@ -39,12 +39,25 @@
                   <div class="size-14 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center border border-amber-500/30">
                     <svg class="size-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
                   </div>
-                  <div>
+                  <div class="flex flex-col items-center gap-1.5 max-w-md">
                     <h3 class="font-bold text-lg text-amber-300 font-['Cairo']">{{ __('المحاضرة مقيدة بالتسلسل الإلزامي') }}</h3>
-                    <p class="text-xs text-slate-400 mt-1 max-w-md">
-                      {{ __('حرصاً على التدرج السريري للمنهج، لا يمكنك فتح هذه المحاضرة حتى تكمل نسبة المشاهدة المطلوبة للمحاضرة السابقة.') }}
+                    <p class="text-xs text-slate-300 leading-relaxed">
+                      {{ __('حرصاً على التدرج السريري للمنهج، لا يمكنك فتح هذه المحاضرة أو هذا المستوى حتى تكمل المحاضرة الحالية أولاً. بمجرد إكمال أي درس أو مستوى يمكنك فتحه ومراجعته في أي وقت.') }}
                     </p>
                   </div>
+                  @php
+                    $curUnlockedId = $curriculumStatus['current_video_id'] ?? null;
+                    $curUnlockedVid = $curUnlockedId ? $videos->firstWhere('id', $curUnlockedId) : null;
+                  @endphp
+                  @if($curUnlockedVid && $curUnlockedVid->id !== $video->id)
+                    <a 
+                      href="{{ route('lessons.show', [$course->slug, $curUnlockedVid->slug]) }}"
+                      class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#0B2A8F] hover:bg-[#012383] text-white font-['Cairo'] font-bold text-[13px] shadow-sm transition-all cursor-pointer"
+                    >
+                      <svg class="size-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/></svg>
+                      <span>{{ __('الانتقال إلى الدرس الحالي المفتوح: :title', ['title' => $curUnlockedVid->title_ar]) }}</span>
+                    </a>
+                  @endif
                 </div>
               @else
                 <!-- Dynamic MUX / Stream Video Player with Dynamic Watermark Canvas Overlay -->
@@ -155,6 +168,143 @@
                   <div class="bg-[#0B2A8F] h-full rounded-[4px] w-[42%]"></div>
                 </div>
 
+                @if(isset($publishedLevels) && $publishedLevels->isNotEmpty())
+                  <div class="flex flex-col gap-3 w-full">
+                    @foreach($publishedLevels as $pLevel)
+                      @php
+                        $levelVideos = $pLevel->publishedVideos;
+                        $isCurrentLevel = isset($video) && $video->level_id === $pLevel->id;
+                        $isLvlCompleted = in_array($pLevel->id, $curriculumStatus['completed_level_ids'] ?? [], true);
+                        $isLvlAccessible = in_array($pLevel->id, $curriculumStatus['accessible_level_ids'] ?? [], true);
+                      @endphp
+                      <div class="flex flex-col gap-2 w-full shrink-0 border rounded-[14px] overflow-hidden p-3 transition-all {{ $isCurrentLevel ? 'bg-[#FAFCFF] border-[#0B2A8F]/40 ring-1 ring-[#0B2A8F]/20' : ($isLvlAccessible ? 'bg-white border-[#DEE8F7]' : 'bg-slate-50/70 border-slate-200/80') }}">
+                        <div class="flex items-center justify-between gap-2">
+                          <div class="flex items-center gap-1.5 flex-1 min-w-0">
+                            @if($isLvlCompleted)
+                              <span class="size-4 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0" title="{{ __('مستوى مكتمل') }}">
+                                <svg class="size-2.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                              </span>
+                            @elseif(! $isLvlAccessible)
+                              <span class="size-4 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center shrink-0" title="{{ __('مستوى مغلق') }}">
+                                <svg class="size-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                              </span>
+                            @endif
+                            <span class="font-['Cairo'] font-bold text-[13px] leading-[1.65] {{ $isLvlAccessible ? 'text-[#012383]' : 'text-slate-500' }} truncate">
+                              {{ $pLevel->title_ar }}
+                            </span>
+                          </div>
+                          @if($isLvlCompleted)
+                            <span class="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200/60 px-2 py-0.5 rounded-full shrink-0">
+                              {{ __('مكتمل') }}
+                            </span>
+                          @elseif(! $isLvlAccessible)
+                            <span class="text-[10px] font-bold text-slate-500 bg-slate-200/70 px-2 py-0.5 rounded-full shrink-0">
+                              {{ __('مغلق') }}
+                            </span>
+                          @else
+                            <span class="text-[11px] font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full shrink-0">
+                              {{ __(':count دروس', ['count' => $levelVideos->count()]) }}
+                            </span>
+                          @endif
+                        </div>
+                        
+                        <div class="flex flex-col gap-1.5 w-full">
+                          @forelse($levelVideos as $lVideo)
+                            @php
+                              $isActive = isset($video) && $lVideo->id === $video->id;
+                              $isCompleted = in_array($lVideo->id, $curriculumStatus['completed_video_ids'] ?? [], true);
+                              $isAccessible = in_array($lVideo->id, $curriculumStatus['accessible_video_ids'] ?? [], true);
+                            @endphp
+                            <a 
+                              href="{{ route('lessons.show', [$course->slug, $lVideo->slug]) }}"
+                              @if(! $isAccessible) title="{{ __('مغلق حتى إكمال الدرس الحالي') }}" @endif
+                              class="rounded-[10px] p-[10px] flex flex-col gap-[2px] w-full text-start shrink-0 transition-all {{ $isActive ? 'bg-[#0B2A8F] text-white shadow-xs' : ($isAccessible ? ($isCompleted ? 'bg-[#F0FDF4] hover:bg-[#DCFCE7] text-slate-800 border border-emerald-200/60' : 'bg-[#FAFCFF] hover:bg-[#EAF1FB] text-slate-700 border border-[#DEE8F7]/60') : 'bg-slate-100/80 hover:bg-slate-200/80 text-slate-400 border border-slate-200/60') }}"
+                            >
+                              <div class="flex items-center justify-between gap-2">
+                                <div class="flex items-center gap-1.5 flex-1 min-w-0">
+                                  @if($isCompleted && ! $isActive)
+                                    <svg class="size-3.5 text-emerald-600 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                                  @elseif(! $isAccessible && ! $isActive)
+                                    <svg class="size-3 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                                  @endif
+                                  <p class="font-['Cairo'] font-bold text-[12px] leading-[1.6] {{ $isActive ? 'text-white' : ($isAccessible ? ($isCompleted ? 'text-emerald-900' : 'text-[#012383]') : 'text-slate-500') }} truncate">
+                                    {{ $lVideo->title_ar }}
+                                  </p>
+                                </div>
+                                @if($isActive)
+                                  <span class="text-[10px] bg-white/20 text-white px-1.5 py-0.2 rounded font-bold shrink-0">{{ __('الدرس الحالي') }}</span>
+                                @elseif($isCompleted)
+                                  <span class="text-[10px] bg-emerald-100 text-emerald-800 px-1.5 py-0.2 rounded font-bold shrink-0">{{ __('مكتمل') }}</span>
+                                @elseif(! $isAccessible)
+                                  <span class="text-[10px] bg-slate-200 text-slate-500 px-1.5 py-0.2 rounded font-bold shrink-0">{{ __('مغلق') }}</span>
+                                @elseif($lVideo->is_free_preview)
+                                  <span class="text-[10px] bg-amber-100 text-amber-800 px-1.5 py-0.2 rounded font-bold shrink-0">{{ __('معاينة مجانية') }}</span>
+                                @endif
+                              </div>
+                              <div class="flex items-center gap-2 text-[10px] {{ $isActive ? 'text-blue-100' : ($isAccessible ? 'text-slate-400' : 'text-slate-400') }}">
+                                <span>{{ __(':min دقيقة', ['min' => $lVideo->duration_minutes]) }}</span>
+                                @if($lVideo->clinicalTask)
+                                  <span>•</span>
+                                  <span>{{ __('مهمة سريرية') }}</span>
+                                @endif
+                                @if($isCompleted && ! $isActive)
+                                  <span>•</span>
+                                  <span class="text-emerald-600 font-medium">{{ __('يمكنك مراجعته بأي وقت') }}</span>
+                                @endif
+                              </div>
+                            </a>
+                          @empty
+                            <p class="text-xs text-slate-400 px-2 py-1">{{ __('لا توجد دروس منشورة في هذا المستوى.') }}</p>
+                          @endforelse
+                        </div>
+                      </div>
+                    @endforeach
+                  </div>
+                @elseif(isset($videos) && $videos->isNotEmpty())
+                  <div class="flex flex-col gap-1.5 w-full">
+                    @foreach($videos as $lVideo)
+                      @php
+                        $isActive = isset($video) && $lVideo->id === $video->id;
+                        $isCompleted = in_array($lVideo->id, $curriculumStatus['completed_video_ids'] ?? [], true);
+                        $isAccessible = in_array($lVideo->id, $curriculumStatus['accessible_video_ids'] ?? [], true);
+                      @endphp
+                      <a 
+                        href="{{ route('lessons.show', [$course->slug, $lVideo->slug]) }}"
+                        @if(! $isAccessible) title="{{ __('مغلق حتى إكمال الدرس الحالي') }}" @endif
+                        class="rounded-[10px] p-[10px] flex flex-col gap-[2px] w-full text-start shrink-0 transition-all {{ $isActive ? 'bg-[#0B2A8F] text-white shadow-xs' : ($isAccessible ? ($isCompleted ? 'bg-[#F0FDF4] hover:bg-[#DCFCE7] text-slate-800 border border-emerald-200/60' : 'bg-[#FAFCFF] hover:bg-[#EAF1FB] text-slate-700 border border-[#DEE8F7]/60') : 'bg-slate-100/80 hover:bg-slate-200/80 text-slate-400 border border-slate-200/60') }}"
+                      >
+                        <div class="flex items-center justify-between gap-2">
+                          <div class="flex items-center gap-1.5 flex-1 min-w-0">
+                            @if($isCompleted && ! $isActive)
+                              <svg class="size-3.5 text-emerald-600 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                            @elseif(! $isAccessible && ! $isActive)
+                              <svg class="size-3 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                            @endif
+                            <p class="font-['Cairo'] font-bold text-[12px] leading-[1.6] {{ $isActive ? 'text-white' : ($isAccessible ? ($isCompleted ? 'text-emerald-900' : 'text-[#012383]') : 'text-slate-500') }} truncate">
+                              {{ $lVideo->title_ar }}
+                            </p>
+                          </div>
+                          @if($isActive)
+                            <span class="text-[10px] bg-white/20 text-white px-1.5 py-0.2 rounded font-bold shrink-0">{{ __('الدرس الحالي') }}</span>
+                          @elseif($isCompleted)
+                            <span class="text-[10px] bg-emerald-100 text-emerald-800 px-1.5 py-0.2 rounded font-bold shrink-0">{{ __('مكتمل') }}</span>
+                          @elseif(! $isAccessible)
+                            <span class="text-[10px] bg-slate-200 text-slate-500 px-1.5 py-0.2 rounded font-bold shrink-0">{{ __('مغلق') }}</span>
+                          @elseif($lVideo->is_free_preview)
+                            <span class="text-[10px] bg-amber-100 text-amber-800 px-1.5 py-0.2 rounded font-bold shrink-0">{{ __('معاينة مجانية') }}</span>
+                          @endif
+                        </div>
+                        <div class="flex items-center gap-2 text-[10px] {{ $isActive ? 'text-blue-100' : 'text-slate-400' }}">
+                          <span>{{ __(':min دقيقة', ['min' => $lVideo->duration_minutes]) }}</span>
+                          @if($isCompleted && ! $isActive)
+                            <span>•</span>
+                            <span class="text-emerald-600 font-medium">{{ __('يمكنك مراجعته بأي وقت') }}</span>
+                          @endif
+                        </div>
+                      </a>
+                    @endforeach
+                  </div>
+                @else
                 <!-- Level 1 (Completed 100% - Node 3201:1060) -->
                 <div class="h-[46px] px-[12px] flex items-center rounded-[10px] w-full text-start shrink-0 hover:bg-[#FAFCFF] transition-colors cursor-pointer" data-node-id="3201:1060">
                   <p class="font-['Cairo'] font-normal text-[13px] leading-[1.65] text-[#475569] w-full text-start" data-i18n="lesson.level1Title">
@@ -266,6 +416,7 @@
                     <img src="/assets/images/icon-chevron-down.svg" alt="" class="size-full" />
                   </div>
                 </div>
+                @endif
 
                 <!-- View Curriculum CTA (Node 3201:1066) -->
                 <a

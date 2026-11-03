@@ -790,4 +790,97 @@ class CourseManagementAndMuxTest extends TestCase
         $this->assertEquals('playback_multi_chunk_789', $result['mux_playback_id']);
         $this->assertEquals('asset_multi_chunk_456', $result['mux_asset_id']);
     }
+
+    /**
+     * 20. Test course promo video chunked upload assembling, progress and course detail updating.
+     */
+    public function test_admin_can_upload_course_promo_video_in_chunks_and_update_course_details(): void
+    {
+        Storage::fake('public');
+        Storage::fake('local');
+
+        $uploadId = 'promo_upload_'.Str::random(12);
+        $part1 = UploadedFile::fake()->create('chunk_0.part', 500, 'application/octet-stream');
+        $part2 = UploadedFile::fake()->create('chunk_1.part', 500, 'application/octet-stream');
+
+        // Chunk 1 of 2
+        $response1 = $this->actingAs($this->admin, 'admin')
+            ->postJson(route('admin.courses.promo.chunk.upload', $this->course), [
+                'upload_id' => $uploadId,
+                'chunk_index' => 0,
+                'total_chunks' => 2,
+                'original_filename' => 'promo_video_intro.mp4',
+                'file_chunk' => $part1,
+            ]);
+
+        $response1->assertOk();
+        $response1->assertJson([
+            'status' => 'chunk_received',
+            'chunk_index' => 0,
+            'total_chunks' => 2,
+            'progress_percentage' => 50,
+        ]);
+
+        // Chunk 2 of 2 (completion)
+        $response2 = $this->actingAs($this->admin, 'admin')
+            ->postJson(route('admin.courses.promo.chunk.upload', $this->course), [
+                'upload_id' => $uploadId,
+                'chunk_index' => 1,
+                'total_chunks' => 2,
+                'original_filename' => 'promo_video_intro.mp4',
+                'file_chunk' => $part2,
+            ]);
+
+        $response2->assertOk();
+        $response2->assertJson([
+            'status' => 'completed',
+            'promo_video_source' => 'local',
+        ]);
+
+        $this->course->refresh();
+        $this->assertEquals('local', $this->course->promo_video_source);
+        $this->assertNotNull($this->course->promo_video_url);
+
+        // Now admin updates the course details normally
+        $updateResponse = $this->actingAs($this->admin, 'admin')
+            ->put(route('admin.courses.update', $this->course), [
+                'title_ar' => 'دبلوم التخاطب بعد رفع الفيديو',
+                'title_en' => 'Diploma After Promo Upload',
+                'slug' => $this->course->slug,
+                'description_ar' => 'تم التحديث بعد رفع الفيديو التعريفي بالتجزئة',
+                'price' => 1400.00,
+                'original_price' => 2000.00,
+                'access_duration_days' => 365,
+                'promo_video_source' => $this->course->promo_video_source,
+                'promo_video_url' => $this->course->promo_video_url,
+                'mux_playback_id' => $this->course->mux_playback_id,
+                'mux_asset_id' => $this->course->mux_asset_id,
+            ]);
+
+        $updateResponse->assertRedirect();
+        $this->course->refresh();
+        $this->assertEquals('دبلوم التخاطب بعد رفع الفيديو', $this->course->title_ar);
+        $this->assertEquals(1400.00, (float) $this->course->price);
+        $this->assertEquals('local', $this->course->promo_video_source);
+    }
+
+    /**
+     * 21. Test course promo video MUX direct upload updates course.
+     */
+    public function test_admin_can_update_promo_mux_details(): void
+    {
+        $response = $this->actingAs($this->admin, 'admin')
+            ->postJson(route('admin.courses.promo.mux.update', $this->course), [
+                'mux_playback_id' => 'NewPromoPlaybackId123456',
+                'mux_asset_id' => 'NewPromoAssetId123456',
+            ]);
+
+        $response->assertOk();
+        $response->assertJson(['success' => true]);
+
+        $this->course->refresh();
+        $this->assertEquals('mux', $this->course->promo_video_source);
+        $this->assertEquals('NewPromoPlaybackId123456', $this->course->mux_playback_id);
+        $this->assertEquals('NewPromoAssetId123456', $this->course->mux_asset_id);
+    }
 }

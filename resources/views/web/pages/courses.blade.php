@@ -56,7 +56,7 @@
           @php
             $courses = \App\Models\Course::query()
                 ->where('is_published', true)
-                ->withCount('videos')
+                ->withCount(['videos' => fn ($q) => $q->published()])
                 ->orderBy('sort_order')
                 ->get();
           @endphp

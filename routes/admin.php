@@ -57,9 +57,16 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::delete('courses/{course}', [CourseController::class, 'destroy'])->name('courses.destroy');
         Route::post('courses/{course}/price', [CourseController::class, 'updatePrice'])->name('courses.price.update');
 
+        // Course Promo Video Chunked & Direct Upload
+        Route::post('courses/{course}/promo/upload-chunk', [CourseController::class, 'uploadPromoChunk'])->name('courses.promo.chunk.upload');
+        Route::post('courses/{course}/promo/mux-update', [CourseController::class, 'updatePromoMux'])->name('courses.promo.mux.update');
+        Route::post('courses/{course}/promo/direct-upload-url', [CourseController::class, 'getMuxDirectUploadUrl'])->name('courses.promo.mux.direct_upload');
+        Route::get('courses/{course}/promo/mux-upload-status/{uploadId}', [CourseController::class, 'checkMuxUploadStatus'])->name('courses.promo.mux.upload_status');
+
         // Dynamic Levels Hierarchy
         Route::post('courses/{course}/levels', [CourseController::class, 'storeLevel'])->name('courses.levels.store');
         Route::put('courses/{course}/levels/{level}', [CourseController::class, 'updateLevel'])->name('courses.levels.update');
+        Route::post('courses/{course}/levels/{level}/toggle-publish', [CourseController::class, 'togglePublishLevel'])->name('courses.levels.toggle-publish');
         Route::delete('courses/{course}/levels/{level}', [CourseController::class, 'destroyLevel'])->name('courses.levels.destroy');
 
         // Video & Lessons Management with Resilient Driver & Chunked Upload
@@ -71,6 +78,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('courses/{course}/videos', [CourseController::class, 'storeVideo'])->name('courses.videos.store');
         Route::post('courses/{course}/videos/bulk-settings', [CourseController::class, 'applyVideoSettings'])->name('courses.videos.settings.apply');
         Route::put('courses/{course}/videos/{video}', [CourseController::class, 'updateVideo'])->name('courses.videos.update');
+        Route::post('courses/{course}/videos/{video}/toggle-publish', [CourseController::class, 'togglePublishVideo'])->name('courses.videos.toggle-publish');
         Route::delete('courses/{course}/videos/{video}', [CourseController::class, 'destroyVideo'])->name('courses.videos.destroy');
         Route::post('courses/{course}/videos/{video}/sync-mux', [CourseController::class, 'syncMuxVideo'])->name('courses.videos.mux.sync');
 

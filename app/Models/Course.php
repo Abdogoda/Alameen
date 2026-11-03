@@ -123,6 +123,16 @@ class Course extends Model
     }
 
     /**
+     * Published curriculum levels in this course.
+     *
+     * @return HasMany<Level, $this>
+     */
+    public function publishedLevels(): HasMany
+    {
+        return $this->hasMany(Level::class)->where('is_published', true)->orderBy('sort_order');
+    }
+
+    /**
      * Lectures / Videos in this course.
      *
      * @return HasMany<Video, $this>
@@ -130,6 +140,24 @@ class Course extends Model
     public function videos(): HasMany
     {
         return $this->hasMany(Video::class)->orderBy('sort_order');
+    }
+
+    /**
+     * Published lectures / videos in this course (with published levels).
+     *
+     * @return HasMany<Video, $this>
+     */
+    public function publishedVideos(): HasMany
+    {
+        return $this->hasMany(Video::class)
+            ->where('videos.is_published', true)
+            ->where(function ($q) {
+                $q->whereNull('videos.level_id')
+                    ->orWhereHas('level', function ($lq) {
+                        $lq->where('levels.is_published', true);
+                    });
+            })
+            ->orderBy('videos.sort_order');
     }
 
     /**

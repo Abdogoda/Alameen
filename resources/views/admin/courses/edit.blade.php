@@ -147,15 +147,15 @@
             </div>
         </div>
 
-        {{-- Card 3: Promo / Preview Video (MUX vs Link + Live Player Preview) --}}
-        <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-2xl sm:rounded-3xl p-5 sm:p-7 shadow-xs space-y-5" x-data="{ videoOption: '{{ !empty($course->mux_playback_id) ? 'mux_link' : 'mux_link' }}' }">
+        {{-- Card 3: Promo / Preview Video (Resilient Chunked Upload & MUX / Link + Live Player Preview) --}}
+        <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-2xl sm:rounded-3xl p-5 sm:p-7 shadow-xs space-y-5" x-data="{ videoOption: 'upload' }">
             <div class="border-b border-[#DEE8F7]/80 dark:border-slate-800 pb-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <div>
                     <h3 class="font-bold text-base sm:text-lg text-[#012383] dark:text-white flex items-center gap-2">
                         <svg class="size-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
                         <span>{{ __('الفيديو التعريفي للكورس (MUX Platform / Link)') }}</span>
                     </h3>
-                    <p class="text-xs text-slate-400">{{ __('يتم رفع الفيديو عبر المنصة إلى MUX أو تضمينه عبر رابط خارجي (YouTube, Vimeo, HLS, MP4) مع إمكانية المعاينة الفورية') }}</p>
+                    <p class="text-xs text-slate-400">{{ __('رفع الفيديو التعريفي بالتجزئة وشريط التقدم المباشر مع استقرار تام (Zero Timeout)، أو تضمينه عبر رابط خارجي مع المعاينة الفورية') }}</p>
                 </div>
 
                 {{-- Source Switcher Tabs --}}
@@ -164,37 +164,165 @@
                         type="button" 
                         @click="videoOption = 'upload'" 
                         :class="videoOption === 'upload' ? 'bg-[#012383] text-white shadow-xs' : 'text-slate-600 dark:text-slate-300 hover:text-[#012383]'" 
-                        class="px-3 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer"
+                        class="px-3 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer flex items-center gap-1.5"
                     >
-                        {{ __('رفع ملف فيديو إلى MUX') }}
+                        <svg class="size-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+                        <span>{{ __('رفع ملف فيديو إلى MUX') }}</span>
                     </button>
                     <button 
                         type="button" 
                         @click="videoOption = 'mux_link'" 
                         :class="videoOption === 'mux_link' ? 'bg-[#012383] text-white shadow-xs' : 'text-slate-600 dark:text-slate-300 hover:text-[#012383]'" 
-                        class="px-3 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer"
+                        class="px-3 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer flex items-center gap-1.5"
                     >
-                        {{ __('رابط خارجي أو Mux ID') }}
+                        <svg class="size-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+                        <span>{{ __('رابط خارجي أو Mux ID') }}</span>
                     </button>
                 </div>
             </div>
 
+            {{-- Hidden inputs to pass uploaded promo video metadata to the course update form --}}
+            <input type="hidden" name="promo_video_source" id="field-promo-video-source" value="{{ old('promo_video_source', $course->promo_video_source) }}" />
+            <input type="hidden" name="mux_playback_id" id="field-mux-playback-id" value="{{ old('mux_playback_id', $course->mux_playback_id) }}" />
+            <input type="hidden" name="mux_asset_id" id="field-mux-asset-id" value="{{ old('mux_asset_id', $course->mux_asset_id) }}" />
+
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
                 <div class="space-y-4">
-                    {{-- Option 1: File Upload to MUX --}}
-                    <div x-show="videoOption === 'upload'" class="space-y-2">
+                    {{-- Option 1: File Upload in Chunks --}}
+                    <div x-show="videoOption === 'upload'" class="space-y-3">
                         <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block">
-                            {{ __('رفع ملف فيديو جديد:') }}
+                            {{ __('رفع ملف فيديو تعريفي جديد:') }}
                         </label>
-                        <input 
-                            type="file" 
-                            name="promo_video_file" 
-                            accept="video/mp4,video/quicktime,video/webm" 
-                            class="w-full text-xs text-slate-500 file:mr-2 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-[#012383] file:text-white hover:file:bg-[#0B2A8F] cursor-pointer" 
-                        />
-                        <p class="text-[11px] text-slate-400">
-                            {{ __('صيغ مقبولة: MP4, MOV, WebM. يتم إرسال الفيديو ومعالجته على منصة MUX السحابية مباشرة.') }}
-                        </p>
+
+                        {{-- Dropzone / File Picker --}}
+                        <div 
+                            id="promo-chunked-dropzone" 
+                            class="border-2 border-dashed border-[#DEE8F7] dark:border-slate-700 hover:border-[#012383] dark:hover:border-blue-400 rounded-2xl p-5 text-center transition-all bg-slate-50/50 dark:bg-slate-800/30 flex flex-col items-center justify-center gap-2.5 cursor-pointer relative"
+                            onclick="document.getElementById('file-promo-video-input').click()"
+                            ondragover="event.preventDefault(); this.classList.add('border-[#012383]', 'bg-blue-50/40')"
+                            ondragleave="this.classList.remove('border-[#012383]', 'bg-blue-50/40')"
+                            ondrop="handlePromoFileDrop(event)"
+                        >
+                            <div class="size-11 rounded-xl bg-blue-50 dark:bg-slate-800 text-[#012383] dark:text-blue-400 flex items-center justify-center shadow-xs">
+                                <svg class="size-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+                            </div>
+
+                            <div>
+                                <h4 class="font-bold text-xs sm:text-sm text-[#012383] dark:text-white">
+                                    {{ __('اضغط لاختيار ملف الفيديو التعريفي أو اسحبه هنا') }}
+                                </h4>
+                                <p class="text-[11px] text-slate-400 mt-0.5">
+                                    {{ __('يتم الرفع بنظام التجزئة وشريط التقدم اللحظي لتجنب انقطاع الاتصال (Zero Timeout)') }}
+                                </p>
+                            </div>
+
+                            <button 
+                                type="button" 
+                                class="px-3.5 py-1.5 rounded-xl bg-white dark:bg-slate-800 border border-[#DEE8F7] dark:border-slate-700 text-[#012383] dark:text-blue-300 font-bold text-xs shadow-2xs hover:bg-[#EAF1FB] transition-all cursor-pointer"
+                            >
+                                {{ __('تصفح الفيديو من جهازك') }}
+                            </button>
+
+                            <input 
+                                type="file" 
+                                id="file-promo-video-input" 
+                                accept="video/mp4,video/quicktime,video/webm,video/x-matroska" 
+                                class="hidden" 
+                                onchange="handlePromoFileSelect(this.files)" 
+                            />
+                        </div>
+
+                        {{-- Live Progress Container --}}
+                        <div id="promo-upload-progress-container" class="hidden p-4 sm:p-5 rounded-2xl bg-slate-50/90 dark:bg-slate-800/80 border border-[#DEE8F7] dark:border-slate-700/80 shadow-xs space-y-4 transition-all">
+                            
+                            {{-- File Info Header --}}
+                            <div class="flex items-center justify-between flex-wrap gap-2 pb-2.5 border-b border-slate-200/70 dark:border-slate-700/60">
+                                <div class="flex items-center gap-2.5 min-w-0">
+                                    <div class="size-9 rounded-xl bg-gradient-to-tr from-[#012383] to-[#0B2A8F] text-white flex items-center justify-center shrink-0 shadow-xs ring-2 ring-blue-500/10">
+                                        <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <span id="promo-progress-file-name" class="font-bold text-xs text-slate-800 dark:text-white truncate block max-w-xs"></span>
+                                        <div class="flex items-center gap-1.5 mt-0.5">
+                                            <span id="promo-progress-file-size" dir="ltr" class="text-[10px] font-mono font-medium text-slate-400"></span>
+                                            <span class="size-1 rounded-full bg-slate-300 dark:bg-slate-600"></span>
+                                            <span class="text-[10px] text-slate-400 font-medium">{{ __('رفع مجزأ ذكي (Smart Chunks)') }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {{-- Dynamic Status Badge --}}
+                                <div id="promo-progress-status-badge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-blue-100/90 text-[#012383] dark:bg-blue-950/70 dark:text-blue-300 border border-blue-200 dark:border-blue-900 transition-all shadow-2xs">
+                                    <span class="relative flex size-2 shrink-0">
+                                        <span class="animate-ping absolute inline-flex size-full rounded-full bg-blue-400 opacity-75"></span>
+                                        <span class="relative inline-flex rounded-full size-2 bg-blue-600"></span>
+                                    </span>
+                                    <span id="promo-progress-status-text">{{ __('جاري الرفع...') }}</span>
+                                </div>
+                            </div>
+
+                            {{-- Progress Bar & Percentage --}}
+                            <div class="space-y-2">
+                                <div class="flex items-end justify-between gap-2">
+                                    <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-700 text-[11px] font-bold text-slate-700 dark:text-slate-200">
+                                        <svg class="size-3 text-blue-600 dark:text-blue-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                                        <span id="promo-progress-chunks-label">{{ __('جاري التجهيز...') }}</span>
+                                    </div>
+
+                                    <span id="promo-progress-percentage-label" class="text-xl sm:text-2xl font-black text-[#012383] dark:text-blue-400 font-mono tracking-tight leading-none">0%</span>
+                                </div>
+
+                                <div class="w-full h-3 rounded-full bg-slate-200/80 dark:bg-slate-700/80 p-0.5 overflow-hidden shadow-inner relative">
+                                    <div id="promo-progress-bar-fill" class="h-full rounded-full bg-gradient-to-r from-[#012383] via-blue-600 to-teal-400 dark:from-blue-600 dark:via-indigo-500 dark:to-cyan-400 transition-all duration-300 ease-out relative overflow-hidden flex items-center justify-end w-0 shadow-xs">
+                                        <div class="absolute inset-0 upload-shimmer-stripes opacity-30"></div>
+                                        <div class="relative size-1.5 rounded-full bg-white shadow-xs mx-1 shrink-0 opacity-80"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- Metrics Grid --}}
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1 text-center">
+                                <div class="p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-700/80">
+                                    <span class="text-[10px] text-slate-400 block mb-0.5">{{ __('السرعة') }}</span>
+                                    <span id="promo-metric-speed" dir="ltr" class="font-black text-xs text-slate-700 dark:text-slate-200 block font-mono">-</span>
+                                </div>
+                                <div class="p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-700/80">
+                                    <span class="text-[10px] text-slate-400 block mb-0.5">{{ __('المتبقي') }}</span>
+                                    <span id="promo-metric-eta" class="font-black text-xs text-slate-700 dark:text-slate-200 block font-mono">-</span>
+                                </div>
+                                <div class="p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-700/80">
+                                    <span class="text-[10px] text-slate-400 block mb-0.5">{{ __('الأجزاء') }}</span>
+                                    <span id="promo-metric-chunks" dir="ltr" class="font-black text-xs text-[#012383] dark:text-blue-300 font-mono">0 / 0</span>
+                                </div>
+                                <div class="p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-700/80">
+                                    <span class="text-[10px] text-slate-400 block mb-0.5">{{ __('المرفوع') }}</span>
+                                    <span id="promo-metric-uploaded" dir="ltr" class="font-black text-xs text-emerald-600 dark:text-emerald-400 block font-mono">-</span>
+                                </div>
+                            </div>
+
+                            {{-- Processing State Banner --}}
+                            <div id="promo-processing-banner" class="hidden p-3 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 flex items-center gap-2.5">
+                                <svg class="size-4.5 text-amber-600 animate-spin shrink-0" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>
+                                <div class="text-xs">
+                                    <span class="font-bold text-amber-900 dark:text-amber-200 block">{{ __('اكتمل رفع الأجزاء (100%): جاري المعالجة والحفظ...') }}</span>
+                                    <span class="text-amber-700 dark:text-amber-300 text-[11px]">{{ __('يقوم السيرفر بتجميع الأجزاء وتجهيز الفيديو التعريفي فوراً.') }}</span>
+                                </div>
+                            </div>
+
+                            {{-- Success & Ready Banner --}}
+                            <div id="promo-success-banner" class="hidden p-3.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 space-y-2">
+                                <div class="flex items-center justify-between flex-wrap gap-2">
+                                    <div class="flex items-center gap-2 text-emerald-800 dark:text-emerald-300 text-xs font-bold">
+                                        <svg class="size-4.5 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                        <span id="promo-success-message-text">{{ __('تم رفع وتجهيز الفيديو التعريفي بنجاح وهو معروض بالمعاينة!') }}</span>
+                                    </div>
+                                    <span id="promo-success-driver-badge" class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-200 text-emerald-900"></span>
+                                </div>
+                                <p class="text-[11px] text-emerald-700 dark:text-emerald-300 font-medium">
+                                    {{ __('يمكنك الآن متابعة تعديل تفاصيل الكورس (السعر، الصلاحية، إلخ) وحفظ التعديلات بشكل طبيعي.') }}
+                                </p>
+                            </div>
+                        </div>
                     </div>
 
                     {{-- Option 2: Link / Mux Playback ID --}}
@@ -207,7 +335,7 @@
                             id="promo-url-input"
                             name="promo_video_url" 
                             value="{{ old('promo_video_url', $course->mux_playback_id ?: $course->promo_video_url) }}" 
-                            placeholder="https://stream.mux.com/XXXXX.m3u8 أو معرّف MUX أو رابط YouTube / Vimeo" 
+                            placeholder="{{ __('https://stream.mux.com/XXXXX.m3u8 أو معرّف MUX أو رابط YouTube / Vimeo') }}" 
                             class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-mono text-slate-700 dark:text-slate-200 outline-none focus:border-[#0B2A8F] bg-slate-50/50 dark:bg-slate-800/50" 
                         />
                         <p class="text-[11px] text-slate-400">
@@ -215,16 +343,34 @@
                         </p>
                     </div>
 
-                    {{-- Current Mux Details if present --}}
-                    @if(!empty($course->mux_playback_id))
-                        <div class="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-xs text-emerald-800 dark:text-emerald-300 space-y-1">
-                            <span class="font-bold flex items-center gap-1.5">
-                                <span class="size-2 rounded-full bg-emerald-500"></span>
-                                {{ __('مرتبط حالياً بمنصة MUX') }}
-                            </span>
-                            <p class="font-mono text-[11px] truncate">Playback ID: {{ $course->mux_playback_id }}</p>
-                        </div>
-                    @endif
+                    {{-- Current Video Source Badge --}}
+                    <div id="promo-current-badge-container">
+                        @if(!empty($course->mux_playback_id))
+                            <div class="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-xs text-emerald-800 dark:text-emerald-300 space-y-1">
+                                <span class="font-bold flex items-center gap-1.5">
+                                    <span class="size-2 rounded-full bg-emerald-500"></span>
+                                    {{ __('مرتبط حالياً بمنصة MUX') }}
+                                </span>
+                                <p class="font-mono text-[11px] truncate">Playback ID: {{ $course->mux_playback_id }}</p>
+                            </div>
+                        @elseif($course->promo_video_source === 'local' && !empty($course->promo_video_url))
+                            <div class="p-3 rounded-xl bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 text-xs text-[#012383] dark:text-blue-300 space-y-1">
+                                <span class="font-bold flex items-center gap-1.5">
+                                    <span class="size-2 rounded-full bg-blue-500"></span>
+                                    {{ __('مخزن حالياً على سيرفر المنصة المحلي') }}
+                                </span>
+                                <p class="font-mono text-[11px] truncate">{{ $course->promo_video_url }}</p>
+                            </div>
+                        @elseif(!empty($course->promo_video_url))
+                            <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-700 dark:text-slate-300 space-y-1">
+                                <span class="font-bold flex items-center gap-1.5">
+                                    <span class="size-2 rounded-full bg-slate-500"></span>
+                                    {{ __('مرتبط برابط خارجي') }}
+                                </span>
+                                <p class="font-mono text-[11px] truncate">{{ $course->promo_video_url }}</p>
+                            </div>
+                        @endif
+                    </div>
                 </div>
 
                 {{-- Live Promo Video Preview Box --}}
@@ -408,10 +554,11 @@
 
                 <button 
                     type="submit" 
-                    class="w-full sm:w-auto px-8 h-11 rounded-xl bg-[#012383] hover:bg-[#0B2A8F] text-white font-bold text-xs sm:text-sm shadow-md hover:shadow-lg hover:shadow-blue-900/30 active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2"
+                    id="btn-submit-course"
+                    class="w-full sm:w-auto px-8 h-11 rounded-xl bg-[#012383] hover:bg-[#0B2A8F] disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold text-xs sm:text-sm shadow-md hover:shadow-lg hover:shadow-blue-900/30 active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2"
                 >
                     <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                    <span>{{ __('حفظ التعديلات ونشر الكورس') }}</span>
+                    <span id="btn-submit-course-text">{{ __('حفظ التعديلات ونشر الكورس') }}</span>
                 </button>
             </div>
         </div>
@@ -423,7 +570,64 @@
         @method('DELETE')
     </form>
 
+    {{-- Mux Player & UpChunk --}}
+    <script src="https://cdn.jsdelivr.net/npm/@mux/mux-player"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mux/upchunk@3/dist/index.min.js"></script>
+
     <script>
+        const IS_MUX_CONFIGURED = {{ !empty($isMuxConfigured) ? 'true' : 'false' }};
+        const PROMO_CHUNK_UPLOAD_URL = "{{ route('admin.courses.promo.chunk.upload', $course) }}";
+        const PROMO_MUX_DIRECT_URL = "{{ route('admin.courses.promo.mux.direct_upload', $course) }}";
+        const PROMO_MUX_STATUS_TEMPLATE = "{{ route('admin.courses.promo.mux.upload_status', [$course, ':uploadId']) }}";
+        const PROMO_MUX_UPDATE_URL = "{{ route('admin.courses.promo.mux.update', $course) }}";
+        const CHUNK_SIZE = 10 * 1024 * 1024; // 10MB binary slices for local upload
+        const CSRF_TOKEN = "{{ csrf_token() }}";
+
+        let promoCurrentFile = null;
+        let isPromoUploading = false;
+        let promoUploadStartTime = null;
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        async function fetchWithRetry(url, options, maxRetries = 3) {
+            let lastError = null;
+            for (let attempt = 1; attempt <= maxRetries; attempt++) {
+                try {
+                    const response = await fetch(url, options);
+                    if (response.ok) {
+                        return response;
+                    }
+                    const err = await response.json().catch(() => ({ message: `HTTP ${response.status}` }));
+                    lastError = new Error(err.message || 'فشل رفع جزء من الملف');
+                } catch (err) {
+                    lastError = err;
+                }
+
+                if (attempt < maxRetries) {
+                    await sleep(2000 * attempt);
+                }
+            }
+            throw lastError;
+        }
+
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 B';
+            const k = 1024;
+            const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function formatSeconds(sec) {
+            if (sec <= 0 || !isFinite(sec)) return '{{ __("لحظات...") }}';
+            if (sec < 60) return Math.round(sec) + ' {{ __("ث") }}';
+            const m = Math.floor(sec / 60);
+            const s = Math.round(sec % 60);
+            return `${m} {{ __("د") }} ${s} {{ __("ث") }}`;
+        }
+
         function previewThumbnailFile(input) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
@@ -431,6 +635,423 @@
                     document.getElementById('thumbnail-preview').src = e.target.result;
                 }
                 reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function handlePromoFileDrop(e) {
+            e.preventDefault();
+            const dropzone = document.getElementById('promo-chunked-dropzone');
+            if (dropzone) dropzone.classList.remove('border-[#012383]', 'bg-blue-50/40');
+            if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                handlePromoFileSelect(e.dataTransfer.files);
+            }
+        }
+
+        function handlePromoFileSelect(files) {
+            if (!files || files.length === 0) return;
+            promoCurrentFile = files[0];
+            startPromoVideoUpload(promoCurrentFile);
+        }
+
+        function startPromoVideoUpload(file) {
+            if (isPromoUploading) return;
+
+            if (IS_MUX_CONFIGURED && typeof UpChunk !== 'undefined') {
+                return startPromoMuxDirectUpload(file);
+            }
+
+            return startPromoLocalChunkedUpload(file);
+        }
+
+        /**
+         * Direct Browser-to-MUX Upload using @mux/upchunk.
+         */
+        async function startPromoMuxDirectUpload(file) {
+            isPromoUploading = true;
+            promoUploadStartTime = Date.now();
+
+            const progressContainer = document.getElementById('promo-upload-progress-container');
+            const fileNameEl = document.getElementById('promo-progress-file-name');
+            const fileSizeEl = document.getElementById('promo-progress-file-size');
+            const statusBadge = document.getElementById('promo-progress-status-badge');
+            const statusText = document.getElementById('promo-progress-status-text');
+            const percentLabel = document.getElementById('promo-progress-percentage-label');
+            const chunksLabel = document.getElementById('promo-progress-chunks-label');
+            const barFill = document.getElementById('promo-progress-bar-fill');
+            const speedEl = document.getElementById('promo-metric-speed');
+            const etaEl = document.getElementById('promo-metric-eta');
+            const chunksEl = document.getElementById('promo-metric-chunks');
+            const uploadedEl = document.getElementById('promo-metric-uploaded');
+            const processingBanner = document.getElementById('promo-processing-banner');
+            const successBanner = document.getElementById('promo-success-banner');
+            const submitBtn = document.getElementById('btn-submit-course');
+            const submitText = document.getElementById('btn-submit-course-text');
+
+            progressContainer.classList.remove('hidden');
+            processingBanner.classList.add('hidden');
+            successBanner.classList.remove('hidden');
+
+            fileNameEl.textContent = file.name;
+            fileNameEl.title = file.name;
+            fileSizeEl.textContent = formatBytes(file.size);
+
+            if (statusBadge) {
+                statusBadge.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-blue-100/90 text-[#012383] dark:bg-blue-950/70 dark:text-blue-300 border border-blue-200 dark:border-blue-900 transition-all shadow-2xs';
+            }
+            if (statusText) statusText.textContent = '{{ __("جاري الاتصال بسحابة MUX...") }}';
+            if (chunksLabel) chunksLabel.textContent = '{{ __("رفع سحابي مباشر (Zero Timeout)") }}';
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                if (submitText) submitText.textContent = '{{ __("جاري رفع الفيديو التعريفي...") }}';
+            }
+
+            try {
+                const res = await fetch(PROMO_MUX_DIRECT_URL, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': CSRF_TOKEN,
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (!res.ok) {
+                    const err = await res.json().catch(() => ({}));
+                    throw new Error(err.message || 'فشل في إنشاء رابط الرفع لمنصة MUX.');
+                }
+
+                const data = await res.json();
+                if (!data.success || !data.upload_url) {
+                    throw new Error(data.message || 'رابط رفع MUX غير متوفر.');
+                }
+
+                const uploadUrl = data.upload_url;
+                const uploadId = data.upload_id;
+
+                if (statusText) statusText.textContent = '{{ __("جاري الرفع المباشر إلى MUX...") }}';
+
+                const upload = UpChunk.createUpload({
+                    endpoint: uploadUrl,
+                    file: file,
+                    chunkSize: 5120, // 5MB chunks
+                });
+
+                upload.on('progress', (e) => {
+                    const percent = Math.min(100, Math.round(e.detail));
+                    barFill.style.width = percent + '%';
+                    percentLabel.textContent = percent + '%';
+
+                    const uploadedBytes = (percent / 100) * file.size;
+                    uploadedEl.textContent = `${formatBytes(uploadedBytes)} / ${formatBytes(file.size)}`;
+
+                    const elapsedSec = (Date.now() - promoUploadStartTime) / 1000;
+                    if (elapsedSec > 0) {
+                        const bytesPerSec = uploadedBytes / elapsedSec;
+                        speedEl.textContent = formatBytes(bytesPerSec) + '/s';
+                        const remainingBytes = Math.max(0, file.size - uploadedBytes);
+                        const etaSec = bytesPerSec > 0 ? (remainingBytes / bytesPerSec) : 0;
+                        etaEl.textContent = formatSeconds(etaSec);
+                    }
+
+                    if (chunksEl) chunksEl.textContent = `${percent}%`;
+                });
+
+                upload.on('success', () => {
+                    processingBanner.classList.remove('hidden');
+                    if (statusBadge) {
+                        statusBadge.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-900 dark:bg-amber-950/70 dark:text-amber-200 border border-amber-200 dark:border-amber-900 transition-all animate-pulse';
+                    }
+                    if (statusText) statusText.textContent = '{{ __("اكتمل الرفع (100%): جاري معالجة الفيديو على MUX...") }}';
+
+                    const statusUrl = PROMO_MUX_STATUS_TEMPLATE.replace(':uploadId', uploadId);
+                    let pollCount = 0;
+
+                    const poller = setInterval(async () => {
+                        pollCount++;
+                        try {
+                            const pollRes = await fetch(statusUrl, {
+                                headers: { 'Accept': 'application/json' }
+                            });
+                            if (pollRes.ok) {
+                                const pollData = await pollRes.json();
+                                if (pollData.asset_id && pollData.playback_id) {
+                                    clearInterval(poller);
+
+                                    // Save MUX details to course on backend
+                                    await fetch(PROMO_MUX_UPDATE_URL, {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                            'X-CSRF-TOKEN': CSRF_TOKEN,
+                                            'Accept': 'application/json'
+                                        },
+                                        body: JSON.stringify({
+                                            mux_playback_id: pollData.playback_id,
+                                            mux_asset_id: pollData.asset_id
+                                        })
+                                    }).catch(() => {});
+
+                                    // Populate hidden form inputs
+                                    document.getElementById('field-promo-video-source').value = 'mux';
+                                    document.getElementById('field-mux-playback-id').value = pollData.playback_id;
+                                    document.getElementById('field-mux-asset-id').value = pollData.asset_id;
+                                    const promoInput = document.getElementById('promo-url-input');
+                                    if (promoInput) promoInput.value = `https://stream.mux.com/${pollData.playback_id}.m3u8`;
+
+                                    // Success UI
+                                    processingBanner.classList.add('hidden');
+                                    successBanner.classList.remove('hidden');
+                                    const driverBadge = document.getElementById('promo-success-driver-badge');
+                                    if (driverBadge) driverBadge.textContent = 'MUX Cloud Stream';
+
+                                    if (statusBadge) {
+                                        statusBadge.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-900 transition-all';
+                                    }
+                                    if (statusText) statusText.textContent = '{{ __("تمت معالجة الفيديو بنجاح على MUX وهو جاهز للنشر!") }}';
+
+                                    // Update preview player
+                                    updatePromoPlayerWithMux(pollData.playback_id);
+
+                                    if (submitBtn) {
+                                        submitBtn.disabled = false;
+                                        if (submitText) submitText.textContent = '{{ __("حفظ التعديلات ونشر الكورس") }}';
+                                    }
+                                    isPromoUploading = false;
+                                    return;
+                                }
+                            }
+                        } catch (err) {
+                            console.warn('Poll error:', err);
+                        }
+
+                        if (pollCount > 45) {
+                            clearInterval(poller);
+                            document.getElementById('field-promo-video-source').value = 'mux';
+                            processingBanner.classList.add('hidden');
+                            successBanner.classList.remove('hidden');
+                            if (statusText) statusText.textContent = '{{ __("تم رفع الفيديو بنجاح إلى MUX (جاري إكمال المعالجة في السحابة)") }}';
+                            if (submitBtn) {
+                                submitBtn.disabled = false;
+                                if (submitText) submitText.textContent = '{{ __("حفظ التعديلات ونشر الكورس") }}';
+                            }
+                            isPromoUploading = false;
+                        }
+                    }, 2000);
+                });
+
+                upload.on('error', (err) => {
+                    console.error('Mux UpChunk error:', err);
+                    isPromoUploading = false;
+                    if (statusBadge) {
+                        statusBadge.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-rose-100 text-rose-800 border border-rose-200';
+                    }
+                    if (statusText) statusText.textContent = '{{ __("فشل الرفع") }}';
+                    alert('حدث خطأ أثناء الرفع إلى MUX: ' + (err.detail?.message || 'خطأ في الاتصال'));
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        if (submitText) submitText.textContent = '{{ __("حفظ التعديلات ونشر الكورس") }}';
+                    }
+                });
+
+            } catch (err) {
+                console.warn('MUX direct upload fallback to local chunked upload:', err);
+                return startPromoLocalChunkedUpload(file);
+            }
+        }
+
+        /**
+         * Local server chunked upload
+         */
+        async function startPromoLocalChunkedUpload(file) {
+            isPromoUploading = true;
+
+            const uploadId = 'promo_' + Date.now() + '_' + Math.random().toString(36).substring(2, 9);
+            const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
+
+            const progressContainer = document.getElementById('promo-upload-progress-container');
+            const fileNameEl = document.getElementById('promo-progress-file-name');
+            const fileSizeEl = document.getElementById('promo-progress-file-size');
+            const statusBadge = document.getElementById('promo-progress-status-badge');
+            const statusText = document.getElementById('promo-progress-status-text');
+            const percentLabel = document.getElementById('promo-progress-percentage-label');
+            const chunksLabel = document.getElementById('promo-progress-chunks-label');
+            const barFill = document.getElementById('promo-progress-bar-fill');
+            const speedEl = document.getElementById('promo-metric-speed');
+            const etaEl = document.getElementById('promo-metric-eta');
+            const chunksEl = document.getElementById('promo-metric-chunks');
+            const uploadedEl = document.getElementById('promo-metric-uploaded');
+            const processingBanner = document.getElementById('promo-processing-banner');
+            const successBanner = document.getElementById('promo-success-banner');
+            const submitBtn = document.getElementById('btn-submit-course');
+            const submitText = document.getElementById('btn-submit-course-text');
+
+            progressContainer.classList.remove('hidden');
+            processingBanner.classList.add('hidden');
+            successBanner.classList.add('hidden');
+
+            fileNameEl.textContent = file.name;
+            fileNameEl.title = file.name;
+            fileSizeEl.textContent = formatBytes(file.size);
+            
+            if (statusBadge) {
+                statusBadge.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-blue-100/90 text-[#012383] dark:bg-blue-950/70 dark:text-blue-300 border border-blue-200 dark:border-blue-900 transition-all shadow-2xs';
+            }
+            if (statusText) statusText.textContent = '{{ __("جاري الرفع...") }}';
+
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                if (submitText) submitText.textContent = '{{ __("جاري رفع الفيديو التعريفي...") }}';
+            }
+            promoUploadStartTime = Date.now();
+
+            let uploadedBytes = 0;
+
+            for (let chunkIndex = 0; chunkIndex < totalChunks; chunkIndex++) {
+                const start = chunkIndex * CHUNK_SIZE;
+                const end = Math.min(start + CHUNK_SIZE, file.size);
+                const chunkBlob = file.slice(start, end);
+
+                const formData = new FormData();
+                formData.append('upload_id', uploadId);
+                formData.append('chunk_index', chunkIndex);
+                formData.append('total_chunks', totalChunks);
+                formData.append('original_filename', file.name);
+                formData.append('total_size', file.size);
+                formData.append('file_chunk', chunkBlob);
+
+                if (chunkIndex === totalChunks - 1) {
+                    processingBanner.classList.remove('hidden');
+                    if (statusBadge) {
+                        statusBadge.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-900 dark:bg-amber-950/70 dark:text-amber-200 border border-amber-200 dark:border-amber-900 transition-all animate-pulse';
+                    }
+                    if (statusText) statusText.textContent = '{{ __("جاري تجميع وحفظ الفيديو على السيرفر...") }}';
+                }
+
+                try {
+                    const response = await fetchWithRetry(PROMO_CHUNK_UPLOAD_URL, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': CSRF_TOKEN,
+                            'Accept': 'application/json'
+                        },
+                        body: formData
+                    }, 3);
+
+                    if (!response.ok) {
+                        const err = await response.json().catch(() => ({ message: 'Server error' }));
+                        throw new Error(err.message || 'فشل رفع جزء من الملف');
+                    }
+
+                    const result = await response.json();
+
+                    uploadedBytes += (end - start);
+                    const percent = Math.min(100, Math.round((uploadedBytes / file.size) * 100));
+                    const partsPercent = Math.min(100, Math.round(((chunkIndex + 1) / totalChunks) * 100));
+
+                    percentLabel.textContent = percent + '%';
+                    barFill.style.width = percent + '%';
+                    chunksLabel.textContent = `{{ __("الجزء") }} ${chunkIndex + 1} {{ __("من") }} ${totalChunks} (${partsPercent}%)`;
+                    chunksEl.textContent = `${chunkIndex + 1} / ${totalChunks}`;
+                    uploadedEl.textContent = `${formatBytes(uploadedBytes)} / ${formatBytes(file.size)}`;
+
+                    const elapsedSec = (Date.now() - promoUploadStartTime) / 1000;
+                    if (elapsedSec > 0) {
+                        const bytesPerSec = uploadedBytes / elapsedSec;
+                        speedEl.textContent = formatBytes(bytesPerSec) + '/s';
+                        const remainingBytes = Math.max(0, file.size - uploadedBytes);
+                        const etaSec = bytesPerSec > 0 ? (remainingBytes / bytesPerSec) : 0;
+                        etaEl.textContent = formatSeconds(etaSec);
+                    }
+
+                    if (chunkIndex === totalChunks - 1 && result.status === 'completed') {
+                        if (statusBadge) {
+                            statusBadge.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-900 transition-all';
+                        }
+                        if (statusText) statusText.textContent = '{{ __("اكتمل الرفع والمعالجة بنجاح") }}';
+                        processingBanner.classList.add('hidden');
+                        successBanner.classList.remove('hidden');
+
+                        let playUrl = result.promo_video_url || '';
+                        if (playUrl.includes('/storage/')) {
+                            playUrl = '/storage/' + playUrl.split('/storage/')[1];
+                        }
+
+                        // Populate hidden form fields so saving the course details updates normally
+                        document.getElementById('field-promo-video-source').value = result.promo_video_source || 'local';
+                        if (playUrl) {
+                            const promoInput = document.getElementById('promo-url-input');
+                            if (promoInput) promoInput.value = playUrl;
+                        }
+                        document.getElementById('field-mux-playback-id').value = result.mux_playback_id || '';
+                        document.getElementById('field-mux-asset-id').value = result.mux_asset_id || '';
+
+                        const driverBadge = document.getElementById('promo-success-driver-badge');
+                        if (driverBadge) {
+                            driverBadge.textContent = result.driver_used === 'mux' ? 'منصة MUX' : '{{ __("سيرفر المنصة المحلي") }}';
+                        }
+
+                        // Update preview player
+                        if (result.mux_playback_id) {
+                            updatePromoPlayerWithMux(result.mux_playback_id, result.playback_token);
+                        } else if (playUrl) {
+                            const playerContainer = document.getElementById('promo-preview-player');
+                            playerContainer.innerHTML = '';
+                            const video = document.createElement('video');
+                            video.controls = true;
+                            video.className = 'w-full h-full';
+                            video.src = playUrl;
+                            playerContainer.appendChild(video);
+                        }
+
+                        if (submitBtn) {
+                            submitBtn.disabled = false;
+                            if (submitText) submitText.textContent = '{{ __("حفظ التعديلات ونشر الكورس") }}';
+                        }
+                        isPromoUploading = false;
+                        return;
+                    }
+                } catch (err) {
+                    console.error(err);
+                    if (statusBadge) {
+                        statusBadge.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-rose-100 text-rose-800 dark:bg-rose-950/70 dark:text-rose-300 border border-rose-200 transition-all';
+                    }
+                    if (statusText) statusText.textContent = '{{ __("خطأ في الرفع") }}';
+                    alert('حدث خطأ أثناء رفع ملف الفيديو: ' + err.message);
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        if (submitText) submitText.textContent = '{{ __("حفظ التعديلات ونشر الكورس") }}';
+                    }
+                    isPromoUploading = false;
+                    return;
+                }
+            }
+        }
+
+        function updatePromoPlayerWithMux(playbackId, token = null) {
+            const playerContainer = document.getElementById('promo-preview-player');
+            playerContainer.innerHTML = '';
+
+            if (window.customElements && customElements.get('mux-player')) {
+                const muxPlayer = document.createElement('mux-player');
+                muxPlayer.setAttribute('playback-id', playbackId);
+                muxPlayer.setAttribute('stream-type', 'on-demand');
+                muxPlayer.setAttribute('controls', 'true');
+                if (token) muxPlayer.setAttribute('playback-token', token);
+                muxPlayer.className = 'w-full h-full';
+                playerContainer.appendChild(muxPlayer);
+            } else {
+                const video = document.createElement('video');
+                video.controls = true;
+                video.className = 'w-full h-full';
+                const tokenQuery = token ? `?token=${token}` : '';
+                const hlsSrc = `https://stream.mux.com/${playbackId}.m3u8${tokenQuery}`;
+                if (window.Hls && Hls.isSupported()) {
+                    const hls = new Hls();
+                    hls.loadSource(hlsSrc);
+                    hls.attachMedia(video);
+                } else {
+                    video.src = hlsSrc;
+                }
+                playerContainer.appendChild(video);
             }
         }
 
@@ -451,27 +1072,7 @@
                 const match = urlInput.match(/stream\.mux\.com\/([a-zA-Z0-9_\-]+)/);
                 if (match) playbackId = match[1];
 
-                if (window.customElements && customElements.get('mux-player')) {
-                    const muxPlayer = document.createElement('mux-player');
-                    muxPlayer.setAttribute('playback-id', playbackId);
-                    muxPlayer.setAttribute('stream-type', 'on-demand');
-                    muxPlayer.setAttribute('controls', 'true');
-                    muxPlayer.className = 'w-full h-full';
-                    playerContainer.appendChild(muxPlayer);
-                } else {
-                    const video = document.createElement('video');
-                    video.controls = true;
-                    video.className = 'w-full h-full';
-                    const hlsSrc = `https://stream.mux.com/${playbackId}.m3u8`;
-                    if (window.Hls && Hls.isSupported()) {
-                        const hls = new Hls();
-                        hls.loadSource(hlsSrc);
-                        hls.attachMedia(video);
-                    } else {
-                        video.src = hlsSrc;
-                    }
-                    playerContainer.appendChild(video);
-                }
+                updatePromoPlayerWithMux(playbackId);
             }
             // 2. YouTube
             else if (urlInput.includes('youtube.com') || urlInput.includes('youtu.be')) {

@@ -30,8 +30,10 @@ class StoreCourseRequest extends FormRequest
             'access_duration_days' => ['required', 'integer', 'min:1'],
             'thumbnail_file' => ['nullable', 'image', 'max:4096'],
             'thumbnail' => ['nullable', 'string', 'max:500'],
-            'promo_video_source' => ['nullable', 'string', 'in:mux,link,upload,youtube,vimeo'],
+            'promo_video_source' => ['nullable', 'string', 'in:mux,link,upload,youtube,vimeo,local'],
             'promo_video_url' => ['nullable', 'string', 'max:1000'],
+            'mux_playback_id' => ['nullable', 'string', 'max:255'],
+            'mux_asset_id' => ['nullable', 'string', 'max:255'],
             'promo_video_file' => ['nullable', 'file', 'mimetypes:video/mp4,video/quicktime,video/webm,video/x-matroska', 'max:512000'],
             'is_published' => ['nullable', 'boolean'],
         ];

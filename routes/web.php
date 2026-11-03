@@ -81,7 +81,18 @@ Route::get('storage/{path}', function (string $path) {
         }
     }
 
-    return response()->file($realFullPath);
+    $headers = [];
+    if (str_starts_with($path, 'videos/')) {
+        $headers = [
+            'Content-Disposition' => 'inline',
+            'X-Content-Type-Options' => 'nosniff',
+            'Cache-Control' => 'private, no-cache, no-store, must-revalidate',
+            'Pragma' => 'no-cache',
+            'X-Robots-Tag' => 'noindex, nofollow, noarchive',
+        ];
+    }
+
+    return response()->file($realFullPath, $headers);
 })->where('path', '.*')->name('storage.fallback');
 
 // -------------------------------------------------------------

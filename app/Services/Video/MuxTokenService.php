@@ -83,10 +83,10 @@ class MuxTokenService
     /**
      * Generate a cryptographic RS256 JWT for Mux Signed URLs.
      *
-     * @param  string  $playbackId The Mux Playback ID (sub claim)
-     * @param  string  $audience 'v' for video, 't' for thumbnail, 's' for storyboard
-     * @param  int|null  $lifetime Validity period in seconds
-     * @param  array<string, mixed>  $customClaims Additional claims if needed
+     * @param  string  $playbackId  The Mux Playback ID (sub claim)
+     * @param  string  $audience  'v' for video, 't' for thumbnail, 's' for storyboard
+     * @param  int|null  $lifetime  Validity period in seconds
+     * @param  array<string, mixed>  $customClaims  Additional claims if needed
      */
     public function generateToken(string $playbackId, string $audience = 'v', ?int $lifetime = null, array $customClaims = []): ?string
     {
@@ -131,9 +131,8 @@ class MuxTokenService
      *
      * @param  array<string, mixed>  $header
      * @param  array<string, mixed>  $payload
-     * @param  \OpenSSLAsymmetricKey|resource  $privateKey
      */
-    protected function signRs256(array $header, array $payload, $privateKey): ?string
+    protected function signRs256(array $header, array $payload, \OpenSSLAsymmetricKey $privateKey): ?string
     {
         $encodedHeader = $this->base64UrlEncode((string) json_encode($header, JSON_UNESCAPED_SLASHES));
         $encodedPayload = $this->base64UrlEncode((string) json_encode($payload, JSON_UNESCAPED_SLASHES));
@@ -159,10 +158,8 @@ class MuxTokenService
      * 1. Standard PEM format (with BEGIN RSA PRIVATE KEY / BEGIN PRIVATE KEY)
      * 2. Base64-encoded PEM string
      * 3. Base64-encoded raw DER key
-     *
-     * @return \OpenSSLAsymmetricKey|resource|null
      */
-    protected function normalizePrivateKey(string $rawKey)
+    protected function normalizePrivateKey(string $rawKey): ?\OpenSSLAsymmetricKey
     {
         $trimmed = trim($rawKey);
 

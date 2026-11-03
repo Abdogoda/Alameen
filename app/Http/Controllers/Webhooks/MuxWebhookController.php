@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Webhooks;
 use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\Video;
+use App\Services\Cms\SettingsService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -19,7 +20,7 @@ class MuxWebhookController extends Controller
     public function handle(Request $request): JsonResponse
     {
         $signatureHeader = $request->header('Mux-Signature');
-        $webhookSecret = app(\App\Services\Cms\SettingsService::class)->get('mux_webhook_secret')
+        $webhookSecret = app(SettingsService::class)->get('mux_webhook_secret')
             ?: config('video.drivers.mux.webhook_secret');
 
         // Optional webhook signature verification
@@ -70,10 +71,16 @@ class MuxWebhookController extends Controller
     {
         $assetId = $data['id'] ?? null;
         $uploadId = $data['upload_id'] ?? null;
-        
+
         // Prefer signed playback ID if available, otherwise first playback ID
-        $playbackIds = $data['playback_ids'] ?? [];
-        $signedPlayback = collect($playbackIds)->firstWhere('policy', 'signed');
+        $playbackIds = is_array($data['playback_ids'] ?? null) ? $data['playback_ids'] : [];
+        $signedPlayback = null;
+        foreach ($playbackIds as $playback) {
+            if (is_array($playback) && ($playback['policy'] ?? null) === 'signed') {
+                $signedPlayback = $playback;
+                break;
+            }
+        }
         $playbackId = $signedPlayback['id'] ?? ($playbackIds[0]['id'] ?? null);
         $durationSeconds = isset($data['duration']) ? (int) round((float) $data['duration']) : null;
 

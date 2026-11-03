@@ -19,6 +19,8 @@ use App\Models\Course;
 use App\Models\Level;
 use App\Models\Video;
 use App\Services\Video\ChunkedUploadService;
+use App\Services\Video\Drivers\MuxDriver;
+use App\Services\Video\MuxTokenService;
 use App\Services\Video\MuxVideoService;
 use App\Services\Video\VideoServiceManager;
 use Illuminate\Http\JsonResponse;
@@ -312,7 +314,7 @@ class CourseController extends Controller
      */
     public function checkMuxUploadStatus(Course $course, string $uploadId): JsonResponse
     {
-        /** @var \App\Services\Video\Drivers\MuxDriver $muxDriver */
+        /** @var MuxDriver $muxDriver */
         $muxDriver = $this->videoManager->driver('mux');
 
         if (! $muxDriver->isConfigured()) {
@@ -340,8 +342,14 @@ class CourseController extends Controller
         $asset = $muxDriver->getAsset($assetId);
         $assetStatus = $asset['status'] ?? 'preparing';
 
-        $playbackIds = $asset['playback_ids'] ?? [];
-        $signedPlayback = collect($playbackIds)->firstWhere('policy', 'signed');
+        $playbackIds = is_array($asset['playback_ids'] ?? null) ? $asset['playback_ids'] : [];
+        $signedPlayback = null;
+        foreach ($playbackIds as $playback) {
+            if (is_array($playback) && ($playback['policy'] ?? null) === 'signed') {
+                $signedPlayback = $playback;
+                break;
+            }
+        }
         $playbackId = $signedPlayback['id'] ?? ($playbackIds[0]['id'] ?? null);
         $durationSeconds = isset($asset['duration']) ? (int) round((float) $asset['duration']) : null;
 
@@ -428,7 +436,7 @@ class CourseController extends Controller
 
             $previewToken = null;
             if (! empty($uploadResult['mux_playback_id'])) {
-                $previewToken = app(\App\Services\Video\MuxTokenService::class)->generatePlaybackToken($uploadResult['mux_playback_id']);
+                $previewToken = app(MuxTokenService::class)->generatePlaybackToken($uploadResult['mux_playback_id']);
             }
 
             return response()->json([
@@ -636,8 +644,14 @@ class CourseController extends Controller
             return back()->with('error', __('تعذر العثور على بيانات الفيديو على سيرفرات MUX.'));
         }
 
-        $playbackIds = $asset['playback_ids'] ?? [];
-        $signedPlayback = collect($playbackIds)->firstWhere('policy', 'signed');
+        $playbackIds = is_array($asset['playback_ids'] ?? null) ? $asset['playback_ids'] : [];
+        $signedPlayback = null;
+        foreach ($playbackIds as $playback) {
+            if (is_array($playback) && ($playback['policy'] ?? null) === 'signed') {
+                $signedPlayback = $playback;
+                break;
+            }
+        }
 
         // If no signed playback ID exists yet, create one!
         if (! $signedPlayback) {

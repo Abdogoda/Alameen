@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Log;
 class MuxDriver implements VideoDriverInterface
 {
     protected ?SettingsService $settingsService = null;
+
     protected ?MuxTokenService $tokenService = null;
 
     /**
@@ -78,12 +79,13 @@ class MuxDriver implements VideoDriverInterface
         $policy = $this->settingsService->get('mux_playback_policy');
         if (! empty($policy)) {
             $cleaned = trim($policy);
+
             return $cleaned === 'public' ? ['public'] : ['signed'];
         }
 
         $configPolicy = config('video.drivers.mux.playback_policy', ['signed']);
 
-        return is_array($configPolicy) ? $configPolicy : [ (string) $configPolicy ];
+        return is_array($configPolicy) ? $configPolicy : [(string) $configPolicy];
     }
 
     public function isConfigured(): bool

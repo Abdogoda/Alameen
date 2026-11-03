@@ -64,7 +64,7 @@ class Level extends Model
         if ($locale === 'en') {
             return ! empty($this->description_en)
                 ? $this->description_en
-                : (! empty($this->description_ar) ? __($this->description_ar) : null);
+                : (! empty($this->description_ar) ? (string) __($this->description_ar) : null);
         }
 
         return $this->description_ar;

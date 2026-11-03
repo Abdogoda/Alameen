@@ -16,6 +16,8 @@ use App\Models\Menu;
 use App\Models\MenuItem;
 use App\Services\Cms\MenuService;
 use App\Services\Cms\SettingsService;
+use App\Services\Video\MuxVideoService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
@@ -291,7 +293,7 @@ class SettingsController extends Controller
     /**
      * Test MUX credentials, API connection, and cryptographic signing keys.
      */
-    public function testMuxConnection(\App\Services\Video\MuxVideoService $muxService): \Illuminate\Http\JsonResponse
+    public function testMuxConnection(MuxVideoService $muxService): JsonResponse
     {
         $result = $muxService->testConnection();
 

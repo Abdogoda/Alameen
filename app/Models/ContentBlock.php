@@ -53,7 +53,7 @@ class ContentBlock extends Model
         if ($locale === 'en') {
             return ! empty($this->title_en)
                 ? $this->title_en
-                : (! empty($this->title_ar) ? __($this->title_ar) : null);
+                : (! empty($this->title_ar) ? (string) __($this->title_ar) : null);
         }
 
         return $this->title_ar;
@@ -66,7 +66,7 @@ class ContentBlock extends Model
         if ($locale === 'en') {
             return ! empty($this->subtitle_en)
                 ? $this->subtitle_en
-                : (! empty($this->subtitle_ar) ? __($this->subtitle_ar) : null);
+                : (! empty($this->subtitle_ar) ? (string) __($this->subtitle_ar) : null);
         }
 
         return $this->subtitle_ar;
@@ -79,7 +79,7 @@ class ContentBlock extends Model
         if ($locale === 'en') {
             return ! empty($this->content_en)
                 ? $this->content_en
-                : (! empty($this->content_ar) ? __($this->content_ar) : null);
+                : (! empty($this->content_ar) ? (string) __($this->content_ar) : null);
         }
 
         return $this->content_ar;

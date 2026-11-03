@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-require_once __DIR__ . '/../helpers.php';
+require_once __DIR__.'/../helpers.php';
 
 use App\Models\Admin;
 use App\Services\Cms\SettingsService;

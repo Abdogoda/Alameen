@@ -99,7 +99,7 @@ class SettingsService
         }
 
         if (! str_starts_with($logo, '/')) {
-            $logo = '/' . $logo;
+            $logo = '/'.$logo;
         }
 
         return $logo;
@@ -130,7 +130,7 @@ class SettingsService
         if ($key === 'site_logo' && ! empty($valueAr)) {
             $cleanLogo = rtrim(trim($valueAr), '/');
             if (! str_starts_with($cleanLogo, 'http://') && ! str_starts_with($cleanLogo, 'https://') && ! str_starts_with($cleanLogo, 'data:') && ! str_starts_with($cleanLogo, '/')) {
-                $cleanLogo = '/' . $cleanLogo;
+                $cleanLogo = '/'.$cleanLogo;
             }
             $valueAr = $cleanLogo;
             $valueEn = $cleanLogo;

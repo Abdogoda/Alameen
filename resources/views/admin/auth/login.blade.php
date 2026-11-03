@@ -45,7 +45,7 @@
     </div>
 
     <!-- Main Container -->
-    <div class="w-full max-w-[430px] relative z-10 my-auto py-10 px-1 sm:px-0 alameen-content-wrap">
+    <div class="w-full max-w-md relative z-10 my-auto py-10 px-1 sm:px-0 alameen-content-wrap" style="max-width: 440px;">
         
         <!-- Header Branding -->
         <div class="flex flex-col items-center text-center mb-6 sm:mb-7">

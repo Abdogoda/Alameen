@@ -12,7 +12,7 @@ if (! function_exists('platform_setting')) {
     {
         try {
             return app(SettingsService::class)->get($key, $default);
-        } catch (\Throwable) {
+        } catch (Throwable) {
             return $default;
         }
     }
@@ -26,7 +26,7 @@ if (! function_exists('platform_name')) {
     {
         try {
             return app(SettingsService::class)->getSiteName() ?: ($default ?? config('app.name', 'منصة الأمين'));
-        } catch (\Throwable) {
+        } catch (Throwable) {
             return $default ?? config('app.name', 'منصة الأمين');
         }
     }
@@ -40,7 +40,7 @@ if (! function_exists('platform_logo')) {
     {
         try {
             return app(SettingsService::class)->getLogoUrl();
-        } catch (\Throwable) {
+        } catch (Throwable) {
             return '/assets/images/logo.png';
         }
     }
@@ -54,7 +54,7 @@ if (! function_exists('platform_tagline')) {
     {
         try {
             return app(SettingsService::class)->getSiteTagline() ?: ($default ?? 'المنصة الأكاديمية والسريرية الأولى لتدريب وتأهيل أخصائي النطق والتخاطب في الوطن العربي');
-        } catch (\Throwable) {
+        } catch (Throwable) {
             return $default ?? 'المنصة الأكاديمية والسريرية الأولى لتدريب وتأهيل أخصائي النطق والتخاطب في الوطن العربي';
         }
     }
@@ -68,7 +68,7 @@ if (! function_exists('platform_currency')) {
     {
         try {
             return app(SettingsService::class)->getCurrencySymbol() ?: ($default ?? 'ج.م');
-        } catch (\Throwable) {
+        } catch (Throwable) {
             return $default ?? 'ج.م';
         }
     }
@@ -82,7 +82,7 @@ if (! function_exists('platform_currency_name')) {
     {
         try {
             return app(SettingsService::class)->getCurrencyName() ?: ($default ?? 'جنيه مصري');
-        } catch (\Throwable) {
+        } catch (Throwable) {
             return $default ?? 'جنيه مصري';
         }
     }

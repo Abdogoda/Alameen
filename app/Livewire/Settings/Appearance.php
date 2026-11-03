@@ -11,9 +11,13 @@ use Livewire\Component;
 class Appearance extends Component
 {
     public string $theme = 'light';
+
     public string $fontSize = 'normal';
+
     public string $motion = 'full';
+
     public bool $loaderEnabled = true;
+
     public bool $scrollProgressEnabled = true;
 
     public function mount(): void
@@ -25,6 +29,9 @@ class Appearance extends Component
         $this->scrollProgressEnabled = session('alameen_scroll_progress', request()->cookie('alameen_scroll_progress', 'true')) !== 'false';
     }
 
+    /**
+     * @param  array<string, mixed>  $data
+     */
     public function saveSettings(array $data): void
     {
         $this->theme = in_array($data['theme'] ?? '', ['light', 'dark', 'system'], true) ? $data['theme'] : 'light';

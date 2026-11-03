@@ -8,7 +8,7 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}" class="scroll-smooth">
     <head>
         @include('partials.head')
-        <title>{{ filled($title ?? null) ? $title . ' | ' . config('app.name', 'منصة مركز الأمين') : config('app.name', 'منصة مركز الأمين') }}</title>
+        <title>{{ filled($title ?? null) ? $title . ' | ' . (filled($siteName ?? null) ? $siteName : platform_name()) : (filled($siteName ?? null) ? $siteName : platform_name()) }}</title>
     </head>
     <body class="bg-[#FAFCFF] dark:bg-slate-950 min-h-screen text-[#334155] dark:text-slate-100 font-body antialiased selection:bg-[#EAF1FB] selection:text-[#0B2A8F] w-full max-w-full relative transition-colors">
         
@@ -54,5 +54,126 @@
         {{ $scripts ?? '' }}
 
         @fluxScripts
+
+        @if(app()->getLocale() === 'en')
+        <script>
+        window.__I18N_DICTIONARY__ = {
+            courses: @json(__('courses')),
+            lesson: @json(__('lesson')),
+            grades: @json(__('grades')),
+            result: @json(__('result')),
+            profile: @json(__('profile')),
+            catalog: @json(__('catalog')),
+            reviews: @json(__('reviews')),
+            contact: @json(__('contact')),
+            landing: @json(__('landing')),
+        };
+        window.__EN_STRINGS__ = @json(json_decode(file_get_contents(base_path('lang/en.json')), true) ?: []);
+
+        function stripTashkeel(s) {
+            return s ? s.replace(/[\u064B-\u065F\u0670\u06D6-\u06ED]/g, '').trim() : '';
+        }
+
+        const rawTrans = window.__EN_STRINGS__ || {};
+        const normTrans = {};
+        for (const [k, v] of Object.entries(rawTrans)) {
+            const tk = k.trim();
+            normTrans[tk] = v;
+            const stripped = stripTashkeel(tk);
+            if (stripped && !normTrans[stripped]) {
+                normTrans[stripped] = v;
+            }
+        }
+
+        function applyI18nTranslations(root = document) {
+            if (!root) return;
+            const dict = window.__I18N_DICTIONARY__;
+            if (dict) {
+                root.querySelectorAll('[data-i18n]').forEach(el => {
+                    const keyPath = el.getAttribute('data-i18n');
+                    if (!keyPath) return;
+                    const [group, key] = keyPath.split('.');
+                    if (dict[group] && dict[group][key]) {
+                        el.textContent = dict[group][key];
+                    }
+                });
+                root.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                    const keyPath = el.getAttribute('data-i18n-placeholder');
+                    if (!keyPath) return;
+                    const [group, key] = keyPath.split('.');
+                    if (dict[group] && dict[group][key]) {
+                        el.setAttribute('placeholder', dict[group][key]);
+                    }
+                });
+                root.querySelectorAll('[data-i18n-title]').forEach(el => {
+                    const keyPath = el.getAttribute('data-i18n-title');
+                    if (!keyPath) return;
+                    const [group, key] = keyPath.split('.');
+                    if (dict[group] && dict[group][key]) {
+                        el.setAttribute('title', dict[group][key]);
+                    }
+                });
+            }
+
+            root.querySelectorAll('[placeholder], [title], [aria-label]').forEach(el => {
+                const ph = el.getAttribute('placeholder');
+                if (ph) {
+                    const t = ph.trim();
+                    if (normTrans[t]) el.setAttribute('placeholder', normTrans[t]);
+                    else if (normTrans[stripTashkeel(t)]) el.setAttribute('placeholder', normTrans[stripTashkeel(t)]);
+                }
+                const tt = el.getAttribute('title');
+                if (tt) {
+                    const t = tt.trim();
+                    if (normTrans[t]) el.setAttribute('title', normTrans[t]);
+                    else if (normTrans[stripTashkeel(t)]) el.setAttribute('title', normTrans[stripTashkeel(t)]);
+                }
+                const al = el.getAttribute('aria-label');
+                if (al) {
+                    const t = al.trim();
+                    if (normTrans[t]) el.setAttribute('aria-label', normTrans[t]);
+                    else if (normTrans[stripTashkeel(t)]) el.setAttribute('aria-label', normTrans[stripTashkeel(t)]);
+                }
+            });
+
+            const targetRoot = root.body || root;
+            const walker = document.createTreeWalker(targetRoot, NodeFilter.SHOW_TEXT, {
+                acceptNode(node) {
+                    if (!node.nodeValue || !node.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+                    const parent = node.parentElement;
+                    if (!parent) return NodeFilter.FILTER_REJECT;
+                    const tag = parent.tagName.toLowerCase();
+                    if (tag === 'script' || tag === 'style' || tag === 'code' || tag === 'pre') return NodeFilter.FILTER_REJECT;
+                    return NodeFilter.FILTER_ACCEPT;
+                }
+            }, false);
+
+            let node;
+            while ((node = walker.nextNode())) {
+                const original = node.nodeValue;
+                const trimmed = original.trim();
+                if (!trimmed) continue;
+
+                if (normTrans[trimmed]) {
+                    node.nodeValue = original.replace(trimmed, normTrans[trimmed]);
+                    continue;
+                }
+                const stripped = stripTashkeel(trimmed);
+                if (stripped && normTrans[stripped]) {
+                    node.nodeValue = original.replace(trimmed, normTrans[stripped]);
+                    continue;
+                }
+                for (const arKey in normTrans) {
+                    if (arKey.length >= 4 && original.includes(arKey)) {
+                        node.nodeValue = node.nodeValue.replaceAll(arKey, normTrans[arKey]);
+                    }
+                }
+            }
+        }
+        document.addEventListener('DOMContentLoaded', () => applyI18nTranslations());
+        document.addEventListener('livewire:navigated', () => applyI18nTranslations());
+        if (document.readyState !== 'loading') { applyI18nTranslations(); }
+        </script>
+        @endif
     </body>
 </html>

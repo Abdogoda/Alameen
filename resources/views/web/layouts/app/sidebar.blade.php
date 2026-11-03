@@ -7,7 +7,7 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}" class="alameen-dashboard-layout">
     <head>
         @include('partials.head')
-        <title>{{ filled($title ?? null) ? $title . ' | ' . config('app.name', 'منصة الأمين') : config('app.name', 'منصة الأمين') }}</title>
+        <title>{{ filled($title ?? null) ? $title . ' | ' . ($siteName ?? __(config('app.name', 'منصة الأمين'))) : ($siteName ?? __(config('app.name', 'منصة الأمين'))) }}</title>
     </head>
     <body
         class="bg-[#F8FAFC] text-[#334155] min-h-screen flex flex-col font-['Cairo'] antialiased selection:bg-[#EAF1FB] selection:text-[#0B2A8F] w-full max-w-full relative alameen-dashboard-layout"
@@ -38,6 +38,9 @@
         @persist('alameen-loader')
         <x-alameen-loader />
         @endpersist
+
+        <!-- Top Scroll Progress Indicator Bar -->
+        <div id="alameen-scroll-progress" class="fixed top-0 inset-x-0 h-1 bg-gradient-to-r from-[#012383] via-blue-500 to-emerald-400 z-[99999] transition-all duration-150 pointer-events-none" style="width: 0%; display: none;"></div>
 
         <div class="flex-1 flex flex-row min-h-screen w-full max-w-full overflow-x-clip relative alameen-content-wrap">
             
@@ -71,11 +74,11 @@
                 <div class="h-14 sm:h-16 px-4 sm:px-5 border-b border-[#DEE8F7] dark:border-slate-800 flex items-center justify-between shrink-0 bg-white dark:bg-slate-900 sidebar-header">
                     <a href="{{ route('dashboard') }}" class="flex items-center gap-2.5 sm:gap-3 cursor-pointer min-w-0 group sidebar-brand-link" wire:navigate>
                         <div class="size-9 sm:size-10 rounded-xl bg-[#EAF1FB] dark:bg-slate-800 flex items-center justify-center p-1.5 shrink-0 border border-[#DEE8F7] dark:border-slate-700 shadow-xs group-hover:scale-105 transition-transform duration-200">
-                            <img src="/assets/images/logo.png" alt="{{ config('app.name', 'منصة الأمين') }}" class="size-full object-contain pointer-events-none" />
+                            <img src="{{ filled($siteLogo ?? null) ? $siteLogo : platform_logo() }}" alt="{{ filled($siteName ?? null) ? $siteName : platform_name() }}" class="size-full object-contain pointer-events-none" />
                         </div>
                         <div class="min-w-0 sidebar-brand-text flex flex-col justify-center">
                             <span class="font-['Baloo_Bhaijaan_2'] font-extrabold text-sm sm:text-base leading-tight text-[#012383] dark:text-white block truncate">
-                                {{ config('app.name', 'منصة الأمين') }}
+                                {{ filled($siteName ?? null) ? $siteName : platform_name() }}
                             </span>
                             <span class="text-[9.5px] sm:text-[10px] font-bold text-[#0B2A8F] dark:text-blue-300 bg-[#EAF1FB] dark:bg-slate-800 px-2 py-0.5 rounded-full inline-block leading-none mt-0.5 truncate max-w-full">
                                 {{ __('بوابة الطالب الأكاديمية') }}
@@ -497,5 +500,126 @@
         {{ $scripts ?? '' }}
 
         @fluxScripts
+
+        @if(app()->getLocale() === 'en')
+        <script>
+        window.__I18N_DICTIONARY__ = {
+            courses: @json(__('courses')),
+            lesson: @json(__('lesson')),
+            grades: @json(__('grades')),
+            result: @json(__('result')),
+            profile: @json(__('profile')),
+            catalog: @json(__('catalog')),
+            reviews: @json(__('reviews')),
+            contact: @json(__('contact')),
+            landing: @json(__('landing')),
+        };
+        window.__EN_STRINGS__ = @json(json_decode(file_get_contents(base_path('lang/en.json')), true) ?: []);
+
+        function stripTashkeel(s) {
+            return s ? s.replace(/[\u064B-\u065F\u0670\u06D6-\u06ED]/g, '').trim() : '';
+        }
+
+        const rawTrans = window.__EN_STRINGS__ || {};
+        const normTrans = {};
+        for (const [k, v] of Object.entries(rawTrans)) {
+            const tk = k.trim();
+            normTrans[tk] = v;
+            const stripped = stripTashkeel(tk);
+            if (stripped && !normTrans[stripped]) {
+                normTrans[stripped] = v;
+            }
+        }
+
+        function applyI18nTranslations(root = document) {
+            if (!root) return;
+            const dict = window.__I18N_DICTIONARY__;
+            if (dict) {
+                root.querySelectorAll('[data-i18n]').forEach(el => {
+                    const keyPath = el.getAttribute('data-i18n');
+                    if (!keyPath) return;
+                    const [group, key] = keyPath.split('.');
+                    if (dict[group] && dict[group][key]) {
+                        el.textContent = dict[group][key];
+                    }
+                });
+                root.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                    const keyPath = el.getAttribute('data-i18n-placeholder');
+                    if (!keyPath) return;
+                    const [group, key] = keyPath.split('.');
+                    if (dict[group] && dict[group][key]) {
+                        el.setAttribute('placeholder', dict[group][key]);
+                    }
+                });
+                root.querySelectorAll('[data-i18n-title]').forEach(el => {
+                    const keyPath = el.getAttribute('data-i18n-title');
+                    if (!keyPath) return;
+                    const [group, key] = keyPath.split('.');
+                    if (dict[group] && dict[group][key]) {
+                        el.setAttribute('title', dict[group][key]);
+                    }
+                });
+            }
+
+            root.querySelectorAll('[placeholder], [title], [aria-label]').forEach(el => {
+                const ph = el.getAttribute('placeholder');
+                if (ph) {
+                    const t = ph.trim();
+                    if (normTrans[t]) el.setAttribute('placeholder', normTrans[t]);
+                    else if (normTrans[stripTashkeel(t)]) el.setAttribute('placeholder', normTrans[stripTashkeel(t)]);
+                }
+                const tt = el.getAttribute('title');
+                if (tt) {
+                    const t = tt.trim();
+                    if (normTrans[t]) el.setAttribute('title', normTrans[t]);
+                    else if (normTrans[stripTashkeel(t)]) el.setAttribute('title', normTrans[stripTashkeel(t)]);
+                }
+                const al = el.getAttribute('aria-label');
+                if (al) {
+                    const t = al.trim();
+                    if (normTrans[t]) el.setAttribute('aria-label', normTrans[t]);
+                    else if (normTrans[stripTashkeel(t)]) el.setAttribute('aria-label', normTrans[stripTashkeel(t)]);
+                }
+            });
+
+            const targetRoot = root.body || root;
+            const walker = document.createTreeWalker(targetRoot, NodeFilter.SHOW_TEXT, {
+                acceptNode(node) {
+                    if (!node.nodeValue || !node.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+                    const parent = node.parentElement;
+                    if (!parent) return NodeFilter.FILTER_REJECT;
+                    const tag = parent.tagName.toLowerCase();
+                    if (tag === 'script' || tag === 'style' || tag === 'code' || tag === 'pre') return NodeFilter.FILTER_REJECT;
+                    return NodeFilter.FILTER_ACCEPT;
+                }
+            }, false);
+
+            let node;
+            while ((node = walker.nextNode())) {
+                const original = node.nodeValue;
+                const trimmed = original.trim();
+                if (!trimmed) continue;
+
+                if (normTrans[trimmed]) {
+                    node.nodeValue = original.replace(trimmed, normTrans[trimmed]);
+                    continue;
+                }
+                const stripped = stripTashkeel(trimmed);
+                if (stripped && normTrans[stripped]) {
+                    node.nodeValue = original.replace(trimmed, normTrans[stripped]);
+                    continue;
+                }
+                for (const arKey in normTrans) {
+                    if (arKey.length >= 4 && original.includes(arKey)) {
+                        node.nodeValue = node.nodeValue.replaceAll(arKey, normTrans[arKey]);
+                    }
+                }
+            }
+        }
+        document.addEventListener('DOMContentLoaded', () => applyI18nTranslations());
+        document.addEventListener('livewire:navigated', () => applyI18nTranslations());
+        if (document.readyState !== 'loading') { applyI18nTranslations(); }
+        </script>
+        @endif
     </body>
 </html>

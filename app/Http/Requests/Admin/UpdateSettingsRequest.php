@@ -24,6 +24,7 @@ class UpdateSettingsRequest extends FormRequest
             'settings.*.ar' => ['nullable', 'string'],
             'settings.*.en' => ['nullable', 'string'],
             'settings.*.group' => ['nullable', 'string', 'max:50'],
+            'site_logo_file' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp,svg', 'max:5120'],
             'certificate_default_template' => ['nullable', 'string', 'in:royal_gold,clinical_emerald,modern_navy,custom'],
             'certificate_custom_bg_file' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:10240'],
             'certificate_stamp_file' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:5120'],

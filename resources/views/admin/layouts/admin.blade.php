@@ -10,7 +10,7 @@
     <head>
         @include('partials.head')
         <link rel="stylesheet" href="/assets/css/admin.css" />
-        <title>{{ filled($title ?? null) ? $title.' - '.config('app.name', 'منصة الأمين') : config('app.name', 'منصة الأمين') }}</title>
+        <title>{{ filled($title ?? null) ? $title.' - '.($siteName ?? config('app.name', 'منصة الأمين')) : ($siteName ?? config('app.name', 'منصة الأمين')) }}</title>
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body
@@ -81,10 +81,10 @@
                 <div class="h-14 sm:h-16 px-4 sm:px-5 border-b border-[#DEE8F7] dark:border-slate-800 flex items-center justify-between shrink-0 bg-white dark:bg-slate-900 sidebar-header">
                     <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2.5 sm:gap-3 cursor-pointer min-w-0 group sidebar-brand-link">
                         <div class="size-9 sm:size-10 rounded-xl bg-[#EAF1FB] dark:bg-slate-800 flex items-center justify-center p-1.5 shrink-0 border border-[#DEE8F7] dark:border-slate-700 shadow-xs group-hover:scale-105 transition-transform duration-200">
-                            <img src="/assets/images/logo.png" alt="منصة الأمين" class="size-full object-contain pointer-events-none" />
+                            <img src="{{ filled($siteLogo ?? null) ? $siteLogo : platform_logo() }}" alt="{{ filled($siteName ?? null) ? $siteName : platform_name() }}" class="size-full object-contain pointer-events-none" />
                         </div>
                         <div class="min-w-0 sidebar-brand-text flex flex-col justify-center">
-                            <span class="font-['Baloo_Bhaijaan_2'] font-extrabold text-sm sm:text-base leading-tight text-[#012383] dark:text-white block truncate">{{ __('منصة الأمين') }}</span>
+                            <span class="font-['Baloo_Bhaijaan_2'] font-extrabold text-sm sm:text-base leading-tight text-[#012383] dark:text-white block truncate">{{ filled($siteName ?? null) ? $siteName : platform_name() }}</span>
                             <span class="text-[9.5px] sm:text-[10px] font-bold text-[#0B2A8F] dark:text-blue-300 bg-[#EAF1FB] dark:bg-slate-800 px-2 py-0.5 rounded-full inline-block leading-none mt-0.5 truncate max-w-full">{{ __('لوحة الإدارة المركزية') }}</span>
                         </div>
                     </a>
@@ -534,10 +534,10 @@
                 <!-- Page Content Area with Dedicated Responsive Page Header -->
                 <div class="{{ $contentClass }}">
                     @if(isset($title) || isset($actions))
-                        <div class="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-3.5 sm:gap-4 pb-2 min-w-0">
+                        <div class="flex flex-col gap-3.5 sm:gap-4 pb-2 min-w-0 {{ isset($actions) ? '2xl:flex-row 2xl:items-center 2xl:justify-between' : '' }}">
                             @if(isset($title))
-                                <div class="min-w-0 flex-1">
-                                    <h1 class="font-['Baloo_Bhaijaan_2'] font-bold text-xl sm:text-2xl text-[#012383] dark:text-white leading-tight">
+                                <div class="min-w-0 max-w-full">
+                                    <h1 class="font-['Baloo_Bhaijaan_2'] font-bold text-xl sm:text-2xl lg:text-[26px] text-[#012383] dark:text-white leading-tight">
                                         {{ $title }}
                                     </h1>
                                     @if(isset($description))
@@ -549,7 +549,7 @@
                             @endif
 
                             @if(isset($actions))
-                                <div class="flex items-center gap-2 flex-wrap w-full xl:w-auto xl:justify-end min-w-0">
+                                <div class="flex items-center gap-2 flex-wrap w-full 2xl:w-auto 2xl:justify-end min-w-0 shrink-0">
                                     {{ $actions }}
                                 </div>
                             @endif

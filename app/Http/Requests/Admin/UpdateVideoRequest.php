@@ -30,6 +30,7 @@ class UpdateVideoRequest extends FormRequest
             'video_url' => ['nullable', 'string', 'max:1000'],
             'mux_playback_id' => ['nullable', 'string', 'max:255'],
             'mux_asset_id' => ['nullable', 'string', 'max:255'],
+            'mux_upload_id' => ['nullable', 'string', 'max:255'],
             'bunny_video_id' => ['nullable', 'string', 'max:255'],
             'video_file' => ['nullable', 'file', 'mimetypes:video/mp4,video/quicktime,video/webm,video/x-matroska', 'max:1048576'],
             'is_free_preview' => ['nullable', 'boolean'],

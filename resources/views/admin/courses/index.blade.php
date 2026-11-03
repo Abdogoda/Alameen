@@ -140,11 +140,11 @@
                         {{-- Price --}}
                         <div class="flex items-baseline gap-2">
                             <span class="text-base sm:text-lg font-black text-[#012383] dark:text-blue-400">
-                                {{ number_format($course->price) }} {{ __('ج.م') }}
+                                {{ number_format($course->price) }} {{ $currencySymbol ?? __('ج.م') }}
                             </span>
                             @if($course->original_price && $course->original_price > $course->price)
                                 <span class="text-xs text-slate-400 line-through">
-                                    {{ number_format($course->original_price) }} {{ __('ج.م') }}
+                                    {{ number_format($course->original_price) }} {{ $currencySymbol ?? __('ج.م') }}
                                 </span>
                             @endif
                         </div>
@@ -242,7 +242,7 @@
 
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                         <div>
-                            <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">{{ __('السعر الفعلي (ج.م):') }} <span class="text-rose-500">*</span></label>
+                            <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">{{ __('السعر الفعلي (:curr):', ['curr' => $currencySymbol ?? 'ج.م']) }} <span class="text-rose-500">*</span></label>
                             <input type="number" name="price" required min="0" value="1200" class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-sm font-bold text-[#012383] dark:text-blue-400 outline-none focus:border-[#0B2A8F] bg-slate-50/50 dark:bg-slate-800/50" />
                         </div>
                         <div>

@@ -171,6 +171,15 @@ class SettingsController extends Controller
             }
         }
 
+        // Handle custom logo image file upload
+        if ($request->hasFile('site_logo_file')) {
+            $path = $request->file('site_logo_file')->store('branding', 'public');
+            if (is_string($path)) {
+                $url = Storage::url($path);
+                $this->settingsService->set('site_logo', $url, $url, 'branding');
+            }
+        }
+
         // Handle certificate custom template background upload
         if ($request->hasFile('certificate_custom_bg_file')) {
             $path = $request->file('certificate_custom_bg_file')->store('certificates/templates', 'public');
@@ -277,5 +286,15 @@ class SettingsController extends Controller
         $this->menuService->deleteItem($item);
 
         return back()->with('success', __('تم حذف الرابط من القائمة بنجاح.'));
+    }
+
+    /**
+     * Test MUX credentials, API connection, and cryptographic signing keys.
+     */
+    public function testMuxConnection(\App\Services\Video\MuxVideoService $muxService): \Illuminate\Http\JsonResponse
+    {
+        $result = $muxService->testConnection();
+
+        return response()->json($result);
     }
 }

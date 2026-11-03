@@ -96,7 +96,7 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-lg w-full">
                     <label class="flex items-center gap-3 p-3.5 rounded-2xl border transition-all cursor-pointer {{ $locale === 'ar' ? 'border-[#012383] dark:border-blue-500 bg-[#EAF1FB]/80 dark:bg-blue-950/50 text-[#012383] dark:text-white font-bold shadow-xs' : 'border-[#DEE8F7] dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-900' }}">
                         <input type="radio" wire:model.live="locale" value="ar" class="accent-[#012383] size-4" />
-                        <span class="text-xl">🇸🇦</span>
+                        <img src="/assets/images/flags/eg.svg" alt="العلم المصري" class="w-7 h-5 rounded-[3px] object-cover shadow-xs border border-slate-200/80 dark:border-slate-700 shrink-0" onerror="this.outerHTML='<span class=\'text-xl\'>🇪🇬</span>'" />
                         <div class="flex flex-col text-start">
                             <span class="text-xs sm:text-sm font-bold">{{ __('العربية (الافتراضية)') }}</span>
                             <span class="text-[11px] text-slate-400 font-normal">{{ __('واجهة كاملة باللغة العربية') }}</span>
@@ -105,7 +105,7 @@
 
                     <label class="flex items-center gap-3 p-3.5 rounded-2xl border transition-all cursor-pointer {{ $locale === 'en' ? 'border-[#012383] dark:border-blue-500 bg-[#EAF1FB]/80 dark:bg-blue-950/50 text-[#012383] dark:text-white font-bold shadow-xs' : 'border-[#DEE8F7] dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-900' }}">
                         <input type="radio" wire:model.live="locale" value="en" class="accent-[#012383] size-4" />
-                        <span class="text-xl">🇺🇸</span>
+                        <img src="/assets/images/flags/us.svg" alt="English" class="w-7 h-5 rounded-[3px] object-cover shadow-xs border border-slate-200/80 dark:border-slate-700 shrink-0" onerror="this.outerHTML='<span class=\'text-xl\'>🇺🇸</span>'" />
                         <div class="flex flex-col text-start">
                             <span class="text-xs sm:text-sm font-bold">English (US)</span>
                             <span class="text-[11px] text-slate-400 font-normal">English interface</span>

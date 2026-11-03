@@ -86,7 +86,7 @@
                                 <div class="text-[10px] text-slate-400 font-mono">{{ $receipt->sender_account }}</div>
                             </td>
                             <td class="py-4 px-4">
-                                <span class="font-bold text-sm text-[#0B2A8F] dark:text-blue-300">{{ number_format((float) $receipt->amount, 2) }} {{ __('ج.م') }}</span>
+                                <span class="font-bold text-sm text-[#0B2A8F] dark:text-blue-300">{{ number_format((float) $receipt->amount, 2) }} {{ $currencySymbol ?? __('ج.م') }}</span>
                                 <span class="text-[11px] text-slate-600 dark:text-slate-400 block">{{ $receipt->course?->title ?? __('دورة غير محددة') }}</span>
                             </td>
                             <td class="py-4 px-4">

@@ -5,13 +5,13 @@
           <!-- Page Introduction (Node 1155:17917) -->
           <div class="flex flex-col gap-[4px] items-start text-start w-full" data-node-id="1155:17917">
             <p class="font-['Cairo'] font-semibold text-[12px] leading-[1.8] text-[#0B2A8F] text-start w-full" data-i18n="courses.breadcrumb" data-node-id="1155:17918">
-              مساحة التعلّم / كورساتي
+              {{ __('courses.breadcrumb') }}
             </p>
             <h1 class="font-['Cairo'] font-bold text-[28px] sm:text-[32px] leading-[1.3] text-[#012383] text-start w-full" data-i18n="courses.courseTitle" data-node-id="1155:17919">
-              أساسيات التخاطب
+              {{ __('courses.courseTitle') }}
             </h1>
             <p class="font-['Cairo'] font-medium text-[13px] sm:text-[14px] leading-[1.7] text-[#475569] text-start w-full" data-i18n="courses.courseSubtitle" data-node-id="1155:17920">
-              خطة واضحة من المفاهيم إلى الممارسة. لكل فيديو مهمة مستقلة بعد إكماله.
+              {{ __('courses.courseSubtitle') }}
             </p>
           </div>
 
@@ -22,14 +22,14 @@
               <!-- Right in RTL: Course Viewing Progress (Node 1155:17938) -->
               <div class="flex flex-1 flex-col gap-[8px] items-start min-w-0 w-full" data-node-id="1155:17938">
                 <div class="flex items-center justify-between font-['Cairo'] font-bold text-[#012383] text-start w-full" data-node-id="1155:17939">
-                  <span class="text-[15px]" data-i18n="courses.progressLabel" data-node-id="1155:17941">تقدّم المشاهدة في الكورس</span>
-                  <span class="text-[22px] sm:text-[24px] text-[#0B2A8F]" data-i18n="courses.progressPercent" data-node-id="1155:17940">٤٢٪</span>
+                  <span class="text-[15px]" data-i18n="courses.progressLabel" data-node-id="1155:17941">{{ __('courses.progressLabel') }}</span>
+                  <span class="text-[22px] sm:text-[24px] text-[#0B2A8F]" data-i18n="courses.progressPercent" data-node-id="1155:17940">{{ __('courses.progressPercent') }}</span>
                 </div>
                 <div class="bg-[#DEE8F7] h-[8px] rounded-full w-full relative overflow-hidden" data-node-id="1155:17942">
                   <div class="bg-gradient-to-r from-[#0B2A8F] to-[#012383] h-full rounded-full w-[42%]" data-node-id="1155:17943"></div>
                 </div>
                 <p class="font-['Cairo'] font-medium text-[12px] sm:text-[13px] text-[#475569] text-start w-full" data-i18n="courses.progressMeta" data-node-id="1155:17944">
-                  ١٦٨ من ٤٠٠ دقيقة • ٨ فيديوهات مكتملة من ٢٠ • ٤ مستويات
+                  {{ __('courses.progressMeta') }}
                 </p>
               </div>
 
@@ -69,14 +69,14 @@
               <!-- Section Heading (Node 1155:18001) -->
               <div class="flex items-center justify-between text-start w-full" data-node-id="1155:18001">
                 <h2 class="font-['Cairo'] font-bold text-[19px] sm:text-[20px] leading-[1.4] text-[#012383]" data-i18n="courses.curriculumTitle" data-node-id="1155:18003">
-                  محتوى الكورس
+                  {{ __('courses.curriculumTitle') }}
                 </h2>
                 <p class="font-['Cairo'] font-medium text-[12px] sm:text-[13px] text-[#475569] bg-white border border-[#DEE8F7] px-3 py-0.5 rounded-full whitespace-nowrap" data-i18n="courses.curriculumMeta" data-node-id="1155:18002">
-                  ٢٠ فيديو • ٢٠ مهمة
+                  {{ __('courses.curriculumMeta') }}
                 </p>
               </div>
               <p class="font-['Cairo'] font-medium text-[12px] leading-[1.8] text-[#475569] text-start w-full" data-i18n="courses.curriculumDesc" data-node-id="1155:18004">
-                لكل درس: عنوان الفيديو، تقدّم المشاهدة، ثم حالة المهمة المرتبطة به.
+                {{ __('courses.curriculumDesc') }}
               </p>
 
               <!-- Level 1 (Node 1155:18005 - 100% Completed) -->
@@ -85,14 +85,14 @@
                   <div class="flex gap-[12px] items-center w-full" data-node-id="1155:18007">
                     <div class="flex-1 flex flex-col gap-[2px] items-start text-start" data-node-id="1155:18010">
                       <h4 class="font-['Cairo'] font-bold text-[18px] leading-[1.8] text-[#012383]" data-i18n="courses.level1Title" data-node-id="1155:18011">
-                        المستوى الأول: مدخل إلى التخاطب
+                        {{ __('courses.level1Title') }}
                       </h4>
                       <p class="font-['Cairo'] font-medium text-[12px] leading-[1.8] text-[#475569]" data-i18n="courses.level1Meta" data-node-id="1155:18012">
-                        ٥ فيديوهات • ١٠٠ دقيقة • ٥ مهام
+                        {{ __('courses.level1Meta') }}
                       </p>
                     </div>
                     <span class="font-['Cairo'] font-bold text-[13px] leading-[1.8] text-[#0B2A8F] whitespace-nowrap" data-i18n="courses.level1Percent" data-node-id="1155:18009">
-                      ١٠٠٪
+                      {{ __('courses.level1Percent') }}
                     </span>
                     <div class="size-[18px] shrink-0 relative cursor-pointer" data-node-id="1155:19374">
                       <img src="/assets/images/icon-chevron-up.svg" alt="" class="size-full" />
@@ -691,7 +691,7 @@
               </div>
               <div class="flex items-center justify-between">
                 <span>🏦 {{ __('سعر الدورة:') }}</span>
-                <span class="font-bold text-[#0B2A8F] dark:text-blue-400">{{ number_format((float) $currentCourse->price, 2) }} {{ __('ج.م') }}</span>
+                <span class="font-bold text-[#0B2A8F] dark:text-blue-400">{{ number_format((float) $currentCourse->price, 2) }} {{ $currencySymbol ?? platform_currency() }}</span>
               </div>
             </div>
 

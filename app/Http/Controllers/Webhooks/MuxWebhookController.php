@@ -19,7 +19,8 @@ class MuxWebhookController extends Controller
     public function handle(Request $request): JsonResponse
     {
         $signatureHeader = $request->header('Mux-Signature');
-        $webhookSecret = config('video.drivers.mux.webhook_secret');
+        $webhookSecret = app(\App\Services\Cms\SettingsService::class)->get('mux_webhook_secret')
+            ?: config('video.drivers.mux.webhook_secret');
 
         // Optional webhook signature verification
         if (! empty($webhookSecret) && ! empty($signatureHeader)) {
@@ -40,8 +41,24 @@ class MuxWebhookController extends Controller
             'video.asset.ready' => $this->handleAssetReady($data),
             'video.upload.asset_created' => $this->handleUploadAssetCreated($data),
             'video.asset.errored' => $this->handleAssetErrored($data),
+            'video.asset.deleted' => $this->handleAssetDeleted($data),
             default => response()->json(['status' => 'ignored', 'type' => $type], 200),
         };
+    }
+
+    /**
+     * Handle video.asset.deleted event.
+     *
+     * @param  array<string, mixed>  $data
+     */
+    protected function handleAssetDeleted(array $data): JsonResponse
+    {
+        $assetId = $data['id'] ?? null;
+        if ($assetId) {
+            Log::info("MUX Webhook: Asset {$assetId} was deleted from MUX cloud.");
+        }
+
+        return response()->json(['status' => 'noted_deletion', 'asset_id' => $assetId], 200);
     }
 
     /**
@@ -53,7 +70,11 @@ class MuxWebhookController extends Controller
     {
         $assetId = $data['id'] ?? null;
         $uploadId = $data['upload_id'] ?? null;
-        $playbackId = $data['playback_ids'][0]['id'] ?? null;
+        
+        // Prefer signed playback ID if available, otherwise first playback ID
+        $playbackIds = $data['playback_ids'] ?? [];
+        $signedPlayback = collect($playbackIds)->firstWhere('policy', 'signed');
+        $playbackId = $signedPlayback['id'] ?? ($playbackIds[0]['id'] ?? null);
         $durationSeconds = isset($data['duration']) ? (int) round((float) $data['duration']) : null;
 
         if (! $assetId) {

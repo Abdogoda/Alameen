@@ -33,6 +33,7 @@ class StoreVideoRequest extends FormRequest
             'video_url' => ['nullable', 'string', 'max:1000'],
             'mux_playback_id' => ['nullable', 'string', 'max:255'],
             'mux_asset_id' => ['nullable', 'string', 'max:255'],
+            'mux_upload_id' => ['nullable', 'string', 'max:255'],
             'video_file' => ['nullable', 'file', 'mimetypes:video/mp4,video/quicktime,video/webm,video/x-matroska', 'max:1048576'],
             'task_title_ar' => ['nullable', 'string', 'max:255'],
             'task_instructions_ar' => ['nullable', 'string'],

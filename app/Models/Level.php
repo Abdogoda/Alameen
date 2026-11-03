@@ -47,9 +47,11 @@ class Level extends Model
     {
         $locale = app()->getLocale();
 
-        return ($locale === 'en' && ! empty($this->title_en))
-            ? $this->title_en
-            : $this->title_ar;
+        if ($locale === 'en') {
+            return ! empty($this->title_en) ? $this->title_en : __($this->title_ar);
+        }
+
+        return $this->title_ar;
     }
 
     /**
@@ -59,9 +61,13 @@ class Level extends Model
     {
         $locale = app()->getLocale();
 
-        return ($locale === 'en' && ! empty($this->description_en))
-            ? $this->description_en
-            : $this->description_ar;
+        if ($locale === 'en') {
+            return ! empty($this->description_en)
+                ? $this->description_en
+                : (! empty($this->description_ar) ? __($this->description_ar) : null);
+        }
+
+        return $this->description_ar;
     }
 
     /**

@@ -176,13 +176,25 @@ class CourseController extends Controller
     }
 
     /**
-     * Delete a course.
+     * Delete a course and all associated MUX assets.
      */
     public function destroy(Course $course): RedirectResponse
     {
+        // Clean up MUX assets for all course videos
+        foreach ($course->videos as $video) {
+            if (! empty($video->mux_asset_id)) {
+                $this->muxService->deleteAsset($video->mux_asset_id);
+            }
+        }
+
+        // Clean up course promo video on MUX if applicable
+        if (! empty($course->mux_asset_id)) {
+            $this->muxService->deleteAsset($course->mux_asset_id);
+        }
+
         $course->delete();
 
-        return redirect()->route('admin.courses.index')->with('success', __('تم حذف الكورس التدريبي بنجاح.'));
+        return redirect()->route('admin.courses.index')->with('success', __('تم حذف الكورس التدريبي ومزامنة تنظيف الفيديوهات من MUX بنجاح.'));
     }
 
     /**
@@ -279,7 +291,8 @@ class CourseController extends Controller
             ], 400);
         }
 
-        $upload = $muxDriver->createDirectUploadUrl();
+        $corsOrigin = request()->getSchemeAndHttpHost() ?: '*';
+        $upload = $muxDriver->createDirectUploadUrl($corsOrigin);
         if (! $upload || empty($upload['url'])) {
             return response()->json([
                 'success' => false,
@@ -291,6 +304,61 @@ class CourseController extends Controller
             'success' => true,
             'upload_url' => $upload['url'],
             'upload_id' => $upload['id'],
+        ]);
+    }
+
+    /**
+     * Check the status of a MUX direct upload session from client.
+     */
+    public function checkMuxUploadStatus(Course $course, string $uploadId): JsonResponse
+    {
+        /** @var \App\Services\Video\Drivers\MuxDriver $muxDriver */
+        $muxDriver = $this->videoManager->driver('mux');
+
+        if (! $muxDriver->isConfigured()) {
+            return response()->json(['success' => false, 'message' => __('خدمة MUX غير مهيأة.')], 400);
+        }
+
+        $upload = $muxDriver->getUpload($uploadId);
+        if (! $upload) {
+            return response()->json(['success' => false, 'message' => __('لم يتم العثور على جلسة الرفع.')], 404);
+        }
+
+        $assetId = $upload['asset_id'] ?? null;
+        $uploadStatus = $upload['status'] ?? 'waiting';
+
+        if (! $assetId) {
+            return response()->json([
+                'success' => true,
+                'status' => 'uploading_or_processing',
+                'upload_status' => $uploadStatus,
+                'asset_id' => null,
+                'playback_id' => null,
+            ]);
+        }
+
+        $asset = $muxDriver->getAsset($assetId);
+        $assetStatus = $asset['status'] ?? 'preparing';
+
+        $playbackIds = $asset['playback_ids'] ?? [];
+        $signedPlayback = collect($playbackIds)->firstWhere('policy', 'signed');
+        $playbackId = $signedPlayback['id'] ?? ($playbackIds[0]['id'] ?? null);
+        $durationSeconds = isset($asset['duration']) ? (int) round((float) $asset['duration']) : null;
+
+        $playbackToken = null;
+        if ($playbackId) {
+            $playbackToken = app(MuxTokenService::class)->generatePlaybackToken($playbackId);
+        }
+
+        return response()->json([
+            'success' => true,
+            'status' => $assetStatus,
+            'upload_status' => $uploadStatus,
+            'asset_id' => $assetId,
+            'playback_id' => $playbackId,
+            'playback_token' => $playbackToken,
+            'duration_seconds' => $durationSeconds,
+            'duration_minutes' => $durationSeconds ? (int) ceil($durationSeconds / 60) : null,
         ]);
     }
 
@@ -335,8 +403,10 @@ class CourseController extends Controller
 
             $mergedFile = $this->chunkedUploadService->mergeChunks($uploadId, $totalChunks, $originalFilename);
 
-            // Resilient upload: tries configured default driver (e.g. MUX), falls back to local server storage
-            $uploadResult = $this->videoManager->handleVideoUpload($mergedFile);
+            // If chunks were uploaded to the local server, save to local server storage directly
+            // to ensure an instantaneous response (< 1s) and prevent 504 Gateway Timeouts from reverse proxies (e.g. Hostinger hcdn).
+            // Direct browser-to-MUX upload is handled asynchronously by the client.
+            $uploadResult = $this->videoManager->handleVideoUpload($mergedFile, 'local');
 
             // Clean up temporary merged file
             @unlink($mergedFile->getRealPath());
@@ -356,6 +426,11 @@ class CourseController extends Controller
                 }
             }
 
+            $previewToken = null;
+            if (! empty($uploadResult['mux_playback_id'])) {
+                $previewToken = app(\App\Services\Video\MuxTokenService::class)->generatePlaybackToken($uploadResult['mux_playback_id']);
+            }
+
             return response()->json([
                 'status' => 'completed',
                 'message' => $uploadResult['driver_used'] === 'mux'
@@ -366,6 +441,7 @@ class CourseController extends Controller
                 'video_url' => $uploadResult['video_url'],
                 'mux_playback_id' => $uploadResult['mux_playback_id'] ?? null,
                 'mux_asset_id' => $uploadResult['mux_asset_id'] ?? null,
+                'playback_token' => $previewToken,
                 'original_filename' => $originalFilename,
             ]);
         } catch (\Throwable $e) {
@@ -402,6 +478,7 @@ class CourseController extends Controller
             'video_url' => $validated['video_url'] ?? null,
             'mux_playback_id' => $validated['mux_playback_id'] ?? null,
             'mux_asset_id' => $validated['mux_asset_id'] ?? null,
+            'mux_upload_id' => $validated['mux_upload_id'] ?? null,
         ];
 
         // 1. Direct standard video file upload fallback
@@ -415,6 +492,12 @@ class CourseController extends Controller
             $videoData['video_source'] = 'mux';
             $videoData['mux_playback_id'] = trim($validated['mux_playback_id']);
             $videoData['video_url'] = "https://stream.mux.com/{$videoData['mux_playback_id']}.m3u8";
+        } elseif (! empty($validated['mux_upload_id'])) {
+            $videoData['video_source'] = 'mux';
+            $videoData['mux_upload_id'] = trim($validated['mux_upload_id']);
+            if (empty($videoData['video_url'])) {
+                $videoData['video_url'] = 'mux://upload/'.$videoData['mux_upload_id'];
+            }
         } elseif (! empty($validated['video_url']) && empty($validated['video_source'])) {
             $parsed = $this->videoManager->parseVideoInput($validated['video_url']);
             $videoData['video_source'] = $parsed['video_source'];
@@ -478,10 +561,13 @@ class CourseController extends Controller
                 $updateData['mux_playback_id'] = null;
                 $updateData['mux_asset_id'] = null;
                 $updateData['bunny_video_id'] = null;
-            } elseif ($videoSource === 'mux' && ! empty($validated['mux_playback_id'])) {
-                $updateData['mux_playback_id'] = trim($validated['mux_playback_id']);
-                $updateData['mux_asset_id'] = $validated['mux_asset_id'] ?? null;
-                $updateData['video_url'] = "https://stream.mux.com/{$updateData['mux_playback_id']}.m3u8";
+            } elseif ($videoSource === 'mux' && (! empty($validated['mux_playback_id']) || ! empty($validated['mux_upload_id']))) {
+                $updateData['mux_playback_id'] = ! empty($validated['mux_playback_id']) ? trim($validated['mux_playback_id']) : $video->mux_playback_id;
+                $updateData['mux_asset_id'] = $validated['mux_asset_id'] ?? $video->mux_asset_id;
+                $updateData['mux_upload_id'] = $validated['mux_upload_id'] ?? $video->mux_upload_id;
+                if (! empty($updateData['mux_playback_id'])) {
+                    $updateData['video_url'] = "https://stream.mux.com/{$updateData['mux_playback_id']}.m3u8";
+                }
                 $updateData['bunny_video_id'] = null;
             }
         } elseif ($uploadTab === 'link' || ($uploadTab === null && ! empty($validated['video_url']))) {
@@ -523,13 +609,56 @@ class CourseController extends Controller
     }
 
     /**
-     * Delete a video/lesson.
+     * Delete a video/lesson and clean up MUX cloud asset.
      */
     public function destroyVideo(Course $course, Video $video): RedirectResponse
     {
+        if (! empty($video->mux_asset_id)) {
+            $this->muxService->deleteAsset($video->mux_asset_id);
+        }
+
         $video->delete();
 
-        return back()->with('success', __('تم حذف الدرس بنجاح من المنهج.'));
+        return back()->with('success', __('تم حذف الدرس بنجاح ومزامنة الحذف مع سحابة MUX.'));
+    }
+
+    /**
+     * Re-sync video asset metadata and ensure signed playback ID exists from MUX.
+     */
+    public function syncMuxVideo(Course $course, Video $video): RedirectResponse
+    {
+        if (empty($video->mux_asset_id)) {
+            return back()->with('error', __('هذا الدرس غير مرتبط بأصل فيديو على MUX.'));
+        }
+
+        $asset = $this->muxService->getAsset($video->mux_asset_id);
+        if (! $asset) {
+            return back()->with('error', __('تعذر العثور على بيانات الفيديو على سيرفرات MUX.'));
+        }
+
+        $playbackIds = $asset['playback_ids'] ?? [];
+        $signedPlayback = collect($playbackIds)->firstWhere('policy', 'signed');
+
+        // If no signed playback ID exists yet, create one!
+        if (! $signedPlayback) {
+            $newSignedId = $this->muxService->createSignedPlaybackId($video->mux_asset_id);
+            if ($newSignedId) {
+                $video->mux_playback_id = $newSignedId;
+                $video->video_url = "https://stream.mux.com/{$newSignedId}.m3u8";
+            }
+        } elseif (! empty($signedPlayback['id'])) {
+            $video->mux_playback_id = $signedPlayback['id'];
+            $video->video_url = "https://stream.mux.com/{$signedPlayback['id']}.m3u8";
+        }
+
+        if (isset($asset['duration']) && (float) $asset['duration'] > 0) {
+            $video->duration_seconds = (int) round((float) $asset['duration']);
+        }
+
+        $video->video_source = 'mux';
+        $video->save();
+
+        return back()->with('success', __('تمت مزامنة بيانات الفيديو وتأمين البث المشفر مع MUX بنجاح.'));
     }
 
     /**
@@ -562,12 +691,18 @@ class CourseController extends Controller
 
         $action = $validated['bulk_action'] ?? 'update_settings';
 
-        // 1. Bulk Delete
+        // 1. Bulk Delete (with Mux cloud asset cleanup)
         if ($action === 'delete') {
-            $deletedCount = (clone $query)->count();
+            $matchingVideos = (clone $query)->get();
+            foreach ($matchingVideos as $v) {
+                if (! empty($v->mux_asset_id)) {
+                    $this->muxService->deleteAsset($v->mux_asset_id);
+                }
+            }
+            $deletedCount = $matchingVideos->count();
             $query->delete();
 
-            return back()->with('success', __('تم حذف :count درس بنجاح من المنهج.', ['count' => $deletedCount]));
+            return back()->with('success', __('تم حذف :count درس بنجاح ومزامنة الحذف مع سحابة MUX.', ['count' => $deletedCount]));
         }
 
         // 2. Bulk Move Level

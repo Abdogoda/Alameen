@@ -5,69 +5,80 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ __('تسجيل دخول المسؤولين | منصة الأمين') }}</title>
+    <title>{{ __('تسجيل دخول المسؤولين | :name', ['name' => $siteName ?? 'منصة الأمين']) }}</title>
 
     @include('partials.head')
-    @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/passkeys.js'])
+    @vite(['resources/js/passkeys.js'])
 </head>
-<body class="bg-[#FAFCFF] dark:bg-[#0B1120] min-h-screen text-[#1E293B] dark:text-slate-100 flex flex-col justify-center items-center px-3.5 py-6 sm:px-6 lg:px-10 font-['Cairo'] antialiased relative selection:bg-[#0B2A8F]/10 selection:text-[#0B2A8F] overflow-x-hidden">
+<body class="bg-[#F8FAFC] dark:bg-[#070C18] min-h-screen text-[#1E293B] dark:text-slate-100 flex flex-col justify-center items-center px-4 py-8 sm:px-6 lg:px-8 font-['Cairo'] antialiased relative selection:bg-[#0B2A8F]/15 selection:text-[#0B2A8F] overflow-x-hidden">
     <!-- Top-Level Pre-Rendered Themed Loader -->
     @persist('alameen-loader')
     <x-alameen-loader />
     @endpersist
 
-    <!-- Language & Theme Switcher & Home Return in Corner -->
-    <div class="fixed top-3 sm:top-6 end-3 sm:end-8 z-30 flex items-center gap-2 sm:gap-2.5">
+    <!-- Floating Top Toolbar (Theme, Language, Home) -->
+    <div class="fixed top-4 sm:top-6 end-4 sm:end-8 z-30 flex items-center gap-2 p-1.5 rounded-2xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200/80 dark:border-slate-800 shadow-xs hover:shadow-sm transition-all">
         <x-admin::theme-switcher variant="icon" />
-        <x-admin::language-switcher variant="pill" />
-
+        <div class="w-px h-5 bg-slate-200 dark:bg-slate-800"></div>
+        <x-admin::language-switcher variant="pill" class="border-0 bg-transparent shadow-none p-0" />
+        <div class="w-px h-5 bg-slate-200 dark:bg-slate-800"></div>
         <a
             href="{{ route('home') }}"
-            class="size-9 sm:size-10 rounded-full bg-white dark:bg-slate-800 border border-[#DEE8F7] dark:border-slate-700 shadow-xs flex items-center justify-center text-[#475569] dark:text-slate-300 hover:text-[#012383] dark:hover:text-blue-400 hover:border-[#012383] transition-all cursor-pointer"
+            class="size-8 sm:size-9 rounded-xl bg-slate-100/80 dark:bg-slate-800 border border-slate-200/60 dark:border-slate-700/60 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:text-[#012383] dark:hover:text-blue-400 hover:bg-white dark:hover:bg-slate-700 transition-all cursor-pointer group"
             title="{{ __('العودة إلى الرئيسية') }}"
         >
-            <svg class="size-4 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="size-4 rtl:rotate-180 group-hover:-translate-x-0.5 rtl:group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
         </a>
     </div>
 
-    <!-- Soft Decorative Ambient Mesh Blobs (Light Aesthetic) -->
-    <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
-        <div class="absolute -top-32 -end-32 size-96 rounded-full bg-blue-100/40 dark:bg-blue-900/10 blur-3xl"></div>
-        <div class="absolute -bottom-32 -start-32 size-96 rounded-full bg-amber-100/35 dark:bg-amber-900/10 blur-3xl"></div>
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-[650px] rounded-full bg-indigo-50/50 dark:bg-indigo-950/20 blur-[130px]"></div>
+    <!-- Architectural Background: Dot Grid & Luminous Ambient Radial Meshes -->
+    <div class="fixed inset-0 pointer-events-none z-0">
+        <!-- Blueprint Dot Matrix -->
+        <div class="absolute inset-0 bg-[radial-gradient(#0B2A8F_1px,transparent_1px)] [background-size:26px_26px] opacity-[0.035] dark:opacity-[0.07]"></div>
+        <!-- Top Center Glow -->
+        <div class="absolute -top-40 start-1/2 -translate-x-1/2 size-[620px] rounded-full bg-gradient-to-b from-blue-400/15 via-indigo-400/10 to-transparent blur-3xl pointer-events-none"></div>
+        <!-- Corner Ambient Blobs -->
+        <div class="absolute -top-24 -end-24 size-96 rounded-full bg-blue-100/40 dark:bg-blue-900/15 blur-3xl"></div>
+        <div class="absolute -bottom-24 -start-24 size-96 rounded-full bg-indigo-100/35 dark:bg-indigo-950/20 blur-3xl"></div>
     </div>
 
-    <!-- Main Container with dedicated mobile horizontal padding and top clearance -->
-    <div class="w-full max-w-md relative z-10 my-auto pt-16 pb-8 sm:py-10 px-1 sm:px-0 alameen-content-wrap">
+    <!-- Main Container -->
+    <div class="w-full max-w-[430px] relative z-10 my-auto py-10 px-1 sm:px-0 alameen-content-wrap">
         
         <!-- Header Branding -->
         <div class="flex flex-col items-center text-center mb-6 sm:mb-7">
-            <!-- Polished White Logo Badge -->
-            <div class="size-16 rounded-2xl bg-white dark:bg-slate-800 border border-[#DEE8F7] dark:border-slate-700 p-2.5 shadow-md shadow-blue-900/5 flex items-center justify-center mb-3.5 transition-transform hover:scale-105 duration-300">
-                <img src="/assets/images/logo.png" alt="منصة الأمين" class="size-full object-contain pointer-events-none" />
+            <!-- Polished Logo Badge with Aura Ring -->
+            <div class="relative group mb-4">
+                <div class="absolute -inset-2 rounded-3xl bg-gradient-to-r from-blue-600/15 via-indigo-500/15 to-blue-400/15 blur-lg opacity-75 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div class="relative size-16 sm:size-18 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700/80 p-2.5 shadow-xl shadow-blue-950/5 flex items-center justify-center transition-all duration-300 group-hover:scale-105 group-hover:shadow-2xl ring-4 ring-blue-500/5 dark:ring-blue-400/10">
+                    <img src="{{ $siteLogo ?? '/assets/images/logo.png' }}" alt="{{ $siteName ?? 'منصة الأمين' }}" class="size-full object-contain pointer-events-none drop-shadow-xs" />
+                </div>
             </div>
 
-            <!-- Title -->
-            <h1 class="text-2xl sm:text-3xl lg:text-[34px] font-extrabold text-[#012383] dark:text-blue-400 font-['Baloo_Bhaijaan_2'] tracking-tight mb-2 sm:mb-2.5">
-                {{ __('منصة الأمين') }}
+            <!-- Title with Gradient Depth -->
+            <h1 class="text-2xl sm:text-3xl lg:text-[32px] font-black tracking-tight font-['Baloo_Bhaijaan_2'] bg-gradient-to-r from-[#012383] via-[#0B2A8F] to-[#1E3A8A] dark:from-blue-200 dark:via-blue-100 dark:to-indigo-200 bg-clip-text text-transparent mb-2 sm:mb-2.5">
+                {{ $siteName ?? __('منصة الأمين') }}
             </h1>
 
-            <!-- Badge under Title -->
-            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-50 dark:bg-amber-950/40 border border-amber-200/90 dark:border-amber-800/50 text-amber-900 dark:text-amber-300 text-xs font-bold tracking-wide shadow-xs">
-                <svg class="size-3.5 text-amber-600 dark:text-amber-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <!-- Security & Control Badge -->
+            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-blue-50/90 via-indigo-50/70 to-blue-50/90 dark:from-blue-950/50 dark:via-indigo-950/40 dark:to-blue-950/50 border border-blue-200/80 dark:border-blue-800/60 text-[#012383] dark:text-blue-300 text-xs font-bold tracking-wide shadow-xs">
+                <span class="size-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <svg class="size-3.5 text-[#0B2A8F] dark:text-blue-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
                 </svg>
                 <span>{{ __('بوابة الإدارة المركزية والتحكم') }}</span>
             </div>
         </div>
 
-        <!-- Crisp Light Login Card -->
-        <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-3xl p-5 sm:p-9 shadow-[0_20px_50px_-12px_rgba(1,35,131,0.08),0_1px_3px_rgba(0,0,0,0.02)]">
+        <!-- Luxury Glass Login Card -->
+        <div class="relative bg-white/95 dark:bg-slate-900/90 backdrop-blur-2xl border border-slate-200/90 dark:border-slate-800/90 rounded-3xl p-6 sm:p-9 shadow-[0_20px_50px_-12px_rgba(1,35,131,0.09),0_0_0_1px_rgba(1,35,131,0.03)] dark:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.6)] overflow-hidden">
+            <!-- Top Interior Luminous Edge -->
+            <div class="absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-blue-500/35 dark:via-blue-400/35 to-transparent"></div>
             
             @if ($errors->any())
-                <div class="mb-6 p-4 rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-300 text-sm">
+                <div class="mb-5 p-4 rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-300 text-sm animate-shake">
                     <div class="flex items-center gap-2 font-bold mb-1">
                         <svg class="size-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
@@ -83,12 +94,12 @@
             @endif
 
             <!-- Quick Login Options (Google & Passkey) -->
-            <div class="mb-5 space-y-2.5">
+            <div class="space-y-2.5">
                 <!-- Google Sign In for Admins -->
                 <button
                     type="button"
                     data-firebase-auth="admin"
-                    class="w-full py-3.5 px-4 rounded-2xl border border-[#DEE8F7] dark:border-slate-700 hover:border-[#012383]/40 dark:hover:border-blue-400/40 bg-[#FAFCFF] dark:bg-slate-800 hover:bg-white dark:hover:bg-slate-700 text-[#1E293B] dark:text-slate-100 font-bold text-sm shadow-xs transition-all flex items-center justify-center gap-3 cursor-pointer group active:scale-[0.99]"
+                    class="w-full h-12 px-4 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 bg-white hover:bg-slate-50 dark:bg-slate-800 dark:hover:bg-slate-700/80 text-[#1E293B] dark:text-slate-100 font-bold text-xs sm:text-sm shadow-xs hover:shadow-sm transition-all flex items-center justify-center gap-3 cursor-pointer group active:scale-[0.99]"
                     title="{{ __('تسجيل الدخول السريع باستخدام حساب Google للمشرفين') }}"
                 >
                     <!-- Google G Logo -->
@@ -143,7 +154,7 @@
                         x-show="supported"
                         @click="loginWithPasskey()"
                         :disabled="loading"
-                        class="w-full py-3.5 px-4 rounded-2xl border border-[#DEE8F7] dark:border-slate-700 hover:border-[#012383]/40 dark:hover:border-blue-400/40 bg-[#FAFCFF] dark:bg-slate-800 hover:bg-white dark:hover:bg-slate-700 text-[#012383] dark:text-blue-300 font-bold text-sm shadow-xs transition-all flex items-center justify-center gap-2.5 cursor-pointer group active:scale-[0.99] disabled:opacity-75 disabled:cursor-wait"
+                        class="w-full h-12 px-4 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-blue-400/60 dark:hover:border-blue-400/60 bg-white hover:bg-blue-50/40 dark:bg-slate-800 dark:hover:bg-slate-700/80 text-[#012383] dark:text-blue-300 font-bold text-xs sm:text-sm shadow-xs hover:shadow-sm transition-all flex items-center justify-center gap-2.5 cursor-pointer group active:scale-[0.99] disabled:opacity-75 disabled:cursor-wait"
                         title="{{ __('تسجيل الدخول السريع عبر مفتاح المرور (Touch ID / Face ID / Windows Hello)') }}"
                     >
                         <svg x-show="!loading" class="size-5 shrink-0 text-[#0B2A8F] dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -159,31 +170,33 @@
 
                     <div x-show="error" x-cloak class="mt-2.5 p-3 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-rose-600 dark:text-rose-400 text-xs font-semibold text-center" x-text="error"></div>
                 </div>
+            </div>
 
-                <div class="relative pt-2">
-                    <div class="absolute inset-0 flex items-center">
-                        <div class="w-full border-t border-[#DEE8F7] dark:border-slate-700"></div>
-                    </div>
-                    <div class="relative flex justify-center text-xs">
-                        <span class="px-3 text-[#475569] dark:text-slate-400 bg-white dark:bg-slate-900 font-semibold">
-                            {{ __('أو المتابعة ببيانات الاعتماد') }}
-                        </span>
-                    </div>
+            <!-- Divider -->
+            <div class="relative my-5">
+                <div class="absolute inset-0 flex items-center">
+                    <div class="w-full border-t border-slate-200 dark:border-slate-800"></div>
+                </div>
+                <div class="relative flex justify-center text-xs">
+                    <span class="px-3.5 py-0.5 rounded-full bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200/60 dark:border-slate-700/60 text-[#475569] dark:text-slate-400 font-bold text-[11px]">
+                        {{ __('أو المتابعة ببيانات الاعتماد') }}
+                    </span>
                 </div>
             </div>
 
-            <form method="POST" action="{{ route('admin.login.store') }}" class="space-y-4 sm:space-y-5">
+            <!-- Credentials Form -->
+            <form method="POST" action="{{ route('admin.login.store') }}" class="space-y-4">
                 @csrf
 
                 <!-- Email Field -->
-                <div>
-                    <label for="admin_email" class="block text-xs font-bold text-[#012383] dark:text-blue-400 mb-1.5">
+                <div class="space-y-1.5">
+                    <label for="admin_email" class="block text-xs font-bold text-slate-700 dark:text-slate-300">
                         {{ __('البريد الإلكتروني للإدارة') }}
                     </label>
-                    <div class="relative">
-                        <div class="absolute inset-y-0 start-0 ps-3.5 flex items-center pointer-events-none text-[#0B2A8F] dark:text-blue-400">
-                            <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"/>
+                    <div class="relative group">
+                        <div class="absolute inset-y-0 start-0 ps-3.5 flex items-center pointer-events-none text-slate-400 group-focus-within:text-[#0B2A8F] dark:group-focus-within:text-blue-400 transition-colors">
+                            <svg class="size-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"/>
                             </svg>
                         </div>
                         <input
@@ -193,21 +206,22 @@
                             value="{{ old('email') }}"
                             required
                             autofocus
+                            autocomplete="email"
                             placeholder="admin@alameen.edu.sa"
-                            class="w-full ps-11 pe-4 py-3 sm:py-3.5 rounded-xl bg-[#FAFCFF] dark:bg-slate-800/60 border border-[#DEE8F7] dark:border-slate-700 text-[#1E293B] dark:text-slate-100 placeholder-slate-400 text-sm focus:bg-white dark:focus:bg-slate-800 focus:outline-none focus:ring-4 focus:ring-[#0B2A8F]/10 focus:border-[#0B2A8F] dark:focus:border-blue-400 transition-all"
+                            class="w-full h-12 ps-10 pe-4 rounded-xl bg-slate-50/70 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-800 focus:bg-white dark:focus:bg-slate-800 border border-slate-200 dark:border-slate-700/80 focus:border-[#0B2A8F] dark:focus:border-blue-400 focus:ring-4 focus:ring-[#0B2A8F]/10 dark:focus:ring-blue-400/10 text-[#1E293B] dark:text-slate-100 placeholder:text-slate-400 text-sm font-medium outline-none transition-all shadow-xs"
                         />
                     </div>
                 </div>
 
                 <!-- Password Field with Show/Hide -->
-                <div x-data="{ show: false }">
-                    <label for="admin_password" class="block text-xs font-bold text-[#012383] dark:text-blue-400 mb-1.5">
+                <div class="space-y-1.5" x-data="{ show: false }">
+                    <label for="admin_password" class="block text-xs font-bold text-slate-700 dark:text-slate-300">
                         {{ __('كلمة المرور') }}
                     </label>
-                    <div class="relative">
-                        <div class="absolute inset-y-0 start-0 ps-3.5 flex items-center pointer-events-none text-[#0B2A8F] dark:text-blue-400">
-                            <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                    <div class="relative group">
+                        <div class="absolute inset-y-0 start-0 ps-3.5 flex items-center pointer-events-none text-slate-400 group-focus-within:text-[#0B2A8F] dark:group-focus-within:text-blue-400 transition-colors">
+                            <svg class="size-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
                             </svg>
                         </div>
                         <input
@@ -215,25 +229,26 @@
                             id="admin_password"
                             name="password"
                             required
+                            autocomplete="current-password"
                             placeholder="••••••••"
-                            class="w-full ps-11 pe-12 py-3 sm:py-3.5 rounded-xl bg-[#FAFCFF] dark:bg-slate-800/60 border border-[#DEE8F7] dark:border-slate-700 text-[#1E293B] dark:text-slate-100 placeholder-slate-400 text-sm focus:bg-white dark:focus:bg-slate-800 focus:outline-none focus:ring-4 focus:ring-[#0B2A8F]/10 focus:border-[#0B2A8F] dark:focus:border-blue-400 transition-all"
+                            class="w-full h-12 ps-10 pe-11 rounded-xl bg-slate-50/70 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-800 focus:bg-white dark:focus:bg-slate-800 border border-slate-200 dark:border-slate-700/80 focus:border-[#0B2A8F] dark:focus:border-blue-400 focus:ring-4 focus:ring-[#0B2A8F]/10 dark:focus:ring-blue-400/10 text-[#1E293B] dark:text-slate-100 placeholder:text-slate-400 text-sm font-medium outline-none transition-all shadow-xs"
                         />
                         <button
                             type="button"
                             @click="show = !show"
-                            class="!absolute end-3 top-1/2 -translate-y-1/2 size-9 flex items-center justify-center text-slate-400 hover:text-[#012383] dark:hover:text-blue-400 transition-colors cursor-pointer z-10"
+                            class="!absolute end-2 top-1/2 -translate-y-1/2 size-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-[#012383] dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-slate-700/60 transition-all cursor-pointer z-10"
                             aria-label="Toggle password visibility"
                         >
-                            <svg x-show="!show" class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                            <svg x-show="show" x-cloak class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"/></svg>
+                            <svg x-show="!show" class="size-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                            <svg x-show="show" x-cloak class="size-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"/></svg>
                         </button>
                     </div>
                 </div>
 
                 <!-- Remember Me -->
-                <div class="flex items-center justify-between text-xs pt-1">
-                    <label class="flex items-center gap-2 cursor-pointer select-none text-[#475569] dark:text-slate-300 hover:text-[#012383] dark:hover:text-blue-400 transition-colors font-medium">
-                        <input type="checkbox" name="remember" class="rounded border-[#CFDBEA] text-[#0B2A8F] focus:ring-[#0B2A8F] size-4 cursor-pointer">
+                <div class="flex items-center justify-between text-xs pt-0.5">
+                    <label class="flex items-center gap-2 cursor-pointer select-none text-slate-600 dark:text-slate-400 hover:text-[#012383] dark:hover:text-blue-300 transition-colors font-semibold group">
+                        <input type="checkbox" name="remember" class="size-4 rounded-md border-slate-300 dark:border-slate-600 text-[#012383] focus:ring-[#012383]/20 accent-[#012383] cursor-pointer transition-all">
                         <span>{{ __('تذكر جلستي على هذا الجهاز') }}</span>
                     </label>
                 </div>
@@ -241,19 +256,31 @@
                 <!-- Submit Button -->
                 <button
                     type="submit"
-                    class="w-full py-3.5 sm:py-4 px-5 rounded-2xl font-bold text-sm sm:text-base bg-[#012383] hover:bg-[#0B2A8F] text-white shadow-lg shadow-[#012383]/20 hover:shadow-xl hover:shadow-[#012383]/25 active:scale-[0.99] transition-all flex items-center justify-center gap-2.5 cursor-pointer"
+                    class="w-full h-12 sm:h-13 rounded-xl sm:rounded-2xl bg-gradient-to-r from-[#012383] via-[#0B2A8F] to-[#1E3A8A] hover:from-[#0B2A8F] hover:via-[#1E3A8A] hover:to-[#2563EB] text-white font-['Cairo'] font-bold text-sm sm:text-base shadow-[0_10px_25px_-5px_rgba(1,35,131,0.35)] hover:shadow-[0_15px_30px_-5px_rgba(1,35,131,0.45)] hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.99] transition-all duration-200 cursor-pointer flex items-center justify-center gap-2.5 relative overflow-hidden group mt-2"
+                    style="color: #ffffff !important;"
                 >
-                    <svg class="size-5 shrink-0 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
+                    <!-- Glossy Light Sweep Effect -->
+                    <div class="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none"></div>
+
+                    <svg class="size-4.5 shrink-0 rtl:rotate-180 group-hover:-translate-x-0.5 rtl:group-hover:translate-x-0.5 transition-transform text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
                     </svg>
-                    <span>{{ __('دخول لوحة الإدارة') }}</span>
+                    <span class="text-white font-bold" style="color: #ffffff !important;">{{ __('دخول لوحة الإدارة') }}</span>
                 </button>
             </form>
         </div>
 
-        <!-- Footer Notice -->
-        <div class="text-center mt-6 text-xs text-[#94A3B8] font-medium">
-            <p>{{ __('منصة الأمين التعليمية • نظام إدارة المحتوى والتحكم المركزي') }}</p>
+        <!-- Footer Security & Platform Notice -->
+        <div class="text-center mt-7 space-y-2 text-xs">
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100/70 dark:bg-slate-800/60 border border-slate-200/50 dark:border-slate-800/80 text-slate-500 dark:text-slate-400 text-[11px] font-medium">
+                <svg class="size-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                </svg>
+                <span>{{ __('اتصال مشفر وآمن بمعيار 256-bit SSL') }}</span>
+            </div>
+            <p class="text-slate-400 dark:text-slate-500 font-medium text-[11px]">
+                {{ ($siteName ?? platform_name()) . ' • ' . __('نظام إدارة المحتوى والتحكم المركزي') }}
+            </p>
         </div>
 
     </div>

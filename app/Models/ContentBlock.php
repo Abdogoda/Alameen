@@ -50,26 +50,38 @@ class ContentBlock extends Model
     {
         $locale = app()->getLocale();
 
-        return ($locale === 'en' && ! empty($this->title_en))
-            ? $this->title_en
-            : $this->title_ar;
+        if ($locale === 'en') {
+            return ! empty($this->title_en)
+                ? $this->title_en
+                : (! empty($this->title_ar) ? __($this->title_ar) : null);
+        }
+
+        return $this->title_ar;
     }
 
     public function getSubtitleAttribute(): ?string
     {
         $locale = app()->getLocale();
 
-        return ($locale === 'en' && ! empty($this->subtitle_en))
-            ? $this->subtitle_en
-            : $this->subtitle_ar;
+        if ($locale === 'en') {
+            return ! empty($this->subtitle_en)
+                ? $this->subtitle_en
+                : (! empty($this->subtitle_ar) ? __($this->subtitle_ar) : null);
+        }
+
+        return $this->subtitle_ar;
     }
 
     public function getContentAttribute(): ?string
     {
         $locale = app()->getLocale();
 
-        return ($locale === 'en' && ! empty($this->content_en))
-            ? $this->content_en
-            : $this->content_ar;
+        if ($locale === 'en') {
+            return ! empty($this->content_en)
+                ? $this->content_en
+                : (! empty($this->content_ar) ? __($this->content_ar) : null);
+        }
+
+        return $this->content_ar;
     }
 }

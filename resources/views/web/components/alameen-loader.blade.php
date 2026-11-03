@@ -9,7 +9,7 @@
         <div class="alameen-voice-wave alameen-voice-wave-2"></div>
         <div class="alameen-voice-wave alameen-voice-wave-3"></div>
         <div class="alameen-loader-logo-capsule">
-            <img src="/assets/images/logo.png" alt="{{ config('app.name', 'منصة الأمين') }}" onerror="this.src='/assets/images/logo.png'; this.onerror=null;" />
+            <img src="/assets/images/logo.png" alt="{{ __(config('app.name', 'منصة الأمين')) }}" onerror="this.src='/assets/images/logo.png'; this.onerror=null;" />
         </div>
     </div>
 
@@ -21,7 +21,7 @@
         <div class="alameen-eq-bar"></div>
     </div>
 
-    <h2 class="alameen-loader-title">{{ config('app.name', 'منصة الأمين') }}</h2>
+    <h2 class="alameen-loader-title">{{ __(config('app.name', 'منصة الأمين')) }}</h2>
     <p class="alameen-loader-subtitle">{{ __('المنصة التعليمية المتخصصة في التخاطب وعلاج النطق') }}</p>
 
     <div class="alameen-loader-track">

@@ -90,6 +90,14 @@ function unlockScroll() {
  * Show loader explicitly (used on navigation start)
  */
 export function showLoader(reason = 'navigation') {
+    // Respect user appearance settings: do not show if disabled
+    try {
+        if (localStorage.getItem('alameen_loader_enabled') === 'false' || 
+            document.documentElement.getAttribute('data-loader-enabled') === 'false') {
+            return;
+        }
+    } catch (e) {}
+
     clearTimeout(dismissTimeout);
     const loader = getOrCreateLoader();
     if (!loader) return;

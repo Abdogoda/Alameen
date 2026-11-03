@@ -92,6 +92,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Secure Lesson Playback with Dynamic Watermark & Sequential Locking
     Route::get('lesson/{course?}/{video?}', [StudentCourseController::class, 'lesson'])->name('lessons.show');
+    Route::get('videos/{video}/playback-token', [StudentCourseController::class, 'getPlaybackToken'])->name('videos.playback-token');
     Route::post('videos/{video}/progress', [StudentCourseController::class, 'recordProgress'])->name('videos.progress');
     Route::post('courses/{course}/receipt', [StudentCourseController::class, 'submitReceipt'])->name('courses.receipt.submit');
 

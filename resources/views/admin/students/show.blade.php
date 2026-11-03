@@ -4,11 +4,11 @@
     contentClass="p-3.5 sm:p-6 lg:p-8 flex flex-col gap-5 sm:gap-6 w-full min-w-0"
 >
     <x-slot:actions>
-        <div class="flex items-center gap-2 flex-wrap">
+        <div class="flex items-center gap-2 sm:gap-2.5 flex-wrap w-full 2xl:w-auto">
             {{-- Back to Students List --}}
             <a 
                 href="{{ route('admin.students.index') }}" 
-                class="h-9 sm:h-10 px-3.5 sm:px-4 rounded-xl bg-white dark:bg-slate-800 border border-[#DEE8F7] dark:border-slate-700 hover:border-[#0B2A8F] text-slate-700 dark:text-slate-200 font-bold text-xs flex items-center gap-1.5 transition-all shadow-2xs"
+                class="h-9 sm:h-10 px-3.5 sm:px-4 rounded-xl bg-white dark:bg-slate-800 border border-[#DEE8F7] dark:border-slate-700 hover:border-[#0B2A8F] text-slate-700 dark:text-slate-200 font-bold text-xs flex items-center gap-1.5 transition-all shadow-2xs whitespace-nowrap"
             >
                 <svg class="size-4 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
                 <span>{{ __('دليل الطلاب') }}</span>
@@ -18,7 +18,7 @@
             <button 
                 type="button" 
                 onclick="openModal('modal-enroll-course')" 
-                class="h-9 sm:h-10 px-3.5 sm:px-4 rounded-xl bg-gradient-to-r from-[#012383] to-[#0B2A8F] hover:from-[#0B2A8F] hover:to-[#012383] text-white font-bold text-xs flex items-center gap-1.5 transition-all shadow-2xs cursor-pointer"
+                class="h-9 sm:h-10 px-3.5 sm:px-4 rounded-xl bg-gradient-to-r from-[#012383] to-[#0B2A8F] hover:from-[#0B2A8F] hover:to-[#012383] text-white font-bold text-xs flex items-center gap-1.5 transition-all shadow-2xs cursor-pointer whitespace-nowrap"
             >
                 <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
                 <span>{{ __('منح كورس جديد') }}</span>
@@ -28,7 +28,7 @@
             <button 
                 type="button" 
                 onclick="openModal('modal-issue-certificate')" 
-                class="h-9 sm:h-10 px-3.5 sm:px-4 rounded-xl bg-white dark:bg-slate-800 border border-[#DEE8F7] dark:border-slate-700 hover:border-[#0B2A8F] text-[#012383] dark:text-blue-300 font-bold text-xs flex items-center gap-1.5 transition-all shadow-2xs cursor-pointer"
+                class="h-9 sm:h-10 px-3.5 sm:px-4 rounded-xl bg-white dark:bg-slate-800 border border-[#DEE8F7] dark:border-slate-700 hover:border-[#0B2A8F] text-[#012383] dark:text-blue-300 font-bold text-xs flex items-center gap-1.5 transition-all shadow-2xs cursor-pointer whitespace-nowrap"
             >
                 <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
                 <span>{{ __('رفع شهادة') }}</span>
@@ -38,7 +38,7 @@
             <button 
                 type="button" 
                 onclick="openModal('modal-edit-student')" 
-                class="h-9 sm:h-10 px-3.5 sm:px-4 rounded-xl bg-white dark:bg-slate-800 border border-[#DEE8F7] dark:border-slate-700 hover:border-[#0B2A8F] text-slate-700 dark:text-slate-200 font-bold text-xs flex items-center gap-1.5 transition-all shadow-2xs cursor-pointer"
+                class="h-9 sm:h-10 px-3.5 sm:px-4 rounded-xl bg-white dark:bg-slate-800 border border-[#DEE8F7] dark:border-slate-700 hover:border-[#0B2A8F] text-slate-700 dark:text-slate-200 font-bold text-xs flex items-center gap-1.5 transition-all shadow-2xs cursor-pointer whitespace-nowrap"
             >
                 <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
                 <span>{{ __('تعديل البيانات') }}</span>
@@ -48,7 +48,7 @@
             <button 
                 type="button" 
                 onclick="openModal('modal-change-password')" 
-                class="h-9 sm:h-10 px-3.5 sm:px-4 rounded-xl bg-white dark:bg-slate-800 border border-[#DEE8F7] dark:border-slate-700 hover:border-[#0B2A8F] text-slate-700 dark:text-slate-200 font-bold text-xs flex items-center gap-1.5 transition-all shadow-2xs cursor-pointer"
+                class="h-9 sm:h-10 px-3.5 sm:px-4 rounded-xl bg-white dark:bg-slate-800 border border-[#DEE8F7] dark:border-slate-700 hover:border-[#0B2A8F] text-slate-700 dark:text-slate-200 font-bold text-xs flex items-center gap-1.5 transition-all shadow-2xs cursor-pointer whitespace-nowrap"
             >
                 <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg>
                 <span>{{ __('تغيير كلمة المرور') }}</span>
@@ -65,12 +65,12 @@
             >
                 @csrf
                 @if($user->isActive())
-                    <button type="submit" class="h-9 sm:h-10 px-3.5 sm:px-4 rounded-xl bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 dark:bg-rose-950/40 dark:text-rose-300 dark:border-rose-800 font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer">
+                    <button type="submit" class="h-9 sm:h-10 px-3.5 sm:px-4 rounded-xl bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 dark:bg-rose-950/40 dark:text-rose-300 dark:border-rose-800 font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer whitespace-nowrap">
                         <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
                         <span>{{ __('تعليق الحساب') }}</span>
                     </button>
                 @else
-                    <button type="submit" class="h-9 sm:h-10 px-3.5 sm:px-4 rounded-xl bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800 font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer">
+                    <button type="submit" class="h-9 sm:h-10 px-3.5 sm:px-4 rounded-xl bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800 font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer whitespace-nowrap">
                         <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         <span>{{ __('تنشيط الحساب') }}</span>
                     </button>
@@ -116,30 +116,30 @@
     <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-3xl p-5 sm:p-7 shadow-2xs relative overflow-hidden">
         <div class="absolute -top-12 -left-12 size-48 bg-gradient-to-br from-blue-100/50 to-indigo-100/20 dark:from-blue-900/20 dark:to-transparent rounded-full blur-2xl pointer-events-none"></div>
 
-        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative z-10">
+        <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 relative z-10">
             {{-- Student Identity Block --}}
-            <div class="flex items-start sm:items-center gap-4 sm:gap-5 min-w-0">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-5 min-w-0 flex-1">
                 <div class="size-16 sm:size-20 rounded-2xl {{ $user->isActive() ? 'bg-gradient-to-br from-[#012383] to-[#0B2A8F] text-white' : 'bg-rose-100 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300' }} flex items-center justify-center font-black text-2xl sm:text-3xl shrink-0 shadow-sm ring-4 ring-[#EAF1FB] dark:ring-slate-800">
                     {{ mb_substr($user->name, 0, 1) }}
                 </div>
 
-                <div class="min-w-0">
-                    <div class="flex items-center gap-3 flex-wrap">
-                        <h2 class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight truncate">{{ $user->name }}</h2>
+                <div class="min-w-0 flex-1">
+                    <div class="flex items-center gap-2.5 sm:gap-3 flex-wrap">
+                        <h2 class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight break-words">{{ $user->name }}</h2>
                         
                         @if($user->isActive())
-                            <span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800 inline-flex items-center gap-1.5">
+                            <span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800 inline-flex items-center gap-1.5 shrink-0">
                                 <span class="size-2 rounded-full bg-emerald-500 animate-pulse"></span>
                                 {{ __('حساب نشط ومفعل') }}
                             </span>
                         @else
-                            <span class="px-3 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200 dark:bg-rose-950/40 dark:text-rose-300 dark:border-rose-800 inline-flex items-center gap-1.5">
+                            <span class="px-3 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200 dark:bg-rose-950/40 dark:text-rose-300 dark:border-rose-800 inline-flex items-center gap-1.5 shrink-0">
                                 <span class="size-2 rounded-full bg-rose-500"></span>
                                 {{ __('معلق / ملغي الصلاحية') }}
                             </span>
                         @endif
 
-                        <span class="text-xs font-mono font-bold text-slate-400 bg-slate-100 dark:bg-slate-800 px-2.5 py-0.5 rounded-lg">
+                        <span class="text-xs font-mono font-bold text-slate-400 bg-slate-100 dark:bg-slate-800 px-2.5 py-0.5 rounded-lg shrink-0">
                             #STU-{{ str_pad((string)$user->id, 4, '0', STR_PAD_LEFT) }}
                         </span>
                     </div>
@@ -147,29 +147,29 @@
                     {{-- Contact & Location Details --}}
                     <div class="flex items-center gap-3 sm:gap-5 text-xs text-slate-600 dark:text-slate-400 mt-2.5 flex-wrap">
                         {{-- Email --}}
-                        <div class="flex items-center gap-1.5 font-mono">
+                        <div class="flex items-center gap-1.5 font-mono min-w-0">
                             <svg class="size-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                            <a href="mailto:{{ $user->email }}" class="hover:text-[#012383] dark:hover:text-blue-400 underline decoration-dotted">{{ $user->email }}</a>
+                            <a href="mailto:{{ $user->email }}" class="hover:text-[#012383] dark:hover:text-blue-400 underline decoration-dotted truncate max-w-[220px] sm:max-w-none">{{ $user->email }}</a>
                             @if($user->email_verified_at)
-                                <span class="text-emerald-600 dark:text-emerald-400 text-[10px] font-bold" title="{{ __('تم توثيق البريد الإلكتروني') }}">✓ موثق</span>
+                                <span class="text-emerald-600 dark:text-emerald-400 text-[10px] font-bold shrink-0" title="{{ __('تم توثيق البريد الإلكتروني') }}">✓ {{ __('موثق') }}</span>
                             @else
-                                <span class="text-amber-500 text-[10px] font-bold" title="{{ __('البريد غير موثق بعد') }}">غير موثق</span>
+                                <span class="text-amber-500 text-[10px] font-bold shrink-0" title="{{ __('البريد غير موثق بعد') }}">{{ __('غير موثق بعد') }}</span>
                             @endif
                         </div>
 
                         {{-- Phone --}}
-                        <div class="flex items-center gap-1.5 font-mono">
+                        <div class="flex items-center gap-1.5 font-mono shrink-0">
                             <svg class="size-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
                             @if($user->phone)
-                                <a href="tel:{{ $user->phone }}" class="hover:text-[#012383] dark:hover:text-blue-400 underline decoration-dotted">{{ $user->phone }}</a>
-                                <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $user->phone) }}" target="_blank" class="text-emerald-600 hover:text-emerald-700 font-bold text-[10px] bg-emerald-50 dark:bg-emerald-950/60 px-1.5 py-0.5 rounded" title="{{ __('محادثة واتساب مباشرة') }}">واتساب</a>
+                                <a href="tel:{{ $user->phone }}" class="hover:text-[#012383] dark:hover:text-blue-400 underline decoration-dotted dir-ltr">{{ $user->phone }}</a>
+                                <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $user->phone) }}" target="_blank" class="text-emerald-600 hover:text-emerald-700 font-bold text-[10px] bg-emerald-50 dark:bg-emerald-950/60 px-1.5 py-0.5 rounded" title="{{ __('محادثة واتساب مباشرة') }}">{{ __('واتساب') }}</a>
                             @else
                                 <span class="text-slate-400">{{ __('لا يوجد رقم هاتف') }}</span>
                             @endif
                         </div>
 
                         {{-- Location --}}
-                        <div class="flex items-center gap-1.5">
+                        <div class="flex items-center gap-1.5 shrink-0">
                             <svg class="size-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                             <span>{{ $user->city ?? '—' }} {{ $user->country ? "({$user->country})" : '' }}</span>
                         </div>
@@ -178,15 +178,15 @@
             </div>
 
             {{-- Quick Metadata Details --}}
-            <div class="flex sm:flex-col items-start sm:items-end justify-between w-full sm:w-auto gap-2 text-xs border-t sm:border-t-0 pt-3 sm:pt-0 border-slate-100 dark:border-slate-800 shrink-0">
+            <div class="flex sm:flex-col items-start sm:items-end justify-between w-full lg:w-auto gap-2 text-xs border-t lg:border-t-0 pt-3 lg:pt-0 border-slate-100 dark:border-slate-800 shrink-0">
                 <div class="text-slate-500 dark:text-slate-400">
                     <span class="text-slate-400 block sm:inline">{{ __('تاريخ التسجيل:') }}</span>
-                    <strong class="font-bold text-slate-800 dark:text-slate-200">{{ $user->created_at?->format('d/m/Y - h:i A') }}</strong>
+                    <strong class="font-bold text-slate-800 dark:text-slate-200 dir-ltr inline-block">{{ $user->created_at?->format('d/m/Y - h:i A') }}</strong>
                 </div>
-                <div class="text-[11px] text-slate-400">
+                <div class="text-[11px] text-slate-400 flex items-center gap-1.5 flex-wrap">
                     <span>{{ __('منذ:') }} {{ $user->created_at?->diffForHumans() }}</span>
                     @if($user->firebase_uid || $user->google_id)
-                        <span class="ms-1.5 px-2 py-0.5 bg-blue-50 dark:bg-slate-800 text-[#0B2A8F] dark:text-blue-300 font-bold rounded">
+                        <span class="px-2 py-0.5 bg-blue-50 dark:bg-slate-800 text-[#0B2A8F] dark:text-blue-300 font-bold rounded">
                             Google SSO
                         </span>
                     @endif
@@ -196,7 +196,7 @@
     </div>
 
     {{-- Key Performance Indicators Grid (KPIs) --}}
-    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
+    <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-3 sm:gap-4">
         {{-- Enrolled Courses --}}
         <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-2xl p-4 shadow-2xs flex flex-col justify-between">
             <div class="flex items-center justify-between text-slate-500 dark:text-slate-400">
@@ -282,7 +282,7 @@
                 </div>
             </div>
             <div class="mt-3">
-                <div class="text-xl font-black text-slate-900 dark:text-white">{{ number_format($approvedReceiptsTotal, 0) }}<span class="text-xs font-bold text-slate-400 ms-1">{{ __('ج.م') }}</span></div>
+                <div class="text-xl font-black text-slate-900 dark:text-white">{{ number_format($approvedReceiptsTotal, 0) }}<span class="text-xs font-bold text-slate-400 ms-1">{{ $currencySymbol ?? platform_currency() }}</span></div>
                 <div class="text-[10px] text-slate-400 mt-0.5">{{ $user->paymentReceipts->count() }} {{ __('إيصالات مسجلة') }}</div>
             </div>
         </div>
@@ -382,7 +382,7 @@
                     </button>
                 </div>
             @else
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
                     @foreach($user->courses as $course)
                         @php
                             $progressPct = $enrolledCourseProgress[$course->id] ?? 0;
@@ -395,8 +395,8 @@
                         @endphp
                         <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-3xl p-5 shadow-2xs flex flex-col justify-between gap-4">
                             <div>
-                                <div class="flex items-start justify-between gap-3">
-                                    <div class="flex items-center gap-3 min-w-0">
+                                <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-3 min-w-0">
+                                    <div class="flex items-center gap-3 min-w-0 flex-1">
                                         @if($course->thumbnail)
                                             <img src="{{ asset('storage/' . $course->thumbnail) }}" alt="{{ $course->title }}" class="size-12 rounded-xl object-cover shrink-0 border border-slate-100 dark:border-slate-800">
                                         @else
@@ -404,27 +404,29 @@
                                                 📚
                                             </div>
                                         @endif
-                                        <div class="min-w-0">
-                                            <h4 class="font-bold text-sm text-slate-900 dark:text-white truncate">{{ $course->title }}</h4>
-                                            <div class="text-[11px] text-slate-400 mt-0.5 flex items-center gap-2">
+                                        <div class="min-w-0 flex-1">
+                                            <h4 class="font-bold text-sm text-slate-900 dark:text-white truncate" title="{{ $course->title }}">{{ $course->title }}</h4>
+                                            <div class="text-[11px] text-slate-400 mt-0.5 flex items-center gap-2 flex-wrap">
                                                 <span>{{ $course->videos_count ?? $course->videos->count() }} {{ __('درس') }}</span>
                                                 <span>•</span>
-                                                <span>{{ number_format($course->price, 0) }} {{ __('ج.م') }}</span>
+                                                <span>{{ number_format($course->price, 0) }} {{ $currencySymbol ?? platform_currency() }}</span>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div>
+                                    <div class="shrink-0 self-start sm:self-auto">
                                         @if($isActiveAccess)
-                                            <span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800 shrink-0">
-                                                {{ __('نشط') }} ({{ $remainingDays }} {{ __('يوم متبقي') }})
+                                            <span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800 whitespace-nowrap inline-flex items-center gap-1.5 shrink-0">
+                                                <span class="size-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                                <span>{{ __('نشط') }}</span>
+                                                <span class="text-[10px] opacity-80 font-normal">({{ $remainingDays }} {{ __('يوم متبقي') }})</span>
                                             </span>
                                         @elseif($isExpired)
-                                            <span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-rose-50 text-rose-700 border border-rose-200 dark:bg-rose-950/40 dark:text-rose-300 dark:border-rose-800 shrink-0">
+                                            <span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-rose-50 text-rose-700 border border-rose-200 dark:bg-rose-950/40 dark:text-rose-300 dark:border-rose-800 whitespace-nowrap shrink-0">
                                                 {{ __('منتهي الصلاحية') }}
                                             </span>
                                         @else
-                                            <span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-slate-100 text-slate-700 border border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700 shrink-0">
+                                            <span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-slate-100 text-slate-700 border border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700 whitespace-nowrap shrink-0">
                                                 {{ $course->pivot->status }}
                                             </span>
                                         @endif
@@ -446,11 +448,11 @@
                                 <div class="grid grid-cols-2 gap-2 text-[11px] text-slate-500 dark:text-slate-400 mt-3">
                                     <div>
                                         <span class="text-slate-400 block">{{ __('تاريخ البدء:') }}</span>
-                                        <strong class="text-slate-700 dark:text-slate-300">{{ \Illuminate\Support\Carbon::parse($course->pivot->access_starts_at)->format('d/m/Y') }}</strong>
+                                        <strong class="text-slate-700 dark:text-slate-300 dir-ltr inline-block">{{ \Illuminate\Support\Carbon::parse($course->pivot->access_starts_at)->format('d/m/Y') }}</strong>
                                     </div>
                                     <div>
                                         <span class="text-slate-400 block">{{ __('تاريخ الانتهاء:') }}</span>
-                                        <strong class="text-slate-700 dark:text-slate-300">{{ $expiresAt ? $expiresAt->format('d/m/Y') : '—' }}</strong>
+                                        <strong class="text-slate-700 dark:text-slate-300 dir-ltr inline-block">{{ $expiresAt ? $expiresAt->format('d/m/Y') : '—' }}</strong>
                                     </div>
                                     @if($grantingAdmin)
                                         <div class="col-span-2 text-[10px] text-slate-400 pt-1 border-t border-slate-100 dark:border-slate-800">
@@ -461,7 +463,7 @@
                             </div>
 
                             {{-- Actions Footer --}}
-                            <div class="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2 flex-wrap">
+                            <div class="pt-3 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5">
                                 <div class="flex items-center gap-1.5 flex-wrap">
                                     {{-- Edit Enrollment Modal Trigger --}}
                                     <button 
@@ -479,7 +481,7 @@
                                             onclick="openCourseCertificateModal({{ $course->id }}, '{{ addslashes($course->title) }}', {{ $progressPct }})"
                                             class="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-purple-50 text-purple-700 hover:bg-purple-100 border border-purple-200 dark:bg-purple-950/40 dark:text-purple-300 dark:border-purple-800 transition-colors cursor-pointer"
                                         >
-                                            🎓 {{ __('إصدار شهادة') }}
+                                            🎓 {{ __('رفع شهادة') }}
                                         </button>
                                     @else
                                         <span class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
@@ -499,7 +501,7 @@
                                 >
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/60 transition-colors cursor-pointer" title="{{ __('إلغاء الاشتراك') }}">
+                                    <button type="submit" class="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/60 transition-colors cursor-pointer self-end sm:self-auto" title="{{ __('إلغاء الاشتراك') }}">
                                         <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                     </button>
                                 </form>
@@ -527,16 +529,16 @@
                 </div>
             @else
                 <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-3xl overflow-hidden shadow-2xs">
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-right border-collapse text-xs">
+                    <div class="overflow-x-auto -mx-1 sm:mx-0">
+                        <table class="w-full text-start border-collapse text-xs min-w-[720px]">
                             <thead>
                                 <tr class="bg-slate-50/80 dark:bg-slate-800/50 border-b border-[#DEE8F7] dark:border-slate-800 text-slate-500 font-bold">
-                                    <th class="py-3.5 px-5">{{ __('المحاضرة / الدرس') }}</th>
-                                    <th class="py-3.5 px-4">{{ __('الكورس') }}</th>
-                                    <th class="py-3.5 px-4">{{ __('وقت المشاهدة') }}</th>
-                                    <th class="py-3.5 px-4">{{ __('نسبة الإنجاز') }}</th>
+                                    <th class="py-3.5 px-5 text-start">{{ __('المحاضرة / الدرس') }}</th>
+                                    <th class="py-3.5 px-4 text-start">{{ __('الكورس') }}</th>
+                                    <th class="py-3.5 px-4 text-start">{{ __('وقت المشاهدة') }}</th>
+                                    <th class="py-3.5 px-4 text-start">{{ __('نسبة الإنجاز') }}</th>
                                     <th class="py-3.5 px-4 text-center">{{ __('الحالة') }}</th>
-                                    <th class="py-3.5 px-4">{{ __('آخر مشاهدة') }}</th>
+                                    <th class="py-3.5 px-4 text-start">{{ __('آخر مشاهدة') }}</th>
                                     <th class="py-3.5 px-5 text-center">{{ __('إدارة التقدم') }}</th>
                                 </tr>
                             </thead>
@@ -552,22 +554,22 @@
                                         $totalMins = floor($duration / 60);
                                     @endphp
                                     <tr class="hover:bg-slate-50/60 dark:hover:bg-slate-800/70 transition-colors">
-                                        <td class="py-4 px-5">
+                                        <td class="py-4 px-5 text-start">
                                             <div class="font-bold text-slate-900 dark:text-white">{{ $video?->title_ar ?? __('درس محذوف') }}</div>
                                             @if($video?->title_en)
                                                 <div class="text-[10px] text-slate-400 font-mono">{{ $video->title_en }}</div>
                                             @endif
                                         </td>
-                                        <td class="py-4 px-4 text-slate-600 dark:text-slate-400 font-medium">
+                                        <td class="py-4 px-4 text-start text-slate-600 dark:text-slate-400 font-medium">
                                             {{ $course?->title ?? '—' }}
                                         </td>
-                                        <td class="py-4 px-4 font-mono">
+                                        <td class="py-4 px-4 text-start font-mono">
                                             <span class="font-bold text-slate-800 dark:text-slate-200">{{ $watchedMins }}m {{ $watchedSecs }}s</span>
                                             <span class="text-slate-400 text-[10px]"> / {{ $totalMins }}m</span>
                                         </td>
-                                        <td class="py-4 px-4">
+                                        <td class="py-4 px-4 text-start">
                                             <div class="flex items-center gap-2">
-                                                <div class="w-20 h-2 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
+                                                <div class="w-20 h-2 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden shrink-0">
                                                     <div class="h-full rounded-full {{ $progress->is_completed ? 'bg-emerald-500' : 'bg-blue-600' }}" style="width: {{ min(100, $progress->completion_percentage) }}%"></div>
                                                 </div>
                                                 <span class="font-bold font-mono text-[11px]">{{ $progress->completion_percentage }}%</span>
@@ -575,26 +577,26 @@
                                         </td>
                                         <td class="py-4 px-4 text-center">
                                             @if($progress->is_completed)
-                                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800">
+                                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800 whitespace-nowrap inline-block">
                                                     ✓ {{ __('مكتمل') }}
                                                 </span>
                                             @else
-                                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800">
+                                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800 whitespace-nowrap inline-block">
                                                     ⏳ {{ __('قيد المتابعة') }}
                                                 </span>
                                             @endif
                                         </td>
-                                        <td class="py-4 px-4 text-[11px] text-slate-500">
+                                        <td class="py-4 px-4 text-start text-[11px] text-slate-500 whitespace-nowrap">
                                             <span>{{ $progress->last_watched_at?->diffForHumans() ?? '—' }}</span>
                                         </td>
                                         <td class="py-4 px-5 text-center">
                                             @if($video)
-                                                <div class="flex items-center justify-center gap-1.5">
+                                                <div class="flex items-center justify-center gap-1.5 flex-nowrap">
                                                     {{-- Mark 100% Complete --}}
                                                     <form method="POST" action="{{ route('admin.students.video-progress.update', [$user->id, $video->id]) }}">
                                                         @csrf
                                                         <input type="hidden" name="action" value="complete">
-                                                        <button type="submit" class="px-2 py-1 rounded-lg text-[11px] font-bold bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800 transition-colors cursor-pointer" title="{{ __('تعيين كمكتمل 100% لفتح الدرس التالي') }}">
+                                                        <button type="submit" class="px-2 py-1 rounded-lg text-[11px] font-bold bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800 transition-colors cursor-pointer whitespace-nowrap" title="{{ __('تعيين كمكتمل 100% لفتح الدرس التالي') }}">
                                                             {{ __('إكمال 100%') }}
                                                         </button>
                                                     </form>
@@ -610,7 +612,7 @@
                                                     >
                                                         @csrf
                                                         <input type="hidden" name="action" value="reset">
-                                                        <button type="submit" class="px-2 py-1 rounded-lg text-[11px] font-bold bg-slate-100 text-slate-600 hover:bg-slate-200 border border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700 transition-colors cursor-pointer" title="{{ __('إعادة التعيين لـ 0%') }}">
+                                                        <button type="submit" class="px-2 py-1 rounded-lg text-[11px] font-bold bg-slate-100 text-slate-600 hover:bg-slate-200 border border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700 transition-colors cursor-pointer whitespace-nowrap" title="{{ __('إعادة التعيين لـ 0%') }}">
                                                             {{ __('تصفير') }}
                                                         </button>
                                                     </form>
@@ -642,27 +644,27 @@
                     <p class="text-xs text-slate-400 mt-1">{{ __('عندما يقوم الطالب برفع تسجيل صوتي للتطبيق السريري، سيظهر هنا مباشرة للمعاينة والتقييم.') }}</p>
                 </div>
             @else
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
                     @foreach($user->taskSubmissions as $submission)
                         <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-3xl p-5 shadow-2xs flex flex-col justify-between gap-4">
                             <div>
-                                <div class="flex items-start justify-between gap-3">
-                                    <div>
-                                        <h4 class="font-bold text-sm text-slate-900 dark:text-white">{{ $submission->task?->title ?? __('مهمة سريرية') }}</h4>
-                                        <div class="text-[11px] text-slate-400 mt-0.5">
-                                            <span>{{ $submission->task?->course?->title ?? '—' }}</span>
+                                <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-2.5 min-w-0">
+                                    <div class="min-w-0 flex-1">
+                                        <h4 class="font-bold text-sm text-slate-900 dark:text-white truncate" title="{{ $submission->task?->title ?? __('مهمة سريرية') }}">{{ $submission->task?->title ?? __('مهمة سريرية') }}</h4>
+                                        <div class="text-[11px] text-slate-400 mt-0.5 flex items-center gap-1.5 flex-wrap">
+                                            <span class="truncate max-w-[200px]">{{ $submission->task?->course?->title ?? '—' }}</span>
                                             <span>•</span>
-                                            <span>{{ $submission->created_at?->format('d/m/Y - h:i A') }}</span>
+                                            <span class="dir-ltr inline-block">{{ $submission->created_at?->format('d/m/Y - h:i A') }}</span>
                                         </div>
                                     </div>
 
-                                    <div>
+                                    <div class="shrink-0 self-start sm:self-auto">
                                         @if($submission->isGraded())
-                                            <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800">
+                                            <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800 whitespace-nowrap inline-block">
                                                 {{ __('الدرجة:') }} {{ $submission->score }} / {{ $submission->task?->max_score ?? 100 }}
                                             </span>
                                         @else
-                                            <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800">
+                                            <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800 whitespace-nowrap inline-block">
                                                 ⏳ {{ __('قيد المراجعة والتقييم') }}
                                             </span>
                                         @endif
@@ -671,9 +673,9 @@
 
                                 {{-- Audio Player Component --}}
                                 @if($submission->audio_recording_path)
-                                    <div class="mt-4 p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
+                                    <div class="mt-4 p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 w-full max-w-full overflow-hidden">
                                         <div class="flex items-center gap-2 mb-2 text-xs font-bold text-slate-700 dark:text-slate-300">
-                                            <svg class="size-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"/></svg>
+                                            <svg class="size-4 text-blue-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"/></svg>
                                             <span>{{ __('التسجيل الصوتي للطالب:') }}</span>
                                         </div>
                                         <audio controls class="w-full h-10 outline-none">
@@ -685,23 +687,23 @@
 
                                 {{-- Student Notes --}}
                                 @if($submission->student_notes)
-                                    <div class="mt-3 p-3 rounded-xl bg-slate-50/50 dark:bg-slate-800/30 text-xs text-slate-600 dark:text-slate-300 border border-slate-100 dark:border-slate-800">
+                                    <div class="mt-3 p-3 rounded-xl bg-slate-50/50 dark:bg-slate-800/30 text-xs text-slate-600 dark:text-slate-300 border border-slate-100 dark:border-slate-800 break-words">
                                         <strong class="text-slate-400 block text-[10px]">{{ __('ملاحظات الطالب مع التسليم:') }}</strong>
-                                        <p class="mt-1">{{ $submission->student_notes }}</p>
+                                        <p class="mt-1 leading-relaxed">{{ $submission->student_notes }}</p>
                                     </div>
                                 @endif
 
                                 {{-- Clinical Feedback if graded --}}
                                 @if($submission->clinical_feedback)
-                                    <div class="mt-3 p-3 rounded-xl bg-blue-50/60 dark:bg-slate-800/60 text-xs text-slate-700 dark:text-slate-200 border border-blue-100 dark:border-slate-700">
-                                        <strong class="text-[#0B2A8F] dark:text-blue-300 block text-[10px]">{{ __('ملاحظات المشرف السريري (:grader):', ['grader' => $submission->grader?->name ?? 'المشرف']) }}</strong>
-                                        <p class="mt-1 font-medium">{{ $submission->clinical_feedback }}</p>
+                                    <div class="mt-3 p-3 rounded-xl bg-blue-50/60 dark:bg-slate-800/60 text-xs text-slate-700 dark:text-slate-200 border border-blue-100 dark:border-slate-700 break-words">
+                                        <strong class="text-[#0B2A8F] dark:text-blue-300 block text-[10px]">{{ __('ملاحظات المشرف السريري (:grader):', ['grader' => $submission->grader?->name ?? __('المشرف')]) }}</strong>
+                                        <p class="mt-1 font-medium leading-relaxed">{{ $submission->clinical_feedback }}</p>
                                     </div>
                                 @endif
                             </div>
 
                             {{-- Grade Submission Action Trigger --}}
-                            <div class="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                            <div class="pt-3 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5">
                                 <span class="text-[10px] text-slate-400">
                                     @if($submission->graded_at)
                                         {{ __('تم التقييم:') }} {{ $submission->graded_at->diffForHumans() }}
@@ -712,8 +714,8 @@
 
                                 <button 
                                     type="button" 
-                                    onclick="openGradeModal({{ $submission->id }}, '{{ addslashes($submission->task?->title ?? 'مهمة سريرية') }}', {{ $submission->score ?? 0 }}, '{{ addslashes($submission->clinical_feedback ?? '') }}', {{ $submission->task?->max_score ?? 100 }})"
-                                    class="px-3 py-1.5 rounded-lg text-xs font-bold bg-[#012383] text-white hover:bg-[#0B2A8F] transition-colors cursor-pointer"
+                                    onclick="openGradeModal({{ $submission->id }}, '{{ addslashes($submission->task?->title ?? __('مهمة سريرية')) }}', {{ $submission->score ?? 0 }}, '{{ addslashes($submission->clinical_feedback ?? '') }}', {{ $submission->task?->max_score ?? 100 }})"
+                                    class="px-3 py-1.5 rounded-lg text-xs font-bold bg-[#012383] text-white hover:bg-[#0B2A8F] transition-colors cursor-pointer self-start sm:self-auto"
                                 >
                                     {{ $submission->isGraded() ? __('تعديل التقييم') : __('تقييم ورصد الدرجة') }}
                                 </button>
@@ -758,7 +760,7 @@
                     </button>
                 </div>
             @else
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
                     @foreach($user->certificates as $certificate)
                         <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-3xl p-5 shadow-2xs flex flex-col justify-between gap-4">
                             <div>
@@ -781,30 +783,30 @@
                                             </div>
                                         @endif
                                         <div class="min-w-0 flex-1">
-                                            <h4 class="font-bold text-sm text-slate-900 dark:text-white truncate">{{ $certificate->course?->title ?? __('شهادة أكاديمية') }}</h4>
-                                            <div class="font-mono text-xs font-bold text-purple-700 dark:text-purple-300 mt-0.5 truncate">
+                                            <h4 class="font-bold text-sm text-slate-900 dark:text-white truncate" title="{{ $certificate->course?->title ?? __('شهادة أكاديمية') }}">{{ $certificate->course?->title ?? __('شهادة أكاديمية') }}</h4>
+                                            <div class="font-mono text-xs font-bold text-purple-700 dark:text-purple-300 mt-0.5 truncate dir-ltr text-start">
                                                 {{ $certificate->certificate_code }}
                                             </div>
                                             <div class="text-[10px] text-slate-400 mt-0.5">
-                                                {{ __('تاريخ الإصدار:') }} {{ $certificate->issued_at?->format('d/m/Y') }}
+                                                {{ __('تاريخ الإصدار:') }} <span class="dir-ltr inline-block">{{ $certificate->issued_at?->format('d/m/Y') }}</span>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800 shrink-0 self-start sm:self-auto">
+                                    <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800 shrink-0 self-start sm:self-auto whitespace-nowrap inline-block">
                                         {{ $certificate->completion_percentage }}% {{ __('إنجاز') }}
                                     </span>
                                 </div>
 
                                 {{-- Verification Link Box --}}
-                                <div class="mt-4 p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2 min-w-0">
+                                <div class="mt-4 p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-2 min-w-0">
                                     <div class="text-[11px] font-mono text-slate-600 dark:text-slate-300 truncate min-w-0 flex-1 dir-ltr text-start">
                                         {{ $certificate->verification_url }}
                                     </div>
                                     <a 
                                         href="{{ $certificate->verification_url }}" 
                                         target="_blank" 
-                                        class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-white dark:bg-slate-700 text-[#012383] dark:text-blue-300 border border-slate-200 dark:border-slate-600 hover:border-blue-500 shrink-0 inline-flex items-center gap-1"
+                                        class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold bg-white dark:bg-slate-700 text-[#012383] dark:text-blue-300 border border-slate-200 dark:border-slate-600 hover:border-blue-500 shrink-0 inline-flex items-center justify-center gap-1 w-full sm:w-auto"
                                     >
                                         <span>{{ __('رابط التحقق') }}</span>
                                         <svg class="size-3 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
@@ -813,8 +815,8 @@
                             </div>
 
                             {{-- Footer Actions --}}
-                            <div class="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2">
-                                <div class="flex items-center gap-2">
+                            <div class="pt-3 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5">
+                                <div class="flex items-center gap-2 flex-wrap">
                                     @if($certificate->file_path)
                                         <a 
                                             href="{{ $certificate->fileUrl() }}" 
@@ -827,7 +829,7 @@
                                         <a 
                                             href="{{ $certificate->fileUrl() }}" 
                                             download
-                                            class="text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-slate-900 inline-flex items-center gap-1"
+                                            class="text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white inline-flex items-center gap-1"
                                         >
                                             <svg class="size-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                                             <span>{{ __('تحميل') }}</span>
@@ -852,6 +854,7 @@
                                     data-confirm-title="{{ __('حذف الشهادة الأكاديمية') }}"
                                     data-confirm-btn="{{ __('نعم، احذف الشهادة') }}"
                                     data-confirm-danger="true"
+                                    class="self-end sm:self-auto"
                                 >
                                     @csrf
                                     @method('DELETE')
@@ -883,33 +886,33 @@
                 </div>
             @else
                 <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-3xl overflow-hidden shadow-2xs">
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-right border-collapse text-xs">
+                    <div class="overflow-x-auto -mx-1 sm:mx-0">
+                        <table class="w-full text-start border-collapse text-xs min-w-[760px]">
                             <thead>
                                 <tr class="bg-slate-50/80 dark:bg-slate-800/50 border-b border-[#DEE8F7] dark:border-slate-800 text-slate-500 font-bold">
-                                    <th class="py-3.5 px-5">{{ __('الكورس') }}</th>
-                                    <th class="py-3.5 px-4">{{ __('طريقة الدفع') }}</th>
-                                    <th class="py-3.5 px-4">{{ __('المبلغ') }}</th>
-                                    <th class="py-3.5 px-4">{{ __('بيانات المحوّل') }}</th>
+                                    <th class="py-3.5 px-5 text-start">{{ __('الكورس') }}</th>
+                                    <th class="py-3.5 px-4 text-start">{{ __('طريقة الدفع') }}</th>
+                                    <th class="py-3.5 px-4 text-start">{{ __('المبلغ') }}</th>
+                                    <th class="py-3.5 px-4 text-start">{{ __('بيانات المحوّل') }}</th>
                                     <th class="py-3.5 px-4 text-center">{{ __('صورة الإيصال') }}</th>
                                     <th class="py-3.5 px-4 text-center">{{ __('الحالة') }}</th>
-                                    <th class="py-3.5 px-4">{{ __('المراجعة') }}</th>
+                                    <th class="py-3.5 px-4 text-start">{{ __('المراجعة') }}</th>
                                     <th class="py-3.5 px-5 text-center">{{ __('الإجراء') }}</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-[#DEE8F7]/70 dark:divide-slate-800">
                                 @foreach($user->paymentReceipts as $receipt)
                                     <tr class="hover:bg-slate-50/60 dark:hover:bg-slate-800/70 transition-colors">
-                                        <td class="py-4 px-5 font-bold text-slate-900 dark:text-white">
+                                        <td class="py-4 px-5 text-start font-bold text-slate-900 dark:text-white">
                                             {{ $receipt->course?->title ?? '—' }}
                                         </td>
-                                        <td class="py-4 px-4 font-medium">
+                                        <td class="py-4 px-4 text-start font-medium">
                                             {{ $receipt->paymentMethodLabel() }}
                                         </td>
-                                        <td class="py-4 px-4 font-mono font-bold text-emerald-600 dark:text-emerald-400">
-                                            {{ number_format((float)$receipt->amount, 2) }} {{ __('ج.م') }}
+                                        <td class="py-4 px-4 text-start font-mono font-bold text-emerald-600 dark:text-emerald-400 whitespace-nowrap">
+                                            {{ number_format((float)$receipt->amount, 2) }} {{ $currencySymbol ?? platform_currency() }}
                                         </td>
-                                        <td class="py-4 px-4">
+                                        <td class="py-4 px-4 text-start">
                                             <div class="font-medium text-slate-700 dark:text-slate-300">{{ $receipt->sender_name ?? '—' }}</div>
                                             <div class="text-[10px] text-slate-400 font-mono">{{ $receipt->sender_account ?? '' }} {{ $receipt->transaction_reference ? '• #'.$receipt->transaction_reference : '' }}</div>
                                         </td>
@@ -928,22 +931,22 @@
                                         </td>
                                         <td class="py-4 px-4 text-center">
                                             @if($receipt->isApproved())
-                                                <span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800">
+                                                <span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800 whitespace-nowrap inline-block">
                                                     ✓ {{ __('معتمد ومفعّل') }}
                                                 </span>
                                             @elseif($receipt->isRejected())
-                                                <span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-rose-50 text-rose-700 border border-rose-200 dark:bg-rose-950/40 dark:text-rose-300 dark:border-rose-800" title="{{ $receipt->rejection_reason }}">
+                                                <span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-rose-50 text-rose-700 border border-rose-200 dark:bg-rose-950/40 dark:text-rose-300 dark:border-rose-800 whitespace-nowrap inline-block" title="{{ $receipt->rejection_reason }}">
                                                     ✕ {{ __('مرفوض') }}
                                                 </span>
                                             @else
-                                                <span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800">
+                                                <span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800 whitespace-nowrap inline-block">
                                                     ⏳ {{ __('قيد المراجعة') }}
                                                 </span>
                                             @endif
                                         </td>
-                                        <td class="py-4 px-4 text-[11px] text-slate-500">
+                                        <td class="py-4 px-4 text-start text-[11px] text-slate-500 whitespace-nowrap">
                                             @if($receipt->reviewer)
-                                                <div>{{ $receipt->reviewer->name }}</div>
+                                                <div class="font-medium text-slate-700 dark:text-slate-300">{{ $receipt->reviewer->name }}</div>
                                                 <div class="text-[10px] text-slate-400">{{ $receipt->reviewed_at?->diffForHumans() }}</div>
                                             @else
                                                 <span class="text-slate-400">—</span>
@@ -951,10 +954,10 @@
                                         </td>
                                         <td class="py-4 px-5 text-center">
                                             @if($receipt->isPending())
-                                                <div class="flex items-center justify-center gap-1.5">
+                                                <div class="flex items-center justify-center gap-1.5 flex-nowrap">
                                                     <form method="POST" action="{{ route('admin.receipts.approve', $receipt->id) }}">
                                                         @csrf
-                                                        <button type="submit" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-600 text-white hover:bg-emerald-700 transition-colors cursor-pointer">
+                                                        <button type="submit" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-600 text-white hover:bg-emerald-700 transition-colors cursor-pointer whitespace-nowrap">
                                                             {{ __('اعتماد') }}
                                                         </button>
                                                     </form>
@@ -962,7 +965,7 @@
                                                     <button 
                                                         type="button" 
                                                         onclick="openRejectReceiptModal({{ $receipt->id }})"
-                                                        class="px-2.5 py-1 rounded-lg text-xs font-bold bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 dark:bg-rose-950/40 dark:text-rose-300 transition-colors cursor-pointer"
+                                                        class="px-2.5 py-1 rounded-lg text-xs font-bold bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 dark:bg-rose-950/40 dark:text-rose-300 transition-colors cursor-pointer whitespace-nowrap"
                                                     >
                                                         {{ __('رفض') }}
                                                     </button>
@@ -985,8 +988,8 @@
     <x-slot:modals>
         {{-- 1. EDIT STUDENT PROFILE MODAL --}}
         <div id="modal-edit-student" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 modal-hidden">
-            <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity" onclick="closeModal('modal-edit-student')"></div>
-            <div class="modal-content relative bg-white dark:bg-slate-900 rounded-3xl max-w-lg w-full p-6 sm:p-7 border border-[#DEE8F7] dark:border-slate-800 shadow-2xl z-10 max-h-[90vh] overflow-y-auto">
+            <div class="modal-overlay fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity cursor-pointer" onclick="closeModal('modal-edit-student')"></div>
+            <div class="modal-content relative bg-white dark:bg-slate-900 rounded-3xl max-w-lg w-full p-5 sm:p-7 border border-[#DEE8F7] dark:border-slate-800 shadow-2xl z-10 max-h-[90vh] overflow-y-auto">
                 <div class="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
                     <h3 class="font-bold text-base text-slate-900 dark:text-white">{{ __('تعديل بيانات الطالب') }}</h3>
                     <button type="button" onclick="closeModal('modal-edit-student')" class="p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer">
@@ -1054,8 +1057,8 @@
 
         {{-- 2. CHANGE PASSWORD MODAL --}}
         <div id="modal-change-password" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 modal-hidden">
-            <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity" onclick="closeModal('modal-change-password')"></div>
-            <div class="modal-content relative bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full p-6 sm:p-7 border border-[#DEE8F7] dark:border-slate-800 shadow-2xl z-10">
+            <div class="modal-overlay fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity cursor-pointer" onclick="closeModal('modal-change-password')"></div>
+            <div class="modal-content relative bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full p-5 sm:p-7 border border-[#DEE8F7] dark:border-slate-800 shadow-2xl z-10 max-h-[90vh] overflow-y-auto">
                 <div class="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
                     <h3 class="font-bold text-base text-slate-900 dark:text-white">{{ __('تعيين كلمة مرور جديدة للطالب') }}</h3>
                     <button type="button" onclick="closeModal('modal-change-password')" class="p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer">
@@ -1087,8 +1090,8 @@
 
         {{-- 3. ENROLL COURSE MODAL --}}
         <div id="modal-enroll-course" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 modal-hidden">
-            <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity" onclick="closeModal('modal-enroll-course')"></div>
-            <div class="modal-content relative bg-white dark:bg-slate-900 rounded-3xl max-w-lg w-full p-6 sm:p-7 border border-[#DEE8F7] dark:border-slate-800 shadow-2xl z-10 max-h-[90vh] overflow-y-auto">
+            <div class="modal-overlay fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity cursor-pointer" onclick="closeModal('modal-enroll-course')"></div>
+            <div class="modal-content relative bg-white dark:bg-slate-900 rounded-3xl max-w-lg w-full p-5 sm:p-7 border border-[#DEE8F7] dark:border-slate-800 shadow-2xl z-10 max-h-[90vh] overflow-y-auto">
                 <div class="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
                     <h3 class="font-bold text-base text-slate-900 dark:text-white">{{ __('منح وتفعيل كورس للطالب') }}</h3>
                     <button type="button" onclick="closeModal('modal-enroll-course')" class="p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer">
@@ -1105,7 +1108,7 @@
                             <option value="">{{ __('— اختر الكورس —') }}</option>
                             @foreach($allCourses as $c)
                                 <option value="{{ $c->id }}">
-                                    {{ $c->title }} ({{ $c->access_duration_days }} {{ __('يوم') }}) - {{ number_format($c->price, 0) }} {{ __('ج.م') }}
+                                    {{ $c->title }} ({{ $c->access_duration_days }} {{ __('يوم') }}) - {{ number_format($c->price, 0) }} {{ $currencySymbol ?? platform_currency() }}
                                 </option>
                             @endforeach
                         </select>
@@ -1138,8 +1141,8 @@
 
         {{-- 4. EDIT ENROLLMENT MODAL --}}
         <div id="modal-edit-enrollment" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 modal-hidden">
-            <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity" onclick="closeModal('modal-edit-enrollment')"></div>
-            <div class="modal-content relative bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full p-6 sm:p-7 border border-[#DEE8F7] dark:border-slate-800 shadow-2xl z-10">
+            <div class="modal-overlay fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity cursor-pointer" onclick="closeModal('modal-edit-enrollment')"></div>
+            <div class="modal-content relative bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full p-5 sm:p-7 border border-[#DEE8F7] dark:border-slate-800 shadow-2xl z-10 max-h-[90vh] overflow-y-auto">
                 <div class="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
                     <h3 class="font-bold text-base text-slate-900 dark:text-white">{{ __('تعديل وتمديد اشتراك الكورس') }}</h3>
                     <button type="button" onclick="closeModal('modal-edit-enrollment')" class="p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer">
@@ -1184,8 +1187,8 @@
 
         {{-- 5. ISSUE CERTIFICATE MODAL --}}
         <div id="modal-issue-certificate" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 modal-hidden">
-            <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity" onclick="closeModal('modal-issue-certificate')"></div>
-            <div class="modal-content relative bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full p-6 sm:p-7 border border-[#DEE8F7] dark:border-slate-800 shadow-2xl z-10">
+            <div class="modal-overlay fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity cursor-pointer" onclick="closeModal('modal-issue-certificate')"></div>
+            <div class="modal-content relative bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full p-5 sm:p-7 border border-[#DEE8F7] dark:border-slate-800 shadow-2xl z-10 max-h-[90vh] overflow-y-auto">
                 <div class="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
                     <h3 class="font-bold text-base text-slate-900 dark:text-white">{{ __('رفع وتوثيق شهادة للطالب') }}</h3>
                     <button type="button" onclick="closeModal('modal-issue-certificate')" class="p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer">
@@ -1244,8 +1247,8 @@
 
         {{-- 6. GRADE TASK MODAL --}}
         <div id="modal-grade-task" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 modal-hidden">
-            <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity" onclick="closeModal('modal-grade-task')"></div>
-            <div class="modal-content relative bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full p-6 sm:p-7 border border-[#DEE8F7] dark:border-slate-800 shadow-2xl z-10">
+            <div class="modal-overlay fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity cursor-pointer" onclick="closeModal('modal-grade-task')"></div>
+            <div class="modal-content relative bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full p-5 sm:p-7 border border-[#DEE8F7] dark:border-slate-800 shadow-2xl z-10 max-h-[90vh] overflow-y-auto">
                 <div class="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
                     <h3 class="font-bold text-base text-slate-900 dark:text-white">{{ __('تقييم ورصد درجة المهمة السريرية') }}</h3>
                     <button type="button" onclick="closeModal('modal-grade-task')" class="p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer">
@@ -1288,8 +1291,8 @@
 
         {{-- 7. REJECT RECEIPT MODAL --}}
         <div id="modal-reject-receipt" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 modal-hidden">
-            <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity" onclick="closeModal('modal-reject-receipt')"></div>
-            <div class="modal-content relative bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full p-6 sm:p-7 border border-[#DEE8F7] dark:border-slate-800 shadow-2xl z-10">
+            <div class="modal-overlay fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity cursor-pointer" onclick="closeModal('modal-reject-receipt')"></div>
+            <div class="modal-content relative bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full p-5 sm:p-7 border border-[#DEE8F7] dark:border-slate-800 shadow-2xl z-10 max-h-[90vh] overflow-y-auto">
                 <div class="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
                     <h3 class="font-bold text-base text-rose-600">{{ __('رفض إيصال السداد') }}</h3>
                     <button type="button" onclick="closeModal('modal-reject-receipt')" class="p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer">
@@ -1319,8 +1322,8 @@
 
         {{-- 8. RECEIPT PREVIEW MODAL --}}
         <div id="modal-receipt-preview" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 modal-hidden">
-            <div class="fixed inset-0 bg-slate-900/80 backdrop-blur-xs transition-opacity" onclick="closeModal('modal-receipt-preview')"></div>
-            <div class="modal-content relative bg-white dark:bg-slate-900 rounded-3xl max-w-2xl w-full p-4 border border-[#DEE8F7] dark:border-slate-800 shadow-2xl z-10 flex flex-col items-center">
+            <div class="modal-overlay fixed inset-0 bg-slate-900/80 backdrop-blur-xs transition-opacity cursor-pointer" onclick="closeModal('modal-receipt-preview')"></div>
+            <div class="modal-content relative bg-white dark:bg-slate-900 rounded-3xl max-w-2xl w-full p-4 border border-[#DEE8F7] dark:border-slate-800 shadow-2xl z-10 flex flex-col items-center max-h-[90vh] overflow-y-auto">
                 <button type="button" onclick="closeModal('modal-receipt-preview')" class="absolute top-4 end-4 p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-full bg-slate-100 dark:bg-slate-800 cursor-pointer">
                     <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
@@ -1335,11 +1338,10 @@
         function openModal(id) {
             const m = document.getElementById(id);
             if (m) {
-                m.classList.remove('modal-hidden');
+                m.classList.remove('hidden', 'modal-hidden');
+                m.style.display = 'flex';
                 document.documentElement.classList.add('modal-open');
                 document.body.classList.add('modal-open');
-                document.body.style.overflow = 'hidden';
-                document.documentElement.style.overflow = 'hidden';
                 const content = m.querySelector('.modal-content') || m;
                 if (content && typeof content.scrollTop !== 'undefined') {
                     content.scrollTop = 0;
@@ -1350,13 +1352,12 @@
         function closeModal(id) {
             const m = document.getElementById(id);
             if (m) {
-                m.classList.add('modal-hidden');
-                const anyOpen = document.querySelector('.modal-backdrop:not(.modal-hidden)');
-                if (!anyOpen) {
+                m.classList.add('hidden', 'modal-hidden');
+                m.style.display = 'none';
+                const anyOpen = document.querySelectorAll('.modal-backdrop:not(.modal-hidden):not(.hidden), [id^="modal-"].fixed:not(.modal-hidden):not(.hidden)');
+                if (anyOpen.length === 0) {
                     document.documentElement.classList.remove('modal-open');
                     document.body.classList.remove('modal-open');
-                    document.body.style.overflow = '';
-                    document.documentElement.style.overflow = '';
                 }
             }
         }

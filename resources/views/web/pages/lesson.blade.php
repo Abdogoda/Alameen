@@ -7,13 +7,13 @@
           <!-- Page Introduction (Node 1155:18353) -->
           <div class="flex flex-col gap-[4px] items-start text-start w-full" data-node-id="1155:18353">
             <p class="font-['Cairo'] font-semibold text-[12px] leading-[1.8] text-[#0B2A8F] w-full text-start" data-i18n="lesson.breadcrumb" data-node-id="1155:18354">
-              مساحة التعلّم  /  دوراتي
+              {{ __('lesson.breadcrumb') }}
             </p>
             <h1 class="font-['Cairo'] font-extrabold text-[26px] sm:text-[30px] md:text-[34px] leading-[1.3] text-[#012383] w-full text-start" data-i18n="lesson.pageTitle" data-node-id="1155:18355">
-              تدريبات الوعي الصوتي
+              {{ __('lesson.pageTitle') }}
             </h1>
             <p class="font-['Cairo'] font-medium text-[13px] md:text-[14px] leading-[1.8] text-[#475569] w-full text-start" data-i18n="lesson.pageSubtitle" data-node-id="1155:18356">
-              أساسيات التخاطب  /  المستوى الثاني: مهارات الصوت والاستماع  /  الدرس ٩
+              {{ __('lesson.pageSubtitle') }}
             </p>
           </div>
 
@@ -26,7 +26,7 @@
               <!-- Returning Learner State Banner (Node 1155:18359) -->
               <div class="bg-[#EAF1FB] border border-[#DEE8F7] rounded-[14px] p-[16px] flex gap-[12px] items-center w-full shrink-0" data-node-id="1155:18359">
                 <p class="flex-1 font-['Cairo'] font-semibold text-[13px] leading-[1.8] text-[#012383] text-start" data-i18n="lesson.returningBanner" data-node-id="1155:18360">
-                  أهلًا بعودتك بعد تسجيل الدخول. موضعك السابق محفوظ عند ٠٨:٠٠.
+                  {{ __('lesson.returningBanner') }}
                 </p>
                 <div class="size-[20px] shrink-0 relative" data-node-id="1155:19434">
                   <img src="/assets/images/icon-bookmark-check.svg" alt="" class="size-full" />
@@ -51,6 +51,9 @@
                 <x-video-watermark-player 
                   :video="$video"
                   :embed-url="$embedUrl" 
+                  :playback-token="$playbackToken ?? ''"
+                  :storyboard-token="$storyboardToken ?? ''"
+                  :thumbnail-token="$thumbnailToken ?? ''"
                   :student="auth()->user()" 
                 />
               @endif
@@ -64,15 +67,15 @@
                   data-i18n="lesson.resumeCta"
                   data-node-id="3201:1054"
                 >
-                  متابعة من ٠٨:٠٠
+                  {{ __('lesson.resumeCta') }}
                 </button>
                 <!-- Saved Progress Info (Node 1155:18422) -->
                 <div class="flex flex-1 flex-col gap-[2px] items-start text-start min-w-0" data-node-id="1155:18422">
                   <p class="font-['Cairo'] font-bold text-[13px] leading-[1.8] text-[#012383] w-full text-start" data-i18n="lesson.resumeProgress" data-node-id="1155:18423">
-                    ٤٠٪ مشاهدة • آخر موضع محفوظ ٠٨:٠٠
+                    {{ __('lesson.resumeProgress') }}
                   </p>
                   <p class="font-['Cairo'] font-medium text-[12px] leading-[1.8] text-[#475569] w-full text-start" data-i18n="lesson.resumeSavedTime" data-node-id="1155:18424">
-                    آخر حفظ: ٢٢ أكتوبر ٢٠٢٦، ٧:٤٥ م
+                    {{ __('lesson.resumeSavedTime') }}
                   </p>
                 </div>
               </div>
@@ -84,22 +87,22 @@
                 <div class="border-b border-[#DEE8F7] flex gap-[24px] items-start justify-end rtl:justify-end ltr:justify-start pb-[12px] w-full" data-node-id="1155:18426">
                   <!-- Inactive tab -->
                   <button type="button" class="font-['Cairo'] font-medium text-[14px] leading-[1.8] text-[#475569] hover:text-[#0B2A8F] cursor-pointer" data-i18n="lesson.tabTask" data-node-id="1155:18427">
-                    المهمة • بعد الفيديو
+                    {{ __('lesson.tabTask') }}
                   </button>
                   <!-- Active tab -->
                   <button type="button" class="font-['Cairo'] font-bold text-[15px] leading-[1.8] text-[#0B2A8F] border-b-2 border-[#0B2A8F] pb-[10px] -mb-[12px] cursor-pointer" data-i18n="lesson.tabAbout" data-node-id="1155:18428">
-                    عن الدرس
+                    {{ __('lesson.tabAbout') }}
                   </button>
                 </div>
 
                 <!-- Learning Objectives Title (Node 1155:18429) -->
                 <h3 class="font-['Cairo'] font-bold text-[19px] leading-[1.8] text-[#012383] text-start w-full" data-i18n="lesson.learningObjectivesTitle" data-node-id="1155:18429">
-                  ما الذي ستتعلّمه؟
+                  {{ __('lesson.learningObjectivesTitle') }}
                 </h3>
 
                 <!-- Learning Objectives Description (Node 1155:18430) -->
                 <p class="font-['Cairo'] font-medium text-[14px] leading-[1.8] text-[#475569] text-start w-full" data-i18n="lesson.learningObjectivesDesc" data-node-id="1155:18430">
-                  التعرّف على موضع الصوت في الكلمة، واختيار كلمات بسيطة لبناء نشاط وعي صوتي متدرّج.
+                  {{ __('lesson.learningObjectivesDesc') }}
                 </p>
 
                 <!-- Information Note (Node 1155:18431) -->
@@ -107,10 +110,10 @@
                   <!-- Text content (Node 1155:18432 - order-1) -->
                   <div class="flex flex-1 flex-col gap-[4px] items-start text-start min-w-0 order-1" data-node-id="1155:18432">
                     <h4 class="font-['Cairo'] font-bold text-[15px] leading-[1.8] text-[#012383] w-full text-start" data-i18n="lesson.lockedTaskTitle" data-node-id="1155:18433">
-                      المهمة متاحة بعد إكمال هذا الفيديو
+                      {{ __('lesson.lockedTaskTitle') }}
                     </h4>
                     <p class="font-['Cairo'] font-medium text-[13px] leading-[1.8] text-[#475569] w-full text-start" data-i18n="lesson.lockedTaskDesc" data-node-id="1155:18434">
-                      بعد الانتهاء من الدرس ٩ ستظهر تعليمات إعداد نشاط الوعي الصوتي وإرساله للمحاضر. لم تُفتح المهمة بعد؛ تقدّم مشاهدتك الحالي ٤٠٪.
+                      {{ __('lesson.lockedTaskDesc') }}
                     </p>
                   </div>
                   <!-- Lock Icon (Node 1155:19452 - order-2) -->
@@ -131,19 +134,19 @@
                 
                 <!-- Section Title (Node 1155:18438) -->
                 <h2 class="font-['Cairo'] font-bold text-[18px] md:text-[20px] leading-[1.4] text-[#012383] text-start w-full" data-i18n="lesson.curriculumTitle" data-node-id="1155:18438">
-                  محتوى الكورس
+                  {{ __('lesson.curriculumTitle') }}
                 </h2>
 
                 <!-- Course Summary Card (Node 3201:1056) -->
                 <div class="bg-[#EAF1FB] rounded-[16px] p-[20px] flex flex-col gap-[2px] w-full shrink-0 text-start" data-node-id="3201:1056">
                   <p class="font-['Cairo'] font-medium text-[13px] leading-[1.8] text-[#475569]" data-i18n="lesson.courseCardTitle">
-                    أساسيات التخاطب
+                    {{ __('lesson.courseCardTitle') }}
                   </p>
                   <p class="font-['Cairo'] font-bold text-[13px] leading-[1.8] text-[#012383]" data-i18n="lesson.courseCardPercent">
-                    ٤٢٪
+                    {{ __('lesson.courseCardPercent') }}
                   </p>
                   <p class="font-['Cairo'] font-medium text-[13px] leading-[1.8] text-[#475569]" data-i18n="lesson.courseCardVideos">
-                    ٨ من ٢٠ فيديو مكتمل
+                    {{ __('lesson.courseCardVideos') }}
                   </p>
                 </div>
 
@@ -155,7 +158,7 @@
                 <!-- Level 1 (Completed 100% - Node 3201:1060) -->
                 <div class="h-[46px] px-[12px] flex items-center rounded-[10px] w-full text-start shrink-0 hover:bg-[#FAFCFF] transition-colors cursor-pointer" data-node-id="3201:1060">
                   <p class="font-['Cairo'] font-normal text-[13px] leading-[1.65] text-[#475569] w-full text-start" data-i18n="lesson.level1Title">
-                    المستوى الأول • مكتمل ١٠٠٪
+                    {{ __('lesson.level1Title') }}
                   </p>
                 </div>
 
@@ -165,7 +168,7 @@
                   <!-- Level 2 Active Pill Header (Node 3201:1062) -->
                   <div class="bg-[#0B2A8F] text-white rounded-[10px] h-[46px] px-[12px] flex items-center justify-between w-full shrink-0 cursor-pointer" data-node-id="3201:1062">
                     <span class="font-['Cairo'] font-semibold text-[13px] leading-[1.65] text-start flex-1" data-i18n="lesson.level2Title">
-                      المستوى الثاني • ٦٨٪
+                      {{ __('lesson.level2Title') }}
                     </span>
                     <div class="size-[20px] shrink-0 relative">
                       <img src="/assets/images/icon-layout-dashboard.svg" alt="" class="size-full" />
@@ -174,71 +177,71 @@
 
                   <!-- Category Subheading (Node 1155:18448) -->
                   <p class="font-['Cairo'] font-medium text-[11px] leading-[1.8] text-[#475569] text-start w-full px-1" data-i18n="lesson.level2Category" data-node-id="1155:18448">
-                    مهارات الصوت والاستماع
+                    {{ __('lesson.level2Category') }}
                   </p>
 
                   <!-- Lesson 6: التنفس ودعم الصوت (Node 1155:18449) -->
                   <div class="bg-[#FAFCFF] border border-[#DEE8F7] rounded-[10px] p-[12px] flex flex-col gap-[3px] w-full text-start shrink-0 hover:bg-[#EAF1FB]/30 transition-colors cursor-pointer" data-node-id="1155:18449">
                     <p class="font-['Cairo'] font-medium text-[13px] leading-[1.8] text-[#475569]" data-i18n="lesson.lesson6Title">
-                      ٦. التنفس ودعم الصوت
+                      {{ __('lesson.lesson6Title') }}
                     </p>
                     <p class="font-['Cairo'] font-medium text-[11px] leading-[1.8] text-[#216350]" data-i18n="lesson.lesson6Status">
-                      مكتمل • ١٠٠٪  /  ٢٠ دقيقة
+                      {{ __('lesson.lesson6Status') }}
                     </p>
                     <p class="font-['Cairo'] font-medium text-[11px] leading-[1.8] text-[#475569]" data-i18n="lesson.lesson6Task">
-                      المهمة: مُقيّمة
+                      {{ __('lesson.lesson6Task') }}
                     </p>
                   </div>
 
                   <!-- Lesson 7: الإيقاع وسرعة الكلام (Node 1155:18453) -->
                   <div class="bg-[#FAFCFF] border border-[#DEE8F7] rounded-[10px] p-[12px] flex flex-col gap-[3px] w-full text-start shrink-0 hover:bg-[#EAF1FB]/30 transition-colors cursor-pointer" data-node-id="1155:18453">
                     <p class="font-['Cairo'] font-medium text-[13px] leading-[1.8] text-[#475569]" data-i18n="lesson.lesson7Title">
-                      ٧. الإيقاع وسرعة الكلام
+                      {{ __('lesson.lesson7Title') }}
                     </p>
                     <p class="font-['Cairo'] font-medium text-[11px] leading-[1.8] text-[#216350]" data-i18n="lesson.lesson7Status">
-                      مكتمل • ١٠٠٪  /  ٢٠ دقيقة
+                      {{ __('lesson.lesson7Status') }}
                     </p>
                     <p class="font-['Cairo'] font-medium text-[11px] leading-[1.8] text-[#475569]" data-i18n="lesson.lesson7Task">
-                      المهمة: بانتظار المراجعة
+                      {{ __('lesson.lesson7Task') }}
                     </p>
                   </div>
 
                   <!-- Lesson 8: التمييز السمعي (Node 1155:18457) -->
                   <div class="bg-[#FAFCFF] border border-[#DEE8F7] rounded-[10px] p-[12px] flex flex-col gap-[3px] w-full text-start shrink-0 hover:bg-[#EAF1FB]/30 transition-colors cursor-pointer" data-node-id="1155:18457">
                     <p class="font-['Cairo'] font-medium text-[13px] leading-[1.8] text-[#475569]" data-i18n="lesson.lesson8Title">
-                      ٨. التمييز السمعي
+                      {{ __('lesson.lesson8Title') }}
                     </p>
                     <p class="font-['Cairo'] font-medium text-[11px] leading-[1.8] text-[#216350]" data-i18n="lesson.lesson8Status">
-                      مكتمل • ١٠٠٪  /  ٢٠ دقيقة
+                      {{ __('lesson.lesson8Status') }}
                     </p>
                     <p class="font-['Cairo'] font-medium text-[11px] leading-[1.8] text-[#475569]" data-i18n="lesson.lesson8Task">
-                      المهمة: لم تُسلّم
+                      {{ __('lesson.lesson8Task') }}
                     </p>
                   </div>
 
                   <!-- Lesson 9: تدريبات الوعي الصوتي (ACTIVE - Node 1155:18461) -->
                   <div class="bg-[#EAF1FB] border border-[#0B2A8F] rounded-[10px] p-[12px] flex flex-col gap-[3px] w-full text-start shrink-0 shadow-sm" data-node-id="1155:18461">
                     <p class="font-['Cairo'] font-bold text-[13px] leading-[1.8] text-[#0B2A8F]" data-i18n="lesson.lesson9Title">
-                      ٩. تدريبات الوعي الصوتي
+                      {{ __('lesson.lesson9Title') }}
                     </p>
                     <p class="font-['Cairo'] font-medium text-[11px] leading-[1.8] text-[#475569]" data-i18n="lesson.lesson9Status">
-                      قيد المشاهدة • ٤٠٪  /  ٢٠ دقيقة
+                      {{ __('lesson.lesson9Status') }}
                     </p>
                     <p class="font-['Cairo'] font-medium text-[11px] leading-[1.8] text-[#475569]" data-i18n="lesson.lesson9Task">
-                      المهمة: بعد إكمال الفيديو
+                      {{ __('lesson.lesson9Task') }}
                     </p>
                   </div>
 
                   <!-- Lesson 10: مراجعة المهارات الصوتية (Node 1155:18465) -->
                   <div class="bg-[#FAFCFF] border border-[#DEE8F7] rounded-[10px] p-[12px] flex flex-col gap-[3px] w-full text-start shrink-0 hover:bg-[#EAF1FB]/30 transition-colors cursor-pointer" data-node-id="1155:18465">
                     <p class="font-['Cairo'] font-medium text-[13px] leading-[1.8] text-[#475569]" data-i18n="lesson.lesson10Title">
-                      ١٠. مراجعة المهارات الصوتية
+                      {{ __('lesson.lesson10Title') }}
                     </p>
                     <p class="font-['Cairo'] font-medium text-[11px] leading-[1.8] text-[#475569]" data-i18n="lesson.lesson10Status">
-                      لم يبدأ • ٠٪  /  ٢٠ دقيقة
+                      {{ __('lesson.lesson10Status') }}
                     </p>
                     <p class="font-['Cairo'] font-medium text-[11px] leading-[1.8] text-[#475569]" data-i18n="lesson.lesson10Task">
-                      المهمة: بعد إكمال الفيديو
+                      {{ __('lesson.lesson10Task') }}
                     </p>
                   </div>
 
@@ -247,7 +250,7 @@
                 <!-- Collapsed Level 3 (Node 1155:18469) -->
                 <div class="flex items-center justify-between py-[10px] w-full text-start shrink-0 cursor-pointer hover:bg-[#FAFCFF] px-2 rounded-lg" data-node-id="1155:18469">
                   <span class="font-['Cairo'] font-medium text-[13px] leading-[1.8] text-[#475569] text-start" data-i18n="lesson.level3Title">
-                    المستوى الثالث • ٠٪
+                    {{ __('lesson.level3Title') }}
                   </span>
                   <div class="size-[16px] shrink-0 relative">
                     <img src="/assets/images/icon-chevron-down.svg" alt="" class="size-full" />
@@ -257,7 +260,7 @@
                 <!-- Collapsed Level 4 (Node 1155:18472) -->
                 <div class="flex items-center justify-between py-[10px] w-full text-start shrink-0 cursor-pointer hover:bg-[#FAFCFF] px-2 rounded-lg" data-node-id="1155:18472">
                   <span class="font-['Cairo'] font-medium text-[13px] leading-[1.8] text-[#475569] text-start" data-i18n="lesson.level4Title">
-                    المستوى الرابع • ٠٪
+                    {{ __('lesson.level4Title') }}
                   </span>
                   <div class="size-[16px] shrink-0 relative">
                     <img src="/assets/images/icon-chevron-down.svg" alt="" class="size-full" />
@@ -271,7 +274,7 @@
                   data-i18n="lesson.viewCurriculumBtn"
                   data-node-id="3201:1066"
                 >
-                  عرض المنهج كاملًا
+                  {{ __('lesson.viewCurriculumBtn') }}
                 </a>
 
               </div>

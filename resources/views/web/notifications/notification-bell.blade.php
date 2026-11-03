@@ -3,7 +3,7 @@
     <button
         type="button"
         @click="open = !open"
-        class="size-8 sm:size-10 rounded-xl border border-[#DEE8F7] bg-white hover:bg-[#EAF1FB] flex items-center justify-center text-slate-600 transition-colors cursor-pointer relative shrink-0"
+        class="size-8 sm:size-10 rounded-xl border border-[#DEE8F7] dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-[#EAF1FB] dark:hover:bg-slate-700/80 flex items-center justify-center text-slate-600 dark:text-slate-300 transition-colors cursor-pointer relative shrink-0"
         aria-label="{{ __('notifications.notifications') }}"
     >
         <svg class="size-4 sm:size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
@@ -16,26 +16,27 @@
         @endif
     </button>
 
-    {{-- Dropdown Panel --}}
+    {{-- Dropdown Panel (Responsive Viewport-Aware Positioning) --}}
     <div
         x-show="open"
+        x-cloak
         x-transition:enter="transition ease-out duration-150"
-        x-transition:enter-start="opacity-0 scale-95"
-        x-transition:enter-end="opacity-100 scale-100"
+        x-transition:enter-start="opacity-0 scale-95 -translate-y-1"
+        x-transition:enter-end="opacity-100 scale-100 translate-y-0"
         x-transition:leave="transition ease-in duration-100"
-        x-transition:leave-start="opacity-100 scale-100"
-        x-transition:leave-end="opacity-0 scale-95"
-        class="absolute end-0 mt-2 w-[calc(100vw-2rem)] max-w-sm sm:w-96 rounded-2xl bg-white border border-[#DEE8F7] shadow-xl z-50 overflow-hidden"
+        x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+        x-transition:leave-end="opacity-0 scale-95 -translate-y-1"
+        class="fixed sm:absolute inset-x-2.5 sm:inset-x-auto sm:end-0 top-16 sm:top-full mt-0 sm:mt-2 w-auto sm:w-96 max-w-none sm:max-w-sm rounded-2xl bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 shadow-2xl z-50 overflow-hidden flex flex-col max-h-[calc(100vh-5.5rem)] sm:max-h-[32rem]"
         style="display: none;"
     >
         {{-- Header --}}
-        <div class="flex items-center justify-between px-4 py-3 border-b border-[#DEE8F7] bg-[#FAFCFF]">
+        <div class="flex items-center justify-between px-4 py-3 border-b border-[#DEE8F7] dark:border-slate-800 bg-[#FAFCFF] dark:bg-slate-900/90 shrink-0">
             <div class="flex items-center gap-2">
-                <span class="font-bold text-sm text-[#012383]">
+                <span class="font-bold text-sm text-[#012383] dark:text-white">
                     {{ __('notifications.notifications') }}
                 </span>
                 @if ($unreadCount > 0)
-                    <span class="rounded-full bg-[#EAF1FB] text-[#0B2A8F] px-2 py-0.5 text-xs font-bold">
+                    <span class="rounded-full bg-[#EAF1FB] dark:bg-slate-800 text-[#0B2A8F] dark:text-blue-300 px-2 py-0.5 text-xs font-bold">
                         {{ $unreadCount }}
                     </span>
                 @endif
@@ -45,7 +46,7 @@
                 <button
                     type="button"
                     wire:click="markAllAsRead"
-                    class="text-xs font-medium text-accent hover:underline focus:outline-none"
+                    class="text-xs font-medium text-[#0B2A8F] dark:text-blue-400 hover:underline focus:outline-none cursor-pointer"
                 >
                     {{ __('notifications.mark_all_as_read') }}
                 </button>
@@ -143,12 +144,12 @@
         </div>
 
         {{-- Footer --}}
-        <div class="border-t border-zinc-100 dark:border-zinc-800 p-2.5 text-center bg-zinc-50/60 dark:bg-zinc-800/40">
+        <div class="border-t border-[#DEE8F7] dark:border-slate-800 p-2.5 text-center bg-[#FAFCFF] dark:bg-slate-900/90 shrink-0">
             <a
                 href="{{ route('notifications.index') }}"
                 wire:navigate
                 @click="open = false"
-                class="block w-full py-1 text-xs font-semibold text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white"
+                class="block w-full py-1 text-xs font-bold text-[#012383] dark:text-blue-300 hover:text-[#0B2A8F] dark:hover:text-white transition-colors"
             >
                 {{ __('notifications.view_all') }} &rarr;
             </a>

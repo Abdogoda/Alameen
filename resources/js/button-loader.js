@@ -252,8 +252,15 @@ function isExemptButton(btn) {
     if (!btn || !(btn instanceof HTMLElement)) return true;
     if (btn.dataset.noLoader !== undefined || btn.dataset.skipLoader !== undefined) return true;
 
-    // Check specific UI non-action widgets
+    // Check specific UI non-action widgets and tabs
     if (
+        btn.getAttribute('role') === 'tab' ||
+        btn.classList.contains('filter-tab') ||
+        btn.classList.contains('tab-item') ||
+        btn.getAttribute('aria-selected') !== null ||
+        btn.getAttribute('wire:click')?.includes('setFilter') ||
+        btn.closest('.filter-tabs') ||
+        btn.closest('[role="tablist"]') ||
         btn.getAttribute('aria-haspopup') === 'menu' ||
         btn.classList.contains('faq-toggle') ||
         btn.classList.contains('slider-dot') ||

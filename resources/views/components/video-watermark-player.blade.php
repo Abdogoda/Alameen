@@ -3,11 +3,14 @@
     'video' => null,
     'student' => null,
     'aspectRatio' => '16/9',
+    'playbackToken' => '',
+    'storyboardToken' => '',
+    'thumbnailToken' => '',
 ])
 
 @php
     $studentData = [
-        'name' => $student?->name ?? auth()->user()?->name ?? 'طالب الأمين',
+        'name' => $student?->name ?? auth()->user()?->name ?? __('طالب الأمين'),
         'phone' => $student?->phone ?? auth()->user()?->phone ?? '01000000000',
         'id' => $student?->id ?? auth()->id() ?? 'STD-001',
         'ip' => request()->ip() ?? '127.0.0.1',
@@ -16,25 +19,39 @@
     $muxPlaybackId = $video?->mux_playback_id;
     $videoSource = $video?->video_source ?? (!empty($embedUrl) ? 'bunny' : null);
     $videoUrl = $video?->video_url ?? $embedUrl;
+    $videoId = $video?->id ?? null;
 @endphp
 
 <div 
-    x-data="videoWatermarkPlayer(@js($studentData))" 
+    x-data="videoWatermarkPlayer(@js($studentData), {{ $videoId ? (int) $videoId : 'null' }})" 
     x-init="initPlayer()"
-    class="relative w-full overflow-hidden rounded-2xl bg-black shadow-2xl border border-slate-800"
-    style="aspect-ratio: {{ $aspectRatio }};"
+    class="relative w-full overflow-hidden rounded-2xl bg-black shadow-2xl border border-slate-800 select-none"
+    style="aspect-ratio: {{ $aspectRatio }}; -webkit-user-select: none; user-select: none;"
+    oncontextmenu="return false;"
 >
-    {{-- 1. MUX Stream Player --}}
+    {{-- 1. MUX Stream Player (Protected with cryptographic signed tokens) --}}
     @if(($videoSource === 'mux' || empty($videoSource)) && !empty($muxPlaybackId))
         @once
             <script src="https://cdn.jsdelivr.net/npm/@mux/mux-player"></script>
         @endonce
         <mux-player 
+            id="alameen-mux-player"
             playback-id="{{ $muxPlaybackId }}" 
+            @if(!empty($playbackToken))
+                playback-token="{{ $playbackToken }}" 
+            @endif
+            @if(!empty($storyboardToken))
+                storyboard-token="{{ $storyboardToken }}" 
+            @endif
+            @if(!empty($thumbnailToken))
+                thumbnail-token="{{ $thumbnailToken }}" 
+            @endif
             stream-type="on-demand" 
             controls 
             autoplay="false"
             preload="auto"
+            forward-seek-offset="10"
+            backward-seek-offset="10"
             class="w-full h-full absolute inset-0 z-10"
         ></mux-player>
 
@@ -76,7 +93,7 @@
             allowfullscreen="true"
         ></iframe>
 
-    {{-- 5. Direct MP4 / HLS Video --}}
+    {{-- 5. Direct Protected Video --}}
     @elseif(!empty($videoUrl))
         @php
             $playbackSrc = $videoUrl;
@@ -87,6 +104,8 @@
         <video 
             src="{{ $playbackSrc }}" 
             controls 
+            controlsList="nodownload"
+            oncontextmenu="return false;"
             preload="metadata"
             class="w-full h-full object-contain absolute inset-0 z-10"
         ></video>
@@ -98,35 +117,69 @@
     @endif
 
     @if(app(\App\Services\Cms\SettingsService::class)->get('dynamic_video_watermark', '1') === '1')
-    {{-- Dynamic Floating Canvas Overlay (Anti Screen Recording) --}}
+    {{-- Dynamic Floating Canvas Overlay (Anti Screen Recording & Forensic Identification) --}}
     <canvas 
         x-ref="watermarkCanvas" 
-        class="absolute inset-0 w-full h-full pointer-events-none z-30 opacity-75"
+        class="absolute inset-0 w-full h-full pointer-events-none z-30 opacity-80"
     ></canvas>
     @endif
 </div>
 
 <script>
-    function videoWatermarkPlayer(student) {
+    function videoWatermarkPlayer(student, videoId) {
         return {
             student: student,
+            videoId: videoId,
             canvas: null,
             ctx: null,
             posX: 50,
             posY: 50,
-            vx: 1.2,
-            vy: 0.9,
+            vx: 1.1,
+            vy: 0.8,
             animId: null,
+            tokenRefreshTimer: null,
 
             initPlayer() {
                 this.$nextTick(() => {
                     this.canvas = this.$refs.watermarkCanvas;
-                    if (!this.canvas) return;
-                    this.ctx = this.canvas.getContext('2d');
-                    this.resize();
-                    window.addEventListener('resize', () => this.resize());
-                    this.startLoop();
+                    if (this.canvas) {
+                        this.ctx = this.canvas.getContext('2d');
+                        this.resize();
+                        window.addEventListener('resize', () => this.resize());
+                        this.startLoop();
+                    }
+
+                    // Auto refresh signed playback token before expiration (every 45 minutes)
+                    if (this.videoId) {
+                        this.tokenRefreshTimer = setInterval(() => {
+                            this.refreshToken();
+                        }, 45 * 60 * 1000);
+                    }
                 });
+            },
+
+            async refreshToken() {
+                if (!this.videoId) return;
+                try {
+                    const res = await fetch(`/videos/${this.videoId}/playback-token`, {
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+                    if (res.ok) {
+                        const data = await res.json();
+                        const player = document.getElementById('alameen-mux-player');
+                        if (player && data.playback_token) {
+                            player.playbackToken = data.playback_token;
+                            if (data.storyboard_token) {
+                                player.storyboardToken = data.storyboard_token;
+                            }
+                        }
+                    }
+                } catch (e) {
+                    console.warn('Failed to refresh MUX token:', e);
+                }
             },
 
             resize() {
@@ -146,27 +199,30 @@
                     this.posY += this.vy;
 
                     const textWidth = 260;
-                    const textHeight = 60;
+                    const textHeight = 45;
 
-                    if (this.posX <= 10 || this.posX + textWidth >= this.canvas.width - 10) {
+                    if (this.posX <= 15 || this.posX + textWidth >= this.canvas.width - 15) {
                         this.vx = -this.vx;
                     }
-                    if (this.posY <= 20 || this.posY + textHeight >= this.canvas.height - 10) {
+                    if (this.posY <= 25 || this.posY + textHeight >= this.canvas.height - 25) {
                         this.vy = -this.vy;
                     }
 
                     // Format live timestamp
                     const now = new Date();
-                    const timeStr = now.toLocaleDateString('ar-EG') + ' ' + now.toLocaleTimeString('ar-EG');
+                    const timeStr = now.toLocaleDateString('{{ app()->getLocale() === 'en' ? 'en-US' : 'ar-EG' }}') + ' ' + now.toLocaleTimeString('{{ app()->getLocale() === 'en' ? 'en-US' : 'ar-EG' }}');
 
-                    // Draw semi-transparent watermark badge
+                    // Draw semi-transparent watermark badge with subtle shadow for visibility over light/dark frames
                     this.ctx.save();
-                    this.ctx.font = '500 12px "Noto Sans Arabic", Inter, sans-serif';
-                    this.ctx.fillStyle = 'rgba(255, 255, 255, 0.40)';
+                    this.ctx.shadowColor = 'rgba(0, 0, 0, 0.85)';
+                    this.ctx.shadowBlur = 4;
+                    this.ctx.font = '600 13px "Noto Sans Arabic", Inter, system-ui, sans-serif';
+                    this.ctx.fillStyle = 'rgba(255, 255, 255, 0.45)';
                     this.ctx.fillText(`${this.student.name} • ${this.student.phone}`, this.posX, this.posY);
-                    this.ctx.font = '400 10px monospace';
-                    this.ctx.fillStyle = 'rgba(255, 255, 255, 0.28)';
-                    this.ctx.fillText(`IP: ${this.student.ip} • ID: ${this.student.id} • ${timeStr}`, this.posX, this.posY + 16);
+
+                    this.ctx.font = '500 11px monospace';
+                    this.ctx.fillStyle = 'rgba(255, 255, 255, 0.32)';
+                    this.ctx.fillText(`ID: ${this.student.id} • IP: ${this.student.ip} • ${timeStr}`, this.posX, this.posY + 16);
                     this.ctx.restore();
 
                     this.animId = requestAnimationFrame(render);

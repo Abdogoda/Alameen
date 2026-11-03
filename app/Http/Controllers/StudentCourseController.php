@@ -19,6 +19,7 @@ use App\Services\Clinical\ClinicalTaskService;
 use App\Services\Course\CourseEnrollmentService;
 use App\Services\Payment\PaymentReceiptService;
 use App\Services\Video\BunnyStreamService;
+use App\Services\Video\MuxTokenService;
 use App\Services\Video\VideoProgressService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -34,8 +35,11 @@ class StudentCourseController extends Controller
         protected BunnyStreamService $bunnyService,
         protected PaymentReceiptService $receiptService,
         protected CertificateService $certificateService,
-        protected ClinicalTaskService $clinicalTaskService
-    ) {}
+        protected ClinicalTaskService $clinicalTaskService,
+        protected ?MuxTokenService $muxTokenService = null
+    ) {
+        $this->muxTokenService = $this->muxTokenService ?: app(MuxTokenService::class);
+    }
 
     /**
      * Display student academic dashboard with live statistics,
@@ -330,13 +334,24 @@ class StudentCourseController extends Controller
         // 1. Sequential Video Lock Verification
         $canAccess = $this->progressService->canAccessVideo($user, $video);
 
-        // 2. Generate secure Bunny.net stream embed URL
+        // 2. Generate cryptographically signed MUX tokens (RS256) for maximum security
+        $playbackToken = null;
+        $storyboardToken = null;
+        $thumbnailToken = null;
+
+        if ($canAccess && ! empty($video->mux_playback_id)) {
+            $playbackToken = $this->muxTokenService->generatePlaybackToken($video->mux_playback_id);
+            $storyboardToken = $this->muxTokenService->generateStoryboardToken($video->mux_playback_id);
+            $thumbnailToken = $this->muxTokenService->generateThumbnailToken($video->mux_playback_id);
+        }
+
+        // 3. Generate secure Bunny.net stream embed URL (legacy fallback if bunny driver)
         $embedUrl = $canAccess ? $this->bunnyService->getIframeEmbedUrl($video) : '';
 
-        // 3. Prepare watermark payload for Anti Screen-Recording Canvas Overlay
+        // 4. Prepare watermark payload for Anti Screen-Recording Canvas Overlay
         $watermarkPayload = $this->bunnyService->getWatermarkPayload($user, $request->ip());
 
-        // 4. Progress list for all course videos
+        // 5. Progress list for all course videos
         $videos = $course->videos()->orderBy('sort_order')->get();
         $currentProgress = $video->progressForUser($user->id);
 
@@ -346,9 +361,44 @@ class StudentCourseController extends Controller
             'videos',
             'canAccess',
             'embedUrl',
+            'playbackToken',
+            'storyboardToken',
+            'thumbnailToken',
             'watermarkPayload',
             'currentProgress'
         ));
+    }
+
+    /**
+     * AJAX/API endpoint to generate or refresh a signed MUX playback token for active students.
+     */
+    public function getPlaybackToken(Request $request, Video $video): JsonResponse
+    {
+        /** @var User|null $user */
+        $user = $request->user();
+
+        if (! $user || ! $this->progressService->canAccessVideo($user, $video)) {
+            return response()->json([
+                'success' => false,
+                'message' => __('غير مصرح لك بمشاهدة هذا الفيديو أو انتهت صلاحية اشتراكك.'),
+            ], 403);
+        }
+
+        if (empty($video->mux_playback_id)) {
+            return response()->json([
+                'success' => false,
+                'message' => __('معرّف البث غير متوفر لهذا الدرس.'),
+            ], 404);
+        }
+
+        $playbackToken = $this->muxTokenService->generatePlaybackToken($video->mux_playback_id);
+        $storyboardToken = $this->muxTokenService->generateStoryboardToken($video->mux_playback_id);
+
+        return response()->json([
+            'success' => true,
+            'playback_token' => $playbackToken,
+            'storyboard_token' => $storyboardToken,
+        ]);
     }
 
     /**

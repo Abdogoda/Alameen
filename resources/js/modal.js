@@ -74,6 +74,17 @@ export function initModals() {
             document.body.classList.remove('modal-open');
         }
     };
+
+    // Close when clicking directly on the backdrop container (outside the dialog card)
+    document.addEventListener('click', (e) => {
+        if (!e.target) return;
+        const target = e.target;
+        const isBackdrop = target.classList?.contains('modal-backdrop') || 
+            (target.id && target.id.startsWith('modal-') && target.classList?.contains('fixed'));
+        if (isBackdrop && !target.classList.contains('hidden') && !target.classList.contains('modal-hidden') && target.style.display !== 'none') {
+            window.closeModal(target.id);
+        }
+    });
 }
 
 // Auto-run if imported

@@ -1,14 +1,16 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<!-- Theme Initialization (Zero Flash & Immediate Canvas Theme) -->
+<!-- Theme & Appearance Initialization (Zero Flash & Immediate Canvas Theme) -->
 <script>
     (function () {
         try {
+            var root = document.documentElement;
+            
+            // 1. Theme
             var stored = localStorage.getItem('alameen_theme') || localStorage.getItem('flux.appearance') || 'light';
             var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
             var isDark = stored === 'dark' || (stored === 'system' && prefersDark);
-            var root = document.documentElement;
             if (isDark) {
                 root.classList.add('dark');
                 root.style.backgroundColor = '#0B1120';
@@ -19,6 +21,24 @@
                 root.style.colorScheme = 'light';
             }
             root.setAttribute('data-theme', stored);
+
+            // 2. Font Size Scale (normal, medium, large)
+            var storedFontSize = localStorage.getItem('alameen_font_size') || 'normal';
+            root.setAttribute('data-font-size', storedFontSize);
+
+            // 3. Motion & Animation Mode (full, reduced)
+            var storedMotion = localStorage.getItem('alameen_motion') || 'full';
+            root.setAttribute('data-motion', storedMotion);
+
+            // 4. Sound Wave Loader State
+            var loaderEnabled = localStorage.getItem('alameen_loader_enabled') !== 'false';
+            root.setAttribute('data-loader-enabled', loaderEnabled ? 'true' : 'false');
+
+            // 5. Scroll Progress Bar State
+            var scrollEnabled = localStorage.getItem('alameen_scroll_progress') !== 'false';
+            root.setAttribute('data-scroll-progress-enabled', scrollEnabled ? 'true' : 'false');
+
+            // 6. Sidebar Collapsed Preference
             if (localStorage.getItem('student_sidebar_collapsed') === 'true' && window.innerWidth >= 1024) {
                 root.classList.add('sidebar-collapsed');
             }
@@ -29,6 +49,12 @@
     html.dark, html.dark body {
         background-color: #0B1120 !important;
         color-scheme: dark;
+    }
+    html[data-loader-enabled="false"] #alameen-loader {
+        display: none !important;
+        opacity: 0 !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
     }
     /* Scroll is strictly disabled ONLY when loader is active or when mobile sidebar is open */
     body.alameen-loader-active,
@@ -126,7 +152,7 @@
 </style>
 
 <title>
-    {{ filled($title ?? null) ? $title.' - '.config('app.name', 'منصة الأمين') : config('app.name', 'منصة الأمين') }}
+    {{ filled($title ?? null) ? $title.' - '.(filled($siteName ?? null) ? $siteName : platform_name()) : (filled($siteName ?? null) ? $siteName : platform_name()) }}
 </title>
 
 <!-- Favicons & App Icons -->

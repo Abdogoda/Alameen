@@ -2,13 +2,17 @@
 
 namespace App\Providers;
 
+require_once __DIR__ . '/../helpers.php';
+
 use App\Models\Admin;
+use App\Services\Cms\SettingsService;
 use App\Services\Localization\PhpFileLoader;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Translation\Translator;
@@ -43,6 +47,65 @@ class AppServiceProvider extends ServiceProvider
         $this->configureDefaults();
         $this->configureViewPaths();
         $this->configureAuthorization();
+        $this->configureGlobalSettings();
+    }
+
+    /**
+     * Share dynamic platform branding, logo, and settings with all views and runtime config.
+     */
+    protected function configureGlobalSettings(): void
+    {
+        try {
+            if (Schema::hasTable('settings')) {
+                // Reactive View Composer: evaluates settings per view render with active request locale
+                View::composer('*', function ($view) {
+                    try {
+                        $settingsService = app(SettingsService::class);
+                        $siteName = $settingsService->getSiteName();
+                        $siteLogo = $settingsService->getLogoUrl();
+                        $siteTagline = $settingsService->getSiteTagline();
+                        $currencySymbol = $settingsService->getCurrencySymbol();
+                        $currencyName = $settingsService->getCurrencyName();
+
+                        if (! empty($siteName)) {
+                            config(['app.name' => $siteName]);
+                        }
+
+                        $view->with([
+                            'siteName' => $siteName,
+                            'siteLogo' => $siteLogo,
+                            'siteTagline' => $siteTagline,
+                            'currencySymbol' => $currencySymbol,
+                            'currencyName' => $currencyName,
+                            'cmsSettings' => $settingsService,
+                        ]);
+                    } catch (\Throwable) {
+                        // Ignore view rendering issues
+                    }
+                });
+
+                // Also initialize at boot time for config('app.name') and early global share
+                $settingsService = app(SettingsService::class);
+                $siteName = $settingsService->getSiteName();
+                $siteLogo = $settingsService->getLogoUrl();
+                $siteTagline = $settingsService->getSiteTagline();
+                $currencySymbol = $settingsService->getCurrencySymbol();
+                $currencyName = $settingsService->getCurrencyName();
+
+                if (! empty($siteName)) {
+                    config(['app.name' => $siteName]);
+                }
+
+                View::share('siteName', $siteName);
+                View::share('siteLogo', $siteLogo);
+                View::share('siteTagline', $siteTagline);
+                View::share('currencySymbol', $currencySymbol);
+                View::share('currencyName', $currencyName);
+                View::share('cmsSettings', $settingsService);
+            }
+        } catch (\Throwable) {
+            // Gracefully ignore during installation or CLI migrations
+        }
     }
 
     /**

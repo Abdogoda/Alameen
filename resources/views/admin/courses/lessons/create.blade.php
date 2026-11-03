@@ -47,6 +47,7 @@
         <input type="hidden" name="video_source" id="field-video-source" value="{{ old('video_source', 'link') }}" />
         <input type="hidden" name="mux_playback_id" id="field-mux-playback-id" value="{{ old('mux_playback_id') }}" />
         <input type="hidden" name="mux_asset_id" id="field-mux-asset-id" value="{{ old('mux_asset_id') }}" />
+        <input type="hidden" name="mux_upload_id" id="field-mux-upload-id" value="{{ old('mux_upload_id') }}" />
 
         {{-- ===================================================== --}}
         {{-- CARD 1: Lesson Core Details                           --}}
@@ -501,10 +502,14 @@
     </form>
 
     {{-- ===================================================== --}}
-    {{-- Client-Side Chunked Upload Engine JavaScript          --}}
+    {{-- Client-Side Resilient Video Upload & Streaming Engine  --}}
     {{-- ===================================================== --}}
+    <script src="https://cdn.jsdelivr.net/npm/@mux/upchunk@3/dist/index.min.js"></script>
     <script>
-        const CHUNK_SIZE = 10 * 1024 * 1024; // 10MB chunk slice for efficient network throughput
+        const IS_MUX_CONFIGURED = {{ $isMuxConfigured ? 'true' : 'false' }};
+        const MUX_DIRECT_UPLOAD_URL = "{{ route('admin.courses.videos.mux.direct_upload', $course) }}";
+        const MUX_STATUS_URL_TEMPLATE = "{{ route('admin.courses.videos.mux.upload_status', [$course, ':uploadId']) }}";
+        const CHUNK_SIZE = 10 * 1024 * 1024; // 10MB chunk slice for local fallback
         const UPLOAD_URL = "{{ route('admin.courses.videos.chunk.upload', $course) }}";
         const CSRF_TOKEN = "{{ csrf_token() }}";
 
@@ -525,7 +530,6 @@
                     if (response.ok) {
                         return response;
                     }
-                    // If error response from server
                     const errorData = await response.json().catch(() => ({}));
                     lastError = new Error(errorData.message || `HTTP ${response.status}`);
                 } catch (err) {
@@ -533,7 +537,7 @@
                 }
 
                 if (attempt < maxRetries) {
-                    await sleep(2000 * attempt); // Wait 2s, 4s before retry
+                    await sleep(2000 * attempt);
                 }
             }
             throw lastError;
@@ -565,37 +569,230 @@
         function handleFileSelect(files) {
             if (!files || files.length === 0) return;
             currentFile = files[0];
-            startChunkedUpload(currentFile);
+            startVideoUpload(currentFile);
         }
 
-        async function startChunkedUpload(file) {
+        function startVideoUpload(file) {
             if (isUploading) return;
+
+            // When MUX is configured, upload directly to MUX (Zero Gateway Timeout, Zero Server Load)
+            if (IS_MUX_CONFIGURED && typeof UpChunk !== 'undefined') {
+                return startMuxDirectUpload(file);
+            }
+
+            // Fallback: Local server chunked upload
+            return startLocalChunkedUpload(file);
+        }
+
+        /**
+         * Direct Browser-to-MUX Upload using @mux/upchunk.
+         * Streams directly to Google Cloud / MUX eliminating 504 Gateway Timeouts.
+         */
+        async function startMuxDirectUpload(file) {
+            isUploading = true;
+            uploadStartTime = Date.now();
+
+            const progressContainer = document.getElementById('upload-progress-container');
+            const dropzone = document.getElementById('chunked-dropzone');
+            const fileNameEl = document.getElementById('progress-file-name');
+            const fileSizeEl = document.getElementById('progress-file-size');
+            const statusBadge = document.getElementById('progress-status-badge');
+            const statusText = document.getElementById('progress-status-text');
+            const percentLabel = document.getElementById('progress-percentage-label');
+            const chunksLabel = document.getElementById('progress-chunks-label');
+            const barFill = document.getElementById('progress-bar-fill');
+            const speedEl = document.getElementById('metric-speed');
+            const etaEl = document.getElementById('metric-eta');
+            const chunksEl = document.getElementById('metric-chunks');
+            const partsPctEl = document.getElementById('metric-parts-pct');
+            const uploadedEl = document.getElementById('metric-uploaded');
+            const processingBanner = document.getElementById('processing-banner');
+            const successBanner = document.getElementById('success-banner');
+            const submitBtn = document.getElementById('btn-submit-lesson');
+
+            progressContainer.classList.remove('hidden');
+            processingBanner.classList.add('hidden');
+            successBanner.classList.add('hidden');
+
+            fileNameEl.textContent = file.name;
+            fileNameEl.title = file.name;
+            fileSizeEl.textContent = formatBytes(file.size);
+
+            if (statusBadge) {
+                statusBadge.className = 'inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-blue-100/90 text-[#012383] dark:bg-blue-950/70 dark:text-blue-300 border border-blue-200 dark:border-blue-900 transition-all shadow-2xs';
+            }
+            if (statusText) statusText.textContent = '{{ __("جاري الاتصال بسحابة MUX...") }}';
+            if (chunksLabel) chunksLabel.textContent = '{{ __("رفع سحابي مباشر (Zero Timeout)") }}';
+            if (submitBtn) submitBtn.disabled = true;
+
+            try {
+                // Step 1: Request Direct Upload URL from MUX
+                const res = await fetch(MUX_DIRECT_UPLOAD_URL, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': CSRF_TOKEN,
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (!res.ok) {
+                    const err = await res.json().catch(() => ({}));
+                    throw new Error(err.message || 'فشل في إنشاء رابط الرفع لمنصة MUX.');
+                }
+
+                const data = await res.json();
+                if (!data.success || !data.upload_url) {
+                    throw new Error(data.message || 'رابط رفع MUX غير متوفر.');
+                }
+
+                const uploadUrl = data.upload_url;
+                const uploadId = data.upload_id;
+
+                if (statusText) statusText.textContent = '{{ __("جاري الرفع المباشر إلى MUX...") }}';
+
+                // Step 2: Stream directly to MUX via UpChunk
+                const upload = UpChunk.createUpload({
+                    endpoint: uploadUrl,
+                    file: file,
+                    chunkSize: 5120, // 5MB chunks (multiple of 256KB required by MUX)
+                });
+
+                upload.on('progress', (e) => {
+                    const percent = Math.min(100, Math.round(e.detail));
+                    barFill.style.width = percent + '%';
+                    percentLabel.textContent = percent + '%';
+
+                    const uploadedBytes = (percent / 100) * file.size;
+                    uploadedEl.textContent = `${formatBytes(uploadedBytes)} / ${formatBytes(file.size)}`;
+
+                    const elapsedSec = (Date.now() - uploadStartTime) / 1000;
+                    if (elapsedSec > 0) {
+                        const bytesPerSec = uploadedBytes / elapsedSec;
+                        speedEl.textContent = formatBytes(bytesPerSec) + '/s';
+                        const remainingBytes = Math.max(0, file.size - uploadedBytes);
+                        const etaSec = bytesPerSec > 0 ? (remainingBytes / bytesPerSec) : 0;
+                        etaEl.textContent = formatSeconds(etaSec);
+                    }
+
+                    if (chunksEl) chunksEl.textContent = `${percent}%`;
+                    if (partsPctEl) partsPctEl.textContent = `${percent}%`;
+                });
+
+                upload.on('success', () => {
+                    processingBanner.classList.remove('hidden');
+                    if (statusBadge) {
+                        statusBadge.className = 'inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-amber-100 text-amber-900 dark:bg-amber-950/70 dark:text-amber-200 border border-amber-200 dark:border-amber-900 transition-all animate-pulse';
+                    }
+                    if (statusText) statusText.textContent = '{{ __("اكتمل الرفع (100%): جاري معالجة وتشفير الفيديو على MUX...") }}';
+
+                    // Step 3: Poll for MUX Asset ready status
+                    const statusUrl = MUX_STATUS_URL_TEMPLATE.replace(':uploadId', uploadId);
+                    let pollCount = 0;
+
+                    const poller = setInterval(async () => {
+                        pollCount++;
+                        try {
+                            const pollRes = await fetch(statusUrl, {
+                                headers: { 'Accept': 'application/json' }
+                            });
+                            if (pollRes.ok) {
+                                const pollData = await pollRes.json();
+                                if (pollData.asset_id) {
+                                    clearInterval(poller);
+
+                                    // Populate hidden form inputs
+                                    document.getElementById('field-video-source').value = 'mux';
+                                    document.getElementById('field-mux-playback-id').value = pollData.playback_id || '';
+                                    document.getElementById('field-mux-asset-id').value = pollData.asset_id;
+                                    document.getElementById('field-mux-upload-id').value = uploadId;
+
+                                    if (pollData.duration_minutes) {
+                                        const durInput = document.getElementById('input-duration-minutes');
+                                        if (durInput) durInput.value = pollData.duration_minutes;
+                                    }
+
+                                    // Success UI
+                                    processingBanner.classList.add('hidden');
+                                    successBanner.classList.remove('hidden');
+                                    const driverBadge = document.getElementById('success-driver-badge');
+                                    if (driverBadge) driverBadge.textContent = 'MUX Cloud Stream (مباشر)';
+
+                                    if (statusBadge) {
+                                        statusBadge.className = 'inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-900 transition-all';
+                                    }
+                                    if (statusText) statusText.textContent = '{{ __("تمت معالجة وتشفير الفيديو بنجاح على MUX وهو جاهز للنشر") }}';
+
+                                    // Set preview player
+                                    const player = document.getElementById('preview-player');
+                                    if (player && pollData.playback_id) {
+                                        const tokenQuery = pollData.playback_token ? `?token=${pollData.playback_token}` : '';
+                                        player.src = `https://stream.mux.com/${pollData.playback_id}.m3u8${tokenQuery}`;
+                                        player.load();
+                                    }
+
+                                    if (submitBtn) submitBtn.disabled = false;
+                                    isUploading = false;
+                                    return;
+                                }
+                            }
+                        } catch (err) {
+                            console.warn('Poll error:', err);
+                        }
+
+                        // Max 45 attempts (90 seconds)
+                        if (pollCount > 45) {
+                            clearInterval(poller);
+                            document.getElementById('field-video-source').value = 'mux';
+                            document.getElementById('field-mux-upload-id').value = uploadId;
+                            processingBanner.classList.add('hidden');
+                            successBanner.classList.remove('hidden');
+                            if (statusText) statusText.textContent = '{{ __("تم رفع الفيديو بنجاح إلى MUX (جاري إكمال المعالجة في السحابة)") }}';
+                            if (submitBtn) submitBtn.disabled = false;
+                            isUploading = false;
+                        }
+                    }, 2000);
+                });
+
+                upload.on('error', (err) => {
+                    console.error('Mux UpChunk error:', err);
+                    isUploading = false;
+                    if (statusBadge) {
+                        statusBadge.className = 'inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-rose-100 text-rose-800 border border-rose-200';
+                    }
+                    if (statusText) statusText.textContent = '{{ __("فشل الرفع") }}';
+                    alert('حدث خطأ أثناء الرفع إلى MUX: ' + (err.detail?.message || 'خطأ في الاتصال'));
+                    if (submitBtn) submitBtn.disabled = false;
+                });
+
+            } catch (err) {
+                console.warn('MUX direct upload initialization failed, falling back to local chunked upload:', err);
+                return startLocalChunkedUpload(file);
+            }
+        }
+
+        /**
+         * Fallback: Local server chunked upload
+         */
+        async function startLocalChunkedUpload(file) {
             isUploading = true;
 
             const uploadId = 'up_' + Date.now() + '_' + Math.random().toString(36).substring(2, 10);
             const totalSize = file.size;
             const totalChunks = Math.ceil(totalSize / CHUNK_SIZE);
 
-            // Show progress box
             const progressContainer = document.getElementById('upload-progress-container');
             const dropzone = document.getElementById('chunked-dropzone');
-            progressContainer.classList.remove('hidden');
-            dropzone.classList.add('opacity-50', 'pointer-events-none');
-
-            document.getElementById('progress-file-name').textContent = file.name;
-            document.getElementById('progress-file-name').title = file.name;
-            document.getElementById('progress-file-size').textContent = formatBytes(totalSize);
-            
+            const fileNameEl = document.getElementById('progress-file-name');
+            const fileSizeEl = document.getElementById('progress-file-size');
             const statusBadge = document.getElementById('progress-status-badge');
             const statusText = document.getElementById('progress-status-text');
-            if (statusBadge) {
-                statusBadge.className = 'inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-blue-100/90 text-[#012383] dark:bg-blue-950/70 dark:text-blue-300 border border-blue-200 dark:border-blue-900 transition-all shadow-2xs';
-            }
-            if (statusText) statusText.textContent = '{{ __("جاري الرفع...") }}';
 
-            document.getElementById('processing-banner').classList.add('hidden');
-            document.getElementById('success-banner').classList.add('hidden');
+            progressContainer.classList.remove('hidden');
+            fileNameEl.textContent = file.name;
+            fileNameEl.title = file.name;
+            fileSizeEl.textContent = formatBytes(totalSize);
 
+            dropzone.classList.add('opacity-50', 'pointer-events-none');
             uploadStartTime = Date.now();
             uploadedBytesTotal = 0;
 
@@ -612,13 +809,12 @@
                 formData.append('original_filename', file.name);
                 formData.append('file_chunk', chunkBlob, file.name);
 
-                // If last chunk, show processing state banner right before or during
                 if (chunkIndex === totalChunks - 1) {
                     document.getElementById('processing-banner').classList.remove('hidden');
                     if (statusBadge) {
                         statusBadge.className = 'inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-amber-100 text-amber-900 dark:bg-amber-950/70 dark:text-amber-200 border border-amber-200 dark:border-amber-900 transition-all animate-pulse';
                     }
-                    if (statusText) statusText.textContent = '{{ __("جاري تجميع ومعالجة الفيديو...") }}';
+                    if (statusText) statusText.textContent = '{{ __("جاري حفظ ومعالجة الفيديو...") }}';
                 }
 
                 try {
@@ -637,7 +833,6 @@
 
                     const result = await response.json();
 
-                    // Update Metrics
                     uploadedBytesTotal += (end - start);
                     const percent = Math.min(100, Math.round((uploadedBytesTotal / totalSize) * 100));
                     const partsPercent = Math.min(100, Math.round(((chunkIndex + 1) / totalChunks) * 100));
@@ -650,7 +845,6 @@
                     document.getElementById('metric-parts-pct').textContent = `${partsPercent}%`;
                     document.getElementById('metric-uploaded').textContent = `${formatBytes(uploadedBytesTotal)} / ${formatBytes(totalSize)}`;
 
-                    // Speed & ETA
                     const elapsedSeconds = (Date.now() - uploadStartTime) / 1000;
                     if (elapsedSeconds > 0) {
                         const bytesPerSecond = uploadedBytesTotal / elapsedSeconds;
@@ -661,7 +855,6 @@
                         document.getElementById('metric-eta').textContent = formatSeconds(remainingSeconds);
                     }
 
-                    // Check if complete
                     if (result.status === 'completed') {
                         onUploadCompleted(result);
                         return;
@@ -724,7 +917,9 @@
             };
 
             if (result.mux_playback_id) {
-                const streamUrl = `https://stream.mux.com/${result.mux_playback_id}.m3u8`;
+                const streamUrl = result.playback_token 
+                    ? `https://stream.mux.com/${result.mux_playback_id}.m3u8?token=${result.playback_token}`
+                    : `https://stream.mux.com/${result.mux_playback_id}.m3u8`;
                 if (window.Hls && Hls.isSupported()) {
                     const hls = new Hls();
                     hls.loadSource(streamUrl);

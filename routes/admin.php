@@ -67,10 +67,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('courses/{course}/lessons/{video}/edit', [CourseController::class, 'editLesson'])->name('courses.videos.edit');
         Route::post('courses/{course}/lessons/upload-chunk', [CourseController::class, 'uploadLessonChunk'])->name('courses.videos.chunk.upload');
         Route::post('courses/{course}/lessons/direct-upload-url', [CourseController::class, 'getMuxDirectUploadUrl'])->name('courses.videos.mux.direct_upload');
+        Route::get('courses/{course}/lessons/mux-upload-status/{uploadId}', [CourseController::class, 'checkMuxUploadStatus'])->name('courses.videos.mux.upload_status');
         Route::post('courses/{course}/videos', [CourseController::class, 'storeVideo'])->name('courses.videos.store');
         Route::post('courses/{course}/videos/bulk-settings', [CourseController::class, 'applyVideoSettings'])->name('courses.videos.settings.apply');
         Route::put('courses/{course}/videos/{video}', [CourseController::class, 'updateVideo'])->name('courses.videos.update');
         Route::delete('courses/{course}/videos/{video}', [CourseController::class, 'destroyVideo'])->name('courses.videos.destroy');
+        Route::post('courses/{course}/videos/{video}/sync-mux', [CourseController::class, 'syncMuxVideo'])->name('courses.videos.mux.sync');
 
         // Mux Direct Upload Endpoint
         Route::post('mux/direct-upload', [CourseController::class, 'createMuxDirectUpload'])->name('mux.direct-upload');
@@ -121,6 +123,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Dynamic CMS, Menus & System Settings
         Route::get('settings', [SettingsController::class, 'index'])->name('settings.index');
         Route::post('settings', [SettingsController::class, 'update'])->name('settings.update');
+        Route::post('settings/mux/test-connection', [SettingsController::class, 'testMuxConnection'])->name('settings.mux.test');
         Route::post('settings/content/{sectionKey}', [SettingsController::class, 'updateContentBlock'])->name('settings.content.update');
         Route::post('settings/menus/{menu}/items', [SettingsController::class, 'saveMenuItem'])->name('settings.menus.item');
         Route::post('settings/menus/items/{item}/toggle', [SettingsController::class, 'toggleMenuItem'])->name('settings.menus.item.toggle');

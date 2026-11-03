@@ -278,8 +278,8 @@
                     @foreach($myCoursesData as $item)
                         @php
                             $c = $item['course'];
-                            $title = app()->getLocale() === 'en' && $c->title_en ? $c->title_en : $c->title_ar;
-                            $desc = app()->getLocale() === 'en' && $c->description_en ? $c->description_en : $c->description_ar;
+                            $title = $c->title;
+                            $desc = $c->description;
                             $isComplete = $item['progress'] >= 100;
                             $isInProgress = $item['progress'] > 0 && $item['progress'] < 100;
                         @endphp
@@ -471,8 +471,8 @@
             <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 sm:gap-6 w-full">
                 @foreach($allCourses as $c)
                     @php
-                        $title = app()->getLocale() === 'en' && $c->title_en ? $c->title_en : $c->title_ar;
-                        $desc = app()->getLocale() === 'en' && $c->description_en ? $c->description_en : $c->description_ar;
+                        $title = $c->title;
+                        $desc = $c->description;
                         $isEnrolled = in_array($c->id, $enrolledCourseIds ?? []);
                     @endphp
                     

@@ -26,9 +26,12 @@ return [
         'mux' => [
             'token_id' => env('MUX_TOKEN_ID'),
             'token_secret' => env('MUX_TOKEN_SECRET'),
+            'signing_key_id' => env('MUX_SIGNING_KEY_ID'),
+            'signing_key_private' => env('MUX_SIGNING_KEY_PRIVATE'),
             'webhook_secret' => env('MUX_WEBHOOK_SECRET'),
             'base_url' => env('MUX_BASE_URL', 'https://api.mux.com/video/v1'),
-            'playback_policy' => ['public'],
+            'playback_policy' => explode(',', (string) env('MUX_PLAYBACK_POLICY', 'signed')),
+            'token_lifetime' => (int) env('MUX_TOKEN_LIFETIME', 3600),
             'cors_origin' => env('MUX_CORS_ORIGIN', '*'),
             'timeout' => (int) env('MUX_TIMEOUT', 3600),
         ],

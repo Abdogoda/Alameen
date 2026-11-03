@@ -99,7 +99,7 @@
                       <div class="size-6 rounded-full bg-[#EAF1FB] flex items-center justify-center font-bold text-[10px] text-[#0B2A8F]">
                         د
                       </div>
-                      <span>د. سامي المنصور • محاضر التخاطب السريري</span>
+                      <span>{{ __('د. سامي المنصور • محاضر التخاطب السريري') }}</span>
                     </div>
                   </div>
                 </div>

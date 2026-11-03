@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Services\Video\Drivers;
 
+use App\Services\Cms\SettingsService;
 use App\Services\Video\Contracts\VideoDriverInterface;
+use App\Services\Video\MuxTokenService;
 use GuzzleHttp\Psr7\Utils;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Http;
@@ -12,6 +14,9 @@ use Illuminate\Support\Facades\Log;
 
 class MuxDriver implements VideoDriverInterface
 {
+    protected ?SettingsService $settingsService = null;
+    protected ?MuxTokenService $tokenService = null;
+
     /**
      * @param  array<int, string>  $playbackPolicy
      */
@@ -19,11 +24,11 @@ class MuxDriver implements VideoDriverInterface
         protected ?string $tokenId = null,
         protected ?string $tokenSecret = null,
         protected string $baseUrl = 'https://api.mux.com/video/v1',
-        protected array $playbackPolicy = ['public'],
+        protected array $playbackPolicy = ['signed'],
         protected string $corsOrigin = '*'
     ) {
-        $this->tokenId = $this->tokenId ?: (config('video.drivers.mux.token_id') ? (string) config('video.drivers.mux.token_id') : null);
-        $this->tokenSecret = $this->tokenSecret ?: (config('video.drivers.mux.token_secret') ? (string) config('video.drivers.mux.token_secret') : null);
+        $this->settingsService = app(SettingsService::class);
+        $this->tokenService = app(MuxTokenService::class);
         $this->baseUrl = (string) config('video.drivers.mux.base_url', 'https://api.mux.com/video/v1');
     }
 
@@ -37,11 +42,141 @@ class MuxDriver implements VideoDriverInterface
         return 'MUX Video Cloud Streaming';
     }
 
-    public function isConfigured(): bool
+    /**
+     * Retrieve Mux Token ID (Dashboard settings first, fallback to config/env).
+     */
+    public function getTokenId(): ?string
     {
-        return ! empty($this->tokenId) && ! empty($this->tokenSecret);
+        $id = $this->settingsService->get('mux_token_id');
+        if (! empty($id)) {
+            return trim($id);
+        }
+
+        return $this->tokenId ?: (config('video.drivers.mux.token_id') ? (string) config('video.drivers.mux.token_id') : null);
     }
 
+    /**
+     * Retrieve Mux Token Secret (Dashboard settings first, fallback to config/env).
+     */
+    public function getTokenSecret(): ?string
+    {
+        $secret = $this->settingsService->get('mux_token_secret');
+        if (! empty($secret)) {
+            return trim($secret);
+        }
+
+        return $this->tokenSecret ?: (config('video.drivers.mux.token_secret') ? (string) config('video.drivers.mux.token_secret') : null);
+    }
+
+    /**
+     * Retrieve active playback policy ('signed' recommended for maximum protection).
+     *
+     * @return array<int, string>
+     */
+    public function getPlaybackPolicy(): array
+    {
+        $policy = $this->settingsService->get('mux_playback_policy');
+        if (! empty($policy)) {
+            $cleaned = trim($policy);
+            return $cleaned === 'public' ? ['public'] : ['signed'];
+        }
+
+        $configPolicy = config('video.drivers.mux.playback_policy', ['signed']);
+
+        return is_array($configPolicy) ? $configPolicy : [ (string) $configPolicy ];
+    }
+
+    public function isConfigured(): bool
+    {
+        $id = $this->getTokenId();
+        $secret = $this->getTokenSecret();
+
+        return ! empty($id) && ! empty($secret);
+    }
+
+    /**
+     * Helper to access MuxTokenService for JWT generation.
+     */
+    public function tokens(): MuxTokenService
+    {
+        return $this->tokenService;
+    }
+
+    /**
+     * Test MUX credentials, API connection, and cryptographic signing keys.
+     *
+     * @return array{
+     *     success: bool,
+     *     message: string,
+     *     api_connected: bool,
+     *     signing_ready: bool,
+     *     playback_policy: string,
+     *     recent_assets_count: int
+     * }
+     */
+    public function testConnection(): array
+    {
+        if (! $this->isConfigured()) {
+            return [
+                'success' => false,
+                'message' => __('بيانات اتصال MUX API غير مكتملة. يرجى إدخال MUX Token ID و Secret أولاً.'),
+                'api_connected' => false,
+                'signing_ready' => false,
+                'playback_policy' => implode(',', $this->getPlaybackPolicy()),
+                'recent_assets_count' => 0,
+            ];
+        }
+
+        try {
+            $response = Http::withBasicAuth($this->getTokenId(), $this->getTokenSecret())
+                ->acceptJson()
+                ->timeout(10)
+                ->get("{$this->baseUrl}/assets", [
+                    'limit' => 5,
+                ]);
+
+            if (! $response->successful()) {
+                $status = $response->status();
+                $err = $response->json('error.messages.0') ?? $response->body();
+
+                return [
+                    'success' => false,
+                    'message' => __('فشل الاتصال بـ MUX (كود :code): :err', ['code' => $status, 'err' => $err]),
+                    'api_connected' => false,
+                    'signing_ready' => false,
+                    'playback_policy' => implode(',', $this->getPlaybackPolicy()),
+                    'recent_assets_count' => 0,
+                ];
+            }
+
+            $assets = $response->json('data') ?? [];
+            $signingReady = $this->tokenService->isConfigured();
+
+            return [
+                'success' => true,
+                'message' => $signingReady
+                    ? __('تم الاتصال بسحابة MUX بنجاح! الاتصال يعمل ومفاتيح التوقيع الرقمي (RS256) نشطة ومحمية.')
+                    : __('تم الاتصال بـ MUX بنجاح، ولكن مفاتيح التشفير (Signing Keys) غير مهيأة. يرجى إضافتها لتأمين الفيديوهات ومنع تسريبها.'),
+                'api_connected' => true,
+                'signing_ready' => $signingReady,
+                'playback_policy' => implode(',', $this->getPlaybackPolicy()),
+                'recent_assets_count' => count($assets),
+            ];
+        } catch (\Throwable $e) {
+            return [
+                'success' => false,
+                'message' => __('تعذر الوصول إلى سيرفرات MUX: :err', ['err' => $e->getMessage()]),
+                'api_connected' => false,
+                'signing_ready' => false,
+                'playback_policy' => implode(',', $this->getPlaybackPolicy()),
+                'recent_assets_count' => 0,
+            ];
+        }
+    }
+
+    /**
+     * Create a Mux Direct Upload URL with signed playback policy and MP4 downloads disabled.
+     */
     public function createDirectUploadUrl(string $corsOrigin = '*'): ?array
     {
         if (! $this->isConfigured()) {
@@ -49,13 +184,16 @@ class MuxDriver implements VideoDriverInterface
         }
 
         try {
-            $response = Http::withBasicAuth($this->tokenId, $this->tokenSecret)
+            $policy = $this->getPlaybackPolicy();
+
+            $response = Http::withBasicAuth($this->getTokenId(), $this->getTokenSecret())
                 ->acceptJson()
                 ->post("{$this->baseUrl}/uploads", [
                     'cors_origin' => $corsOrigin ?: $this->corsOrigin,
                     'new_asset_settings' => [
-                        'playback_policy' => $this->playbackPolicy,
+                        'playback_policy' => $policy,
                         'video_quality' => 'basic',
+                        'mp4_support' => 'none', // Disables direct downloadable MP4 files
                     ],
                 ]);
 
@@ -81,7 +219,7 @@ class MuxDriver implements VideoDriverInterface
         }
 
         try {
-            $response = Http::withBasicAuth($this->tokenId, $this->tokenSecret)
+            $response = Http::withBasicAuth($this->getTokenId(), $this->getTokenSecret())
                 ->acceptJson()
                 ->get("{$this->baseUrl}/uploads/{$uploadId}");
 
@@ -105,7 +243,7 @@ class MuxDriver implements VideoDriverInterface
         }
 
         try {
-            $response = Http::withBasicAuth($this->tokenId, $this->tokenSecret)
+            $response = Http::withBasicAuth($this->getTokenId(), $this->getTokenSecret())
                 ->acceptJson()
                 ->get("{$this->baseUrl}/assets/{$assetId}");
 
@@ -114,6 +252,60 @@ class MuxDriver implements VideoDriverInterface
             }
         } catch (\Throwable $e) {
             Log::warning('MUX getAsset exception: '.$e->getMessage());
+        }
+
+        return null;
+    }
+
+    /**
+     * Delete an Asset from MUX cloud to free up storage and avoid billing.
+     */
+    public function deleteAsset(string $assetId): bool
+    {
+        if (! $this->isConfigured() || empty($assetId)) {
+            return false;
+        }
+
+        try {
+            $response = Http::withBasicAuth($this->getTokenId(), $this->getTokenSecret())
+                ->acceptJson()
+                ->delete("{$this->baseUrl}/assets/{$assetId}");
+
+            if ($response->successful() || $response->status() === 404) {
+                Log::info("MUX Asset {$assetId} deleted successfully from cloud.");
+
+                return true;
+            }
+
+            Log::warning("Failed to delete MUX Asset {$assetId}: HTTP {$response->status()} - {$response->body()}");
+        } catch (\Throwable $e) {
+            Log::error("Exception deleting MUX Asset {$assetId}: ".$e->getMessage());
+        }
+
+        return false;
+    }
+
+    /**
+     * Create a new signed playback ID for an existing asset.
+     */
+    public function createSignedPlaybackId(string $assetId): ?string
+    {
+        if (! $this->isConfigured() || empty($assetId)) {
+            return null;
+        }
+
+        try {
+            $response = Http::withBasicAuth($this->getTokenId(), $this->getTokenSecret())
+                ->acceptJson()
+                ->post("{$this->baseUrl}/assets/{$assetId}/playback-ids", [
+                    'policy' => 'signed',
+                ]);
+
+            if ($response->successful()) {
+                return $response->json('data.id');
+            }
+        } catch (\Throwable $e) {
+            Log::error("Failed to create signed playback ID for asset {$assetId}: ".$e->getMessage());
         }
 
         return null;
@@ -176,8 +368,6 @@ class MuxDriver implements VideoDriverInterface
 
     /**
      * Upload file to MUX direct upload endpoint using resilient chunked streaming.
-     * MUX direct upload endpoints support standard Google Cloud resumable chunk uploads.
-     * Chunks must be multiples of 256 KiB (262,144 bytes).
      */
     protected function uploadFileToMuxEndpoint(string $filePath, string $uploadUrl, string $mimeType): void
     {
@@ -186,11 +376,8 @@ class MuxDriver implements VideoDriverInterface
             throw new \RuntimeException('File size is 0 bytes; cannot upload to MUX.');
         }
 
-        // MUX requires chunk sizes to be a multiple of 256 KiB (262,144 bytes)
-        // 5 MiB = 5 * 1024 * 1024 = 5,242,880 bytes (20 * 256 KiB)
         $chunkSize = 5 * 1024 * 1024;
 
-        // If file is smaller than or equal to one chunk, perform single PUT request
         if ($fileSize <= $chunkSize) {
             $handle = fopen($filePath, 'rb');
             if (! $handle) {
@@ -241,7 +428,6 @@ class MuxDriver implements VideoDriverInterface
                 $end = $offset + $chunkLength - 1;
                 $isLastChunk = ($end + 1) >= $fileSize;
 
-                // Retry logic for individual chunk
                 $uploaded = false;
                 $lastError = null;
 
@@ -263,7 +449,6 @@ class MuxDriver implements VideoDriverInterface
 
                         $status = $response->status();
 
-                        // 308 Resume Incomplete is expected for intermediate chunks; 200/201 for final chunk
                         if ($isLastChunk) {
                             if ($status >= 200 && $status < 300) {
                                 $uploaded = true;
@@ -281,7 +466,7 @@ class MuxDriver implements VideoDriverInterface
                         $lastError = $e->getMessage();
                     }
 
-                    usleep(500000); // 500ms delay before retry
+                    usleep(500000);
                 }
 
                 if (! $uploaded) {

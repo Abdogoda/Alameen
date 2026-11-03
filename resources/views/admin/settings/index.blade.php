@@ -65,7 +65,7 @@
 
     {{-- Interactive Multi-Tab Control Tower Container --}}
     <div x-data="{ 
-        validTabs: ['branding', 'contact', 'cms', 'faq', 'academic', 'payments', 'menus', 'theme'],
+        validTabs: ['branding', 'contact', 'cms', 'faq', 'academic', 'payments', 'mux', 'menus', 'theme'],
         activeTab: 'branding',
         init() {
             const rawHash = (window.location.hash || '').replace(/^#/, '').trim();
@@ -125,6 +125,11 @@
                 <span class="shrink-0 font-bold whitespace-nowrap">{{ __('قنوات الدفع والتحويل') }}</span>
             </button>
 
+            <button type="button" @click="setTab('mux')" :class="activeTab === 'mux' ? 'bg-[#012383] text-white shadow-xs font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" class="shrink-0 px-4 py-2.5 rounded-xl text-xs whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer">
+                <span class="shrink-0 text-sm">🎬</span>
+                <span class="shrink-0 font-bold whitespace-nowrap">{{ __('سحابة MUX للبث والتشفير') }}</span>
+            </button>
+
             <button type="button" @click="setTab('menus')" :class="activeTab === 'menus' ? 'bg-[#012383] text-white shadow-xs font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" class="shrink-0 px-4 py-2.5 rounded-xl text-xs whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer">
                 <span class="shrink-0 text-sm">🧭</span>
                 <span class="shrink-0 font-bold whitespace-nowrap">{{ __('مدير القوائم والتنقل') }}</span>
@@ -151,7 +156,7 @@
                     </p>
                 </div>
 
-                <form method="POST" action="{{ route('admin.settings.update') }}#branding" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <form method="POST" action="{{ route('admin.settings.update') }}#branding" enctype="multipart/form-data" class="grid grid-cols-1 md:grid-cols-2 gap-5">
                     @csrf
                     
                     {{-- Site Name AR --}}
@@ -180,16 +185,20 @@
                         <textarea name="settings[site_tagline][en]" rows="2" class="w-full p-3 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-medium bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]">{{ $settings['site_tagline']['value_en'] ?? '' }}</textarea>
                     </div>
 
-                    {{-- Logo Asset URL --}}
-                    <div>
+                    {{-- Logo Asset URL & File Upload --}}
+                    <div class="space-y-2">
                         <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1.5">{{ __('رابط أو مسار الشعار (Logo Image Path):') }}</label>
                         <div class="flex items-center gap-3">
                             <input type="text" name="settings[site_logo][ar]" value="{{ $settings['site_logo']['value_ar'] ?? '/assets/images/logo.png' }}" class="flex-1 h-11 px-4 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-mono bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" />
                             <div class="size-11 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-1.5 shrink-0 flex items-center justify-center">
-                                <img src="{{ $settings['site_logo']['value_ar'] ?? '/assets/images/logo.png' }}" alt="Logo" class="size-full object-contain" />
+                                <img src="{{ platform_logo() }}" alt="Logo" class="size-full object-contain" />
                             </div>
                         </div>
                         <input type="hidden" name="settings[site_logo][group]" value="branding" />
+                        <div>
+                            <span class="text-[11px] font-bold text-slate-500 block mb-1">{{ __('أو ارفع ملف شعار جديد من جهازك (PNG / SVG / WEBP):') }}</span>
+                            <input type="file" name="site_logo_file" accept="image/png,image/jpeg,image/svg+xml,image/webp" class="w-full text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-[#012383] file:text-white hover:file:bg-[#0B2A8F] cursor-pointer" />
+                        </div>
                     </div>
 
                     {{-- Currency Settings --}}
@@ -971,6 +980,251 @@
                         </div>
                     @endforeach
                 </div>
+            </div>
+        </div>
+
+        {{-- ======================================================== --}}
+        {{-- TAB 7: سحابة MUX للبث والتشفير (MUX Cloud & Security)    --}}
+        {{-- ======================================================== --}}
+        <div x-show="activeTab === 'mux'" x-cloak class="flex flex-col gap-6" x-data="{
+            testing: false,
+            testResult: null,
+            async runTest() {
+                this.testing = true;
+                this.testResult = null;
+                try {
+                    const res = await fetch('{{ route('admin.settings.mux.test') }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Accept': 'application/json'
+                        }
+                    });
+                    this.testResult = await res.json();
+                } catch (e) {
+                    this.testResult = {
+                        success: false,
+                        message: '{{ __('تعذر تنفيذ اختبار الاتصال بسبب خطأ غير متوقع.') }}'
+                    };
+                } finally {
+                    this.testing = false;
+                }
+            }
+        }">
+            {{-- Main MUX Settings Card --}}
+            <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-3xl p-5 sm:p-7 shadow-xs flex flex-col gap-6">
+                
+                <div class="border-b border-[#DEE8F7] dark:border-slate-800 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xl">🎬</span>
+                            <h3 class="font-['Baloo_Bhaijaan_2'] font-bold text-lg sm:text-xl text-[#012383] dark:text-blue-400">
+                                {{ __('إدارة سحابة MUX للبث الفيديوي والتشفير الصارم (MUX Video Cloud Control)') }}
+                            </h3>
+                        </div>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                            {{ __('تحكم كامل ومباشر في مفاتيح API، التوقيع الرقمي (RS256 JWT)، سياسات حظر فتح ومشاركة الروابط، وتأمين الفيديوهات') }}
+                        </p>
+                    </div>
+
+                    {{-- Connection Tester Button --}}
+                    <button 
+                        type="button" 
+                        @click="runTest()" 
+                        :disabled="testing"
+                        class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#012383] to-[#0B2A8F] hover:from-[#0B2A8F] hover:to-[#012383] text-white text-xs font-bold shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 shrink-0"
+                    >
+                        <svg x-show="!testing" class="size-4 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                        <svg x-show="testing" class="size-4 animate-spin text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>
+                        <span x-text="testing ? '{{ __('جاري الفحص المباشر...') }}' : '{{ __('⚡ فحص الاتصال والتشفير الآن') }}'"></span>
+                    </button>
+                </div>
+
+                {{-- Dynamic Test Results Display --}}
+                <div x-show="testResult !== null" x-cloak class="transition-all">
+                    <div 
+                        :class="testResult && testResult.success ? 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-800 text-emerald-900 dark:text-emerald-200' : 'bg-rose-50 dark:bg-rose-950/40 border-rose-200 dark:border-rose-800 text-rose-900 dark:text-rose-200'" 
+                        class="p-4 rounded-2xl border text-xs flex flex-col gap-2.5 shadow-xs"
+                    >
+                        <div class="flex items-center justify-between">
+                            <span class="font-bold flex items-center gap-2 text-sm">
+                                <span x-text="testResult && testResult.success ? '✓' : '✕'"></span>
+                                <span x-text="testResult ? testResult.message : ''"></span>
+                            </span>
+                            <button type="button" @click="testResult = null" class="text-xs opacity-60 hover:opacity-100 cursor-pointer">✕</button>
+                        </div>
+
+                        <div x-show="testResult && testResult.api_connected" class="flex flex-wrap items-center gap-3 pt-2 border-t border-current/20 text-[11px] font-mono">
+                            <span class="px-2.5 py-1 rounded-lg bg-white/60 dark:bg-black/30">
+                                <strong>API:</strong> {{ __('متصل بنجاح ✓') }}
+                            </span>
+                            <span class="px-2.5 py-1 rounded-lg bg-white/60 dark:bg-black/30">
+                                <strong>Signing Key (RS256):</strong> 
+                                <span x-text="testResult && testResult.signing_ready ? '{{ __('مفعل ومحمي ✓') }}' : '{{ __('غير مكتمل ✕') }}'"></span>
+                            </span>
+                            <span class="px-2.5 py-1 rounded-lg bg-white/60 dark:bg-black/30">
+                                <strong>Policy:</strong> <span x-text="testResult ? testResult.playback_policy : ''"></span>
+                            </span>
+                            <span class="px-2.5 py-1 rounded-lg bg-white/60 dark:bg-black/30">
+                                <strong>Active Assets:</strong> <span x-text="testResult ? testResult.recent_assets_count : 0"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Security Educational Alert --}}
+                <div class="p-4 rounded-2xl bg-blue-50/70 dark:bg-blue-950/30 border border-blue-200/80 dark:border-blue-900 text-blue-900 dark:text-blue-200 text-xs flex items-start gap-3">
+                    <svg class="size-5 text-[#012383] dark:text-blue-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                    <div class="flex-1 space-y-1">
+                        <span class="font-bold block text-sm">{{ __('كيف تحمي سياسة البث المشفر (Signed Policy) فيديوهاتك من المشاركة والتسريب؟') }}</span>
+                        <p class="leading-relaxed text-blue-800/80 dark:text-blue-300">
+                            {{ __('عند ضبط سياسة البث على "مشفر ومحمي برمز توقيع مؤقت (Signed)"، فإن رابط البث الأصلي') }} <code class="bg-blue-100 dark:bg-blue-900/60 px-1.5 py-0.5 rounded font-mono text-[11px]">https://stream.mux.com/ID.m3u8</code> {{ __('يُغلق تماماً برمز 403 Forbidden أمام أي شخص يحاول فتحه في المتصفح أو في برامج التنزيل، ويقوم السيرفر تلقائياً بإصدار رمز توقيع رقمي (JWT) مشفر بمفتاحك الخاص ومدته مؤقتة لا يمكن مشاركتها خارج جلسة الطالب المصرح له.') }}
+                        </p>
+                    </div>
+                </div>
+
+                {{-- MUX Credentials Form --}}
+                <form method="POST" action="{{ route('admin.settings.update') }}#mux" class="flex flex-col gap-6">
+                    @csrf
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        
+                        {{-- 1. MUX Token ID --}}
+                        <div>
+                            <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1.5">
+                                {{ __('معرّف وصول MUX API (Token ID):') }} <span class="text-rose-500">*</span>
+                            </label>
+                            <input 
+                                type="text" 
+                                name="settings[mux_token_id][ar]" 
+                                value="{{ $settings['mux_token_id']['value_ar'] ?? config('video.drivers.mux.token_id') }}" 
+                                placeholder="e.g. 74a9b1c2-xxxx-xxxx-xxxx-xxxxxxxxxxxx" 
+                                class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-mono font-bold bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" 
+                            />
+                            <input type="hidden" name="settings[mux_token_id][group]" value="mux" />
+                            <span class="text-[11px] text-slate-400 mt-1 block">{{ __('من حسابك في Mux Dashboard > Settings > Access Tokens') }}</span>
+                        </div>
+
+                        {{-- 2. MUX Token Secret --}}
+                        <div>
+                            <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1.5">
+                                {{ __('المفتاح السري (Token Secret):') }} <span class="text-rose-500">*</span>
+                            </label>
+                            <input 
+                                type="password" 
+                                name="settings[mux_token_secret][ar]" 
+                                value="{{ $settings['mux_token_secret']['value_ar'] ?? config('video.drivers.mux.token_secret') }}" 
+                                placeholder="••••••••••••••••••••••••••••••••" 
+                                class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-mono font-bold bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" 
+                            />
+                            <input type="hidden" name="settings[mux_token_secret][group]" value="mux" />
+                            <span class="text-[11px] text-slate-400 mt-1 block">{{ __('الرمز السري الخاص بالـ Access Token') }}</span>
+                        </div>
+
+                        {{-- 3. MUX Signing Key ID --}}
+                        <div>
+                            <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1.5">
+                                {{ __('معرّف مفتاح التوقيع الرقمي (Signing Key ID):') }} <span class="text-emerald-600 font-extrabold">{{ __('(ضروري لتأمين الروابط)') }}</span>
+                            </label>
+                            <input 
+                                type="text" 
+                                name="settings[mux_signing_key_id][ar]" 
+                                value="{{ $settings['mux_signing_key_id']['value_ar'] ?? config('video.drivers.mux.signing_key_id') }}" 
+                                placeholder="e.g. k01xxxxxxx" 
+                                class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-mono font-bold bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" 
+                            />
+                            <input type="hidden" name="settings[mux_signing_key_id][group]" value="mux" />
+                            <span class="text-[11px] text-slate-400 mt-1 block">{{ __('من Mux Dashboard > Settings > Signing Keys') }}</span>
+                        </div>
+
+                        {{-- 4. MUX Webhook Secret --}}
+                        <div>
+                            <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1.5">
+                                {{ __('رمز أمان الـ Webhook (Webhook Secret):') }}
+                            </label>
+                            <input 
+                                type="text" 
+                                name="settings[mux_webhook_secret][ar]" 
+                                value="{{ $settings['mux_webhook_secret']['value_ar'] ?? config('video.drivers.mux.webhook_secret') }}" 
+                                placeholder="e.g. whsec_xxxxxxxxxxxx" 
+                                class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-mono font-bold bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" 
+                            />
+                            <input type="hidden" name="settings[mux_webhook_secret][group]" value="mux" />
+                            <span class="text-[11px] text-slate-400 mt-1 block">{{ __('رابط الويب هوك الخاص بك:') }} <code class="font-mono">{{ url('webhooks/mux') }}</code></span>
+                        </div>
+
+                        {{-- 5. MUX Signing Private Key --}}
+                        <div class="md:col-span-2">
+                            <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1.5">
+                                {{ __('مفتاح التشفير الخاص للتوقيع الرقمي (Signing Private Key - RSA 2048):') }} <span class="text-rose-500">*</span>
+                            </label>
+                            <textarea 
+                                name="settings[mux_signing_key_private][ar]" 
+                                rows="3" 
+                                placeholder="-----BEGIN RSA PRIVATE KEY-----&#10;MIIEowIBAAKCAQEA...&#10;-----END RSA PRIVATE KEY----- (أو نص Base64 المحمل من MUX)" 
+                                class="w-full p-3 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-mono bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]"
+                            >{{ $settings['mux_signing_key_private']['value_ar'] ?? config('video.drivers.mux.signing_key_private') }}</textarea>
+                            <input type="hidden" name="settings[mux_signing_key_private][group]" value="mux" />
+                            <span class="text-[11px] text-slate-400 mt-1 block">{{ __('الملف المشفر الذي يتم تحميله عند إنشاء مفتاح التوقيع من Mux (يدعم صيغة PEM أو Base64 مباشرة).') }}</span>
+                        </div>
+
+                        {{-- 6. Playback Security Policy --}}
+                        <div>
+                            <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1.5">
+                                {{ __('سياسة أمان البث الافتراضية (Playback Policy):') }}
+                            </label>
+                            @php
+                                $currentPolicy = $settings['mux_playback_policy']['value_ar'] ?? (is_array(config('video.drivers.mux.playback_policy')) ? config('video.drivers.mux.playback_policy')[0] : 'signed');
+                            @endphp
+                            <select 
+                                name="settings[mux_playback_policy][ar]" 
+                                class="w-full h-11 px-3.5 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-bold text-slate-800 dark:text-slate-200 bg-white dark:bg-slate-900 outline-none focus:border-[#0B2A8F] cursor-pointer"
+                            >
+                                <option value="signed" {{ $currentPolicy === 'signed' ? 'selected' : '' }}>
+                                    🔒 {{ __('مشفر ومحمي برمز توقيع مؤقت (Signed JWT - موصى به للأمان الأقصى)') }}
+                                </option>
+                                <option value="public" {{ $currentPolicy === 'public' ? 'selected' : '' }}>
+                                    🌐 {{ __('مفتوح للعامة (Public - غير آمن، يتيح فتح الرابط ومشاركته لأي شخص)') }}
+                                </option>
+                            </select>
+                            <input type="hidden" name="settings[mux_playback_policy][group]" value="mux" />
+                        </div>
+
+                        {{-- 7. Token Lifetime --}}
+                        <div>
+                            <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1.5">
+                                {{ __('مدة صلاحية توكن المشاهدة (بالثواني):') }}
+                            </label>
+                            <div class="relative">
+                                <input 
+                                    type="number" 
+                                    min="300" 
+                                    max="86400" 
+                                    step="60" 
+                                    name="settings[mux_token_lifetime][ar]" 
+                                    value="{{ $settings['mux_token_lifetime']['value_ar'] ?? config('video.drivers.mux.token_lifetime', 3600) }}" 
+                                    class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-sm font-mono font-bold bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" 
+                                />
+                                <span class="absolute end-4 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">{{ __('ثانية (3600 = ساعة)') }}</span>
+                            </div>
+                            <input type="hidden" name="settings[mux_token_lifetime][group]" value="mux" />
+                            <span class="text-[11px] text-slate-400 mt-1 block">{{ __('يقوم المشغل بتجديد التوكن تلقائياً أثناء مشاهدة الطالب دون أي انقطاع.') }}</span>
+                        </div>
+
+                    </div>
+
+                    <div class="flex items-center justify-end pt-3 border-t border-[#DEE8F7] dark:border-slate-800">
+                        <button 
+                            type="submit" 
+                            class="px-8 h-12 rounded-xl bg-gradient-to-r from-[#012383] to-[#0B2A8F] hover:from-[#0B2A8F] hover:to-[#012383] text-white font-extrabold text-sm shadow-md transition-all flex items-center gap-2 cursor-pointer active:scale-95"
+                        >
+                            <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            <span>{{ __('حفظ إعدادات MUX وتطبيق الحماية فورياً') }}</span>
+                        </button>
+                    </div>
+                </form>
+
             </div>
         </div>
 

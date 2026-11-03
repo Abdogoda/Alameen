@@ -60,9 +60,11 @@ class MenuItem extends Model
     {
         $locale = app()->getLocale();
 
-        return ($locale === 'en' && ! empty($this->title_en))
-            ? $this->title_en
-            : $this->title_ar;
+        if ($locale === 'en') {
+            return ! empty($this->title_en) ? $this->title_en : __($this->title_ar);
+        }
+
+        return $this->title_ar;
     }
 
     /**

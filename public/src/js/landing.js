@@ -22,7 +22,9 @@ document.addEventListener('DOMContentLoaded', () => {
     .map(id => document.getElementById(id))
     .filter(Boolean);
 
-  const navLinks = Array.from(document.querySelectorAll('nav a[href^="#"], #mobile-nav-menu a[href^="#"]'));
+  function getNavLinks() {
+    return Array.from(document.querySelectorAll('nav a[href^="#"], #mobile-nav-menu a[href^="#"]'));
+  }
 
   function updateActiveNavLink() {
     const scrollPos = window.scrollY + 140; // Offset for sticky header
@@ -42,6 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
       currentSectionId = sections[sections.length - 1]?.id || currentSectionId;
     }
 
+    const navLinks = getNavLinks();
     navLinks.forEach(link => {
       const targetHash = link.getAttribute('href');
       const isMatch = targetHash === `#${currentSectionId}`;
@@ -49,11 +52,11 @@ document.addEventListener('DOMContentLoaded', () => {
       if (link.closest('#mobile-nav-menu')) {
         // Mobile Link
         if (isMatch) {
-          link.classList.add('bg-[#EAF1FB]', 'text-[#0B2A8F]');
-          link.classList.remove('text-[#012383]');
+          link.classList.add('bg-[#EAF1FB]', 'dark:bg-slate-800', 'text-[#0B2A8F]', 'dark:text-blue-300');
+          link.classList.remove('text-[#012383]', 'dark:text-slate-300');
         } else {
-          link.classList.remove('bg-[#EAF1FB]', 'text-[#0B2A8F]');
-          link.classList.add('text-[#012383]');
+          link.classList.remove('bg-[#EAF1FB]', 'dark:bg-slate-800', 'text-[#0B2A8F]', 'dark:text-blue-300');
+          link.classList.add('text-[#012383]', 'dark:text-slate-300');
         }
       } else {
         // Desktop Link
@@ -73,9 +76,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Note: Mobile Navigation Menu Toggle is handled reactively by Alpine.js in marketing-header.blade.php
 
-  // Smooth scroll offset for anchor clicks & hash synchronization
-  navLinks.forEach(link => {
-    link.addEventListener('click', (e) => {
+  // Smooth scroll offset for anchor clicks & hash synchronization (Delegated)
+  document.addEventListener('click', (e) => {
+    const link = e.target.closest('nav a[href^="#"], #mobile-nav-menu a[href^="#"]');
+    if (link) {
       const hash = link.getAttribute('href');
       if (hash && hash.startsWith('#')) {
         const target = document.querySelector(hash);
@@ -92,10 +96,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
           try {
             history.replaceState(null, '', hash);
-          } catch (err) {}
+          } catch (err) { }
         }
       }
-    });
+    }
   });
 
   // Handle URL hash on initial page load (e.g. navigating from /pages/courses.html back to /#about)
@@ -124,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const stepTabs = Array.from(document.querySelectorAll('[data-step-target]'));
     const prevBtn = document.getElementById('slider-prev');
     const nextBtn = document.getElementById('slider-next');
-    
+
     let currentIndex = 0;
     const totalSlides = slides.length;
     let autoPlayTimer = null;
@@ -332,8 +336,8 @@ document.addEventListener('DOMContentLoaded', () => {
       e.preventDefault();
       const isEn = document.documentElement.lang === 'en';
       if (toast && toastMessage) {
-        toastMessage.textContent = isEn 
-          ? 'Your inquiry has been received! Our support team will reply shortly.' 
+        toastMessage.textContent = isEn
+          ? 'Your inquiry has been received! Our support team will reply shortly.'
           : 'تم استلام استفسارك بنجاح! سيتواصل معك فريق الدعم قريباً.';
         toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
         setTimeout(() => {

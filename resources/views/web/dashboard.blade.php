@@ -290,8 +290,8 @@
                     @foreach($myCoursesData as $item)
                         @php
                             $c = $item['course'];
-                            $title = app()->getLocale() === 'en' && $c->title_en ? $c->title_en : $c->title_ar;
-                            $desc = app()->getLocale() === 'en' && $c->description_en ? $c->description_en : $c->description_ar;
+                            $title = $c->title;
+                            $desc = $c->description;
                             $progress = (int) $item['progress'];
                             $isComplete = $progress >= 100;
                             $isInProgress = $progress > 0 && ! $isComplete;
@@ -548,8 +548,8 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-5 w-full">
                     @foreach($suggestedCourses as $sc)
                         @php
-                            $sTitle = app()->getLocale() === 'en' && $sc->title_en ? $sc->title_en : $sc->title_ar;
-                            $sDesc = app()->getLocale() === 'en' && $sc->description_en ? $sc->description_en : $sc->description_ar;
+                            $sTitle = $sc->title;
+                            $sDesc = $sc->description;
                         @endphp
                         <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-2xl p-4 shadow-xs hover:shadow-card hover:-translate-y-1 transition-all flex flex-col justify-between gap-3 group">
                             <div class="flex gap-3 items-center">

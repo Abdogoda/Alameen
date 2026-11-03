@@ -33,6 +33,47 @@ class MuxVideoService
     }
 
     /**
+     * Get underlying driver instance.
+     */
+    public function getDriver(): MuxDriver
+    {
+        return $this->muxDriver;
+    }
+
+    /**
+     * Access token signing service.
+     */
+    public function tokens(): MuxTokenService
+    {
+        return $this->muxDriver->tokens();
+    }
+
+    /**
+     * Test connection and credentials.
+     *
+     * @return array{
+     *     success: bool,
+     *     message: string,
+     *     api_connected: bool,
+     *     signing_ready: bool,
+     *     playback_policy: string,
+     *     recent_assets_count: int
+     * }
+     */
+    public function testConnection(): array
+    {
+        return $this->muxDriver->testConnection();
+    }
+
+    /**
+     * Delete an asset from MUX cloud.
+     */
+    public function deleteAsset(string $assetId): bool
+    {
+        return $this->muxDriver->deleteAsset($assetId);
+    }
+
+    /**
      * Create a direct upload URL on MUX.
      *
      * @return array{id: string, url: string, status: string}|null
@@ -40,6 +81,14 @@ class MuxVideoService
     public function createDirectUploadUrl(string $corsOrigin = '*'): ?array
     {
         return $this->muxDriver->createDirectUploadUrl($corsOrigin);
+    }
+
+    /**
+     * Create a signed playback ID for an existing asset.
+     */
+    public function createSignedPlaybackId(string $assetId): ?string
+    {
+        return $this->muxDriver->createSignedPlaybackId($assetId);
     }
 
     /**

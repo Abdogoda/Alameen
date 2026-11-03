@@ -10,8 +10,8 @@
 @php
     $cmsSettings = app(\App\Services\Cms\SettingsService::class);
     $footerMenu = app(\App\Services\Cms\MenuService::class)->getMenu('footer_quick_links');
-    $siteName = $cmsSettings->get('site_name', __('منصة الأمين'));
-    $siteTagline = $cmsSettings->get('site_tagline', __('المنصة العربية المتخصصة في تدريب وتأهيل مهارات النطق والتخاطب، نجمع بين الأسس العلمية المعتمدة والتطبيقات السريرية العملية بإشراف نخبة من كبار أخصائيي التخاطب.'));
+    $siteName = $cmsSettings->getSiteName();
+    $siteTagline = $cmsSettings->getSiteTagline();
     $contactEmail = $cmsSettings->get('contact_email', 'contact@alameen-speech.com');
     $contactPhone = $cmsSettings->get('contact_phone', '+20 100 000 0000');
     $whatsappUrl = $cmsSettings->get('social_whatsapp', 'https://wa.me/201000000000');
@@ -20,7 +20,7 @@
     $linkedinUrl = $cmsSettings->get('social_linkedin');
     $youtubeUrl = $cmsSettings->get('social_youtube');
     $telegramUrl = $cmsSettings->get('social_telegram');
-    $siteLogo = $cmsSettings->get('site_logo') ?: '/assets/images/logo.png';
+    $siteLogo = $cmsSettings->getLogoUrl();
 @endphp
 
         <!-- Top Row: Main Columns -->

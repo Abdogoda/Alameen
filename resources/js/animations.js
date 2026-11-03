@@ -128,12 +128,22 @@
         const bar = getOrCreateScrollProgressBar();
         if (!bar) return;
 
+        // Respect user appearance settings: do not show if disabled
+        try {
+            if (localStorage.getItem('alameen_scroll_progress') === 'false' || 
+                document.documentElement.getAttribute('data-scroll-progress-enabled') === 'false') {
+                bar.style.display = 'none';
+                return;
+            }
+        } catch (e) {}
+
         const scrollTop = window.scrollY || document.documentElement.scrollTop || 0;
         const scrollHeight = document.documentElement.scrollHeight || document.body.scrollHeight || 0;
         const clientHeight = window.innerHeight || document.documentElement.clientHeight || 0;
         const maxScroll = scrollHeight - clientHeight;
 
         if (maxScroll > 10) {
+            bar.style.display = 'block';
             const pct = Math.min(100, Math.max(0, (scrollTop / maxScroll) * 100));
             bar.style.width = `${pct}%`;
         } else {
@@ -275,6 +285,19 @@
                 }
             });
         });
+
+        // If user configured reduced motion in appearance settings, reveal all elements immediately without animation
+        try {
+            if (localStorage.getItem('alameen_motion') === 'reduced' || 
+                document.documentElement.getAttribute('data-motion') === 'reduced') {
+                elementsToObserve.forEach((el) => {
+                    el.classList.add('revealed');
+                    el.style.transition = 'none';
+                    el.style.animation = 'none';
+                });
+                return;
+            }
+        } catch (e) {}
 
         if ('IntersectionObserver' in window) {
             const observerOptions = {

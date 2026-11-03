@@ -5,13 +5,13 @@
           <!-- Page Introduction (Node 1155:18887) -->
           <div class="flex flex-col gap-[4px] items-start text-start w-full" data-node-id="1155:18887">
             <p class="font-['Cairo'] font-semibold text-[12px] leading-[1.8] text-[#0B2A8F] text-start w-full" data-i18n="grades.breadcrumb" data-node-id="1155:18888">
-              مساحة التعلّم / درجاتي
+              {{ __('grades.breadcrumb') }}
             </p>
             <h1 class="font-['Cairo'] font-bold text-[28px] sm:text-[32px] leading-[1.3] text-[#012383] text-start w-full" data-i18n="grades.pageTitle" data-node-id="1155:18889">
-              درجاتي
+              {{ __('grades.pageTitle') }}
             </h1>
             <p class="font-['Cairo'] font-medium text-[13px] sm:text-[14px] leading-[1.7] text-[#475569] text-start w-full" data-i18n="grades.pageSubtitle" data-node-id="1155:18890">
-              راجع تقييم مهامك، واقرأ ملاحظات المحاضر لتطوير ممارستك خطوة بخطوة.
+              {{ __('grades.pageSubtitle') }}
             </p>
           </div>
 
@@ -20,11 +20,11 @@
             <!-- Right in RTL: Course Selector -->
             <div class="flex gap-[12px] items-center" data-node-id="1155:18893">
               <span class="font-['Cairo'] font-bold text-[14px] leading-[1.8] text-[#475569] whitespace-nowrap" data-i18n="grades.courseLabel" data-node-id="1155:18897">
-                الكورس
+                {{ __('grades.courseLabel') }}
               </span>
               <div class="bg-white border border-[#DEE8F7] hover:border-[#0B2A8F]/40 flex gap-[16px] h-[46px] items-center px-[16px] rounded-[10px] w-full sm:w-[290px] justify-between cursor-pointer transition-colors shadow-2xs" data-node-id="1155:18894">
                 <span class="font-['Cairo'] font-bold text-[14px] leading-[1.8] text-[#012383] flex-1 text-start" data-i18n="grades.selectedCourse" data-node-id="1155:18896">
-                  أساسيات التخاطب
+                  {{ __('grades.selectedCourse') }}
                 </span>
                 <div class="size-[16px] shrink-0 relative" data-node-id="1155:19560">
                   <img src="/assets/images/icon-chevron-down.svg" alt="" class="size-full" />
@@ -34,7 +34,7 @@
 
             <!-- Left in RTL: Filter notice -->
             <p class="font-['Cairo'] font-medium text-[12px] sm:text-[13px] text-[#475569]" data-i18n="grades.filterNotice" data-node-id="1155:18892">
-              تعرض النتائج الخاصة بالكورس المختار فقط
+              {{ __('grades.filterNotice') }}
             </p>
           </div>
 

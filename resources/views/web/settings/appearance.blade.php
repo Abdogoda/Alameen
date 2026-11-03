@@ -7,46 +7,66 @@
         
         <div
             x-data="{
-                theme: (window.AlameenTheme ? window.AlameenTheme.getTheme() : (localStorage.getItem('alameen_theme') || 'light')),
-                fontSize: localStorage.getItem('alameen_font_size') || 'normal',
-                motion: localStorage.getItem('alameen_motion') || 'full',
-                loaderEnabled: localStorage.getItem('alameen_loader_enabled') !== 'false',
-                scrollProgressEnabled: localStorage.getItem('alameen_scroll_progress') !== 'false',
-                locale: '{{ app()->getLocale() }}',
+                theme: (window.AlameenTheme ? window.AlameenTheme.getTheme() : (localStorage.getItem('alameen_theme') || '{{ $theme }}')),
+                fontSize: (function() { try { return localStorage.getItem('alameen_font_size') || '{{ $fontSize }}'; } catch (e) { return '{{ $fontSize }}'; } })(),
+                motion: (function() { try { return localStorage.getItem('alameen_motion') || '{{ $motion }}'; } catch (e) { return '{{ $motion }}'; } })(),
+                loaderEnabled: (function() { try { const v = localStorage.getItem('alameen_loader_enabled'); return v !== null ? (v !== 'false') : {{ $loaderEnabled ? 'true' : 'false' }}; } catch (e) { return {{ $loaderEnabled ? 'true' : 'false' }}; } })(),
+                scrollProgressEnabled: (function() { try { const v = localStorage.getItem('alameen_scroll_progress'); return v !== null ? (v !== 'false') : {{ $scrollProgressEnabled ? 'true' : 'false' }}; } catch (e) { return {{ $scrollProgressEnabled ? 'true' : 'false' }}; } })(),
                 showToast: false,
                 toastMessage: '',
+
+                init() {
+                    // Sync initial attributes on DOM
+                    const root = document.documentElement;
+                    root.setAttribute('data-font-size', this.fontSize);
+                    root.setAttribute('data-motion', this.motion);
+                    root.setAttribute('data-loader-enabled', this.loaderEnabled ? 'true' : 'false');
+                    root.setAttribute('data-scroll-progress-enabled', this.scrollProgressEnabled ? 'true' : 'false');
+
+                    const bar = document.getElementById('alameen-scroll-progress');
+                    if (bar) {
+                        bar.style.display = this.scrollProgressEnabled ? 'block' : 'none';
+                    }
+
+                    window.addEventListener('alameen-theme-changed', (e) => {
+                        this.theme = e.detail.theme;
+                    });
+                },
 
                 setTheme(val) {
                     this.theme = val;
                     if (window.AlameenTheme) {
                         window.AlameenTheme.setTheme(val);
                     } else {
-                        localStorage.setItem('alameen_theme', val);
+                        try { localStorage.setItem('alameen_theme', val); } catch (e) {}
                         const isDark = val === 'dark' || (val === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
                         document.documentElement.classList.toggle('dark', isDark);
+                        document.documentElement.setAttribute('data-theme', val);
                     }
                 },
 
                 setFontSize(size) {
                     this.fontSize = size;
-                    localStorage.setItem('alameen_font_size', size);
+                    try { localStorage.setItem('alameen_font_size', size); } catch (e) {}
                     document.documentElement.setAttribute('data-font-size', size);
                 },
 
                 setMotion(mode) {
                     this.motion = mode;
-                    localStorage.setItem('alameen_motion', mode);
+                    try { localStorage.setItem('alameen_motion', mode); } catch (e) {}
                     document.documentElement.setAttribute('data-motion', mode);
                 },
 
                 toggleLoader() {
                     this.loaderEnabled = !this.loaderEnabled;
-                    localStorage.setItem('alameen_loader_enabled', this.loaderEnabled);
+                    try { localStorage.setItem('alameen_loader_enabled', this.loaderEnabled ? 'true' : 'false'); } catch (e) {}
+                    document.documentElement.setAttribute('data-loader-enabled', this.loaderEnabled ? 'true' : 'false');
                 },
 
                 toggleScrollProgress() {
                     this.scrollProgressEnabled = !this.scrollProgressEnabled;
-                    localStorage.setItem('alameen_scroll_progress', this.scrollProgressEnabled);
+                    try { localStorage.setItem('alameen_scroll_progress', this.scrollProgressEnabled ? 'true' : 'false'); } catch (e) {}
+                    document.documentElement.setAttribute('data-scroll-progress-enabled', this.scrollProgressEnabled ? 'true' : 'false');
                     const bar = document.getElementById('alameen-scroll-progress');
                     if (bar) {
                         bar.style.display = this.scrollProgressEnabled ? 'block' : 'none';
@@ -54,11 +74,25 @@
                 },
 
                 savePreferences() {
-                    localStorage.setItem('alameen_theme', this.theme);
-                    localStorage.setItem('alameen_font_size', this.fontSize);
-                    localStorage.setItem('alameen_motion', this.motion);
-                    localStorage.setItem('alameen_loader_enabled', this.loaderEnabled);
-                    localStorage.setItem('alameen_scroll_progress', this.scrollProgressEnabled);
+                    // 1. Client-side persistence
+                    try {
+                        localStorage.setItem('alameen_theme', this.theme);
+                        localStorage.setItem('alameen_font_size', this.fontSize);
+                        localStorage.setItem('alameen_motion', this.motion);
+                        localStorage.setItem('alameen_loader_enabled', this.loaderEnabled ? 'true' : 'false');
+                        localStorage.setItem('alameen_scroll_progress', this.scrollProgressEnabled ? 'true' : 'false');
+                    } catch (e) {}
+
+                    // 2. Server-side persistence via Livewire
+                    if (window.Livewire && $wire && typeof $wire.saveSettings === 'function') {
+                        $wire.saveSettings({
+                            theme: this.theme,
+                            fontSize: this.fontSize,
+                            motion: this.motion,
+                            loaderEnabled: this.loaderEnabled,
+                            scrollProgressEnabled: this.scrollProgressEnabled
+                        });
+                    }
 
                     this.toastMessage = '{{ __('تم حفظ وتطبيق تفضيلات المظهر بنجاح!') }}';
                     this.showToast = true;
@@ -100,18 +134,16 @@
                                 <div class="size-2 rounded-full bg-emerald-500"></div>
                             </div>
                             <div class="space-y-1.5">
+                                <div class="h-2 w-8 rounded-full bg-[#012383]/30"></div>
                                 <div class="h-1.5 w-full rounded bg-slate-200"></div>
-                                <div class="h-1.5 w-4/5 rounded bg-slate-200"></div>
-                            </div>
-                            <div class="h-4 w-16 rounded-md bg-[#012383] flex items-center justify-center">
-                                <div class="h-1 w-8 rounded-full bg-white/70"></div>
+                                <div class="h-3 w-10 rounded bg-[#012383]"></div>
                             </div>
                         </div>
 
                         <!-- Card Header & Status -->
                         <div class="w-full flex items-center justify-between">
                             <div class="flex items-center gap-2">
-                                <span class="size-7 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center">
+                                <span class="size-7 rounded-lg bg-amber-50 dark:bg-amber-950/40 text-amber-500 dark:text-amber-400 flex items-center justify-center">
                                     <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
                                     </svg>
@@ -143,22 +175,20 @@
                         <!-- Visual Miniature Mockup -->
                         <div class="w-full h-24 rounded-xl bg-[#0B1120] border border-slate-700/80 p-2 flex flex-col justify-between mb-3.5 shadow-2xs group-hover:scale-[1.01] transition-transform">
                             <div class="flex items-center justify-between">
-                                <div class="h-2 w-12 rounded-full bg-blue-400/30"></div>
+                                <div class="h-2 w-12 rounded-full bg-blue-400/20"></div>
                                 <div class="size-2 rounded-full bg-emerald-400"></div>
                             </div>
                             <div class="space-y-1.5">
+                                <div class="h-2 w-8 rounded-full bg-blue-400/30"></div>
                                 <div class="h-1.5 w-full rounded bg-slate-700"></div>
-                                <div class="h-1.5 w-4/5 rounded bg-slate-700"></div>
-                            </div>
-                            <div class="h-4 w-16 rounded-md bg-blue-600 flex items-center justify-center">
-                                <div class="h-1 w-8 rounded-full bg-white/70"></div>
+                                <div class="h-3 w-10 rounded bg-blue-600"></div>
                             </div>
                         </div>
 
                         <!-- Card Header & Status -->
                         <div class="w-full flex items-center justify-between">
                             <div class="flex items-center gap-2">
-                                <span class="size-7 rounded-lg bg-indigo-100 dark:bg-indigo-950/80 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+                                <span class="size-7 rounded-lg bg-indigo-50 dark:bg-indigo-950/40 text-indigo-500 dark:text-indigo-400 flex items-center justify-center">
                                     <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
                                     </svg>
@@ -188,15 +218,12 @@
                         class="group relative flex flex-col items-start p-4 rounded-2xl border text-start transition-all cursor-pointer shadow-xs hover:shadow-md"
                     >
                         <!-- Visual Miniature Mockup (Split Light/Dark) -->
-                        <div class="w-full h-24 rounded-xl border border-[#DEE8F7] dark:border-slate-700/80 overflow-hidden flex mb-3.5 shadow-2xs group-hover:scale-[1.01] transition-transform">
-                            <!-- Left half: Light -->
-                            <div class="flex-1 bg-[#FAFCFF] p-2 flex flex-col justify-between border-e border-[#DEE8F7]">
-                                <div class="h-2 w-8 rounded-full bg-[#012383]/20"></div>
-                                <div class="h-1.5 w-full rounded bg-slate-200"></div>
-                                <div class="h-3 w-10 rounded bg-[#012383]/70"></div>
+                        <div class="w-full h-24 rounded-xl border border-[#DEE8F7] dark:border-slate-700/80 p-2 flex flex-col justify-between mb-3.5 shadow-2xs group-hover:scale-[1.01] transition-transform overflow-hidden relative bg-gradient-to-r from-[#FAFCFF] via-[#FAFCFF] to-[#0B1120]">
+                            <div class="flex items-center justify-between">
+                                <div class="h-2 w-12 rounded-full bg-[#012383]/20"></div>
+                                <div class="size-2 rounded-full bg-emerald-500"></div>
                             </div>
-                            <!-- Right half: Dark -->
-                            <div class="flex-1 bg-[#0B1120] p-2 flex flex-col justify-between">
+                            <div class="space-y-1.5">
                                 <div class="h-2 w-8 rounded-full bg-blue-400/30"></div>
                                 <div class="h-1.5 w-full rounded bg-slate-700"></div>
                                 <div class="h-3 w-10 rounded bg-blue-500/70"></div>
@@ -252,7 +279,7 @@
                     <button
                         type="button"
                         @click="setFontSize('normal')"
-                        :class="fontSize === 'normal' ? 'border-[#012383] bg-blue-50/50 dark:bg-slate-800 dark:border-blue-400 text-[#012383] dark:text-blue-300 font-bold' : 'border-[#DEE8F7] dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-[#012383]/40'"
+                        :class="fontSize === 'normal' ? 'border-[#012383] bg-blue-50/50 dark:bg-slate-800 dark:border-blue-400 text-[#012383] dark:text-blue-300 font-bold ring-1 ring-[#012383]/20' : 'border-[#DEE8F7] dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-[#012383]/40 bg-white dark:bg-slate-900/60'"
                         class="p-3.5 rounded-xl border flex items-center justify-between text-start transition-all cursor-pointer shadow-2xs"
                     >
                         <div>
@@ -266,7 +293,7 @@
                     <button
                         type="button"
                         @click="setFontSize('medium')"
-                        :class="fontSize === 'medium' ? 'border-[#012383] bg-blue-50/50 dark:bg-slate-800 dark:border-blue-400 text-[#012383] dark:text-blue-300 font-bold' : 'border-[#DEE8F7] dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-[#012383]/40'"
+                        :class="fontSize === 'medium' ? 'border-[#012383] bg-blue-50/50 dark:bg-slate-800 dark:border-blue-400 text-[#012383] dark:text-blue-300 font-bold ring-1 ring-[#012383]/20' : 'border-[#DEE8F7] dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-[#012383]/40 bg-white dark:bg-slate-900/60'"
                         class="p-3.5 rounded-xl border flex items-center justify-between text-start transition-all cursor-pointer shadow-2xs"
                     >
                         <div>
@@ -280,7 +307,7 @@
                     <button
                         type="button"
                         @click="setFontSize('large')"
-                        :class="fontSize === 'large' ? 'border-[#012383] bg-blue-50/50 dark:bg-slate-800 dark:border-blue-400 text-[#012383] dark:text-blue-300 font-bold' : 'border-[#DEE8F7] dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-[#012383]/40'"
+                        :class="fontSize === 'large' ? 'border-[#012383] bg-blue-50/50 dark:bg-slate-800 dark:border-blue-400 text-[#012383] dark:text-blue-300 font-bold ring-1 ring-[#012383]/20' : 'border-[#DEE8F7] dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-[#012383]/40 bg-white dark:bg-slate-900/60'"
                         class="p-3.5 rounded-xl border flex items-center justify-between text-start transition-all cursor-pointer shadow-2xs"
                     >
                         <div>
@@ -327,7 +354,10 @@
                         <svg class="size-5 text-[#0B2A8F] dark:text-blue-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                         </svg>
-                        <span>{{ __('تفضيلات الحركة والتحميل (Motion & Animations)') }}</span>
+                        <div class="flex items-center gap-1.5 flex-wrap">
+                            <span>{{ __('تفضيلات الحركة والتحميل') }}</span>
+                            <span class="text-xs font-mono opacity-80" dir="ltr">(Motion & Animations)</span>
+                        </div>
                     </h3>
                     <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{{ __('تحكم في الحركات التفاعلية، شاشة التحميل، وشريط التقدم لتخصيص الأداء والتركيز') }}</p>
                 </div>
@@ -350,12 +380,15 @@
 
                         <button
                             type="button"
+                            role="switch"
+                            :aria-checked="motion === 'full'"
                             @click="setMotion(motion === 'full' ? 'reduced' : 'full')"
                             :class="motion === 'full' ? 'bg-[#012383]' : 'bg-slate-300 dark:bg-slate-700'"
                             class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none"
+                            dir="ltr"
                         >
                             <span
-                                :class="motion === 'full' ? 'rtl:-translate-x-5 ltr:translate-x-5' : 'translate-x-0'"
+                                :class="motion === 'full' ? 'translate-x-5' : 'translate-x-0'"
                                 class="pointer-events-none inline-block size-5 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out"
                             ></span>
                         </button>
@@ -377,12 +410,15 @@
 
                         <button
                             type="button"
+                            role="switch"
+                            :aria-checked="loaderEnabled"
                             @click="toggleLoader()"
                             :class="loaderEnabled ? 'bg-[#012383]' : 'bg-slate-300 dark:bg-slate-700'"
                             class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none"
+                            dir="ltr"
                         >
                             <span
-                                :class="loaderEnabled ? 'rtl:-translate-x-5 ltr:translate-x-5' : 'translate-x-0'"
+                                :class="loaderEnabled ? 'translate-x-5' : 'translate-x-0'"
                                 class="pointer-events-none inline-block size-5 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out"
                             ></span>
                         </button>
@@ -404,12 +440,15 @@
 
                         <button
                             type="button"
+                            role="switch"
+                            :aria-checked="scrollProgressEnabled"
                             @click="toggleScrollProgress()"
                             :class="scrollProgressEnabled ? 'bg-[#012383]' : 'bg-slate-300 dark:bg-slate-700'"
                             class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none"
+                            dir="ltr"
                         >
                             <span
-                                :class="scrollProgressEnabled ? 'rtl:-translate-x-5 ltr:translate-x-5' : 'translate-x-0'"
+                                :class="scrollProgressEnabled ? 'translate-x-5' : 'translate-x-0'"
                                 class="pointer-events-none inline-block size-5 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out"
                             ></span>
                         </button>
@@ -446,7 +485,7 @@
                                     <span class="text-[11px] font-bold text-emerald-700 bg-emerald-50 dark:bg-emerald-950/60 dark:text-emerald-300 px-2.5 py-0.5 rounded-full inline-block">
                                         {{ __('مستوى متقدم • معتمد') }}
                                     </span>
-                                    <span class="text-xs text-slate-400">12 تمرين صوتي</span>
+                                    <span class="text-xs text-slate-400">{{ __('12 تمرين صوتي') }}</span>
                                 </div>
                                 <h4 class="font-bold text-base text-[#012383] dark:text-white mt-1">
                                     {{ __('دورة علاج اضطرابات اللدغات والتأتأة') }}
@@ -476,11 +515,11 @@
             <!-- ======================================================== -->
             <!-- 5. SAVE BUTTON & TOAST FEEDBACK                         -->
             <!-- ======================================================== -->
-            <div class="pt-6 border-t border-[#DEE8F7] dark:border-slate-800 flex items-center justify-between">
+            <div class="pt-6 border-t border-[#DEE8F7] dark:border-slate-800 flex items-center justify-between gap-4">
                 <button
                     type="button"
                     @click="savePreferences()"
-                    class="px-6 py-2.5 rounded-xl bg-[#012383] hover:bg-[#0B2A8F] text-white text-sm font-bold shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center gap-2 btn-shine"
+                    class="px-6 py-2.5 rounded-xl bg-[#012383] hover:bg-[#0B2A8F] text-white text-sm font-bold shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center gap-2 btn-shine shrink-0"
                 >
                     <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
@@ -488,7 +527,7 @@
                     <span>{{ __('حفظ وتطبيق التفضيلات') }}</span>
                 </button>
 
-                <span class="text-xs text-slate-400 dark:text-slate-500">
+                <span class="text-xs text-slate-400 dark:text-slate-500 text-start">
                     {{ __('يتم تفعيل التغييرات فورياً وتخزينها في حسابك') }}
                 </span>
             </div>

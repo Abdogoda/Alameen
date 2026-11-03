@@ -130,7 +130,7 @@
     <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-2xl p-3 sm:p-4 shadow-xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 w-full">
         
         <!-- Filter Tabs -->
-        <div class="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0 text-xs font-bold scrollbar-none touch-pan-x">
+        <div class="filter-tabs flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-1 md:pb-0 text-xs font-bold scrollbar-none no-scrollbar touch-pan-x w-full md:w-auto">
             @php
                 $tabs = [
                     'all' => ['label' => __('كافة الإشعارات'), 'count' => $counts['all'] ?? $totalCount],
@@ -145,11 +145,15 @@
             @foreach ($tabs as $key => $tab)
                 <button
                     type="button"
+                    wire:key="notification-tab-{{ $key }}"
                     wire:click="setFilter('{{ $key }}')"
-                    class="px-3.5 py-2 rounded-xl transition-all whitespace-nowrap cursor-pointer flex items-center gap-1.5 {{ $filter === $key ? 'bg-[#012383] text-white shadow-xs font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-[#EAF1FB] dark:hover:bg-slate-800 hover:text-[#012383] dark:hover:text-white bg-slate-50 dark:bg-slate-800/60 border border-[#DEE8F7] dark:border-slate-700/80' }}"
+                    data-no-loader="true"
+                    role="tab"
+                    aria-selected="{{ $filter === $key ? 'true' : 'false' }}"
+                    class="filter-tab shrink-0 min-w-max px-3.5 py-2 rounded-xl transition-all whitespace-nowrap cursor-pointer flex items-center gap-1.5 select-none active:scale-95 {{ $filter === $key ? 'bg-[#012383] text-white shadow-xs font-bold border border-transparent' : 'text-slate-600 dark:text-slate-300 hover:bg-[#EAF1FB] dark:hover:bg-slate-800 hover:text-[#012383] dark:hover:text-white bg-slate-50 dark:bg-slate-800/60 border border-[#DEE8F7] dark:border-slate-700/80' }}"
                 >
-                    <span>{{ $tab['label'] }}</span>
-                    <span class="px-1.5 py-0.5 text-[10px] rounded-full {{ $filter === $key ? 'bg-white/20 text-white font-extrabold' : 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300' }}">
+                    <span class="whitespace-nowrap">{{ $tab['label'] }}</span>
+                    <span class="px-1.5 py-0.5 text-[10px] rounded-full leading-tight shrink-0 {{ $filter === $key ? 'bg-white/20 text-white font-extrabold' : 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold' }}">
                         {{ $tab['count'] }}
                     </span>
                 </button>

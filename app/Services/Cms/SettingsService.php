@@ -64,10 +64,78 @@ class SettingsService
     }
 
     /**
+     * Retrieve the localized official platform name.
+     */
+    public function getSiteName(): string
+    {
+        return $this->get('site_name', config('app.name', 'منصة الأمين')) ?: config('app.name', 'منصة الأمين');
+    }
+
+    /**
+     * Retrieve the localized platform tagline.
+     */
+    public function getSiteTagline(): string
+    {
+        return $this->get('site_tagline', 'المنصة الأكاديمية والسريرية الأولى لتدريب وتأهيل أخصائي النطق والتخاطب في الوطن العربي')
+            ?: 'المنصة الأكاديمية والسريرية الأولى لتدريب وتأهيل أخصائي النطق والتخاطب في الوطن العربي';
+    }
+
+    /**
+     * Retrieve the sanitized, valid platform logo URL.
+     */
+    public function getLogoUrl(): string
+    {
+        $logo = $this->get('site_logo', '/assets/images/logo.png');
+        if (empty($logo)) {
+            return '/assets/images/logo.png';
+        }
+
+        $logo = trim($logo);
+        // Strip trailing slash if present (e.g. "assets/images/logo.png/")
+        $logo = rtrim($logo, '/');
+
+        if (str_starts_with($logo, 'http://') || str_starts_with($logo, 'https://') || str_starts_with($logo, 'data:')) {
+            return $logo;
+        }
+
+        if (! str_starts_with($logo, '/')) {
+            $logo = '/' . $logo;
+        }
+
+        return $logo;
+    }
+
+    /**
+     * Retrieve the dynamic currency symbol (e.g. ج.م).
+     */
+    public function getCurrencySymbol(): string
+    {
+        return $this->get('currency_symbol', 'ج.م') ?: 'ج.م';
+    }
+
+    /**
+     * Retrieve the dynamic currency name (e.g. جنيه مصري).
+     */
+    public function getCurrencyName(): string
+    {
+        return $this->get('currency_name', 'جنيه مصري') ?: 'جنيه مصري';
+    }
+
+    /**
      * Update or create a dynamic setting and bust the cache.
      */
     public function set(string $key, ?string $valueAr, ?string $valueEn = null, string $group = 'general', bool $isSecret = false): Setting
     {
+        // Sanitize logo input if entered with trailing slash or without leading slash
+        if ($key === 'site_logo' && ! empty($valueAr)) {
+            $cleanLogo = rtrim(trim($valueAr), '/');
+            if (! str_starts_with($cleanLogo, 'http://') && ! str_starts_with($cleanLogo, 'https://') && ! str_starts_with($cleanLogo, 'data:') && ! str_starts_with($cleanLogo, '/')) {
+                $cleanLogo = '/' . $cleanLogo;
+            }
+            $valueAr = $cleanLogo;
+            $valueEn = $cleanLogo;
+        }
+
         $setting = Setting::updateOrCreate(
             ['key' => $key],
             [

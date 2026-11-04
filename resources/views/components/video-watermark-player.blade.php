@@ -191,8 +191,8 @@
             gridShiftY: 0,
             badgeX: 60,
             badgeY: 60,
-            badgeVx: 0.9,
-            badgeVy: 0.7,
+            badgeVx: 0.18,
+            badgeVy: 0.14,
             colSpacing: 290,
             rowSpacing: 120,
 
@@ -380,13 +380,22 @@
             },
 
             startLoop() {
-                const render = () => {
+                let lastTime = 0;
+                const render = (time) => {
                     if (!this.ctx || !this.canvas) return;
+
+                    if (!lastTime) lastTime = time;
+                    const elapsed = Math.min((time - lastTime) / 1000, 0.1);
+                    lastTime = time;
+
+                    // Factor normalized to 60 FPS baseline (elapsed * 60)
+                    const speedFactor = elapsed * 60;
+
                     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-                    // 1. Shift the full-frame watermark pattern continuously across (X, Y)
-                    this.gridShiftX += 0.55;
-                    this.gridShiftY += 0.35;
+                    // 1. Shift the full-frame watermark pattern very slowly and smoothly across (X, Y)
+                    this.gridShiftX += 0.08 * speedFactor;
+                    this.gridShiftY += 0.05 * speedFactor;
 
                     const offsetX = this.gridShiftX % this.colSpacing;
                     const offsetY = this.gridShiftY % this.rowSpacing;
@@ -429,9 +438,9 @@
 
                     this.ctx.restore();
 
-                    // 3. Dynamic drifting secondary watermark badge (also at strictly 0.1 opacity)
-                    this.badgeX += this.badgeVx;
-                    this.badgeY += this.badgeVy;
+                    // 3. Dynamic drifting secondary watermark badge (slow and gentle movement)
+                    this.badgeX += this.badgeVx * speedFactor;
+                    this.badgeY += this.badgeVy * speedFactor;
 
                     if (this.badgeX <= 25 || this.badgeX + 240 >= this.canvas.width - 25) {
                         this.badgeVx = -this.badgeVx;

@@ -157,12 +157,44 @@
         </div>
     @endif
 
-    {{-- Full-Frame Dynamic Moving Watermark Overlay (Strictly Opacity 0.1 Covering All Video Frame) --}}
+    {{-- Full-Frame Dynamic Moving Watermark Overlay (Strictly Opacity 1 Covering All Video Frame) --}}
     <canvas 
         x-ref="watermarkCanvas" 
         class="absolute inset-0 w-full h-full pointer-events-none z-30"
         style="opacity: 1;"
     ></canvas>
+
+    {{-- Smart Tab-Leave Pause Overlay (Polite & Secure: Pauses and blanks video when leaving tab, without account suspension) --}}
+    <div 
+        x-show="tabPausedActive" 
+        x-transition:enter="transition ease-out duration-200"
+        x-transition:enter-start="opacity-0 scale-95"
+        x-transition:enter-end="opacity-100 scale-100"
+        x-transition:leave="transition ease-in duration-150"
+        x-transition:leave-start="opacity-100 scale-100"
+        x-transition:leave-end="opacity-0 scale-95"
+        class="absolute inset-0 z-40 bg-slate-950/95 backdrop-blur-md flex flex-col items-center justify-center text-center p-6 text-white select-none pointer-events-auto"
+        style="display: none;"
+    >
+        <div class="size-16 rounded-2xl bg-blue-500/20 text-blue-400 flex items-center justify-center border border-blue-500/30 mb-4 shadow-lg shadow-blue-500/10">
+            <svg class="size-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <h4 class="font-['Cairo'] font-bold text-lg text-white">
+            {{ __('المحاضرة متوقفة مؤقتاً') }}
+        </h4>
+        <p class="font-['Cairo'] text-xs text-slate-300 mt-2 max-w-sm leading-relaxed">
+            {{ __('حرصاً على متابعة المحتوى وعدم تفويت الشرح، يتوقف الفيديو تلقائياً عند مغادرة صفحة الدرس.') }}
+        </p>
+        
+        <button
+            type="button"
+            @click="resumeFromTabPause()"
+            class="mt-5 inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-[#012383] hover:bg-[#0B2A8F] text-white font-['Cairo'] text-xs font-bold shadow-lg hover:shadow-xl transition-all cursor-pointer group"
+        >
+            <svg class="size-4 rtl:rotate-180 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/></svg>
+            <span>{{ __('متابعة الاستماع للمحاضرة') }}</span>
+        </button>
+    </div>
 
     {{-- Anti-Screen Recording & Zero-Latency Privacy Shield Overlay (Instant solid black screen with no bypass buttons) --}}
     <div 
@@ -228,6 +260,7 @@
             shieldActive: false,
             shieldTitle: '',
             shieldMessage: '',
+            tabPausedActive: false,
             completionBannerActive: false,
             completionMessage: '',
             nextVideoUrl: null,
@@ -235,6 +268,13 @@
             gridShiftY: 0,
             colSpacing: 290,
             rowSpacing: 120,
+            // Dynamic Floating Forensic Capsule Tracker (Bounces continuously across all quadrants)
+            badgeX: 30,
+            badgeY: 40,
+            badgeVx: 0.8,
+            badgeVy: 0.55,
+            badgeW: 240,
+            badgeH: 26,
 
             initPlayer() {
                 this.$nextTick(() => {
@@ -246,6 +286,7 @@
                         this.startLoop();
                     }
 
+                    this.setupTabVisibilityProtection();
                     this.setupAntiScreenRecording();
                     this.setupProgressTracking();
 
@@ -269,6 +310,36 @@
                 return document.getElementById('alameen-mux-player') 
                     || this.$el.querySelector('video') 
                     || this.$el.querySelector('iframe');
+            },
+
+            resumeFromTabPause() {
+                this.tabPausedActive = false;
+                const player = this.getPlayerElement();
+                if (player && typeof player.play === 'function') {
+                    player.play().catch(() => {});
+                }
+            },
+
+            setupTabVisibilityProtection() {
+                // When switching tabs or minimizing browser: immediately pause video and blank overlay (Safe: No suspension)
+                document.addEventListener('visibilitychange', () => {
+                    if (document.hidden || document.visibilityState !== 'visible') {
+                        const player = this.getPlayerElement();
+                        if (player && typeof player.pause === 'function') {
+                            try { player.pause(); } catch (e) {}
+                        }
+                        this.tabPausedActive = true;
+                    }
+                });
+
+                // When user clicks to another application/window, pause video smoothly to prevent background recording
+                window.addEventListener('blur', () => {
+                    const player = this.getPlayerElement();
+                    if (player && !player.paused) {
+                        try { player.pause(); } catch (e) {}
+                        this.tabPausedActive = true;
+                    }
+                });
             },
 
             instantBlackout(title, message, incidentType = 'screen_recording_attempt') {
@@ -344,6 +415,7 @@
                 } catch (e) {}
 
                 this.shieldActive = false;
+                this.tabPausedActive = false;
 
                 const player = this.getPlayerElement();
                 if (player) {
@@ -369,18 +441,39 @@
                     };
                 }
 
-                // 2. Screenshot Keys & Shortcuts Interception
+                // 2. Intercept Direct Canvas / Media Stream Siphoning (captureStream)
+                try {
+                    if (typeof HTMLMediaElement !== 'undefined' && HTMLMediaElement.prototype.captureStream) {
+                        HTMLMediaElement.prototype.captureStream = function() {
+                            throw new DOMException('Media capture is disabled.', 'SecurityError');
+                        };
+                    }
+                    if (typeof HTMLCanvasElement !== 'undefined' && HTMLCanvasElement.prototype.captureStream) {
+                        HTMLCanvasElement.prototype.captureStream = function() {
+                            throw new DOMException('Canvas capture is disabled.', 'SecurityError');
+                        };
+                    }
+                } catch (e) {}
+
+                // 3. Screenshot & Screen Recording Keys Interception
                 const blockScreenshot = (e) => {
                     if (e.key === 'PrintScreen' || e.code === 'PrintScreen' || e.keyCode === 44) {
                         e.preventDefault();
                         this.nullifyClipboardAndAlert();
                         return;
                     }
+                    // Win + G (Windows Game Bar Screen Recorder)
+                    if ((e.metaKey || e.ctrlKey) && (e.key === 'g' || e.key === 'G')) {
+                        e.preventDefault();
+                        return;
+                    }
+                    // Win + Shift + S / Cmd + Shift + S
                     if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'S' || e.key === 's')) {
                         e.preventDefault();
                         this.nullifyClipboardAndAlert();
                         return;
                     }
+                    // Mac Screen Capture / Screen Recording Shortcuts (Cmd + Shift + 3, 4, 5)
                     if (e.metaKey && e.shiftKey && ['3', '4', '5'].includes(e.key)) {
                         e.preventDefault();
                         this.nullifyClipboardAndAlert();
@@ -388,7 +481,6 @@
                     }
                     if ((e.ctrlKey || e.metaKey) && (e.key === 'p' || e.key === 'P')) {
                         e.preventDefault();
-                        this.nullifyClipboardAndAlert();
                         return;
                     }
                     if ((e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'S')) {
@@ -417,7 +509,7 @@
                     }
                 }, true);
 
-                // 3. Disable PiP and Cast
+                // 4. Disable PiP and Cast
                 const playerEl = this.getPlayerElement();
                 if (playerEl && 'disablePictureInPicture' in playerEl) {
                     playerEl.disablePictureInPicture = true;
@@ -425,6 +517,27 @@
                         if (document.exitPictureInPicture) document.exitPictureInPicture();
                     });
                 }
+
+                // 5. Anti-Tampering Integrity Monitor for Watermark Canvas
+                this.setupCanvasIntegrity();
+            },
+
+            setupCanvasIntegrity() {
+                if (!this.canvas) return;
+                try {
+                    const observer = new MutationObserver(() => {
+                        if (!this.canvas) return;
+                        const style = window.getComputedStyle(this.canvas);
+                        if (style.display === 'none' || style.visibility === 'hidden' || parseFloat(style.opacity || '1') < 0.5) {
+                            this.canvas.style.setProperty('display', 'block', 'important');
+                            this.canvas.style.setProperty('visibility', 'visible', 'important');
+                            this.canvas.style.setProperty('opacity', '1', 'important');
+                            const player = this.getPlayerElement();
+                            if (player && typeof player.pause === 'function') player.pause();
+                        }
+                    });
+                    observer.observe(this.canvas, { attributes: true, attributeFilter: ['style', 'class'] });
+                } catch (e) {}
             },
 
             nullifyClipboardAndAlert() {
@@ -593,6 +706,17 @@
 
             startLoop() {
                 let lastTime = 0;
+
+                const drawRoundedRect = (ctx, x, y, w, h, r) => {
+                    ctx.beginPath();
+                    ctx.moveTo(x + r, y);
+                    ctx.arcTo(x + w, y, x + w, y + h, r);
+                    ctx.arcTo(x + w, y + h, x, y + h, r);
+                    ctx.arcTo(x, y + h, x, y, r);
+                    ctx.arcTo(x, y, x + w, y, r);
+                    ctx.closePath();
+                };
+
                 const render = (time) => {
                     if (!this.ctx || !this.canvas) return;
 
@@ -613,13 +737,6 @@
 
                     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-                    // 1. Shift the full-frame watermark pattern very slowly and smoothly across (X, Y)
-                    this.gridShiftX += 0.10 * speedFactor;
-                    this.gridShiftY += 0.06 * speedFactor;
-
-                    const offsetX = this.gridShiftX % this.colSpacing;
-                    const offsetY = this.gridShiftY % this.rowSpacing;
-
                     // Formatted live timestamp
                     const now = new Date();
                     const dateStr = now.toLocaleDateString('{{ app()->getLocale() === 'en' ? 'en-US' : 'ar-EG' }}');
@@ -628,9 +745,17 @@
                     const line1 = `${this.student.name} • ${this.student.phone}`;
                     const line2 = `ID: ${this.student.id} • IP: ${this.student.ip} • ${dateStr} ${timeStr}`;
 
-                    // 2. High-legibility security grid across the entire video frame
+                    // ==============================================================
+                    // LAYER 1: Full-Frame Security Matrix (Angled background grid)
+                    // ==============================================================
+                    this.gridShiftX += 0.10 * speedFactor;
+                    this.gridShiftY += 0.06 * speedFactor;
+
+                    const offsetX = this.gridShiftX % this.colSpacing;
+                    const offsetY = this.gridShiftY % this.rowSpacing;
+
                     this.ctx.save();
-                    this.ctx.globalAlpha = 0.15;
+                    this.ctx.globalAlpha = 0.16;
                     this.ctx.font = '700 12.5px "Noto Sans Arabic", "Cairo", Inter, system-ui, sans-serif';
 
                     // Angled watermark across the entire frame (-22 degrees)
@@ -647,7 +772,7 @@
                     for (let x = startX + offsetX; x < endX; x += this.colSpacing) {
                         for (let y = startY + offsetY; y < endY; y += this.rowSpacing) {
                             this.ctx.fillStyle = '#FFFFFF';
-                            this.ctx.shadowColor = '#000000';
+                            this.ctx.shadowColor = 'rgba(0, 0, 0, 0.85)';
                             this.ctx.shadowBlur = 4;
                             this.ctx.fillText(line1, x, y);
                             this.ctx.font = '500 10.5px monospace';
@@ -657,6 +782,66 @@
                     }
 
                     this.ctx.restore();
+
+                    // ==============================================================
+                    // LAYER 2: Dynamic Bouncing Forensic Capsule (Un-croppable tracker)
+                    // ==============================================================
+                    if (this.canvas.width > 280 && this.canvas.height > 100) {
+                        const pillW = Math.min(260, this.canvas.width - 40);
+                        const pillH = 26;
+
+                        // Position update
+                        this.badgeX += this.badgeVx * speedFactor;
+                        this.badgeY += this.badgeVy * speedFactor;
+
+                        // Bounce off edges with margins
+                        if (this.badgeX <= 12) {
+                            this.badgeX = 12;
+                            this.badgeVx = Math.abs(this.badgeVx);
+                        } else if (this.badgeX + pillW >= this.canvas.width - 12) {
+                            this.badgeX = this.canvas.width - pillW - 12;
+                            this.badgeVx = -Math.abs(this.badgeVx);
+                        }
+
+                        if (this.badgeY <= 12) {
+                            this.badgeY = 12;
+                            this.badgeVy = Math.abs(this.badgeVy);
+                        } else if (this.badgeY + pillH >= this.canvas.height - 12) {
+                            this.badgeY = this.canvas.height - pillH - 12;
+                            this.badgeVy = -Math.abs(this.badgeVy);
+                        }
+
+                        this.ctx.save();
+                        // Translucent dark pill capsule
+                        this.ctx.globalAlpha = 0.40;
+                        this.ctx.fillStyle = '#0F172A';
+                        this.ctx.shadowColor = 'rgba(0,0,0,0.5)';
+                        this.ctx.shadowBlur = 6;
+                        this.ctx.beginPath();
+                        const r = 7;
+                        if (typeof this.ctx.roundRect === 'function') {
+                            this.ctx.roundRect(this.badgeX, this.badgeY, pillW, pillH, r);
+                        } else {
+                            drawRoundedRect(this.ctx, this.badgeX, this.badgeY, pillW, pillH, r);
+                        }
+                        this.ctx.fill();
+
+                        // Border
+                        this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
+                        this.ctx.lineWidth = 1;
+                        this.ctx.stroke();
+
+                        // Text inside pill (High contrast white with shadow)
+                        this.ctx.globalAlpha = 0.85;
+                        this.ctx.fillStyle = '#FFFFFF';
+                        this.ctx.shadowColor = '#000000';
+                        this.ctx.shadowBlur = 3;
+                        this.ctx.font = '700 11px "Cairo", Inter, sans-serif';
+                        this.ctx.textAlign = 'center';
+                        this.ctx.textBaseline = 'middle';
+                        this.ctx.fillText(line1, this.badgeX + (pillW / 2), this.badgeY + (pillH / 2));
+                        this.ctx.restore();
+                    }
 
                     this.animId = requestAnimationFrame(render);
                 };

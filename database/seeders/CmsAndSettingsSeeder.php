@@ -349,7 +349,7 @@ class CmsAndSettingsSeeder extends Seeder
                         '/assets/images/alameen-images/9.jpeg',
                         '/assets/images/alameen-images/4.jpeg',
                         '/assets/images/alameen-images/5.jpeg',
-                        '/assets/images/alameen-images/14.png',
+                        '/assets/images/alameen-images/certificate.png',
                         '/assets/images/alameen-images/12.jpeg',
                     ],
                 ],

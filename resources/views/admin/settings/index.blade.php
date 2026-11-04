@@ -664,7 +664,7 @@
                                 4 => ['label' => 'خانة 5 (مركز الشبكة - قطر رئيسي)', 'fallback' => '/assets/images/alameen-images/9.jpeg', 'is_diagonal' => true, 'desc' => 'د. هنا المكاوي مع متدربي الدفعة (Round 5)'],
                                 5 => ['label' => 'خانة 6 (وسط اليسار - رأي)', 'fallback' => '/assets/images/alameen-images/4.jpeg', 'is_diagonal' => false, 'desc' => 'سكرين شوت انطباع تدريبي'],
                                 6 => ['label' => 'خانة 7 (أسفل اليمين - رأي)', 'fallback' => '/assets/images/alameen-images/5.jpeg', 'is_diagonal' => false, 'desc' => 'سكرين شوت رأي وملاحظات الدبلوم'],
-                                7 => ['label' => 'خانة 8 (أسفل المنتصف - رأي)', 'fallback' => '/assets/images/alameen-images/14.png', 'is_diagonal' => false, 'desc' => 'صورة رأي متدرب (14.png)'],
+                                7 => ['label' => 'خانة 8 (أسفل المنتصف - شهادة)', 'fallback' => '/assets/images/alameen-images/certificate.png', 'is_diagonal' => false, 'desc' => 'نموذج شهادة التخرج والاعتماد (certificate.png)'],
                                 8 => ['label' => 'خانة 9 (أسفل اليسار - قطر رئيسي)', 'fallback' => '/assets/images/alameen-images/12.jpeg', 'is_diagonal' => true, 'desc' => 'د. هنا والاحتفال بالسنوية السادسة لمركز الأمين'],
                             ];
                             $currentFeedbackImages = $feedbackBlock->metadata['images'] ?? [];

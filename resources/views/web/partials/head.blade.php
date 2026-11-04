@@ -186,8 +186,6 @@
 <link rel="stylesheet" href="/src/css/animations.css">
 
 <!-- Hero Media Instant Performance Preload (Fast Loading & Zero Buffer) -->
-<link rel="preload" as="video" href="/assets/images/alameen-images/1.mp4" type="video/mp4">
-<link rel="preload" as="video" href="/assets/images/alameen-images/2.mp4" type="video/mp4">
 <link rel="preload" as="image" href="/assets/images/alameen-images/7.jpeg">
 <link rel="preload" as="image" href="/assets/images/alameen-images/8.jpeg">
 

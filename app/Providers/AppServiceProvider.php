@@ -148,7 +148,7 @@ class AppServiceProvider extends ServiceProvider
                     if ($feedbackBlock) {
                         $meta = $feedbackBlock->metadata ?? [];
                         $imgs = $meta['images'] ?? [];
-                        if (empty($imgs) || ! isset($imgs[4]) || $imgs[4] !== '/assets/images/alameen-images/9.jpeg' || ! isset($imgs[7]) || $imgs[7] !== '/assets/images/alameen-images/14.png') {
+                        if (empty($imgs) || ! isset($imgs[4]) || $imgs[4] !== '/assets/images/alameen-images/9.jpeg' || ! isset($imgs[7]) || $imgs[7] !== '/assets/images/alameen-images/certificate.png') {
                             $meta['images'] = [
                                 0 => '/assets/images/alameen-images/6.jpeg',
                                 1 => '/assets/images/alameen-images/1.jpeg',
@@ -157,7 +157,7 @@ class AppServiceProvider extends ServiceProvider
                                 4 => '/assets/images/alameen-images/9.jpeg',
                                 5 => '/assets/images/alameen-images/4.jpeg',
                                 6 => '/assets/images/alameen-images/5.jpeg',
-                                7 => '/assets/images/alameen-images/14.png',
+                                7 => '/assets/images/alameen-images/certificate.png',
                                 8 => '/assets/images/alameen-images/12.jpeg',
                             ];
                             $feedbackBlock->metadata = $meta;

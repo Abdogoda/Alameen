@@ -50,13 +50,13 @@
         4 => '/assets/images/alameen-images/9.jpeg',
         5 => '/assets/images/alameen-images/4.jpeg',
         6 => '/assets/images/alameen-images/5.jpeg',
-        7 => '/assets/images/alameen-images/14.png',
+        7 => '/assets/images/alameen-images/certificate.png',
         8 => '/assets/images/alameen-images/12.jpeg',
     ];
     $feedbackImages = [];
     for ($i = 0; $i < 9; $i++) {
         $val = $feedbackMeta['images'][$i] ?? null;
-        if (empty($val)) {
+        if (empty($val) || str_contains((string) $val, '14.png')) {
             $val = $defaultFeedbackImages[$i];
         }
         // Guarantee Dr. Hana on the diagonal (slots 0, 4, 8) and feedback on others
@@ -66,8 +66,8 @@
         if ($i === 4 && (empty($val) || $val === '/assets/images/alameen-images/6.jpeg' || $val === '/assets/images/alameen-images/4.jpeg' || !str_contains($val, '9.jpeg'))) {
             $val = '/assets/images/alameen-images/9.jpeg';
         }
-        if ($i === 7 || str_contains((string) $val, 'certificate')) {
-            $val = '/assets/images/alameen-images/14.png';
+        if ($i === 7 && (empty($val) || str_contains((string) $val, '14.png'))) {
+            $val = '/assets/images/alameen-images/certificate.png';
         }
         if ($i === 8 && (empty($val) || $val === '/assets/images/alameen-images/4.jpeg' || $val === '/assets/images/alameen-images/6.jpeg' || !str_contains($val, '12.jpeg'))) {
             $val = '/assets/images/alameen-images/12.jpeg';

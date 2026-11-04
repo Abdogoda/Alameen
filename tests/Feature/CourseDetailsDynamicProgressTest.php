@@ -119,4 +119,39 @@ class CourseDetailsDynamicProgressTest extends TestCase
         $response->assertViewHas('watchedMinutes', 10); // 600 seconds = 10 minutes
         $response->assertSee('50%');
     }
+
+    public function test_unsubscribed_student_can_watch_free_preview_with_dynamic_data(): void
+    {
+        $this->video1->update(['is_free_preview' => true]);
+
+        $newStudent = User::factory()->create();
+
+        $response = $this->actingAs($newStudent)->get(route('lessons.show', [
+            'course' => $this->course->slug,
+            'video' => $this->video1->slug,
+        ]));
+
+        $response->assertOk();
+        $response->assertViewIs('web.pages.lesson');
+        $response->assertSeeText($this->video1->title);
+        $response->assertSeeText($this->course->title);
+        // Ensure returning banner and resume CTA are NOT rendered for a brand new student
+        $response->assertDontSee('موضعك السابق محفوظ عند');
+        $response->assertDontSeeText('تدريبات الوعي الصوتي');
+    }
+
+    public function test_unsubscribed_student_cannot_watch_non_free_preview(): void
+    {
+        $this->video2->update(['is_free_preview' => false]);
+
+        $unsubscribedStudent = User::factory()->create();
+
+        $response = $this->actingAs($unsubscribedStudent)->get(route('lessons.show', [
+            'course' => $this->course->slug,
+            'video' => $this->video2->slug,
+        ]));
+
+        $response->assertRedirect(route('courses.show', $this->course->slug));
+        $response->assertSessionHas('error');
+    }
 }

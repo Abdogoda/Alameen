@@ -560,6 +560,8 @@ class StudentCourseController extends Controller
             ->orderBy('id')
             ->get();
         $currentProgress = $video->progressForUser($user->id);
+        $courseProgressPercentage = $this->progressService->getCourseProgressPercentage($user, $course);
+        $taskSubmission = $video->clinicalTask ? $video->clinicalTask->submissionForUser($user->id) : null;
 
         return view('web.pages.lesson', compact(
             'course',
@@ -567,13 +569,16 @@ class StudentCourseController extends Controller
             'videos',
             'publishedLevels',
             'canAccess',
+            'hasCourseAccess',
             'embedUrl',
             'playbackToken',
             'storyboardToken',
             'thumbnailToken',
             'watermarkPayload',
             'currentProgress',
-            'curriculumStatus'
+            'curriculumStatus',
+            'courseProgressPercentage',
+            'taskSubmission'
         ));
     }
 

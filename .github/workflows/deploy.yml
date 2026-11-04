@@ -68,7 +68,7 @@ jobs:
           key: ${{ secrets.HOSTINGER_SSH_KEY }}
           password: ${{ secrets.HOSTINGER_SSH_PASSWORD }}
           script: |
-            APP_DIR="${{ secrets.HOSTINGER_APP_PATH || 'domains/moyassar.online/public_html' }}"
+            APP_DIR="${{ secrets.HOSTINGER_APP_PATH || 'domains/alameen-center.online/public_html' }}"
             mkdir -p ~/$APP_DIR
             cd ~/$APP_DIR || cd $APP_DIR
 
@@ -110,7 +110,7 @@ jobs:
           key: ${{ secrets.HOSTINGER_SSH_KEY }}
           password: ${{ secrets.HOSTINGER_SSH_PASSWORD }}
           source: 'public/build/*'
-          target: "${{ secrets.HOSTINGER_APP_PATH || 'domains/moyassar.online/public_html' }}/public/build"
+          target: "${{ secrets.HOSTINGER_APP_PATH || 'domains/alameen-center.online/public_html' }}/public/build"
           strip_components: 2
 
       - name: Finish Deployment (Composer, Migrations & Caches)
@@ -122,7 +122,7 @@ jobs:
           key: ${{ secrets.HOSTINGER_SSH_KEY }}
           password: ${{ secrets.HOSTINGER_SSH_PASSWORD }}
           script: |
-            APP_DIR="${{ secrets.HOSTINGER_APP_PATH || 'domains/moyassar.online/public_html' }}"
+            APP_DIR="${{ secrets.HOSTINGER_APP_PATH || 'domains/alameen-center.online/public_html' }}"
             cd ~/$APP_DIR || cd $APP_DIR
 
             # Install Composer dependencies

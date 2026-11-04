@@ -12,10 +12,13 @@
     $footerMenu = app(\App\Services\Cms\MenuService::class)->getMenu('footer_quick_links');
     $siteName = $cmsSettings->getSiteName();
     $siteTagline = $cmsSettings->getSiteTagline();
-    $contactEmail = $cmsSettings->get('contact_email', 'contact@alameen-speech.com');
-    $contactPhone = $cmsSettings->get('contact_phone', '+20 100 000 0000');
-    $whatsappUrl = $cmsSettings->get('social_whatsapp', 'https://wa.me/201000000000');
-    $facebookUrl = $cmsSettings->get('social_facebook');
+    $contactEmail = $cmsSettings->getContactEmail();
+    $contactPhone = $cmsSettings->getContactPhone();
+    $whatsappUrl = $cmsSettings->getWhatsAppUrl();
+    $personalFb = $cmsSettings->getPersonalFacebook();
+    $centerFb = $cmsSettings->getCenterFacebook();
+    $personalTikTok = $cmsSettings->getPersonalTikTok();
+    $centerTikTok = $cmsSettings->getCenterTikTok();
     $instagramUrl = $cmsSettings->get('social_instagram');
     $linkedinUrl = $cmsSettings->get('social_linkedin');
     $youtubeUrl = $cmsSettings->get('social_youtube');
@@ -31,15 +34,15 @@
                 
                 <!-- Brand Logo with soft badge -->
                 <a href="{{ route('home') }}" class="flex gap-3 items-center group w-fit">
-                    <div class="size-11 rounded-2xl flex items-center justify-center group-hover:scale-105 transition-transform">
-                        <img src="{{ $siteLogo }}" alt="{{ $siteName }}" class="size-full object-contain" />
+                    <div class="size-12 rounded-2xl bg-white/10 p-1.5 backdrop-blur-xs border border-white/15 flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
+                        <img src="{{ $siteLogo }}" alt="{{ $siteName }}" class="size-full object-contain filter brightness-0 invert drop-shadow-sm" />
                     </div>
                     <div class="flex flex-col text-start">
                         <span class="font-['Baloo_Bhaijaan_2'] font-extrabold text-2xl text-white tracking-tight leading-tight">
                             {{ $siteName }}
                         </span>
-                        <span class="text-[11px] text-blue-200/80 font-bold font-['Cairo']">
-                            {{ __('لتأهيل التخاطب وعلاج النطق') }}
+                        <span class="text-[11px] text-[#C59B27] font-bold font-['Cairo']">
+                            {{ $cmsSettings->getFooterBadge() }}
                         </span>
                     </div>
                 </a>
@@ -57,6 +60,7 @@
                         href="{{ $whatsappUrl }}"
                         target="_blank"
                         rel="noopener noreferrer"
+                        title="{{ __('واتساب') }}"
                         aria-label="{{ __('واتساب') }}"
                         class="size-8 rounded-lg bg-blue-950/80 border border-blue-800/50 hover:bg-[#10B77F] hover:border-[#10B77F] text-blue-200 hover:text-white flex items-center justify-center transition-all shadow-xs group cursor-pointer"
                     >
@@ -64,16 +68,63 @@
                     </a>
                     @endif
 
-                    @if(!empty($facebookUrl))
-                    <!-- Facebook -->
+                    @if(!empty($centerFb))
+                    <!-- Center Facebook -->
                     <a
-                        href="{{ $facebookUrl }}"
+                        href="{{ $centerFb }}"
                         target="_blank"
                         rel="noopener noreferrer"
-                        aria-label="{{ __('فيسبوك') }}"
-                        class="size-8 rounded-lg bg-blue-950/80 border border-blue-800/50 hover:bg-[#1877F2] hover:border-[#1877F2] text-blue-200 hover:text-white flex items-center justify-center transition-all shadow-xs group cursor-pointer"
+                        title="{{ __('فيسبوك - مركز الأمين') }}"
+                        aria-label="{{ __('فيسبوك - مركز الأمين') }}"
+                        class="h-8 px-2.5 rounded-lg bg-blue-950/80 border border-blue-800/50 hover:bg-[#1877F2] hover:border-[#1877F2] text-blue-200 hover:text-white flex items-center gap-1.5 justify-center transition-all shadow-xs group cursor-pointer text-[11px] font-bold"
                     >
-                        <svg class="size-4 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                        <svg class="size-3.5 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                        <span>{{ __('المركز') }}</span>
+                    </a>
+                    @endif
+
+                    @if(!empty($personalFb))
+                    <!-- Personal Facebook -->
+                    <a
+                        href="{{ $personalFb }}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        title="{{ __('فيسبوك - د. هنا المكاوي') }}"
+                        aria-label="{{ __('فيسبوك - د. هنا المكاوي') }}"
+                        class="h-8 px-2.5 rounded-lg bg-blue-950/80 border border-blue-800/50 hover:bg-[#1877F2] hover:border-[#1877F2] text-blue-200 hover:text-white flex items-center gap-1.5 justify-center transition-all shadow-xs group cursor-pointer text-[11px] font-bold"
+                    >
+                        <svg class="size-3.5 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                        <span>{{ __('د. هنا') }}</span>
+                    </a>
+                    @endif
+
+                    @if(!empty($centerTikTok))
+                    <!-- Center TikTok -->
+                    <a
+                        href="{{ $centerTikTok }}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        title="{{ __('تيك توك - مركز الأمين') }}"
+                        aria-label="{{ __('تيك توك - مركز الأمين') }}"
+                        class="h-8 px-2.5 rounded-lg bg-blue-950/80 border border-blue-800/50 hover:bg-black hover:border-neutral-700 text-blue-200 hover:text-white flex items-center gap-1.5 justify-center transition-all shadow-xs group cursor-pointer text-[11px] font-bold"
+                    >
+                        <svg class="size-3.5 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.89 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.11V9.41a6.3 6.3 0 0 0-.79-.05 6.33 6.33 0 0 0-6.33 6.33 6.33 6.33 0 0 0 6.33 6.33 6.33 6.33 0 0 0 6.33-6.33V9.05a8.16 8.16 0 0 0 4.77 1.52V7.12a4.85 4.85 0 0 1-1-.43z"/></svg>
+                        <span>{{ __('تيك توك المركز') }}</span>
+                    </a>
+                    @endif
+
+                    @if(!empty($personalTikTok))
+                    <!-- Personal TikTok -->
+                    <a
+                        href="{{ $personalTikTok }}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        title="{{ __('تيك توك - د. هنا المكاوي') }}"
+                        aria-label="{{ __('تيك توك - د. هنا المكاوي') }}"
+                        class="h-8 px-2.5 rounded-lg bg-blue-950/80 border border-blue-800/50 hover:bg-black hover:border-neutral-700 text-blue-200 hover:text-white flex items-center gap-1.5 justify-center transition-all shadow-xs group cursor-pointer text-[11px] font-bold"
+                    >
+                        <svg class="size-3.5 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.89 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.11V9.41a6.3 6.3 0 0 0-.79-.05 6.33 6.33 0 0 0-6.33 6.33 6.33 6.33 0 0 0 6.33-6.33V9.05a8.16 8.16 0 0 0 4.77 1.52V7.12a4.85 4.85 0 0 1-1-.43z"/></svg>
+                        <span>{{ __('تيك توك د. هنا') }}</span>
                     </a>
                     @endif
 

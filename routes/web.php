@@ -25,14 +25,22 @@ Route::middleware('guest')->group(function () {
     Route::get('auth/google/callback', [GoogleAuthController::class, 'callback'])->name('auth.google.callback');
 
     // Firebase Google Authentication routes
-    Route::post('auth/google/firebase', [FirebaseAuthController::class, 'authenticate'])->name('auth.google.firebase');
-    Route::post('auth/firebase', [FirebaseAuthController::class, 'authenticate'])->name('auth.firebase');
+    Route::post('auth/google/firebase', [FirebaseAuthController::class, 'authenticate'])
+        ->middleware('throttle:firebase-auth')
+        ->name('auth.google.firebase');
+    Route::post('auth/firebase', [FirebaseAuthController::class, 'authenticate'])
+        ->middleware('throttle:firebase-auth')
+        ->name('auth.firebase');
 
     // Password Reset via 6-Digit OTP
     Route::get('forgot-password', [PasswordResetOtpController::class, 'showForgotForm'])->name('password.request');
-    Route::post('forgot-password', [PasswordResetOtpController::class, 'sendOtp'])->name('password.email');
+    Route::post('forgot-password', [PasswordResetOtpController::class, 'sendOtp'])
+        ->middleware('throttle:otp')
+        ->name('password.email');
     Route::get('reset-password/{token?}', [PasswordResetOtpController::class, 'showResetForm'])->name('password.reset');
-    Route::post('reset-password', [PasswordResetOtpController::class, 'reset'])->name('password.update');
+    Route::post('reset-password', [PasswordResetOtpController::class, 'reset'])
+        ->middleware('throttle:otp')
+        ->name('password.update');
 });
 
 // -------------------------------------------------------------
@@ -40,13 +48,21 @@ Route::middleware('guest')->group(function () {
 // -------------------------------------------------------------
 Route::view('/', 'web.welcome')->name('home');
 Route::get('courses', [StudentCourseController::class, 'index'])->name('courses.index');
-Route::view('course-details', 'web.pages.course-details')->name('courses.show');
+Route::get('course-details', function () {
+    if (! auth()->check()) {
+        return redirect()->guest(route('login'));
+    }
+
+    return view('web.pages.course-details');
+})->name('courses.show');
 Route::view('reviews', 'web.pages.reviews')->name('reviews.index');
 Route::view('contact', 'web.pages.contact')->name('contact');
 Route::view('audit-report', 'web.pages.audit-report')->name('audit.report');
 
 // Public Certificate Verification
-Route::get('verify-certificate/{code}', [StudentCourseController::class, 'verifyCertificate'])->name('certificates.verify');
+Route::get('verify-certificate/{code}', [StudentCourseController::class, 'verifyCertificate'])
+    ->middleware('throttle:certificate-verify')
+    ->name('certificates.verify');
 
 // MUX Video Streaming Cloud Webhooks
 Route::post('webhooks/mux', [MuxWebhookController::class, 'handle'])->name('webhooks.mux');
@@ -99,35 +115,58 @@ Route::get('storage/{path}', function (string $path) {
 // Customer / Student Authenticated Routes (Guard: web)
 // -------------------------------------------------------------
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('dashboard', [StudentCourseController::class, 'dashboard'])->name('dashboard');
+    Route::get('dashboard', [StudentCourseController::class, 'dashboard'])
+        ->middleware('page.enabled:student_dashboard')
+        ->name('dashboard');
 
     // Secure Lesson Playback with Dynamic Watermark & Sequential Locking
     Route::get('lesson/{course?}/{video?}', [StudentCourseController::class, 'lesson'])->name('lessons.show');
-    Route::get('videos/{video}/playback-token', [StudentCourseController::class, 'getPlaybackToken'])->name('videos.playback-token');
-    Route::post('videos/{video}/progress', [StudentCourseController::class, 'recordProgress'])->name('videos.progress');
-    Route::post('courses/{course}/receipt', [StudentCourseController::class, 'submitReceipt'])->name('courses.receipt.submit');
+    Route::get('videos/{video}/playback-token', [StudentCourseController::class, 'getPlaybackToken'])
+        ->middleware('throttle:playback-token')
+        ->name('videos.playback-token');
+    Route::post('videos/{video}/progress', [StudentCourseController::class, 'recordProgress'])
+        ->middleware('throttle:video-progress')
+        ->name('videos.progress');
+    Route::post('courses/{course}/receipt', [StudentCourseController::class, 'submitReceipt'])
+        ->middleware('throttle:uploads')
+        ->name('courses.receipt.submit');
 
-    Route::get('assignment/{task?}', [StudentCourseController::class, 'assignment'])->name('assignments.index');
-    Route::post('assignment/{task}/submit', [StudentCourseController::class, 'submitAssignment'])->name('assignments.submit');
+    Route::get('assignment/{task?}', [StudentCourseController::class, 'assignment'])
+        ->middleware('page.enabled:tasks')
+        ->name('assignments.index');
+    Route::post('assignment/{task}/submit', [StudentCourseController::class, 'submitAssignment'])
+        ->middleware(['page.enabled:tasks', 'throttle:uploads'])
+        ->name('assignments.submit');
     Route::get('certificates', fn () => redirect()->route('settings.certificates'))->name('certificates.index');
     Route::get('certificate/{certificate?}', fn () => redirect()->route('settings.certificates'))->name('certificates.show');
-    Route::view('grades', 'web.pages.grades')->name('grades.index');
-    Route::view('result', 'web.pages.result')->name('results.show');
+    Route::view('grades', 'web.pages.grades')
+        ->middleware('page.enabled:grades')
+        ->name('grades.index');
+    Route::view('result', 'web.pages.result')
+        ->middleware('page.enabled:grades')
+        ->name('results.show');
     Route::view('user-profile', 'web.pages.profile')->name('user.profile');
 
-    // Student Notifications Inbox
-    Route::livewire('notifications', NotificationInbox::class)
-        ->name('notifications.index');
+    // Student Notifications Inbox & Support Tickets
+    Route::middleware('page.enabled:notifications')->group(function () {
+        Route::livewire('notifications', NotificationInbox::class)
+            ->name('notifications.index');
 
-    // Student Support Tickets & Interactive Messaging
-    Route::get('support', [SupportTicketController::class, 'index'])->name('support.index');
-    Route::get('support/create', [SupportTicketController::class, 'create'])->name('support.create');
-    Route::post('support', [SupportTicketController::class, 'store'])->name('support.store');
-    Route::get('support/{ticket}', [SupportTicketController::class, 'show'])->name('support.show');
-    Route::post('support/{ticket}/reply', [SupportTicketController::class, 'reply'])->name('support.reply');
-    Route::post('support/{ticket}/close', [SupportTicketController::class, 'close'])->name('support.close');
-    Route::post('support/{ticket}/reopen', [SupportTicketController::class, 'reopen'])->name('support.reopen');
-    Route::get('support/{ticket}/poll', [SupportTicketController::class, 'poll'])->name('support.poll');
+        Route::get('support', [SupportTicketController::class, 'index'])->name('support.index');
+        Route::get('support/create', [SupportTicketController::class, 'create'])->name('support.create');
+        Route::post('support', [SupportTicketController::class, 'store'])
+            ->middleware('throttle:support-action')
+            ->name('support.store');
+        Route::get('support/{ticket}', [SupportTicketController::class, 'show'])->name('support.show');
+        Route::post('support/{ticket}/reply', [SupportTicketController::class, 'reply'])
+            ->middleware('throttle:support-action')
+            ->name('support.reply');
+        Route::post('support/{ticket}/close', [SupportTicketController::class, 'close'])->name('support.close');
+        Route::post('support/{ticket}/reopen', [SupportTicketController::class, 'reopen'])->name('support.reopen');
+        Route::get('support/{ticket}/poll', [SupportTicketController::class, 'poll'])
+            ->middleware('throttle:support-poll')
+            ->name('support.poll');
+    });
 });
 
 require __DIR__.'/settings.php';

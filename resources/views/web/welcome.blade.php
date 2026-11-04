@@ -1,16 +1,37 @@
 <x-layouts::marketing active="home">
 @php
     $heroBlock = \App\Models\ContentBlock::where('section_key', 'hero')->first();
+    $feedbackBlock = \App\Models\ContentBlock::where('section_key', 'feedback')->first();
     $aboutBlock = \App\Models\ContentBlock::where('section_key', 'about')->first();
     $faqBlock = \App\Models\ContentBlock::where('section_key', 'faq')->first();
     $cmsSettings = app(\App\Services\Cms\SettingsService::class);
     $heroMeta = $heroBlock?->metadata ?? [];
+    $feedbackMeta = $feedbackBlock?->metadata ?? [];
     $loc = app()->getLocale();
     $cta1Text = $heroMeta['cta_primary_' . $loc] ?? ($loc === 'ar' ? ($heroMeta['cta_primary_ar'] ?? __('landing.slide1Cta1')) : ($heroMeta['cta_primary_en'] ?? __('landing.slide1Cta1')));
     $cta1Url = !empty($heroMeta['cta_primary_url']) ? $heroMeta['cta_primary_url'] : '#courses';
     $cta2Text = $heroMeta['cta_secondary_' . $loc] ?? ($loc === 'ar' ? ($heroMeta['cta_secondary_ar'] ?? __('landing.slide1Cta2')) : ($heroMeta['cta_secondary_en'] ?? __('landing.slide1Cta2')));
     $cta2Url = !empty($heroMeta['cta_secondary_url']) ? $heroMeta['cta_secondary_url'] : '#about';
     $studentsCount = $heroMeta['students_count'] ?? '2500+';
+
+    $heroImages = $heroMeta['images'] ?? [
+        '/assets/images/alameen-images/6.jpeg',
+        '/assets/images/alameen-images/1.jpeg',
+        '/assets/images/alameen-images/2.jpeg',
+        '/assets/images/alameen-images/3.jpeg',
+    ];
+
+    $feedbackImages = $feedbackMeta['images'] ?? [
+        '/assets/images/alameen-images/6.jpeg',
+        '/assets/images/alameen-images/1.jpeg',
+        '/assets/images/alameen-images/2.jpeg',
+        '/assets/images/alameen-images/3.jpeg',
+        '/assets/images/alameen-images/6.jpeg',
+        '/assets/images/alameen-images/4.jpeg',
+        '/assets/images/alameen-images/5.jpeg',
+        '/assets/images/alameen-images/2.jpeg',
+        '/assets/images/alameen-images/6.jpeg',
+    ];
 @endphp
 <!-- SECTION 1: #home (HERO SLIDER SHOWCASE)                                   -->
       <!-- ========================================================================= -->
@@ -62,33 +83,25 @@
               <div class="grid grid-cols-2 gap-2.5 sm:gap-[16px] size-full">
                 
                 <div class="bg-[#DCE8F2] overflow-hidden rounded-full aspect-square w-full relative shadow-sm hover:scale-[1.02] transition-transform">
-                  <img src="/assets/images/photo1.png" alt="{{ __('landing.slide1ImgAlt1') }}" class="size-full object-cover pointer-events-none" />
+                  <img src="{{ $heroImages[0] ?? '/assets/images/alameen-images/6.jpeg' }}" alt="{{ __('landing.slide1ImgAlt1') }}" class="size-full object-cover pointer-events-none" />
                 </div>
 
                 <div class="bg-[#152D4D] overflow-hidden rounded-[16px] sm:rounded-[20px] aspect-square w-full relative shadow-sm group hover:scale-[1.02] transition-transform cursor-pointer">
-                  <img src="/assets/images/photo2.png" alt="{{ __('landing.slide1ImgAlt2') }}" class="size-full object-cover pointer-events-none" />
+                  <img src="{{ $heroImages[1] ?? '/assets/images/alameen-images/1.jpeg' }}" alt="{{ __('landing.slide1ImgAlt2') }}" class="size-full object-cover pointer-events-none" />
                   <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 size-[42px] sm:size-[56px] rounded-full group-hover:scale-110 transition-transform animate-pulse-glow">
                     <img src="/assets/images/play.svg" alt="{{ __('landing.play') }}" class="size-full" />
                   </div>
                 </div>
 
                 <div class="bg-[#EDF2F7] overflow-hidden rounded-[16px] sm:rounded-[20px] aspect-square w-full relative shadow-sm group hover:scale-[1.02] transition-transform cursor-pointer">
-                  <img src="/assets/images/photo3.png" alt="{{ __('landing.slide1ImgAlt3') }}" class="size-full object-cover pointer-events-none" />
+                  <img src="{{ $heroImages[2] ?? '/assets/images/alameen-images/2.jpeg' }}" alt="{{ __('landing.slide1ImgAlt3') }}" class="size-full object-cover pointer-events-none" />
                   <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 size-[42px] sm:size-[56px] rounded-full group-hover:scale-110 transition-transform animate-pulse-glow">
                     <img src="/assets/images/play.svg" alt="{{ __('landing.play') }}" class="size-full" />
                   </div>
                 </div>
 
                 <div class="bg-[#203C60] overflow-hidden rounded-tl-[16px] rounded-bl-[16px] sm:rounded-tl-[20px] sm:rounded-bl-[20px] rounded-tr-[50%] rounded-br-[50%] aspect-square w-full relative shadow-sm hover:scale-[1.02] transition-transform">
-                  <div class="absolute left-[10px] sm:left-[16px] top-[50px] sm:top-[80px] z-0 flex flex-col gap-1 pointer-events-none opacity-85">
-                    <svg class="w-[22px] h-[22px] sm:w-[32px] sm:h-[32px] -rotate-12" viewBox="0 0 32 32" fill="none">
-                      <path d="M4 16C4 7 13 4 28 4C28 19 19 28 4 16Z" fill="#7E95B1"/>
-                    </svg>
-                    <svg class="w-[22px] h-[22px] sm:w-[32px] sm:h-[32px] rotate-45 -mt-2" viewBox="0 0 32 32" fill="none">
-                      <path d="M4 16C4 7 13 4 28 4C28 19 19 28 4 16Z" fill="#7E95B1"/>
-                    </svg>
-                  </div>
-                  <img src="/assets/images/photo4.png" alt="{{ __('landing.slide1ImgAlt4') }}" class="size-full object-cover pointer-events-none relative z-10" />
+                  <img src="{{ $heroImages[3] ?? '/assets/images/alameen-images/3.jpeg' }}" alt="{{ __('landing.slide1ImgAlt4') }}" class="size-full object-cover pointer-events-none relative z-10" />
                 </div>
 
               </div>
@@ -100,14 +113,14 @@
                 </div>
                 <div class="flex flex-col text-start">
                   <span class="text-[11px] sm:text-xs font-bold text-[#012383]">{{ $studentsCount }} {{ __('طالب ومتدرب') }}</span>
-                  <span class="text-[10px] sm:text-[11px] text-[#475569]">{{ __('إشراف سريري متقدم') }}</span>
+                  <span class="text-[10px] sm:text-[11px] text-[#475569]">{{ __('إشراف وتدريب متقدم') }}</span>
                 </div>
               </div>
             </div>
 
           </div>
 
-          <!-- SLIDE 2: تطبيقات عملية وفيديوهات تفاعلية -->
+          <!-- SLIDE 2: آراء وتجارب المتدربين (Feedback Showcase) -->
           <div class="hero-slide w-full max-w-[1536px] mx-auto flex flex-col lg:flex-row items-center justify-between gap-6 sm:gap-8 lg:gap-12" data-slide="1">
             
             <!-- Slide 2 Text -->
@@ -115,77 +128,41 @@
               
               <div class="slide-eyebrow inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#EEF7F3] border border-[#10B77F]/30 text-[#10B77F] text-xs sm:text-sm font-extrabold shadow-xs">
                 <span class="size-2 rounded-full bg-[#10B77F] animate-ping"></span>
-                <span>{{ __('landing.slide2Eyebrow') }}</span>
+                <span>{{ __('آراء وتجارب المتدربين') }}</span>
               </div>
 
               <div class="flex flex-col gap-2.5 sm:gap-4 items-center lg:items-start w-full">
-                <h2 class="slide-title font-['Baloo_Bhaijaan_2'] font-bold text-[24px] xs:text-[28px] sm:text-[36px] lg:text-[44px] xl:text-[48px] leading-[1.2] text-[#012383] w-full tracking-tight">{{ __('landing.slide2Title') }}</h2>
+                <h2 class="slide-title font-['Baloo_Bhaijaan_2'] font-bold text-[22px] xs:text-[26px] sm:text-[32px] lg:text-[38px] xl:text-[42px] leading-[1.25] text-[#012383] w-full tracking-tight">
+                    {{ $feedbackBlock?->title ?: 'مركز الأمين.. ثقتكم دايمًا مسؤولية بنعتز بيها، ورضاكم هو هدفنا اللي بنسعى ليه كل يوم' }}
+                </h2>
 
-                <p class="slide-desc font-['Cairo'] font-semibold text-[14px] sm:text-[17px] lg:text-[20px] leading-[1.7] text-[#1E293B] dark:text-slate-300 w-full max-w-[580px]">{{ __('landing.slide2Desc') }}</p>
+                <p class="slide-desc font-['Cairo'] font-semibold text-[13px] sm:text-[16px] lg:text-[18px] leading-[1.7] text-[#1E293B] dark:text-slate-300 w-full max-w-[580px]">
+                    {{ $feedbackBlock?->subtitle ?: 'بنؤمن إن آراءكم وملاحظاتكم هي الدافع الحقيقي لينا علشان نتطور ونقدم الأفضل باستمرار ونكون عند حسن ظنكم وثقتكم فينا.' }}
+                </p>
               </div>
 
               <div class="slide-ctas flex flex-wrap sm:flex-nowrap items-center justify-center lg:justify-start gap-2.5 sm:gap-3 pt-1 sm:pt-2 w-full sm:w-auto">
                 <a
-                  href="#courses"
+                  href="#reviews"
                   class="w-full sm:w-auto px-6 sm:px-8 h-[46px] sm:h-[56px] bg-[#012383] hover:bg-[#0B2A8F] flex items-center justify-center rounded-[14px] sm:rounded-[16px] text-white font-['Cairo'] font-extrabold text-[15px] sm:text-[18px] shadow-md hover:shadow-lg transition-all cursor-pointer whitespace-nowrap"
-                >{{ __('landing.slide2Cta1') }}</a>
+                >{{ __('استكشف آراء المتدربين') }}</a>
                 <a
-                  href="./pages/lesson.html"
+                  href="#contact"
                   class="w-full sm:w-auto px-5 sm:px-6 h-[46px] sm:h-[56px] bg-white hover:bg-[#EAF1FB] text-[#012383] border border-[#DEE8F7] flex items-center justify-center rounded-[14px] sm:rounded-[16px] font-['Cairo'] font-bold text-[14px] sm:text-[16px] transition-colors cursor-pointer whitespace-nowrap shadow-xs"
-                >{{ __('landing.slide2Cta2') }}</a>
+                >{{ __('تواصل معنا') }}</a>
               </div>
 
             </div>
 
-            <!-- Slide 2 Video & Audio Training Showcase -->
-            <div class="slide-visual w-full max-w-[320px] xs:max-w-[360px] sm:max-w-[440px] lg:max-w-[500px] shrink-0 order-2 mx-auto lg:mx-0 relative flex flex-col gap-3 sm:gap-4">
-              
-              <!-- Video Player Card -->
-              <div class="bg-white border-2 border-[#DEE8F7] rounded-[20px] sm:rounded-[24px] p-2.5 sm:p-3 shadow-card relative overflow-hidden group">
-                <div class="h-[190px] sm:h-[260px] w-full rounded-[16px] sm:rounded-[18px] bg-[#0B2A8F] relative overflow-hidden flex items-center justify-center">
-                  <img src="/assets/images/lesson-video-frame.png" alt="{{ __('landing.slide2Title') }}" class="size-full object-cover pointer-events-none group-hover:scale-105 transition-transform duration-500" />
-                  
-                  <a href="./pages/lesson.html" class="absolute size-12 sm:size-16 rounded-full bg-white/95 text-[#012383] flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform animate-pulse-glow">
-                    <svg class="size-5 sm:size-6 text-[#012383] translate-x-0.5" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M8 5v14l11-7z" />
-                    </svg>
-                  </a>
-
-                  <div class="absolute bottom-2.5 end-2.5 sm:bottom-3 sm:end-3 px-2.5 sm:px-3 py-1 rounded-full bg-black/70 backdrop-blur-md text-white text-[11px] sm:text-xs font-bold font-['Cairo'] tabular-nums">
-                    {{ __('landing.slide2Duration') }}
+            <!-- Slide 2 Feedback 9-Photo Masonry Grid -->
+            <div class="slide-visual w-full max-w-[340px] xs:max-w-[400px] sm:max-w-[460px] lg:max-w-[520px] shrink-0 order-2 mx-auto lg:mx-0 relative">
+              <div class="grid grid-cols-3 gap-2 sm:gap-2.5 p-2.5 sm:p-3 bg-white/95 border border-[#DEE8F7] rounded-[22px] shadow-xl backdrop-blur-xs">
+                @foreach(array_slice($feedbackImages, 0, 9) as $idx => $fImg)
+                  <div class="aspect-square rounded-xl overflow-hidden border border-slate-100 shadow-2xs group relative hover:scale-105 hover:z-20 transition-all duration-300 bg-slate-50">
+                    <img src="{{ $fImg }}" alt="Feedback {{ $idx + 1 }}" class="size-full object-cover group-hover:brightness-105 transition-all" />
                   </div>
-
-                  <div class="absolute top-2.5 start-2.5 sm:top-3 sm:start-3 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full bg-[#10B77F] text-white text-[11px] sm:text-xs font-bold font-['Cairo'] shadow-sm flex items-center gap-1.5">
-                    <span class="size-1.5 rounded-full bg-white animate-ping"></span>
-                    <span>{{ __('landing.slide2Badge') }}</span>
-                  </div>
-                </div>
+                @endforeach
               </div>
-
-              <!-- Overlaid Voice Task Pill with Animated Dynamic Audio Waveform -->
-              <div class="animate-float-slow bg-white border border-[#DEE8F7] rounded-xl sm:rounded-2xl p-2.5 sm:p-4 shadow-card flex items-center justify-between gap-2 sm:gap-3">
-                <div class="flex items-center gap-2 sm:gap-3 min-w-0">
-                  <div class="size-8 sm:size-10 rounded-xl bg-[#EEF7F3] text-emerald-700 flex items-center justify-center font-bold text-base sm:text-lg shrink-0">
-                    🎙️
-                  </div>
-                  <div class="flex flex-col text-start min-w-0">
-                    <div class="flex items-center gap-1.5 sm:gap-2">
-                      <span class="text-[11px] sm:text-xs font-bold text-[#012383] truncate">{{ __('landing.slide2VoiceTaskTitle') }}</span>
-                      <div class="hidden xs:flex items-center gap-0.5 h-3.5 sm:h-4 px-1 bg-emerald-50 rounded-md shrink-0">
-                        <span class="w-0.5 bg-[#10B77F] rounded-full voice-wave-bar"></span>
-                        <span class="w-0.5 bg-[#10B77F] rounded-full voice-wave-bar"></span>
-                        <span class="w-0.5 bg-[#10B77F] rounded-full voice-wave-bar"></span>
-                        <span class="w-0.5 bg-[#10B77F] rounded-full voice-wave-bar"></span>
-                      </div>
-                    </div>
-                    <span class="text-[10px] sm:text-[11px] text-emerald-600 font-semibold truncate">{{ __('landing.slide2VoiceTaskScore') }}</span>
-                  </div>
-                </div>
-                <span class="px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full bg-[#EAF1FB] text-[#0B2A8F] text-[10px] sm:text-[11px] font-bold shrink-0">
-                  {{ __('landing.slide2VoiceTaskStatus') }}
-                </span>
-              </div>
-
             </div>
 
           </div>
@@ -213,25 +190,21 @@
                   class="w-full sm:w-auto px-6 sm:px-8 h-[46px] sm:h-[56px] bg-[#012383] hover:bg-[#0B2A8F] flex items-center justify-center rounded-[14px] sm:rounded-[16px] text-white font-['Cairo'] font-extrabold text-[15px] sm:text-[18px] shadow-md hover:shadow-lg transition-all cursor-pointer whitespace-nowrap"
                 >{{ __('landing.slide3Cta1') }}</a>
                 <a
-                  href="./pages/certificate.html"
+                  href="{{ route('certificates.index') }}"
                   class="w-full sm:w-auto px-5 sm:px-6 h-[46px] sm:h-[56px] bg-white hover:bg-[#EAF1FB] text-[#012383] border border-[#DEE8F7] flex items-center justify-center rounded-[14px] sm:rounded-[16px] font-['Cairo'] font-bold text-[14px] sm:text-[16px] transition-colors cursor-pointer whitespace-nowrap shadow-xs"
                 >{{ __('landing.slide3Cta2') }}</a>
               </div>
 
             </div>
 
-            <!-- Slide 3 Certificate Showcase -->
-            <div class="slide-visual w-full max-w-[320px] xs:max-w-[360px] sm:max-w-[440px] lg:max-w-[500px] shrink-0 order-2 mx-auto lg:mx-0 relative flex flex-col gap-3 sm:gap-4">
+            <!-- Slide 3 Certificate Showcase with Canva Master Component -->
+            <div class="slide-visual w-full max-w-[340px] xs:max-w-[400px] sm:max-w-[480px] lg:max-w-[540px] shrink-0 order-2 mx-auto lg:mx-0 relative flex flex-col gap-3 sm:gap-4">
               
-              <div class="animate-float-slow bg-white border-2 border-[#DEE8F7] rounded-[20px] sm:rounded-[24px] p-2.5 sm:p-3 shadow-card relative overflow-hidden group hover:scale-[1.02] transition-transform">
-                <div class="h-[190px] sm:h-[280px] w-full rounded-[16px] sm:rounded-[18px] overflow-hidden relative bg-slate-50 flex items-center justify-center">
-                  <img src="/assets/images/certificate-preview.png" alt="{{ __('landing.slide3Title') }}" class="size-full object-cover pointer-events-none" />
-                  
-                  <div class="absolute inset-0 bg-gradient-to-t from-[#012383]/80 via-transparent to-transparent flex flex-col justify-end p-4 sm:p-5 text-white">
-                    <span class="text-[11px] sm:text-xs font-bold text-blue-200">{{ __('landing.slide3CertBadge') }}</span>
-                    <h4 class="text-sm sm:text-base font-bold font-['Cairo']">{{ __('landing.slide3CertTitle') }}</h4>
-                  </div>
-                </div>
+              <div class="animate-float-slow hover:scale-[1.02] transition-transform">
+                <x-certificate-preview 
+                  student-name="Yara Mahmoud Ahmed" 
+                  course-title="Level 1 of the Comprehensive Speech and Communication Course"
+                />
               </div>
 
               <div class="animate-float-reverse bg-white border border-[#DEE8F7] rounded-xl sm:rounded-2xl p-2.5 sm:p-4 shadow-card flex items-center justify-between gap-2 sm:gap-3">
@@ -241,7 +214,7 @@
                   </div>
                   <div class="flex flex-col text-start">
                     <span class="text-[11px] sm:text-xs font-bold text-[#012383]">{{ __('landing.slide3ProgressTitle') }}</span>
-                    <span class="text-[10px] sm:text-[11px] text-emerald-600 font-semibold">{{ __('landing.slide3ProgressDesc') }}</span>
+                    <span class="text-[10px] sm:text-[11px] text-emerald-600 font-semibold">{{ __('شهادة معتمدة من مركز الأمين') }}</span>
                   </div>
                 </div>
                 <a href="{{ route('certificates.index') }}" class="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl bg-[#012383] text-white text-[11px] sm:text-xs font-bold hover:bg-[#0B2A8F] transition-colors shrink-0">
@@ -374,23 +347,6 @@
           </div>
         </div>
 
-        <!-- Filter Categories & Counter -->
-        <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 sm:gap-3 bg-[#FAFCFF] border border-[#DEE8F7] rounded-[18px] p-3 shadow-xs">
-          <div class="flex flex-wrap items-center gap-2" id="catalog-category-group">
-            <button
-              type="button"
-              data-cat="all"
-              class="catalog-filter active px-4 py-1.5 rounded-full text-xs font-bold transition-all bg-[#012383] text-white cursor-pointer shadow-xs"
-            >
-              {{ __('landing.courseCategoryAll') }}
-            </button>
-          </div>
-
-          <span class="text-xs font-bold text-[#0B2A8F] bg-[#EAF1FB] px-3.5 py-1.5 rounded-full border border-[#DEE8F7] text-center sm:text-start self-start sm:self-auto">
-            {{ __('catalog.pathBadge') }}
-          </span>
-        </div>
-
         @php
           $courses = \App\Models\Course::query()
               ->where('is_published', true)
@@ -429,9 +385,9 @@
                   </p>
                   <div class="flex items-center gap-2 pt-2 border-t border-[#DEE8F7]/60 text-xs text-[#475569]">
                     <div class="size-6 rounded-full bg-[#EAF1FB] flex items-center justify-center font-bold text-[10px] text-[#0B2A8F]">
-                      د
+                      هـ
                     </div>
-                    <span>د. سامي المنصور • محاضر التخاطب السريري</span>
+                    <span>{{ __('د. هنا المكاوي • أخصائية تخاطب وتأهيل لغوي') }}</span>
                   </div>
                 </div>
               </div>
@@ -491,10 +447,7 @@
         <!-- 4 Pillars Grid -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           
-          <div class="reveal-on-scroll bg-white border border-[#DEE8F7] rounded-[22px] p-5 sm:p-6 shadow-xs hover:shadow-card hover:-translate-y-1 transition-all flex flex-col gap-3.5">
-            <div class="size-12 rounded-2xl bg-[#EAF1FB] text-[#0B2A8F] flex items-center justify-center font-bold text-xl">
-              {{ $pillars[0]['icon'] ?? '🎯' }}
-            </div>
+          <div class="reveal-on-scroll bg-white border border-[#DEE8F7] rounded-[22px] p-5 sm:p-6 shadow-xs hover:shadow-card hover:-translate-y-1 transition-all flex flex-col gap-2.5">
             <h3 class="font-bold text-base sm:text-lg text-[#012383]">
               {{ $pillars[0]['title_' . $loc] ?? __('landing.pillar1Title') }}
             </h3>
@@ -503,10 +456,7 @@
             </p>
           </div>
 
-          <div class="reveal-on-scroll bg-white border border-[#DEE8F7] rounded-[22px] p-5 sm:p-6 shadow-xs hover:shadow-card hover:-translate-y-1 transition-all flex flex-col gap-3.5" style="transition-delay: 100ms;">
-            <div class="size-12 rounded-2xl bg-[#EEF7F3] text-emerald-700 flex items-center justify-center font-bold text-xl">
-              {{ $pillars[1]['icon'] ?? '🎙️' }}
-            </div>
+          <div class="reveal-on-scroll bg-white border border-[#DEE8F7] rounded-[22px] p-5 sm:p-6 shadow-xs hover:shadow-card hover:-translate-y-1 transition-all flex flex-col gap-2.5" style="transition-delay: 100ms;">
             <h3 class="font-bold text-base sm:text-lg text-[#012383]">
               {{ $pillars[1]['title_' . $loc] ?? __('landing.pillar2Title') }}
             </h3>
@@ -515,10 +465,7 @@
             </p>
           </div>
 
-          <div class="reveal-on-scroll bg-white border border-[#DEE8F7] rounded-[22px] p-5 sm:p-6 shadow-xs hover:shadow-card hover:-translate-y-1 transition-all flex flex-col gap-3.5" style="transition-delay: 200ms;">
-            <div class="size-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold text-xl">
-              {{ $pillars[2]['icon'] ?? '👨‍⚕️' }}
-            </div>
+          <div class="reveal-on-scroll bg-white border border-[#DEE8F7] rounded-[22px] p-5 sm:p-6 shadow-xs hover:shadow-card hover:-translate-y-1 transition-all flex flex-col gap-2.5" style="transition-delay: 200ms;">
             <h3 class="font-bold text-base sm:text-lg text-[#012383]">
               {{ $pillars[2]['title_' . $loc] ?? __('landing.pillar3Title') }}
             </h3>
@@ -527,10 +474,7 @@
             </p>
           </div>
 
-          <div class="reveal-on-scroll bg-white border border-[#DEE8F7] rounded-[22px] p-5 sm:p-6 shadow-xs hover:shadow-card hover:-translate-y-1 transition-all flex flex-col gap-3.5" style="transition-delay: 300ms;">
-            <div class="size-12 rounded-2xl bg-indigo-50 text-indigo-700 flex items-center justify-center font-bold text-xl">
-              {{ $pillars[3]['icon'] ?? '📜' }}
-            </div>
+          <div class="reveal-on-scroll bg-white border border-[#DEE8F7] rounded-[22px] p-5 sm:p-6 shadow-xs hover:shadow-card hover:-translate-y-1 transition-all flex flex-col gap-2.5" style="transition-delay: 300ms;">
             <h3 class="font-bold text-base sm:text-lg text-[#012383]">
               {{ $pillars[3]['title_' . $loc] ?? __('landing.pillar4Title') }}
             </h3>
@@ -763,8 +707,8 @@
               </p>
             </div>
             <div class="mt-5 sm:mt-6 pt-4 border-t border-[#DEE8F7] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <span class="text-xs sm:text-sm font-bold text-[#0B2A8F] dir-ltr break-all">contact@alameen-speech.com</span>
-              <a href="mailto:contact@alameen-speech.com" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 sm:py-2 rounded-xl bg-[#EAF1FB] hover:bg-[#DEE8F7] text-xs font-bold text-[#012383] hover:text-[#0B2A8F] transition-all">
+              <span class="text-xs sm:text-sm font-bold text-[#0B2A8F] dir-ltr break-all">{{ $cmsSettings->getContactEmail() }}</span>
+              <a href="mailto:{{ $cmsSettings->getContactEmail() }}" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 sm:py-2 rounded-xl bg-[#EAF1FB] hover:bg-[#DEE8F7] text-xs font-bold text-[#012383] hover:text-[#0B2A8F] transition-all">
                 <span>{{ __('contact.channelTechBtn') }}</span>
                 <span class="text-xs">←</span>
               </a>
@@ -783,8 +727,8 @@
               </p>
             </div>
             <div class="mt-5 sm:mt-6 pt-4 border-t border-[#DEE8F7] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <span class="text-xs sm:text-sm font-bold text-[#10B77F] dir-ltr">+20 100 000 0000</span>
-              <a href="https://wa.me/201000000000" target="_blank" rel="noopener" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 sm:py-2 rounded-xl bg-[#EEF7F3] hover:bg-[#DEE8F7] text-xs font-bold text-emerald-700 hover:text-emerald-800 transition-all">
+              <span class="text-xs sm:text-sm font-bold text-[#10B77F] dir-ltr">{{ $cmsSettings->getContactPhone() }}</span>
+              <a href="{{ $cmsSettings->getWhatsAppUrl() }}" target="_blank" rel="noopener" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 sm:py-2 rounded-xl bg-[#EEF7F3] hover:bg-[#DEE8F7] text-xs font-bold text-emerald-700 hover:text-emerald-800 transition-all">
                 <span>{{ __('contact.channelWhatsAppBtn') }}</span>
                 <span class="text-xs">←</span>
               </a>
@@ -874,7 +818,7 @@
                 </div>
                 <div class="flex flex-col text-xs">
                   <span class="font-bold text-[#012383]">{{ __('contact.workingDays') }}</span>
-                  <span class="text-[#475569] mt-0.5">{{ __('contact.workingHoursTime') }}</span>
+                  <span class="text-[#475569] mt-0.5">{{ $cmsSettings->getWorkingHours() }}</span>
                 </div>
               </div>
 
@@ -884,7 +828,7 @@
                 </div>
                 <div class="flex flex-col text-xs">
                   <span class="font-bold text-[#012383]">{{ __('contact.headquartersTitle') }}</span>
-                  <span class="text-[#475569] mt-0.5">{{ __('contact.headquartersAddress') }}</span>
+                  <span class="text-[#475569] mt-0.5">{{ $cmsSettings->getHeadquartersAddress() }}</span>
                 </div>
               </div>
             </div>

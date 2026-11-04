@@ -68,7 +68,7 @@ class SettingsService
      */
     public function getSiteName(): string
     {
-        return $this->get('site_name', config('app.name', 'منصة الأمين')) ?: config('app.name', 'منصة الأمين');
+        return $this->get('site_name', 'مركز الأمين') ?: 'مركز الأمين';
     }
 
     /**
@@ -76,8 +76,8 @@ class SettingsService
      */
     public function getSiteTagline(): string
     {
-        return $this->get('site_tagline', 'المنصة الأكاديمية والسريرية الأولى لتدريب وتأهيل أخصائي النطق والتخاطب في الوطن العربي')
-            ?: 'المنصة الأكاديمية والسريرية الأولى لتدريب وتأهيل أخصائي النطق والتخاطب في الوطن العربي';
+        return $this->get('site_tagline', 'منصة مركز الامين , التخاطب الشامل مع هنا المكاوي , دورات تخاطب شاملة , فيديوهات وتطبيقات عملية')
+            ?: 'منصة مركز الامين , التخاطب الشامل مع هنا المكاوي , دورات تخاطب شاملة , فيديوهات وتطبيقات عملية';
     }
 
     /**
@@ -119,6 +119,119 @@ class SettingsService
     public function getCurrencyName(): string
     {
         return $this->get('currency_name', 'جنيه مصري') ?: 'جنيه مصري';
+    }
+
+    /**
+     * Theme & Palette Colors
+     */
+    public function getThemePrimaryColor(): string
+    {
+        return $this->get('theme_primary_color', '#012383') ?: '#012383';
+    }
+
+    public function getThemeSecondaryColor(): string
+    {
+        return $this->get('theme_secondary_color', '#0B2A8F') ?: '#0B2A8F';
+    }
+
+    public function getThemeAccentColor(): string
+    {
+        return $this->get('theme_accent_color', '#10B77F') ?: '#10B77F';
+    }
+
+    public function getThemeGoldColor(): string
+    {
+        return $this->get('theme_gold_color', '#C59B27') ?: '#C59B27';
+    }
+
+    public function getThemeFooterBg(): string
+    {
+        return $this->get('theme_footer_bg', '#031338') ?: '#031338';
+    }
+
+    /**
+     * Contact & Location Helpers
+     */
+    public function getContactEmail(): string
+    {
+        return $this->get('contact_email', 'hm2991479@gmail.com') ?: 'hm2991479@gmail.com';
+    }
+
+    public function getContactPhone(): string
+    {
+        return $this->get('contact_phone', '01005123784') ?: '01005123784';
+    }
+
+    public function getWhatsAppUrl(): string
+    {
+        $raw = $this->get('social_whatsapp', 'https://wa.me/201005123784') ?: 'https://wa.me/201005123784';
+        if (! str_starts_with($raw, 'http')) {
+            $digits = preg_replace('/\D+/', '', $raw);
+            return 'https://wa.me/'.(str_starts_with($digits, '2') ? $digits : '2'.$digits);
+        }
+        return $raw;
+    }
+
+    public function getPersonalFacebook(): ?string
+    {
+        return $this->get('social_facebook_personal', 'https://www.facebook.com/share/1BY6bGSNeR/?mibextid=wwXIfr');
+    }
+
+    public function getCenterFacebook(): ?string
+    {
+        return $this->get('social_facebook_center', 'https://www.facebook.com/share/1CChF5RHCT/?mibextid=wwXIfr')
+            ?: $this->get('social_facebook');
+    }
+
+    public function getPersonalTikTok(): ?string
+    {
+        return $this->get('social_tiktok_personal', 'https://www.tiktok.com/@slt.hanamekawy?_r=1&_t=ZS-97eMA66BpIa');
+    }
+
+    public function getCenterTikTok(): ?string
+    {
+        return $this->get('social_tiktok_center', 'https://www.tiktok.com/@alameen_center?_r=1&_t=ZS-9AyFeNMOY5N')
+            ?: $this->get('social_tiktok');
+    }
+
+    public function getWorkingHours(): string
+    {
+        return $this->get('working_hours', 'السبت - الخميس من 12 - 9 م') ?: 'السبت - الخميس من 12 - 9 م';
+    }
+
+    public function getHeadquartersAddress(): string
+    {
+        return $this->get('headquarters_address', 'الزقازيق - شارع الغشام') ?: 'الزقازيق - شارع الغشام';
+    }
+
+    public function getFooterBadge(): string
+    {
+        return $this->get('footer_badge', 'مركز الامين للتدريب والتاهيل التخاطبي') ?: 'مركز الامين للتدريب والتاهيل التخاطبي';
+    }
+
+    public function getCertificateBg(): string
+    {
+        return $this->get('certificate_custom_bg', '/assets/images/alameen-images/certificate.png') ?: '/assets/images/alameen-images/certificate.png';
+    }
+
+    /**
+     * Check whether a specific student portal page is enabled by admin.
+     * Default state enables ONLY 'courses' (and 'settings' for account management)
+     * while keeping dashboard, tasks, grades, and notifications/support hidden as requested.
+     */
+    public function isPageEnabled(string $pageKey): bool
+    {
+        $normalizedKey = str_starts_with($pageKey, 'page_') ? $pageKey : 'page_'.$pageKey.'_enabled';
+
+        $default = match ($pageKey) {
+            'courses', 'page_courses_enabled' => '1',
+            'settings', 'page_settings_enabled' => '1',
+            default => '0',
+        };
+
+        $val = $this->get($normalizedKey, $default);
+
+        return $val === '1' || $val === 'true' || $val === true;
     }
 
     /**

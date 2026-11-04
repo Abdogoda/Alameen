@@ -8,13 +8,17 @@ use App\Models\Admin;
 use App\Services\Cms\SettingsService;
 use App\Services\Localization\PhpFileLoader;
 use Carbon\CarbonImmutable;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Str;
 use Illuminate\Translation\Translator;
 use Illuminate\Validation\Rules\Password;
 use Opcodes\LogViewer\Facades\LogViewer;
@@ -48,6 +52,7 @@ class AppServiceProvider extends ServiceProvider
         $this->configureViewPaths();
         $this->configureAuthorization();
         $this->configureGlobalSettings();
+        $this->configureRateLimiting();
     }
 
     /**
@@ -180,5 +185,94 @@ class AppServiceProvider extends ServiceProvider
                 ->uncompromised()
             : null,
         );
+    }
+
+    /**
+     * Configure enterprise-grade, balanced rate limiters for security and abuse prevention.
+     */
+    protected function configureRateLimiting(): void
+    {
+        // 1. Password Reset OTP requests (protect SMS / Mailers from spam flooding - 5 req/min)
+        RateLimiter::for('otp', function (Request $request) {
+            $key = $request->input('email')
+                ? Str::transliterate(Str::lower($request->input('email')).'|'.$request->ip())
+                : $request->ip();
+
+            return Limit::perMinute(5)->by($key)->response(function () {
+                return back()->with('error', __('لقد قمت بمحاولات عديدة في وقت قصير. يرجى الانتظار دقيقة قبل طلب رمز جديد.'));
+            });
+        });
+
+        // 2. Firebase & Social Auth Endpoints (protect authentication services - 10 req/min)
+        RateLimiter::for('firebase-auth', function (Request $request) {
+            return Limit::perMinute(10)->by($request->ip())->response(function () {
+                return response()->json([
+                    'success' => false,
+                    'message' => __('تجاوزت الحد المسموح لمحاولات المصادقة. يرجى الانتظار دقيقة والمحاولة مجدداً.'),
+                ], 429);
+            });
+        });
+
+        // 3. Admin Login & Authentication Tower (protect against brute-force attacks - 5 req/min)
+        RateLimiter::for('admin-login', function (Request $request) {
+            $throttleKey = Str::transliterate(Str::lower((string) $request->input('email')).'|'.$request->ip());
+
+            return Limit::perMinute(5)->by($throttleKey)->response(function () {
+                return back()->with('error', __('تم إيقاف محاولات الدخول مؤقتاً بسبب المحاولات المتكررة. يرجى الانتظار دقيقة واحدة.'));
+            });
+        });
+
+        // 4. Video Watch Progress Sync (Heartbeat - Normal playback sends ~6-12 req/min; limit is 30/min)
+        RateLimiter::for('video-progress', function (Request $request) {
+            $key = $request->user()?->id ? 'user:'.$request->user()->id : 'ip:'.$request->ip();
+
+            return Limit::perMinute(30)->by($key)->response(function () {
+                return response()->json([
+                    'success' => false,
+                    'message' => __('تم تسجيل التقدم مؤخراً. يرجى الانتظار بضع ثوانٍ.'),
+                ], 429);
+            });
+        });
+
+        // 5. Signed Playback Token Generation (RSA cryptographic signing - 20 req/min)
+        RateLimiter::for('playback-token', function (Request $request) {
+            $key = $request->user()?->id ? 'user:'.$request->user()->id : 'ip:'.$request->ip();
+
+            return Limit::perMinute(20)->by($key)->response(function () {
+                return response()->json([
+                    'success' => false,
+                    'message' => __('يرجى الانتظار قليلاً قبل طلب رمز تشغيل جديد.'),
+                ], 429);
+            });
+        });
+
+        // 6. File & Media Uploads (Receipts & Voice Assignments - 10 uploads/min)
+        RateLimiter::for('uploads', function (Request $request) {
+            $key = $request->user()?->id ? 'user:'.$request->user()->id : 'ip:'.$request->ip();
+
+            return Limit::perMinute(10)->by($key)->response(function () {
+                return back()->with('error', __('لقد قمت برفع ملفات متعددة في وقت قصير. يرجى الانتظار دقيقة قبل المحاولة مجدداً.'));
+            });
+        });
+
+        // 7. Public Certificate Verification (Anti-scraping / Enumeration - 30 req/min)
+        RateLimiter::for('certificate-verify', function (Request $request) {
+            return Limit::perMinute(30)->by($request->ip())->response(function () {
+                abort(429, __('لقد تجاوزت عدد طلبات الفحص المسموحة بالدقيقة. يرجى الانتظار دقيقة والمحاولة مرة أخرى.'));
+            });
+        });
+
+        // 8. Support Tickets & Student Messaging (15 actions/min, polling 60/min)
+        RateLimiter::for('support-action', function (Request $request) {
+            $key = $request->user()?->id ? 'user:'.$request->user()->id : 'ip:'.$request->ip();
+
+            return Limit::perMinute(15)->by($key);
+        });
+
+        RateLimiter::for('support-poll', function (Request $request) {
+            $key = $request->user()?->id ? 'user:'.$request->user()->id : 'ip:'.$request->ip();
+
+            return Limit::perMinute(60)->by($key);
+        });
     }
 }

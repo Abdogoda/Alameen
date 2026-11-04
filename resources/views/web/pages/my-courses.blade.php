@@ -1,4 +1,4 @@
-<x-layouts::app :title="__('دوراتي ومحاضراتي السريرية')">
+<x-layouts::app :title="__('دوراتي ومحاضراتي')">
 
     <div
         class="flex flex-col gap-6 w-full text-start"
@@ -19,19 +19,21 @@
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 w-full">
             <div class="flex flex-col gap-1 items-start text-start">
                 <nav class="flex items-center gap-2 text-xs font-semibold text-[#0B2A8F] dark:text-blue-400" aria-label="Breadcrumb">
+                    @if($cmsSettings->isPageEnabled('student_dashboard'))
                     <a href="{{ route('dashboard') }}" class="hover:underline flex items-center gap-1" wire:navigate>
                         <svg class="size-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
                         <span>{{ __('لوحة الطالب') }}</span>
                     </a>
                     <span class="text-slate-300 dark:text-slate-600">/</span>
-                    <span class="text-slate-500 dark:text-slate-400">{{ __('دوراتي ومحاضراتي السريرية') }}</span>
+                    @endif
+                    <span class="text-slate-500 dark:text-slate-400">{{ __('دوراتي ومحاضراتي') }}</span>
                 </nav>
 
                 <h1 class="font-['Baloo_Bhaijaan_2'] font-bold text-2xl sm:text-3xl text-[#012383] dark:text-white leading-tight">
-                    {{ __('دوراتي ومحاضراتي السريرية') }}
+                    {{ __('دوراتي ومحاضراتي') }}
                 </h1>
                 <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-3xl">
-                    {{ __('تابع تقدمك في البرامج المسجّلة، استكمل مشاهدة الدروس من آخر موضع، واطّلع على شهاداتك ونسب إتقانك السريري.') }}
+                    {{ __('تابع تقدمك في الكورسات المسجلة , استكمل مشاهدة الدروس من اخر موضع , واطلع علي شهاداتك ونسب اتقانك') }}
                 </p>
             </div>
 
@@ -99,7 +101,7 @@
             <!-- Card 3: Completed Lessons -->
             <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-2xl p-4 sm:p-5 shadow-xs flex flex-col justify-between gap-3 relative overflow-hidden group hover:border-indigo-300 transition-all">
                 <div class="flex items-center justify-between">
-                    <span class="text-xs font-bold text-slate-500 dark:text-slate-400">{{ __('الدروس المنجزة') }}</span>
+                    <span class="text-xs font-bold text-slate-500 dark:text-slate-400">{{ __('الدروس المجتازة') }}</span>
                     <div class="size-9 rounded-xl bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0 border border-indigo-100 dark:border-indigo-900">
                         <svg class="size-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
                     </div>

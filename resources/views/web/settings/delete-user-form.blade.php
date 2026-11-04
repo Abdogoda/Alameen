@@ -39,12 +39,12 @@
 
             <flux:input wire:model="password" :label="__('Password')" type="password" viewable />
 
-            <div class="flex justify-end space-x-2 rtl:space-x-reverse">
+            <div class="flex items-center justify-end gap-3 sm:gap-4 pt-3">
                 <flux:modal.close>
-                    <flux:button variant="filled">{{ __('Cancel') }}</flux:button>
+                    <flux:button variant="filled" class="cursor-pointer px-4">{{ __('Cancel') }}</flux:button>
                 </flux:modal.close>
 
-                <flux:button variant="danger" type="submit">{{ __('Delete account') }}</flux:button>
+                <flux:button variant="danger" type="submit" class="cursor-pointer px-4 ms-3 sm:ms-4">{{ __('Delete account') }}</flux:button>
             </div>
         </form>
     </flux:modal>

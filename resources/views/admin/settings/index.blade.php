@@ -65,7 +65,7 @@
 
     {{-- Interactive Multi-Tab Control Tower Container --}}
     <div x-data="{ 
-        validTabs: ['branding', 'contact', 'cms', 'faq', 'academic', 'payments', 'mux', 'menus', 'theme'],
+        validTabs: ['branding', 'contact', 'cms', 'faq', 'academic', 'payments', 'mux', 'menus', 'theme', 'pages'],
         activeTab: 'branding',
         init() {
             const rawHash = (window.location.hash || '').replace(/^#/, '').trim();
@@ -98,6 +98,11 @@
             <button type="button" @click="setTab('branding')" :class="activeTab === 'branding' ? 'bg-[#012383] text-white shadow-xs font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" class="shrink-0 px-4 py-2.5 rounded-xl text-xs whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer">
                 <span class="shrink-0 text-sm">🏢</span>
                 <span class="shrink-0 font-bold whitespace-nowrap">{{ __('الهوية والعلامة التجارية') }}</span>
+            </button>
+
+            <button type="button" @click="setTab('pages')" :class="activeTab === 'pages' ? 'bg-[#012383] text-white shadow-xs font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" class="shrink-0 px-4 py-2.5 rounded-xl text-xs whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer">
+                <span class="shrink-0 text-sm">👁️</span>
+                <span class="shrink-0 font-bold whitespace-nowrap">{{ __('إدارة صفحات الطالب (ظهور/إخفاء)') }}</span>
             </button>
 
             <button type="button" @click="setTab('contact')" :class="activeTab === 'contact' ? 'bg-[#012383] text-white shadow-xs font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" class="shrink-0 px-4 py-2.5 rounded-xl text-xs whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer">
@@ -270,15 +275,22 @@
                     {{-- Clinic Address --}}
                     <div class="md:col-span-2">
                         <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1.5">{{ __('عنوان المركز / المقر الرئيسي:') }}</label>
-                        <input type="text" name="settings[contact_address][ar]" value="{{ $settings['contact_address']['value_ar'] ?? '' }}" class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-medium bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" />
-                        <input type="hidden" name="settings[contact_address][group]" value="contact" />
+                        <input type="text" name="settings[headquarters_address][ar]" value="{{ $settings['headquarters_address']['value_ar'] ?? ($settings['contact_address']['value_ar'] ?? 'الزقازيق - شارع الغشام') }}" class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-medium bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" />
+                        <input type="hidden" name="settings[headquarters_address][group]" value="contact" />
                     </div>
 
                     {{-- Working Hours --}}
                     <div>
                         <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1.5">{{ __('مواعيد العمل الرسمية:') }}</label>
-                        <input type="text" name="settings[contact_working_hours][ar]" value="{{ $settings['contact_working_hours']['value_ar'] ?? 'السبت - الخميس: 9:00 ص - 9:00 م' }}" class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-medium bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" />
-                        <input type="hidden" name="settings[contact_working_hours][group]" value="contact" />
+                        <input type="text" name="settings[working_hours][ar]" value="{{ $settings['working_hours']['value_ar'] ?? ($settings['contact_working_hours']['value_ar'] ?? 'السبت - الخميس من 12 - 9 م') }}" class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-medium bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" />
+                        <input type="hidden" name="settings[working_hours][group]" value="contact" />
+                    </div>
+
+                    {{-- Footer Badge Subtitle --}}
+                    <div>
+                        <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1.5">{{ __('الشارة النصية تحت اسم الموقع بالتذييل:') }}</label>
+                        <input type="text" name="settings[footer_badge][ar]" value="{{ $settings['footer_badge']['value_ar'] ?? 'مركز الامين للتدريب والتاهيل التخاطبي' }}" class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-bold bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" />
+                        <input type="hidden" name="settings[footer_badge][group]" value="branding" />
                     </div>
 
                     {{-- Support Status Indicator --}}
@@ -295,11 +307,30 @@
                         <input type="hidden" name="settings[support_status_online][group]" value="contact" />
                     </div>
 
-                    {{-- Social Profiles --}}
+                    {{-- Social Profiles: Facebook Center & Personal --}}
                     <div>
-                        <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1.5">{{ __('رابط صفحة فيسبوك (Facebook):') }}</label>
-                        <input type="url" name="settings[social_facebook][ar]" placeholder="https://facebook.com/..." value="{{ $settings['social_facebook']['value_ar'] ?? '' }}" class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-mono bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" />
-                        <input type="hidden" name="settings[social_facebook][group]" value="social" />
+                        <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1.5">{{ __('فيسبوك - مركز الأمين:') }}</label>
+                        <input type="url" name="settings[social_facebook_center][ar]" placeholder="https://facebook.com/..." value="{{ $settings['social_facebook_center']['value_ar'] ?? ($settings['social_facebook']['value_ar'] ?? '') }}" class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-mono bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" />
+                        <input type="hidden" name="settings[social_facebook_center][group]" value="social" />
+                    </div>
+
+                    <div>
+                        <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1.5">{{ __('فيسبوك - د. هنا المكاوي (شخصي):') }}</label>
+                        <input type="url" name="settings[social_facebook_personal][ar]" placeholder="https://facebook.com/..." value="{{ $settings['social_facebook_personal']['value_ar'] ?? '' }}" class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-mono bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" />
+                        <input type="hidden" name="settings[social_facebook_personal][group]" value="social" />
+                    </div>
+
+                    {{-- Social Profiles: TikTok Center & Personal --}}
+                    <div>
+                        <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1.5">{{ __('تيك توك - مركز الأمين:') }}</label>
+                        <input type="url" name="settings[social_tiktok_center][ar]" placeholder="https://tiktok.com/@alameen_center" value="{{ $settings['social_tiktok_center']['value_ar'] ?? '' }}" class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-mono bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" />
+                        <input type="hidden" name="settings[social_tiktok_center][group]" value="social" />
+                    </div>
+
+                    <div>
+                        <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1.5">{{ __('تيك توك - د. هنا المكاوي (شخصي):') }}</label>
+                        <input type="url" name="settings[social_tiktok_personal][ar]" placeholder="https://tiktok.com/@slt.hanamekawy" value="{{ $settings['social_tiktok_personal']['value_ar'] ?? '' }}" class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-mono bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" />
+                        <input type="hidden" name="settings[social_tiktok_personal][group]" value="social" />
                     </div>
 
                     <div>
@@ -752,6 +783,66 @@
                         <button type="submit" class="px-6 h-11 rounded-xl bg-[#012383] hover:bg-[#0B2A8F] text-white font-bold text-xs shadow-sm transition-colors cursor-pointer flex items-center justify-center gap-2">
                             <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                             <span>{{ __('حفظ وتطبيق السياسات الأكاديمية فورياً') }}</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            {{-- Luxury Certificate Engine & Canva Template Customization --}}
+            <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-3xl p-5 sm:p-7 shadow-xs flex flex-col gap-6">
+                <div class="border-b border-[#DEE8F7] dark:border-slate-800 pb-4">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xl">🏆</span>
+                        <h3 class="font-['Baloo_Bhaijaan_2'] font-bold text-lg sm:text-xl text-[#012383] dark:text-blue-400">
+                            {{ __('تصميم وتخصيص قالب الشهادة المعتمدة (Canva Maroon & Gold Master)') }}
+                        </h3>
+                    </div>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                        {{ __('إدارة صورة قالب الشهادة الرسمي الفارغ، وتعديل اسم ومسمى التوقيع المعتمد، مع معاينة حية فورية') }}
+                    </p>
+                </div>
+
+                {{-- Live Interactive Certificate Preview --}}
+                <div class="p-4 sm:p-6 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-[#DEE8F7] dark:border-slate-800 flex flex-col items-center gap-3">
+                    <span class="text-xs font-bold text-[#012383] dark:text-blue-300 self-start">
+                        {{ __('معاينة حية للقالب المعتمد المعروض للطلاب عند الإتمام والتحقق:') }}
+                    </span>
+                    <div class="w-full max-w-xl mx-auto shadow-md rounded-xl overflow-hidden">
+                        <x-certificate-preview 
+                            student-name="Yara Mahmoud Ahmed" 
+                            course-title="Level 1 of the Comprehensive Speech and Communication Course"
+                        />
+                    </div>
+                </div>
+
+                <form method="POST" action="{{ route('admin.settings.update') }}#academic" enctype="multipart/form-data" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    @csrf
+
+                    <div>
+                        <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1.5">{{ __('مسار أو رابط القالب الفارغ (Certificate Template Path):') }}</label>
+                        <input type="text" name="settings[certificate_custom_bg][ar]" value="{{ $settings['certificate_custom_bg']['value_ar'] ?? '/assets/images/alameen-images/certificate.png' }}" class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-mono bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" />
+                        <input type="hidden" name="settings[certificate_custom_bg][group]" value="certificates" />
+                    </div>
+
+                    <div>
+                        <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1.5">{{ __('أو رفع قالب صورة جديد من جهازك (PNG / JPG):') }}</label>
+                        <input type="file" name="certificate_custom_bg_file" accept="image/png,image/jpeg,image/webp" class="w-full text-xs text-slate-500 file:mr-2 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-[#012383] file:text-white hover:file:bg-[#0B2A8F] cursor-pointer" />
+                    </div>
+
+                    <div>
+                        <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1.5">{{ __('اسم المدير العام المعتمد (Signatory Name):') }}</label>
+                        <input type="text" name="certificate_signatory_name" value="{{ $settings['certificate_signatory_name']['value_ar'] ?? 'Hana El-Mekawy' }}" class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-sm font-bold bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" />
+                    </div>
+
+                    <div>
+                        <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1.5">{{ __('الصفة / المسمى الوظيفي (Signatory Title):') }}</label>
+                        <input type="text" name="certificate_signatory_title" value="{{ $settings['certificate_signatory_title']['value_ar'] ?? 'General Manager' }}" class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-sm font-bold bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" />
+                    </div>
+
+                    <div class="md:col-span-2 flex justify-end pt-2">
+                        <button type="submit" class="px-6 h-11 rounded-xl bg-[#012383] hover:bg-[#0B2A8F] text-white font-bold text-xs shadow-sm transition-colors cursor-pointer flex items-center justify-center gap-2">
+                            <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            <span>{{ __('حفظ وتطبيق إعدادات الشهادة فورياً') }}</span>
                         </button>
                     </div>
                 </form>
@@ -1232,6 +1323,8 @@
         {{-- TAB 8: المظهر والنظام (Theme & Appearance)               --}}
         {{-- ======================================================== --}}
         <div x-show="activeTab === 'theme'" x-cloak class="flex flex-col gap-6">
+            
+            {{-- Dark / Light Mode Segmented Control --}}
             <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-3xl p-5 sm:p-7 shadow-xs flex flex-col gap-5">
                 <div class="border-b border-[#DEE8F7] dark:border-slate-800 pb-4">
                     <h3 class="font-['Baloo_Bhaijaan_2'] font-bold text-lg sm:text-xl text-[#012383] dark:text-blue-400">
@@ -1243,6 +1336,502 @@
                 </div>
 
                 <x-admin::theme-switcher variant="segmented" />
+            </div>
+
+            {{-- Colors & Custom Branding Palette --}}
+            <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-3xl p-5 sm:p-7 shadow-xs flex flex-col gap-6">
+                <div class="border-b border-[#DEE8F7] dark:border-slate-800 pb-4">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xl">🎨</span>
+                        <h3 class="font-['Baloo_Bhaijaan_2'] font-bold text-lg sm:text-xl text-[#012383] dark:text-blue-400">
+                            {{ __('ألوان المنصة والموقع (Platform Theme Palette)') }}
+                        </h3>
+                    </div>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                        {{ __('تحكم كامل ومباشر في باليتة الألوان لجميع صفحات المنصة، الأزرار، التذييل، والتدرجات اللونية') }}
+                    </p>
+                </div>
+
+                <form method="POST" action="{{ route('admin.settings.update') }}#theme" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                    @csrf
+
+                    {{-- 1. Primary Color --}}
+                    <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-[#DEE8F7] dark:border-slate-700 flex flex-col gap-2.5">
+                        <label class="text-xs font-bold text-slate-700 dark:text-slate-300">{{ __('اللون الأساسي الرئيسي (Primary):') }}</label>
+                        <div class="flex items-center gap-2.5">
+                            <input type="color" oninput="document.getElementById('hex_primary').value = this.value" value="{{ $settings['theme_primary_color']['value_ar'] ?? '#012383' }}" class="size-10 rounded-xl border border-slate-300 dark:border-slate-600 cursor-pointer p-0.5 bg-white" />
+                            <input type="text" id="hex_primary" name="settings[theme_primary_color][ar]" value="{{ $settings['theme_primary_color']['value_ar'] ?? '#012383' }}" class="flex-1 h-10 px-3 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-mono font-bold bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none" />
+                        </div>
+                        <input type="hidden" name="settings[theme_primary_color][group]" value="theme" />
+                        <span class="text-[10px] text-slate-400">{{ __('الأزرار الرئيسية، العناوين، وشريط الترويسة') }}</span>
+                    </div>
+
+                    {{-- 2. Secondary Color --}}
+                    <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-[#DEE8F7] dark:border-slate-700 flex flex-col gap-2.5">
+                        <label class="text-xs font-bold text-slate-700 dark:text-slate-300">{{ __('اللون الثانوي التفاعلي (Secondary):') }}</label>
+                        <div class="flex items-center gap-2.5">
+                            <input type="color" oninput="document.getElementById('hex_secondary').value = this.value" value="{{ $settings['theme_secondary_color']['value_ar'] ?? '#0B2A8F' }}" class="size-10 rounded-xl border border-slate-300 dark:border-slate-600 cursor-pointer p-0.5 bg-white" />
+                            <input type="text" id="hex_secondary" name="settings[theme_secondary_color][ar]" value="{{ $settings['theme_secondary_color']['value_ar'] ?? '#0B2A8F' }}" class="flex-1 h-10 px-3 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-mono font-bold bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none" />
+                        </div>
+                        <input type="hidden" name="settings[theme_secondary_color][group]" value="theme" />
+                        <span class="text-[10px] text-slate-400">{{ __('تأثيرات Hover، الروابط النشطة، والتدرجات') }}</span>
+                    </div>
+
+                    {{-- 3. Accent / Emerald Color --}}
+                    <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-[#DEE8F7] dark:border-slate-700 flex flex-col gap-2.5">
+                        <label class="text-xs font-bold text-slate-700 dark:text-slate-300">{{ __('لون التمييز والنجاح (Accent / Emerald):') }}</label>
+                        <div class="flex items-center gap-2.5">
+                            <input type="color" oninput="document.getElementById('hex_accent').value = this.value" value="{{ $settings['theme_accent_color']['value_ar'] ?? '#10B77F' }}" class="size-10 rounded-xl border border-slate-300 dark:border-slate-600 cursor-pointer p-0.5 bg-white" />
+                            <input type="text" id="hex_accent" name="settings[theme_accent_color][ar]" value="{{ $settings['theme_accent_color']['value_ar'] ?? '#10B77F' }}" class="flex-1 h-10 px-3 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-mono font-bold bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none" />
+                        </div>
+                        <input type="hidden" name="settings[theme_accent_color][group]" value="theme" />
+                        <span class="text-[10px] text-slate-400">{{ __('شارات النجاح، نسب الإنجاز، وزر واتساب') }}</span>
+                    </div>
+
+                    {{-- 4. Gold / Amber Color --}}
+                    <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-[#DEE8F7] dark:border-slate-700 flex flex-col gap-2.5">
+                        <label class="text-xs font-bold text-slate-700 dark:text-slate-300">{{ __('اللون الذهبي الملكي (Gold / Luxury):') }}</label>
+                        <div class="flex items-center gap-2.5">
+                            <input type="color" oninput="document.getElementById('hex_gold').value = this.value" value="{{ $settings['theme_gold_color']['value_ar'] ?? '#C59B27' }}" class="size-10 rounded-xl border border-slate-300 dark:border-slate-600 cursor-pointer p-0.5 bg-white" />
+                            <input type="text" id="hex_gold" name="settings[theme_gold_color][ar]" value="{{ $settings['theme_gold_color']['value_ar'] ?? '#C59B27' }}" class="flex-1 h-10 px-3 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-mono font-bold bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none" />
+                        </div>
+                        <input type="hidden" name="settings[theme_gold_color][group]" value="theme" />
+                        <span class="text-[10px] text-slate-400">{{ __('الشهادات المعتمدة، الشارات الذهبية، ونجوم التقييم') }}</span>
+                    </div>
+
+                    {{-- 5. Footer Background Color --}}
+                    <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-[#DEE8F7] dark:border-slate-700 flex flex-col gap-2.5">
+                        <label class="text-xs font-bold text-slate-700 dark:text-slate-300">{{ __('لون خلفية التذييل (Footer Dark BG):') }}</label>
+                        <div class="flex items-center gap-2.5">
+                            <input type="color" oninput="document.getElementById('hex_footer_bg').value = this.value" value="{{ $settings['theme_footer_bg']['value_ar'] ?? '#031338' }}" class="size-10 rounded-xl border border-slate-300 dark:border-slate-600 cursor-pointer p-0.5 bg-white" />
+                            <input type="text" id="hex_footer_bg" name="settings[theme_footer_bg][ar]" value="{{ $settings['theme_footer_bg']['value_ar'] ?? '#031338' }}" class="flex-1 h-10 px-3 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-mono font-bold bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none" />
+                        </div>
+                        <input type="hidden" name="settings[theme_footer_bg][group]" value="theme" />
+                        <span class="text-[10px] text-slate-400">{{ __('الخلفية الداكنة الفاخرة لتذييل الموقع الرئيسي') }}</span>
+                    </div>
+
+                    {{-- 6. Login Split Visual Image --}}
+                    <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-[#DEE8F7] dark:border-slate-700 flex flex-col gap-2.5">
+                        <label class="text-xs font-bold text-slate-700 dark:text-slate-300">{{ __('صورة صفحة الدخول (Login Art Image):') }}</label>
+                        <input type="text" name="settings[auth_login_image][ar]" value="{{ $settings['auth_login_image']['value_ar'] ?? '/assets/images/alameen-images/6.jpeg' }}" class="h-10 px-3 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-mono font-bold bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none" />
+                        <input type="hidden" name="settings[auth_login_image][group]" value="theme" />
+                        <span class="text-[10px] text-slate-400">{{ __('الصورة الجانبية الفاخرة المعروضة بصفحة تسجيل الدخول') }}</span>
+                    </div>
+
+                    <div class="col-span-full flex justify-end pt-2">
+                        <button type="submit" class="px-6 h-11 rounded-xl bg-[#012383] hover:bg-[#0B2A8F] text-white font-bold text-xs shadow-sm transition-colors cursor-pointer flex items-center justify-center gap-2">
+                            <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            <span>{{ __('حفظ وتطبيق ألوان المنصة فورياً') }}</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        {{-- ======================================================== --}}
+        {{-- TAB 10: إدارة صفحات الطالب (Student Pages Visibility)    --}}
+        {{-- ======================================================== --}}
+        <div
+            x-show="activeTab === 'pages'"
+            x-cloak
+            class="flex flex-col gap-6"
+            x-data="{
+                dashboardEnabled: {{ ($settings['page_student_dashboard_enabled']['value_ar'] ?? '0') === '1' ? 'true' : 'false' }},
+                coursesEnabled: {{ ($settings['page_courses_enabled']['value_ar'] ?? '1') === '1' ? 'true' : 'false' }},
+                tasksEnabled: {{ ($settings['page_tasks_enabled']['value_ar'] ?? '0') === '1' ? 'true' : 'false' }},
+                gradesEnabled: {{ ($settings['page_grades_enabled']['value_ar'] ?? '0') === '1' ? 'true' : 'false' }},
+                notificationsEnabled: {{ ($settings['page_notifications_enabled']['value_ar'] ?? '0') === '1' ? 'true' : 'false' }},
+                settingsEnabled: {{ ($settings['page_settings_enabled']['value_ar'] ?? '1') === '1' ? 'true' : 'false' }}
+            }"
+        >
+            <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-3xl p-5 sm:p-7 shadow-xs">
+                
+                {{-- Header --}}
+                <div class="border-b border-[#DEE8F7] dark:border-slate-800 pb-4 mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="size-8 rounded-lg bg-blue-50 dark:bg-blue-950/40 text-[#012383] dark:text-blue-400 flex items-center justify-center font-bold text-base">👁️</span>
+                            <h3 class="font-['Baloo_Bhaijaan_2'] font-bold text-lg sm:text-xl text-[#012383] dark:text-blue-400">
+                                {{ __('التحكم في ظهور وإخفاء صفحات بوابة الطالب (Student Portal Pages)') }}
+                            </h3>
+                        </div>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                            {{ __('تحديد الصفحات المتاحة في القائمة الجانبية للطلاب. يمكنك تمكين الكورسات فقط للطلاب حالياً وتفعيل أي صفحة أخرى مستقبلاً بضغطة زر واحدة.') }}
+                        </p>
+                    </div>
+
+                    <div class="shrink-0 flex items-center gap-2">
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+                            <span class="size-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                            <span>{{ __('توجيه ذكي تلقائي مفعل') }}</span>
+                        </span>
+                    </div>
+                </div>
+
+                {{-- Alert Callout --}}
+                <div class="p-4 rounded-2xl bg-gradient-to-l from-blue-50 via-[#F4F8FD] to-white dark:from-slate-800/60 dark:to-slate-800/30 border border-[#DEE8F7] dark:border-slate-700 mb-6 flex gap-3.5 items-start text-xs text-slate-700 dark:text-slate-300">
+                    <span class="text-lg shrink-0">💡</span>
+                    <div class="flex flex-col gap-1">
+                        <span class="font-bold text-[#012383] dark:text-blue-300">{{ __('كيف يعمل نظام إخفاء الصفحات؟') }}</span>
+                        <p class="leading-relaxed text-slate-600 dark:text-slate-400">
+                            {{ __('عند إخفاء أي صفحة، تختفي فوراً من القائمة الجانبية وشريط التنقل للطلاب، وإذا حاول أي طالب الوصول إليها مباشرة عبر الرابط يتم تحويله تلقائياً وبأمان إلى صفحة (دوراتي ومحاضراتي).') }}
+                        </p>
+                    </div>
+                </div>
+
+                <form method="POST" action="{{ route('admin.settings.update') }}#pages" class="flex flex-col gap-6">
+                    @csrf
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+                        {{-- Card 1: Student Dashboard --}}
+                        <div class="p-5 rounded-2xl border transition-all duration-200 flex flex-col justify-between gap-4"
+                            :class="dashboardEnabled 
+                                ? 'bg-white dark:bg-slate-900 border-blue-200 dark:border-blue-800/80 shadow-xs ring-1 ring-blue-500/10' 
+                                : 'bg-slate-50/70 dark:bg-slate-800/30 border-dashed border-slate-300 dark:border-slate-700 opacity-80'"
+                        >
+                            <input type="hidden" name="settings[page_student_dashboard_enabled][ar]" :value="dashboardEnabled ? '1' : '0'" />
+                            <input type="hidden" name="settings[page_student_dashboard_enabled][en]" :value="dashboardEnabled ? '1' : '0'" />
+                            <input type="hidden" name="settings[page_student_dashboard_enabled][group]" value="pages" />
+
+                            <div class="flex items-start justify-between gap-3">
+                                <div class="flex items-start gap-3">
+                                    <div class="size-10 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-700 text-white flex items-center justify-center shrink-0 shadow-xs font-bold text-base">
+                                        📊
+                                    </div>
+                                    <div class="flex flex-col gap-1">
+                                        <div class="flex items-center gap-2">
+                                            <h4 class="font-bold text-sm text-slate-900 dark:text-white">{{ __('لوحة الطالب الأكاديمية (Student Dashboard)') }}</h4>
+                                        </div>
+                                        <span class="font-mono text-[11px] text-slate-400 dark:text-slate-500 dir-ltr text-start">/dashboard</span>
+                                        <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mt-1">
+                                            {{ __('عرض الإحصائيات الشاملة، نسبة الإنجاز العامة، بطاقات متابعة المحاضرات الأخيرة، والتوصيات.') }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-800">
+                                <div>
+                                    <span x-show="dashboardEnabled" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300">
+                                        <span class="size-1.5 rounded-full bg-emerald-500"></span>
+                                        {{ __('مفعلة وظاهرة للطلاب') }}
+                                    </span>
+                                    <span x-show="!dashboardEnabled" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-200/80 text-slate-600 dark:bg-slate-700/60 dark:text-slate-300">
+                                        <span class="size-1.5 rounded-full bg-slate-400"></span>
+                                        {{ __('مخفية مؤقتاً') }}
+                                    </span>
+                                </div>
+
+                                <button
+                                    type="button"
+                                    @click="dashboardEnabled = !dashboardEnabled"
+                                    class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none"
+                                    :class="dashboardEnabled ? 'bg-[#012383]' : 'bg-slate-300 dark:bg-slate-700'"
+                                    role="switch"
+                                    :aria-checked="dashboardEnabled"
+                                >
+                                    <span
+                                        aria-hidden="true"
+                                        class="pointer-events-none inline-block size-5 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out"
+                                        :class="dashboardEnabled ? 'ltr:translate-x-5 rtl:-translate-x-5' : 'translate-x-0'"
+                                    ></span>
+                                </button>
+                            </div>
+                        </div>
+
+                        {{-- Card 2: My Courses & Lectures --}}
+                        <div class="p-5 rounded-2xl border transition-all duration-200 flex flex-col justify-between gap-4"
+                            :class="coursesEnabled 
+                                ? 'bg-white dark:bg-slate-900 border-blue-200 dark:border-blue-800/80 shadow-xs ring-1 ring-blue-500/10' 
+                                : 'bg-slate-50/70 dark:bg-slate-800/30 border-dashed border-slate-300 dark:border-slate-700 opacity-80'"
+                        >
+                            <input type="hidden" name="settings[page_courses_enabled][ar]" :value="coursesEnabled ? '1' : '0'" />
+                            <input type="hidden" name="settings[page_courses_enabled][en]" :value="coursesEnabled ? '1' : '0'" />
+                            <input type="hidden" name="settings[page_courses_enabled][group]" value="pages" />
+
+                            <div class="flex items-start justify-between gap-3">
+                                <div class="flex items-start gap-3">
+                                    <div class="size-10 rounded-xl bg-gradient-to-br from-emerald-600 to-teal-700 text-white flex items-center justify-center shrink-0 shadow-xs font-bold text-base">
+                                        📚
+                                    </div>
+                                    <div class="flex flex-col gap-1">
+                                        <div class="flex items-center gap-2">
+                                            <h4 class="font-bold text-sm text-slate-900 dark:text-white">{{ __('دوراتي ومحاضراتي (My Courses & Lectures)') }}</h4>
+                                            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">{{ __('الأساسية') }}</span>
+                                        </div>
+                                        <span class="font-mono text-[11px] text-slate-400 dark:text-slate-500 dir-ltr text-start">/courses</span>
+                                        <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mt-1">
+                                            {{ __('الصفحة التعليمية المركزية: استعراض الكورسات، المستويات، الفيديوهات، ومتابعة الدروس المكتملة.') }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-800">
+                                <div>
+                                    <span x-show="coursesEnabled" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300">
+                                        <span class="size-1.5 rounded-full bg-emerald-500"></span>
+                                        {{ __('مفعلة ونشطة حالياً للطلاب') }}
+                                    </span>
+                                    <span x-show="!coursesEnabled" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-200/80 text-slate-600 dark:bg-slate-700/60 dark:text-slate-300">
+                                        <span class="size-1.5 rounded-full bg-slate-400"></span>
+                                        {{ __('مخفية مؤقتاً') }}
+                                    </span>
+                                </div>
+
+                                <button
+                                    type="button"
+                                    @click="coursesEnabled = !coursesEnabled"
+                                    class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none"
+                                    :class="coursesEnabled ? 'bg-[#012383]' : 'bg-slate-300 dark:bg-slate-700'"
+                                    role="switch"
+                                    :aria-checked="coursesEnabled"
+                                >
+                                    <span
+                                        aria-hidden="true"
+                                        class="pointer-events-none inline-block size-5 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out"
+                                        :class="coursesEnabled ? 'ltr:translate-x-5 rtl:-translate-x-5' : 'translate-x-0'"
+                                    ></span>
+                                </button>
+                            </div>
+                        </div>
+
+                        {{-- Card 3: Clinical Tasks --}}
+                        <div class="p-5 rounded-2xl border transition-all duration-200 flex flex-col justify-between gap-4"
+                            :class="tasksEnabled 
+                                ? 'bg-white dark:bg-slate-900 border-blue-200 dark:border-blue-800/80 shadow-xs ring-1 ring-blue-500/10' 
+                                : 'bg-slate-50/70 dark:bg-slate-800/30 border-dashed border-slate-300 dark:border-slate-700 opacity-80'"
+                        >
+                            <input type="hidden" name="settings[page_tasks_enabled][ar]" :value="tasksEnabled ? '1' : '0'" />
+                            <input type="hidden" name="settings[page_tasks_enabled][en]" :value="tasksEnabled ? '1' : '0'" />
+                            <input type="hidden" name="settings[page_tasks_enabled][group]" value="pages" />
+
+                            <div class="flex items-start justify-between gap-3">
+                                <div class="flex items-start gap-3">
+                                    <div class="size-10 rounded-xl bg-gradient-to-br from-purple-600 to-indigo-700 text-white flex items-center justify-center shrink-0 shadow-xs font-bold text-base">
+                                        📝
+                                    </div>
+                                    <div class="flex flex-col gap-1">
+                                        <div class="flex items-center gap-2">
+                                            <h4 class="font-bold text-sm text-slate-900 dark:text-white">{{ __('المهام والتطبيقات السريرية (Clinical Tasks)') }}</h4>
+                                        </div>
+                                        <span class="font-mono text-[11px] text-slate-400 dark:text-slate-500 dir-ltr text-start">/assignment</span>
+                                        <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mt-1">
+                                            {{ __('تسليم المهام والتسجيلات الصوتية ومخارج الحروف لمراجعتها وتقييمها من المشرفين.') }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-800">
+                                <div>
+                                    <span x-show="tasksEnabled" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300">
+                                        <span class="size-1.5 rounded-full bg-emerald-500"></span>
+                                        {{ __('مفعلة وظاهرة للطلاب') }}
+                                    </span>
+                                    <span x-show="!tasksEnabled" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-200/80 text-slate-600 dark:bg-slate-700/60 dark:text-slate-300">
+                                        <span class="size-1.5 rounded-full bg-slate-400"></span>
+                                        {{ __('مخفية مؤقتاً') }}
+                                    </span>
+                                </div>
+
+                                <button
+                                    type="button"
+                                    @click="tasksEnabled = !tasksEnabled"
+                                    class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none"
+                                    :class="tasksEnabled ? 'bg-[#012383]' : 'bg-slate-300 dark:bg-slate-700'"
+                                    role="switch"
+                                    :aria-checked="tasksEnabled"
+                                >
+                                    <span
+                                        aria-hidden="true"
+                                        class="pointer-events-none inline-block size-5 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out"
+                                        :class="tasksEnabled ? 'ltr:translate-x-5 rtl:-translate-x-5' : 'translate-x-0'"
+                                    ></span>
+                                </button>
+                            </div>
+                        </div>
+
+                        {{-- Card 4: My Grades & Evaluations --}}
+                        <div class="p-5 rounded-2xl border transition-all duration-200 flex flex-col justify-between gap-4"
+                            :class="gradesEnabled 
+                                ? 'bg-white dark:bg-slate-900 border-blue-200 dark:border-blue-800/80 shadow-xs ring-1 ring-blue-500/10' 
+                                : 'bg-slate-50/70 dark:bg-slate-800/30 border-dashed border-slate-300 dark:border-slate-700 opacity-80'"
+                        >
+                            <input type="hidden" name="settings[page_grades_enabled][ar]" :value="gradesEnabled ? '1' : '0'" />
+                            <input type="hidden" name="settings[page_grades_enabled][en]" :value="gradesEnabled ? '1' : '0'" />
+                            <input type="hidden" name="settings[page_grades_enabled][group]" value="pages" />
+
+                            <div class="flex items-start justify-between gap-3">
+                                <div class="flex items-start gap-3">
+                                    <div class="size-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 text-white flex items-center justify-center shrink-0 shadow-xs font-bold text-base">
+                                        📈
+                                    </div>
+                                    <div class="flex flex-col gap-1">
+                                        <div class="flex items-center gap-2">
+                                            <h4 class="font-bold text-sm text-slate-900 dark:text-white">{{ __('درجاتي وتقييماتي (My Grades & Evaluations)') }}</h4>
+                                        </div>
+                                        <span class="font-mono text-[11px] text-slate-400 dark:text-slate-500 dir-ltr text-start">/grades</span>
+                                        <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mt-1">
+                                            {{ __('كشف الدرجات والتقييمات، ملاحظات المحاضرين السريرية، ونتائج التكليفات.') }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-800">
+                                <div>
+                                    <span x-show="gradesEnabled" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300">
+                                        <span class="size-1.5 rounded-full bg-emerald-500"></span>
+                                        {{ __('مفعلة وظاهرة للطلاب') }}
+                                    </span>
+                                    <span x-show="!gradesEnabled" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-200/80 text-slate-600 dark:bg-slate-700/60 dark:text-slate-300">
+                                        <span class="size-1.5 rounded-full bg-slate-400"></span>
+                                        {{ __('مخفية مؤقتاً') }}
+                                    </span>
+                                </div>
+
+                                <button
+                                    type="button"
+                                    @click="gradesEnabled = !gradesEnabled"
+                                    class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none"
+                                    :class="gradesEnabled ? 'bg-[#012383]' : 'bg-slate-300 dark:bg-slate-700'"
+                                    role="switch"
+                                    :aria-checked="gradesEnabled"
+                                >
+                                    <span
+                                        aria-hidden="true"
+                                        class="pointer-events-none inline-block size-5 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out"
+                                        :class="gradesEnabled ? 'ltr:translate-x-5 rtl:-translate-x-5' : 'translate-x-0'"
+                                    ></span>
+                                </button>
+                            </div>
+                        </div>
+
+                        {{-- Card 5: Notifications & Support --}}
+                        <div class="p-5 rounded-2xl border transition-all duration-200 flex flex-col justify-between gap-4"
+                            :class="notificationsEnabled 
+                                ? 'bg-white dark:bg-slate-900 border-blue-200 dark:border-blue-800/80 shadow-xs ring-1 ring-blue-500/10' 
+                                : 'bg-slate-50/70 dark:bg-slate-800/30 border-dashed border-slate-300 dark:border-slate-700 opacity-80'"
+                        >
+                            <input type="hidden" name="settings[page_notifications_enabled][ar]" :value="notificationsEnabled ? '1' : '0'" />
+                            <input type="hidden" name="settings[page_notifications_enabled][en]" :value="notificationsEnabled ? '1' : '0'" />
+                            <input type="hidden" name="settings[page_notifications_enabled][group]" value="pages" />
+
+                            <div class="flex items-start justify-between gap-3">
+                                <div class="flex items-start gap-3">
+                                    <div class="size-10 rounded-xl bg-gradient-to-br from-rose-500 to-pink-600 text-white flex items-center justify-center shrink-0 shadow-xs font-bold text-base">
+                                        🔔
+                                    </div>
+                                    <div class="flex flex-col gap-1">
+                                        <div class="flex items-center gap-2">
+                                            <h4 class="font-bold text-sm text-slate-900 dark:text-white">{{ __('الإشعارات والدعم الفني (Notifications & Support)') }}</h4>
+                                        </div>
+                                        <span class="font-mono text-[11px] text-slate-400 dark:text-slate-500 dir-ltr text-start">/notifications & /support</span>
+                                        <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mt-1">
+                                            {{ __('صندوق الإشعارات المباشرة ونظام تذاكر الدعم الفني والمحادثة التفاعلية مع الإدارة.') }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-800">
+                                <div>
+                                    <span x-show="notificationsEnabled" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300">
+                                        <span class="size-1.5 rounded-full bg-emerald-500"></span>
+                                        {{ __('مفعلة وظاهرة للطلاب') }}
+                                    </span>
+                                    <span x-show="!notificationsEnabled" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-200/80 text-slate-600 dark:bg-slate-700/60 dark:text-slate-300">
+                                        <span class="size-1.5 rounded-full bg-slate-400"></span>
+                                        {{ __('مخفية مؤقتاً') }}
+                                    </span>
+                                </div>
+
+                                <button
+                                    type="button"
+                                    @click="notificationsEnabled = !notificationsEnabled"
+                                    class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none"
+                                    :class="notificationsEnabled ? 'bg-[#012383]' : 'bg-slate-300 dark:bg-slate-700'"
+                                    role="switch"
+                                    :aria-checked="notificationsEnabled"
+                                >
+                                    <span
+                                        aria-hidden="true"
+                                        class="pointer-events-none inline-block size-5 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out"
+                                        :class="notificationsEnabled ? 'ltr:translate-x-5 rtl:-translate-x-5' : 'translate-x-0'"
+                                    ></span>
+                                </button>
+                            </div>
+                        </div>
+
+                        {{-- Card 6: Settings & Security --}}
+                        <div class="p-5 rounded-2xl border transition-all duration-200 flex flex-col justify-between gap-4"
+                            :class="settingsEnabled 
+                                ? 'bg-white dark:bg-slate-900 border-blue-200 dark:border-blue-800/80 shadow-xs ring-1 ring-blue-500/10' 
+                                : 'bg-slate-50/70 dark:bg-slate-800/30 border-dashed border-slate-300 dark:border-slate-700 opacity-80'"
+                        >
+                            <input type="hidden" name="settings[page_settings_enabled][ar]" :value="settingsEnabled ? '1' : '0'" />
+                            <input type="hidden" name="settings[page_settings_enabled][en]" :value="settingsEnabled ? '1' : '0'" />
+                            <input type="hidden" name="settings[page_settings_enabled][group]" value="pages" />
+
+                            <div class="flex items-start justify-between gap-3">
+                                <div class="flex items-start gap-3">
+                                    <div class="size-10 rounded-xl bg-gradient-to-br from-slate-700 to-slate-900 text-white flex items-center justify-center shrink-0 shadow-xs font-bold text-base">
+                                        ⚙️
+                                    </div>
+                                    <div class="flex flex-col gap-1">
+                                        <div class="flex items-center gap-2">
+                                            <h4 class="font-bold text-sm text-slate-900 dark:text-white">{{ __('الإعدادات والأمان (Settings & Security)') }}</h4>
+                                        </div>
+                                        <span class="font-mono text-[11px] text-slate-400 dark:text-slate-500 dir-ltr text-start">/settings/profile</span>
+                                        <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mt-1">
+                                            {{ __('تعديل الاسم والبريد، تغيير كلمة المرور، تفضيلات المظهر المظلم/الفاتح، وبيانات الحساب.') }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-800">
+                                <div>
+                                    <span x-show="settingsEnabled" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300">
+                                        <span class="size-1.5 rounded-full bg-emerald-500"></span>
+                                        {{ __('مفعلة وظاهرة للطلاب') }}
+                                    </span>
+                                    <span x-show="!settingsEnabled" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-200/80 text-slate-600 dark:bg-slate-700/60 dark:text-slate-300">
+                                        <span class="size-1.5 rounded-full bg-slate-400"></span>
+                                        {{ __('مخفية مؤقتاً') }}
+                                    </span>
+                                </div>
+
+                                <button
+                                    type="button"
+                                    @click="settingsEnabled = !settingsEnabled"
+                                    class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none"
+                                    :class="settingsEnabled ? 'bg-[#012383]' : 'bg-slate-300 dark:bg-slate-700'"
+                                    role="switch"
+                                    :aria-checked="settingsEnabled"
+                                >
+                                    <span
+                                        aria-hidden="true"
+                                        class="pointer-events-none inline-block size-5 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out"
+                                        :class="settingsEnabled ? 'ltr:translate-x-5 rtl:-translate-x-5' : 'translate-x-0'"
+                                    ></span>
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    {{-- Submit button --}}
+                    <div class="flex justify-end pt-4 border-t border-slate-100 dark:border-slate-800">
+                        <button type="submit" class="px-7 h-12 rounded-xl bg-[#012383] hover:bg-[#0B2A8F] text-white font-bold text-sm shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center justify-center gap-2.5">
+                            <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            <span>{{ __('حفظ وتطبيق إعدادات ظهور الصفحات فورياً') }}</span>
+                        </button>
+                    </div>
+
+                </form>
             </div>
         </div>
     </div>

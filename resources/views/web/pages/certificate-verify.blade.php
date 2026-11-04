@@ -1,6 +1,6 @@
 <x-layouts::marketing
     :title="__('التحقق من الشهادة الرقمية المعتمدة • :code', ['code' => $certificate->certificate_code])"
-    :description="__('فحص وثيقة إتمام المسار السريري المعتمدة من منصة الأمين للتخاطب')"
+    :description="__('فحص وثيقة إتمام المسار التدريبي المعتمدة من منصة الأمين للتخاطب')"
 >
     <div class="min-h-screen bg-slate-50 dark:bg-slate-950 py-10 px-4 sm:px-6 flex flex-col items-center">
         
@@ -25,7 +25,7 @@
                             {{ $certificate->course?->title }}
                         </h1>
                         <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                            {{ __('تؤكد إدارة منصة الأمين أن الطالب (:name) قد أتم بنجاح متطلبات التدريب والمهام السريرية بنسبة :pct%.', ['name' => $certificate->user?->name, 'pct' => round($certificate->completion_percentage, 1)]) }}
+                            {{ __('تؤكد إدارة منصة الأمين أن الطالب (:name) قد أتم بنجاح متطلبات التدريب والمهام التطبيقية بنسبة :pct%.', ['name' => $certificate->user?->name, 'pct' => round($certificate->completion_percentage, 1)]) }}
                         </p>
                     </div>
                 </div>
@@ -94,12 +94,13 @@
                         </div>
                     @endif
                 @else
-                    <div class="flex flex-col items-center text-center p-8">
-                        <div class="size-28 rounded-2xl bg-purple-50 dark:bg-slate-800 p-2 flex items-center justify-center border border-purple-100 dark:border-slate-700 mb-4">
-                            {!! $certificate->qr_code_svg !!}
-                        </div>
-                        <h3 class="font-bold text-lg text-slate-800 dark:text-white">{{ $certificate->course?->title }}</h3>
-                        <p class="font-mono text-sm font-bold text-[#012383] dark:text-blue-400 mt-1">{{ $certificate->certificate_code }}</p>
+                    <div class="w-full max-w-4xl flex flex-col items-center gap-6">
+                        <x-certificate-preview 
+                            :student-name="$certificate->user?->name ?? 'Student Name'"
+                            :course-title="$certificate->course?->title ?? 'Level 1 of the Comprehensive Speech and Communication Course'"
+                            :serial-number="$certificate->certificate_code"
+                            :completion-date="$certificate->issued_at?->format('F d, Y')"
+                        />
                     </div>
                 @endif
             </div>
@@ -109,7 +110,7 @@
                 <div class="border-b border-[#DEE8F7] dark:border-slate-800 pb-3 mb-5 flex items-center justify-between">
                     <div>
                         <h3 class="font-bold text-base text-[#012383] dark:text-blue-400 {{ app()->getLocale() === 'ar' ? "font-['Cairo']" : "" }}">
-                            {{ __('بيانات الاعتماد وسجل التدقيق الإكلينيكي') }}
+                            {{ __('بيانات الاعتماد وسجل التدقيق الأكاديمي') }}
                         </h3>
                         <p class="text-xs text-slate-400">
                             {{ __('معلومات الشهادة المحفوظة في قاعدة بيانات المنصة برمز التحقق المشفر') }}
@@ -140,6 +141,33 @@
                     <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-[#DEE8F7]/60 dark:border-slate-800">
                         <span class="text-slate-400 block mb-1">{{ __('نسبة إنجاز الكورس:') }}</span>
                         <span class="font-black text-emerald-600 text-sm">{{ round($certificate->completion_percentage, 1) }}% ({{ __('حد أدنى ٩٥٪') }})</span>
+                    </div>
+                </div>
+
+                {{-- Direct Share & Copy Link Section --}}
+                <div class="mt-4 pt-4 border-t border-[#DEE8F7] dark:border-slate-800 flex flex-wrap items-center justify-between gap-3 text-xs" x-data="{ copied: false }">
+                    <div class="flex items-center gap-2 min-w-0 max-w-full">
+                        <span class="text-slate-400 font-medium shrink-0">{{ __('رابط الفحص المباشر:') }}</span>
+                        <span class="font-mono text-[#012383] dark:text-blue-400 bg-slate-100 dark:bg-slate-800 px-2.5 py-1 rounded-lg select-all truncate dir-ltr text-start">
+                            {{ $certificate->verification_url }}
+                        </span>
+                    </div>
+                    <div class="flex items-center gap-2 shrink-0">
+                        <button
+                            type="button"
+                            @click="navigator.clipboard.writeText('{{ $certificate->verification_url }}'); copied = true; setTimeout(() => copied = false, 2500)"
+                            class="h-9 px-3.5 rounded-xl bg-slate-100 hover:bg-[#EAF1FB] text-slate-700 hover:text-[#012383] dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-200 font-bold transition-all cursor-pointer inline-flex items-center gap-1.5"
+                        >
+                            <span x-show="!copied">📋 {{ __('نسخ الرابط') }}</span>
+                            <span x-show="copied" x-cloak class="text-emerald-600 font-bold">✓ {{ __('تم النسخ!') }}</span>
+                        </button>
+                        <a
+                            href="https://api.whatsapp.com/send?text={{ urlencode(__('شهادة معتمدة من منصة الأمين: ').$certificate->verification_url) }}"
+                            target="_blank"
+                            class="h-9 px-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold transition-all inline-flex items-center gap-1.5 shadow-2xs"
+                        >
+                            <span>💬 {{ __('مشاركة واتساب') }}</span>
+                        </a>
                     </div>
                 </div>
             </div>

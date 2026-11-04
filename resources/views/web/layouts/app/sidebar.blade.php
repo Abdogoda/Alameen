@@ -72,7 +72,7 @@
             >
                 <!-- Platform Brand & Role Badge (Matches top header height: h-14 sm:h-16) -->
                 <div class="h-14 sm:h-16 px-4 sm:px-5 border-b border-[#DEE8F7] dark:border-slate-800 flex items-center justify-between shrink-0 bg-white dark:bg-slate-900 sidebar-header">
-                    <a href="{{ route('dashboard') }}" class="flex items-center gap-2.5 sm:gap-3 cursor-pointer min-w-0 group sidebar-brand-link" wire:navigate>
+                    <a href="{{ $cmsSettings->isPageEnabled('student_dashboard') ? route('dashboard') : route('courses.index') }}" class="flex items-center gap-2.5 sm:gap-3 cursor-pointer min-w-0 group sidebar-brand-link" wire:navigate>
                         <div class="size-9 sm:size-10 rounded-xl bg-[#EAF1FB] dark:bg-slate-800 flex items-center justify-center p-1.5 shrink-0 border border-[#DEE8F7] dark:border-slate-700 shadow-xs group-hover:scale-105 transition-transform duration-200">
                             <img src="{{ filled($siteLogo ?? null) ? $siteLogo : platform_logo() }}" alt="{{ filled($siteName ?? null) ? $siteName : platform_name() }}" class="size-full object-contain pointer-events-none" />
                         </div>
@@ -98,6 +98,7 @@
                             {{ __('التعلّم الخاص بك') }}
                         </p>
                         
+                        @if($cmsSettings->isPageEnabled('student_dashboard'))
                         <!-- Dashboard Link -->
                         <a
                             href="{{ route('dashboard') }}"
@@ -111,31 +112,37 @@
                                 {{ __('لوحة الطالب') }}
                             </span>
                         </a>
+                        @endif
 
+                        @if($cmsSettings->isPageEnabled('courses'))
                         <!-- دوراتي -->
                         <a
                             href="{{ route('courses.index') }}"
                             @click="if (window.innerWidth < 1024) mobileSidebarOpen = false"
-                            class="sidebar-nav-link flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-sm transition-colors {{ request()->routeIs('courses.*') ? 'bg-[#012383] text-white font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-[#EAF1FB]/60 dark:hover:bg-slate-800 hover:text-[#012383] dark:hover:text-white' }}"
+                            class="sidebar-nav-link flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-sm transition-colors {{ request()->routeIs('courses.*', 'lessons.*') ? 'bg-[#012383] text-white font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-[#EAF1FB]/60 dark:hover:bg-slate-800 hover:text-[#012383] dark:hover:text-white' }}"
                             wire:navigate
                             :title="!desktopSidebarOpen && window.innerWidth >= 1024 ? '{{ __('دوراتي ومحاضراتي') }}' : ''"
                         >
-                            <svg class="size-5 shrink-0 {{ request()->routeIs('courses.*') ? 'text-white' : 'text-slate-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                            <svg class="size-5 shrink-0 {{ request()->routeIs('courses.*', 'lessons.*') ? 'text-white' : 'text-slate-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
                             <span class="flex-1 text-start sidebar-label">{{ __('دوراتي ومحاضراتي') }}</span>
                         </a>
+                        @endif
 
-                        <!-- المهام السريرية -->
+                        @if($cmsSettings->isPageEnabled('tasks'))
+                        <!-- المهام -->
                         <a
                             href="{{ route('assignments.index') }}"
                             @click="if (window.innerWidth < 1024) mobileSidebarOpen = false"
                             class="sidebar-nav-link flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-sm transition-colors {{ request()->routeIs('assignments.*') ? 'bg-[#012383] text-white font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-[#EAF1FB]/60 dark:hover:bg-slate-800 hover:text-[#012383] dark:hover:text-white' }}"
                             wire:navigate
-                            :title="!desktopSidebarOpen && window.innerWidth >= 1024 ? '{{ __('المهام السريرية') }}' : ''"
+                            :title="!desktopSidebarOpen && window.innerWidth >= 1024 ? '{{ __('المهام') }}' : ''"
                         >
                             <svg class="size-5 shrink-0 {{ request()->routeIs('assignments.*') ? 'text-white' : 'text-slate-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
-                            <span class="flex-1 text-start sidebar-label">{{ __('المهام السريرية') }}</span>
+                            <span class="flex-1 text-start sidebar-label">{{ __('المهام') }}</span>
                         </a>
+                        @endif
 
+                        @if($cmsSettings->isPageEnabled('grades'))
                         <!-- درجاتي وتقييماتي -->
                         <a
                             href="{{ route('grades.index') }}"
@@ -147,7 +154,9 @@
                             <svg class="size-5 shrink-0 {{ request()->routeIs('grades.*') ? 'text-white' : 'text-slate-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/></svg>
                             <span class="flex-1 text-start sidebar-label">{{ __('درجاتي وتقييماتي') }}</span>
                         </a>
+                        @endif
 
+                        @if($cmsSettings->isPageEnabled('notifications'))
                         @php
                             $studentUnreadSupportCount = auth()->check() ? \App\Models\SupportMessage::whereHas('ticket', fn($q) => $q->where('user_id', auth()->id()))->where('sender_type', \App\Models\Admin::class)->where('type', 'message')->whereNull('read_at')->count() : 0;
                             $studentUnreadNotificationsCount = auth()->check() ? auth()->user()->unreadNotifications()->count() : 0;
@@ -171,8 +180,9 @@
                                 </span>
                             @endif
                         </a>
+                        @endif
 
-
+                        @if($cmsSettings->isPageEnabled('settings'))
                         <!-- إعدادات الحساب -->
                         <a
                             href="{{ route('profile.edit') }}"
@@ -184,6 +194,7 @@
                             <svg class="size-5 shrink-0 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                             <span class="flex-1 text-start sidebar-label">{{ __('الإعدادات والأمان') }}</span>
                         </a>
+                        @endif
                     </nav>
                 </div>
 
@@ -362,8 +373,10 @@
                         <!-- Theme Switcher (Light / Dark / Device) -->
                         <x-theme-switcher />
 
+                        @if($cmsSettings->isPageEnabled('notifications'))
                         <!-- Notifications Bell (Livewire Component) -->
                         <livewire:notifications.notification-bell />
+                        @endif
 
                         <!-- Vertical Divider -->
                         <div class="h-6 sm:h-7 w-px bg-[#DEE8F7] dark:bg-slate-700 mx-0.5 sm:mx-1 shrink-0" aria-hidden="true"></div>
@@ -504,6 +517,7 @@
         @if(app()->getLocale() === 'en')
         <script>
         window.__I18N_DICTIONARY__ = {
+            dashboard: @json(__('dashboard')),
             courses: @json(__('courses')),
             lesson: @json(__('lesson')),
             grades: @json(__('grades')),
@@ -513,6 +527,7 @@
             reviews: @json(__('reviews')),
             contact: @json(__('contact')),
             landing: @json(__('landing')),
+            notifications: @json(__('notifications')),
         };
         window.__EN_STRINGS__ = @json(json_decode(file_get_contents(base_path('lang/en.json')), true) ?: []);
 

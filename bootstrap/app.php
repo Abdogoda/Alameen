@@ -2,8 +2,10 @@
 
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\EnsureCourseAccessValid;
+use App\Http\Middleware\EnsureStudentPageEnabled;
 use App\Http\Middleware\SetCrossOriginHeaders;
 use App\Http\Middleware\SetLocale;
+use App\Services\Cms\SettingsService;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -35,10 +37,14 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'admin' => AdminMiddleware::class,
             'course.access' => EnsureCourseAccessValid::class,
+            'page.enabled' => EnsureStudentPageEnabled::class,
         ]);
 
         $middleware->redirectGuestsTo(fn (Request $request) => $request->is('admin*') ? route('admin.login') : route('login'));
-        $middleware->redirectUsersTo(fn (Request $request) => auth('admin')->check() ? route('admin.dashboard') : route('dashboard'));
+        $middleware->redirectUsersTo(fn (Request $request) => auth('admin')->check()
+            ? route('admin.dashboard')
+            : (app(SettingsService::class)->isPageEnabled('student_dashboard') ? route('dashboard') : route('courses.index'))
+        );
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

@@ -101,7 +101,7 @@
             </a>
         @elseif (auth()->check())
             <a
-                href="{{ route('dashboard') }}"
+                href="{{ $cmsSettings->isPageEnabled('student_dashboard') ? route('dashboard') : route('courses.index') }}"
                 class="bg-[#012383] hover:bg-[#0B2A8F] flex items-center justify-center px-3 sm:px-5 h-[34px] sm:h-[40px] rounded-full !text-white text-xs sm:text-sm font-bold font-['Cairo'] transition-all shadow-sm hover:shadow-md cursor-pointer whitespace-nowrap"
                 style="color: #ffffff !important;"
             >
@@ -324,7 +324,7 @@
                     @elseif (auth()->check())
                         <div class="flex flex-col gap-2">
                             <a
-                                href="{{ route('dashboard') }}"
+                                href="{{ $cmsSettings->isPageEnabled('student_dashboard') ? route('dashboard') : route('courses.index') }}"
                                 class="w-full text-center bg-[#012383] hover:bg-[#0B2A8F] !text-white font-bold py-2.5 rounded-xl text-xs font-['Cairo'] shadow-sm transition-all"
                                 style="color: #ffffff !important;"
                             >

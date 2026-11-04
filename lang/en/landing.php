@@ -21,10 +21,10 @@ return [
 
     // Slide 1
     'slide1Eyebrow' => 'Learning Begins with a Step',
-    'slide1Title' => 'Specialized Educational Platform for Speech Therapy',
-    'slide1Desc' => 'A comprehensive clinical training track for speech therapy students, designed to build practical diagnostic and therapeutic skills step by step.',
-    'slide1Cta1' => 'Get Started',
-    'slide1Cta2' => 'Explore Course Content',
+    'slide1Title' => 'Comprehensive Speech Therapy Course with Hana El-Mekawy – Round 5',
+    'slide1Desc' => 'Comprehensive speech therapy courses, practical videos & exercises, and accredited certificate from Al-Ameen Center',
+    'slide1Cta1' => 'Explore Training Paths',
+    'slide1Cta2' => 'Contact Us',
     'slide1ImgAlt1' => 'Practical Training',
     'slide1ImgAlt2' => 'Skill Development',
     'slide1ImgAlt3' => 'Interactive Sessions',

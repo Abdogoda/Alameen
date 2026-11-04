@@ -27,8 +27,10 @@
         </div>
 
         @php
+            $cmsSettings = app(\App\Services\Cms\SettingsService::class);
             $isRegister = request()->routeIs('register');
-            $artImage = $isRegister ? '/assets/images/auth-sculpture.png' : '/assets/images/auth-welcome-back.png';
+            $defaultArt = $isRegister ? '/assets/images/auth-sculpture.png' : '/assets/images/alameen-images/6.jpeg';
+            $artImage = $cmsSettings->get('auth_login_image', $defaultArt) ?: $defaultArt;
             $artEyebrow = $isRegister ? 'ابدأ رحلتك اليوم' : 'عودة إلى رحلتك';
             $artTitle = $isRegister ? 'ابدأ رحلتك التعليمية مع مركز الأمين' : 'مرحبًا بعودتك إلى الأمين';
             $artSubtitle = $isRegister ? 'تعلّم التخاطب بأسلوب عملي وتطبيقي معتمد.' : 'سعداء بعودتك. لنواصل التعلّم معًا.';

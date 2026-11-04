@@ -62,4 +62,11 @@ return [
     'resend_otp' => 'Resend Code',
     'mail_transport_error' => 'Unable to send email right now. Please try again later.',
 
+    // Account deletion & settings confirmation
+    'Are you sure you want to delete your account?' => 'Are you sure you want to delete your account?',
+    'Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.' => 'Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.',
+    'Delete account' => 'Delete account',
+    'Cancel' => 'Cancel',
+    'Profile updated.' => 'Profile updated.',
+    'A new verification link has been sent to your email address.' => 'A new verification link has been sent to your email address.',
 ];

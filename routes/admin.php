@@ -30,11 +30,17 @@ Route::prefix('admin')->name('admin.')->group(function () {
     // -------------------------------------------------------------
     Route::middleware('guest:admin')->group(function () {
         Route::get('login', [AdminAuthController::class, 'showLoginForm'])->name('login');
-        Route::post('login', [AdminAuthController::class, 'login'])->name('login.store');
+        Route::post('login', [AdminAuthController::class, 'login'])
+            ->middleware('throttle:admin-login')
+            ->name('login.store');
 
         // Admin Google Authentication via Firebase
-        Route::post('auth/google/firebase', [AdminFirebaseAuthController::class, 'authenticate'])->name('auth.google.firebase');
-        Route::post('login/firebase', [AdminFirebaseAuthController::class, 'authenticate'])->name('login.firebase');
+        Route::post('auth/google/firebase', [AdminFirebaseAuthController::class, 'authenticate'])
+            ->middleware('throttle:firebase-auth')
+            ->name('auth.google.firebase');
+        Route::post('login/firebase', [AdminFirebaseAuthController::class, 'authenticate'])
+            ->middleware('throttle:firebase-auth')
+            ->name('login.firebase');
 
         // Admin Passkey Authentication (WebAuthn)
         Route::get('passkeys/login/options', [AdminPasskeyController::class, 'loginOptions'])->name('passkey.login-options');

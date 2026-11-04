@@ -169,6 +169,23 @@
 @fonts
 
 @include('partials.firebase-config')
+@php
+    $themeSettings = app(\App\Services\Cms\SettingsService::class);
+    $themePrimary = $themeSettings->getThemePrimaryColor();
+    $themeSecondary = $themeSettings->getThemeSecondaryColor();
+    $themeAccent = $themeSettings->getThemeAccentColor();
+    $themeGold = $themeSettings->getThemeGoldColor();
+    $themeFooterBg = $themeSettings->getThemeFooterBg();
+@endphp
+<style>
+    :root {
+        --color-primary: {{ $themePrimary }};
+        --color-secondary: {{ $themeSecondary }};
+        --color-accent: {{ $themeAccent }};
+        --color-gold: {{ $themeGold }};
+        --color-footer-bg: {{ $themeFooterBg }};
+    }
+</style>
 @vite(['resources/css/app.css', 'resources/js/app.js'])
 @fluxAppearance
 

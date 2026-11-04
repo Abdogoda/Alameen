@@ -3,22 +3,22 @@
 return [
     'eyebrow' => 'مركز التواصل والدعم الفني',
     'heroTitle' => 'نحن هنا لمساعدتك في كل خطوة',
-    'heroDesc' => 'يسعد فريق الدعم الفني والإرشاد الأكاديمي بمنصة الأمين بالإجابة على استفساراتكم ومساندتكم طوال رحلتكم التعليمية.',
+    'heroDesc' => 'يسعد فريق الدعم الفني والإرشاد الأكاديمي بمنصة مركز الأمين بالإجابة على استفساراتكم ومساندتكم طوال رحلتكم التعليمية.',
     'statusOnline' => 'فريق الدعم متاح الآن للرد',
     'responseTime' => 'متوسط زمن الاستجابة: أقل من ساعتين',
 
     // Support Channels
     'channelTechTitle' => 'البريد الإلكتروني الرسمي',
     'channelTechDesc' => 'تواصل مباشر عبر البريد الإلكتروني للاستفسارات الأكاديمية ومتابعة حسابك وشهادتك.',
-    'channelTechAction' => 'contact@alameen-speech.com',
+    'channelTechAction' => 'hm2991479@gmail.com',
     'channelTechBtn' => 'مراسلة عبر البريد',
     'channelAcademicTitle' => 'الإرشاد الأكاديمي',
     'channelAcademicDesc' => 'استشارات تخصصية مع محاضري ومختصي التخاطب.',
-    'channelAcademicAction' => 'academic@alameen-speech.com',
+    'channelAcademicAction' => 'hm2991479@gmail.com',
     'channelAcademicBtn' => 'طلب استشارة أكاديمية',
     'channelWhatsAppTitle' => 'المحادثة المباشرة عبر واتساب',
     'channelWhatsAppDesc' => 'تواصل فوري وسريع مع فريق خدمة الطلاب للرد على استفساراتك وتأكيد التسجيل في كورس التخاطب.',
-    'channelWhatsAppAction' => '+20 100 000 0000',
+    'channelWhatsAppAction' => '01005123784',
     'channelWhatsAppBtn' => 'فتح محادثة واتساب',
 
     // Inquiry Form

@@ -42,14 +42,14 @@ class VideoProgressService
 
     /**
      * Check if a student has completed all published videos in a level.
-     * Empty levels with no published videos are considered completed.
+     * Empty levels with no published videos are never considered completed.
      */
     public function isLevelCompleted(User $user, Level $level): bool
     {
         $videos = $level->publishedVideos;
 
         if ($videos->isEmpty()) {
-            return true;
+            return false;
         }
 
         $videoIds = $videos->pluck('id')->all();
@@ -337,8 +337,6 @@ class VideoProgressService
         foreach ($publishedLevels as $lvl) {
             $lvlVideos = $lvl->publishedVideos;
             if ($lvlVideos->isEmpty()) {
-                $completedLevelIds[] = $lvl->id;
-
                 continue;
             }
 

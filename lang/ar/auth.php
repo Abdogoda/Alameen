@@ -62,4 +62,11 @@ return [
     'resend_otp' => 'إعادة إرسال الرمز',
     'mail_transport_error' => 'تعذر إرسال البريد الإلكتروني حالياً. يرجى المحاولة لاحقاً.',
 
+    // Account deletion & settings confirmation
+    'Are you sure you want to delete your account?' => 'هل أنت متأكد أنك تريد حذف حسابك؟',
+    'Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.' => 'بمجرد حذف حسابك، سيتم حذف جميع موارده وبياناته نهائياً. يرجى إدخال كلمة المرور لتأكيد رغبتك في حذف حسابك نهائياً.',
+    'Delete account' => 'حذف الحساب',
+    'Cancel' => 'إلغاء',
+    'Profile updated.' => 'تم تحديث الملف الشخصي بنجاح.',
+    'A new verification link has been sent to your email address.' => 'تم إرسال رابط تأكيد جديد إلى عنوان بريدك الإلكتروني.',
 ];

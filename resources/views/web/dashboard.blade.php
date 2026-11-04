@@ -33,14 +33,14 @@
                     <span class="text-xs text-slate-400 dark:text-slate-500">•</span>
                     <span class="text-xs font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
                         <span class="size-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                        {{ __('حساب نشط ومسار سريري معتمد') }}
+                        {{ __('حساب نشط ومسار معتمد') }}
                     </span>
                 </div>
                 <h1 class="font-['Baloo_Bhaijaan_2'] font-extrabold text-2xl sm:text-3xl lg:text-4xl text-[#012383] dark:text-white leading-tight">
                     {{ __('أهلًا بعودتك، :name', ['name' => auth()->user()->name]) }} 👋
                 </h1>
                 <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-2xl">
-                    {{ __('كورساتك ومهامك في مكان واحد. تابع من حيث توقّفت، بخطوة واضحة نحو الإتقان السريري.') }}
+                    {{ __('كورساتك ومهامك في مكان واحد. تابع من حيث توقّفت، بخطوة واضحة نحو الإتقان.') }}
                 </p>
             </div>
 
@@ -443,7 +443,7 @@
                                 </h3>
 
                                 <p class="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed">
-                                    {{ __('برنامج تطبيقي سريري معتمد يشمل تدريبات التخاطب واضطرابات النطق والكلام.') }}
+                                    {{ __('دورات تخاطب شاملة , فيديوهات وتطبيقات عمليه ,شهاده معتمده من مركز الامين') }}
                                 </p>
                             </div>
                         </div>
@@ -486,7 +486,7 @@
                 <div class="size-11 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-[#012383] dark:text-blue-300 flex items-center justify-center group-hover:scale-110 transition-transform">
                     <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
                 </div>
-                <span class="font-bold text-xs text-[#012383] dark:text-white">{{ __('المهام السريرية') }}</span>
+                <span class="font-bold text-xs text-[#012383] dark:text-white">{{ __('المهام') }}</span>
                 <span class="text-[11px] text-slate-400">{{ __('التسجيلات والتقييمات') }}</span>
             </a>
 
@@ -534,7 +534,7 @@
                 <div class="flex items-center justify-between w-full">
                     <div class="flex flex-col gap-0.5">
                         <h3 class="font-['Baloo_Bhaijaan_2'] font-bold text-lg sm:text-xl text-[#012383] dark:text-white">
-                            {{ __('برامج مقترحة لتوسيع مسارك السريري') }}
+                            {{ __('كورسات مقترحة') }}
                         </h3>
                         <p class="text-xs text-slate-500 dark:text-slate-400">
                             {{ __('دورات متخصصة تدعم مهاراتك التشخيصية والعلاجية في مجال التخاطب.') }}

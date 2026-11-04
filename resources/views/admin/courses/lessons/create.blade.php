@@ -701,6 +701,36 @@
                     endpoint: uploadUrl,
                     file: file,
                     chunkSize: 5120, // 5MB chunks (multiple of 256KB required by MUX)
+                    attempts: 5,
+                    delayBeforeAttempt: 1,
+                });
+
+                upload.on('attempt', (e) => {
+                    console.log(`[VIDEO_UPLOAD MUX] UpChunk Attempting chunk #${e.detail?.chunkNumber ?? '?'}`);
+                });
+
+                upload.on('attemptFailure', (e) => {
+                    console.warn('[VIDEO_UPLOAD MUX] UpChunk Chunk attempt failed:', e.detail);
+                    if (statusText) {
+                        statusText.textContent = `جاري إعادة محاولة إرسال الجزء (${e.detail?.chunkNumber ?? ''})... المحاولات المتبقية: ${e.detail?.attemptsLeft ?? ''}`;
+                    }
+                });
+
+                upload.on('chunkSuccess', (e) => {
+                    console.log(`[VIDEO_UPLOAD MUX] UpChunk Chunk #${e.detail?.chunkNumber ?? '?'} succeeded!`);
+                    if (statusText) {
+                        statusText.textContent = '{{ __("جاري الرفع المباشر إلى MUX...") }}';
+                    }
+                });
+
+                upload.on('offline', () => {
+                    console.warn('[VIDEO_UPLOAD MUX] Network offline');
+                    if (statusText) statusText.textContent = 'انقطع الاتصال بالإنترنت، بانتظار عودة الشبكة...';
+                });
+
+                upload.on('online', () => {
+                    console.log('[VIDEO_UPLOAD MUX] Network restored');
+                    if (statusText) statusText.textContent = 'تم استعادة الاتصال، جاري استكمال الرفع...';
                 });
 
                 upload.on('progress', (e) => {
@@ -813,13 +843,15 @@
 
                 upload.on('error', (err) => {
                     console.error('[VIDEO_UPLOAD MUX] UpChunk upload error:', err);
-                    isUploading = false;
-                    if (statusBadge) {
-                        statusBadge.className = 'inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-rose-100 text-rose-800 border border-rose-200';
+                    console.warn('[VIDEO_UPLOAD MUX] Triggering automatic fallback to local chunked upload...');
+                    if (statusText) {
+                        statusText.textContent = 'تعذر استكمال الرفع المباشر إلى MUX (' + (err.detail?.message || 'انقطاع الاتصال') + ')، جاري التحويل التلقائي للرفع عبر خادم المنصة...';
                     }
-                    if (statusText) statusText.textContent = '{{ __("فشل الرفع") }}';
-                    alert('حدث خطأ أثناء الرفع إلى MUX: ' + (err.detail?.message || 'خطأ في الاتصال'));
-                    if (submitBtn) submitBtn.disabled = false;
+                    if (statusBadge) {
+                        statusBadge.className = 'inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-amber-100 text-amber-900 border border-amber-200';
+                    }
+                    isUploading = false;
+                    return startLocalChunkedUpload(file);
                 });
 
             } catch (err) {

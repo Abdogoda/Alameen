@@ -80,6 +80,12 @@
                     <span class="text-xs text-slate-400">•</span>
                     <span class="text-xs text-slate-600 dark:text-slate-300 font-medium">{{ __(':videos درس و:tasks مهمة', ['videos' => $course->videos->count(), 'tasks' => $course->clinicalTasks()->count()]) }}</span>
                     @if(!empty($course->effective_promo_video_url) || !empty($course->mux_playback_id))
+                        @php
+                            $muxTokenService = app(\App\Services\Video\MuxTokenService::class);
+                            $isMuxSigningConfigured = $muxTokenService->isConfigured();
+                            $promoPlaybackToken = ($isMuxSigningConfigured && !empty($course->mux_playback_id)) ? $muxTokenService->generatePlaybackToken($course->mux_playback_id) : '';
+                            $promoStoryboardToken = ($isMuxSigningConfigured && !empty($course->mux_playback_id)) ? $muxTokenService->generateStoryboardToken($course->mux_playback_id) : '';
+                        @endphp
                         <span class="text-xs text-slate-400">•</span>
                         <button 
                             type="button" 
@@ -87,6 +93,8 @@
                             data-preview-source="{{ $course->promo_video_source ?: 'mux' }}"
                             data-preview-url="{{ $course->effective_promo_video_url }}"
                             data-preview-mux="{{ $course->mux_playback_id }}"
+                            data-preview-token="{{ $promoPlaybackToken }}"
+                            data-preview-storyboard="{{ $promoStoryboardToken }}"
                             onclick="handleVideoPreviewClick(this)" 
                             class="text-xs font-bold text-emerald-600 hover:text-emerald-700 flex items-center gap-1 cursor-pointer"
                         >
@@ -352,6 +360,10 @@
                                     {{-- Universal Preview Button (MUX or any source) --}}
                                     @php
                                         $hasPlayback = ! empty($video->effective_playback_url) || ! empty($video->mux_playback_id);
+                                        $muxTokenService = $muxTokenService ?? app(\App\Services\Video\MuxTokenService::class);
+                                        $isMuxSigningConfigured = $isMuxSigningConfigured ?? $muxTokenService->isConfigured();
+                                        $lessonPlaybackToken = ($isMuxSigningConfigured && !empty($video->mux_playback_id)) ? $muxTokenService->generatePlaybackToken($video->mux_playback_id) : '';
+                                        $lessonStoryboardToken = ($isMuxSigningConfigured && !empty($video->mux_playback_id)) ? $muxTokenService->generateStoryboardToken($video->mux_playback_id) : '';
                                     @endphp
                                     @if($hasPlayback)
                                         <button 
@@ -360,6 +372,8 @@
                                             data-preview-source="{{ $video->video_source }}"
                                             data-preview-url="{{ $video->effective_playback_url }}"
                                             data-preview-mux="{{ $video->mux_playback_id }}"
+                                            data-preview-token="{{ $lessonPlaybackToken }}"
+                                            data-preview-storyboard="{{ $lessonStoryboardToken }}"
                                             onclick="handleVideoPreviewClick(this)"
                                             class="lesson-preview-btn px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all duration-150 flex items-center gap-1.5 shadow-2xs hover:shadow-xs active:scale-95 cursor-pointer shrink-0"
                                             title="{{ __('تشغيل ومعاينة الدرس') }}"
@@ -1261,11 +1275,13 @@
             const source = btn.getAttribute('data-preview-source') || '';
             const url = btn.getAttribute('data-preview-url') || '';
             const muxId = btn.getAttribute('data-preview-mux') || '';
-            previewVideo(title, source, url, muxId);
+            const token = btn.getAttribute('data-preview-token') || '';
+            const storyboardToken = btn.getAttribute('data-preview-storyboard') || '';
+            previewVideo(title, source, url, muxId, token, storyboardToken);
         }
 
         // Universal Video Preview Player (MUX / Bunny / YouTube / Vimeo / HLS / MP4)
-        function previewVideo(title, source, playbackUrl, muxPlaybackId) {
+        function previewVideo(title, source, playbackUrl, muxPlaybackId, playbackToken = '', storyboardToken = '') {
             document.getElementById('preview-video-title').textContent = title;
             const container = document.getElementById('video-player-container');
             const sourceLabel = document.getElementById('preview-video-source');
@@ -1296,6 +1312,12 @@
                 if (window.customElements && customElements.get('mux-player')) {
                     const muxPlayer = document.createElement('mux-player');
                     muxPlayer.setAttribute('playback-id', finalPlaybackId);
+                    if (playbackToken) {
+                        muxPlayer.setAttribute('playback-token', playbackToken);
+                    }
+                    if (storyboardToken) {
+                        muxPlayer.setAttribute('storyboard-token', storyboardToken);
+                    }
                     muxPlayer.setAttribute('stream-type', 'on-demand');
                     muxPlayer.setAttribute('autoplay', 'true');
                     muxPlayer.setAttribute('controls', 'true');
@@ -1307,7 +1329,9 @@
                     video.controls = true;
                     video.autoplay = true;
                     video.className = 'w-full h-full';
-                    const hlsSrc = `https://stream.mux.com/${finalPlaybackId}.m3u8`;
+                    const hlsSrc = playbackToken 
+                        ? `https://stream.mux.com/${finalPlaybackId}.m3u8?token=${playbackToken}`
+                        : `https://stream.mux.com/${finalPlaybackId}.m3u8`;
                     
                     if (window.Hls && Hls.isSupported()) {
                         const hls = new Hls();

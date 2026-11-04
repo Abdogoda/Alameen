@@ -154,16 +154,7 @@ class LocalizationService
             return strtolower($cookieLocale);
         }
 
-        // 7. Accept-Language header
-        $acceptLanguage = $request->header('Accept-Language');
-        if (is_string($acceptLanguage) && ! empty($acceptLanguage)) {
-            $preferred = $request->getPreferredLanguage(array_keys($this->getSupportedLocales()));
-            if (is_string($preferred) && $this->isSupported($preferred)) {
-                return strtolower($preferred);
-            }
-        }
-
-        // 8. Default configured locale (Primary default: Arabic)
+        // 7. Default configured locale (Primary default: Arabic)
         return (string) config('localization.default', 'ar');
     }
 }

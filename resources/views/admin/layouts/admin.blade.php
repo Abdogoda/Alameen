@@ -146,7 +146,7 @@
                             <div class="sidebar-label flex items-center gap-1.5 shrink-0">
                                 @if(($pendingStudentsCount ?? 0) > 0)
                                     <span 
-                                        class="min-w-5 h-5 px-1.5 flex items-center justify-center text-[10.5px] font-black rounded-full animate-pulse transition-colors {{ request()->routeIs('admin.students.*') ? 'bg-[#FEF3C7] shadow-xs text-amber-950 font-black' : 'bg-amber-100 text-amber-900 dark:bg-amber-950/70 dark:text-amber-300 dark:border dark:border-amber-800' }}"
+                                        class="min-w-5 h-5 px-1.5 flex items-center justify-center text-[10.5px] font-black rounded-full animate-pulse transition-colors {{ request()->routeIs('admin.students.*') ? 'bg-amber-400 !text-slate-950 shadow-xs font-black' : 'bg-amber-100 !text-amber-900 dark:bg-amber-950/70 dark:!text-amber-300 dark:border dark:border-amber-800' }}"
                                         title="{{ __('طلاب بانتظار الموافقة: :count', ['count' => $pendingStudentsCount]) }}"
                                     >
                                         {{ $pendingStudentsCount }}
@@ -155,7 +155,7 @@
 
                                 @if(($suspendedStudentsCount ?? 0) > 0)
                                     <span 
-                                        class="min-w-5 h-5 px-1.5 flex items-center justify-center text-[10.5px] font-black rounded-full transition-colors {{ request()->routeIs('admin.students.*') ? 'bg-rose-100 shadow-xs text-rose-950 font-black ring-1 ring-rose-300' : 'bg-rose-100 text-rose-800 dark:bg-rose-950/70 dark:text-rose-300 dark:border dark:border-rose-800' }}"
+                                        class="min-w-5 h-5 px-1.5 flex items-center justify-center text-[10.5px] font-black rounded-full transition-colors {{ request()->routeIs('admin.students.*') ? 'bg-rose-500 !text-white shadow-xs font-black ring-1 ring-white/30' : 'bg-rose-500 !text-white shadow-xs font-black' }}"
                                         title="{{ __('طلاب معلقين / ملغي الصلاحية: :count', ['count' => $suspendedStudentsCount]) }}"
                                     >
                                         {{ $suspendedStudentsCount }}
@@ -191,7 +191,7 @@
                             <svg class="size-5 shrink-0 {{ request()->routeIs('admin.receipts.*') ? 'text-white' : 'text-slate-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                             <span class="flex-1 text-start sidebar-label">{{ __('إيصالات الدفع') }}</span>
                             @if(($pendingReceiptsCount ?? 0) > 0)
-                                <span class="sidebar-label min-w-5 h-5 px-1.5 flex items-center justify-center text-[11px] font-black rounded-full animate-pulse shrink-0 transition-colors {{ request()->routeIs('admin.receipts.*') ? 'bg-[#FEF3C7] shadow-xs text-amber-900' : 'bg-amber-100 text-amber-900' }}">{{ $pendingReceiptsCount }}</span>
+                                <span class="sidebar-label min-w-5 h-5 px-1.5 flex items-center justify-center text-[11px] font-black rounded-full animate-pulse shrink-0 transition-colors {{ request()->routeIs('admin.receipts.*') ? 'bg-amber-400 !text-slate-950 shadow-xs font-black' : 'bg-amber-100 text-amber-900' }}">{{ $pendingReceiptsCount }}</span>
                             @endif
                         </a>
 

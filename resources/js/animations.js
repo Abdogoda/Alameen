@@ -130,12 +130,12 @@
 
         // Respect user appearance settings: do not show if disabled
         try {
-            if (localStorage.getItem('alameen_scroll_progress') === 'false' || 
+            if (localStorage.getItem('alameen_scroll_progress') === 'false' ||
                 document.documentElement.getAttribute('data-scroll-progress-enabled') === 'false') {
                 bar.style.display = 'none';
                 return;
             }
-        } catch (e) {}
+        } catch (e) { }
 
         const scrollTop = window.scrollY || document.documentElement.scrollTop || 0;
         const scrollHeight = document.documentElement.scrollHeight || document.body.scrollHeight || 0;
@@ -242,9 +242,16 @@
         if (scrollObserver) {
             try {
                 scrollObserver.disconnect();
-            } catch {}
+            } catch { }
         }
 
+        // Guarantee hero section and its slides are ALWAYS 100% visible from initial paint
+        document.querySelectorAll('#home, #home .reveal-on-scroll, .hero-slide, .hero-slide *').forEach((heroEl) => {
+            heroEl.classList.remove('reveal-on-scroll', 'reveal-left', 'reveal-right', 'reveal-zoom', 'reveal-fade');
+            heroEl.classList.add('revealed', 'is-revealed');
+        });
+
+        // Only explicitly targeted below-the-fold cards and explicit reveal classes are observed
         const candidateSelectors = [
             '.reveal-on-scroll',
             '.reveal-left',
@@ -253,20 +260,19 @@
             '.reveal-fade',
             '.course-card',
             '.review-card',
-            '.stat-card',
-            '[data-flux-card]',
-            'main section',
-            '.grid > div:not([data-no-reveal])',
-            '.grid > a:not([data-no-reveal])',
-            'main > div > div:not([data-no-reveal])'
+            '.stat-card'
         ];
 
         const elementsToObserve = new Set();
 
         candidateSelectors.forEach((selector) => {
             document.querySelectorAll(selector).forEach((el) => {
-                // Ignore navigation bars, modals, toast, headers, sidebars
+                // Ignore hero section (#home), navigation bars, modals, toast, headers, sidebars
                 if (
+                    el.closest('#home') ||
+                    el.closest('.hero-slide') ||
+                    el.closest('#hero-slider') ||
+                    el.id === 'home' ||
                     !el.closest('header') &&
                     !el.closest('nav') &&
                     !el.closest('aside') &&
@@ -281,35 +287,42 @@
                     el.id !== 'toast' &&
                     !el.hasAttribute('data-no-reveal')
                 ) {
-                    elementsToObserve.add(el);
+                    if (
+                        !el.closest('#home') &&
+                        !el.closest('.hero-slide') &&
+                        !el.closest('#hero-slider') &&
+                        el.id !== 'home'
+                    ) {
+                        elementsToObserve.add(el);
+                    }
                 }
             });
         });
 
         // If user configured reduced motion in appearance settings, reveal all elements immediately without animation
         try {
-            if (localStorage.getItem('alameen_motion') === 'reduced' || 
+            if (localStorage.getItem('alameen_motion') === 'reduced' ||
                 document.documentElement.getAttribute('data-motion') === 'reduced') {
                 elementsToObserve.forEach((el) => {
-                    el.classList.add('revealed');
+                    el.classList.add('revealed', 'is-revealed');
                     el.style.transition = 'none';
                     el.style.animation = 'none';
                 });
                 return;
             }
-        } catch (e) {}
+        } catch (e) { }
 
         if ('IntersectionObserver' in window) {
             const observerOptions = {
                 root: null,
-                rootMargin: '0px 0px -30px 0px',
-                threshold: 0.05
+                rootMargin: '0px 0px 50px 0px',
+                threshold: 0.02
             };
 
             scrollObserver = new IntersectionObserver((entries, obs) => {
                 entries.forEach((entry) => {
                     if (entry.isIntersecting) {
-                        entry.target.classList.add('revealed');
+                        entry.target.classList.add('revealed', 'is-revealed');
                         obs.unobserve(entry.target);
                     }
                 });
@@ -341,18 +354,15 @@
 
                 // Check if element is already within the initial viewport
                 const rect = el.getBoundingClientRect();
-                if (rect.top < windowHeight - 40 && rect.bottom > 0) {
-                    // Stagger viewport reveal slightly for cascade effect
-                    setTimeout(() => {
-                        el.classList.add('revealed');
-                    }, 60);
+                if (rect.top < windowHeight && rect.bottom > 0) {
+                    el.classList.add('revealed', 'is-revealed');
                 } else {
                     scrollObserver.observe(el);
                 }
             });
         } else {
             // Fallback for older browsers
-            elementsToObserve.forEach((el) => el.classList.add('revealed'));
+            elementsToObserve.forEach((el) => el.classList.add('revealed', 'is-revealed'));
         }
     }
 
@@ -566,7 +576,7 @@
                     navProgress.start();
                 }
             }
-        } catch {}
+        } catch { }
     }, { passive: true });
 
     // Global exposure

@@ -158,6 +158,15 @@ class AppServiceProvider extends ServiceProvider
                             $feedbackBlock->save();
                         }
                     }
+
+                    // Auto-sync auth artwork to 13.jpeg
+                    $authImgSetting = \App\Models\Setting::where('key', 'auth_login_image')->first();
+                    if ($authImgSetting && (str_contains((string) $authImgSetting->value_ar, '6.jpeg') || str_contains((string) $authImgSetting->value_ar, 'auth-sculpture'))) {
+                        $authImgSetting->update([
+                            'value_ar' => '/assets/images/alameen-images/13.jpeg',
+                            'value_en' => '/assets/images/alameen-images/13.jpeg',
+                        ]);
+                    }
                 }
 
                 // Auto-sync real Admins & purge dummy users

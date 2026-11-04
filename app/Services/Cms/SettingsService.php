@@ -159,7 +159,7 @@ class SettingsService
     public function getAuthLoginImageUrl(): string
     {
         $img = $this->get('auth_login_image', '/assets/images/alameen-images/13.jpeg');
-        if (empty($img)) {
+        if (empty($img) || str_contains($img, '6.jpeg') || str_contains($img, 'auth-sculpture')) {
             return '/assets/images/alameen-images/13.jpeg';
         }
 

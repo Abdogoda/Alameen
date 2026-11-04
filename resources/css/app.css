@@ -12,6 +12,20 @@
 @custom-variant rtl (&:where([dir="rtl"], [dir="rtl"] *));
 @custom-variant ltr (&:where([dir="ltr"], [dir="ltr"] *));
 
+[x-cloak] {
+    display: none !important;
+}
+
+/* Ensure mobile navigation drawer & overlay are strictly hidden by default until explicitly opened */
+.marketing-drawer-overlay[style*="display: none"],
+.marketing-sidebar-drawer[style*="display: none"],
+.marketing-drawer-overlay.hidden,
+.marketing-sidebar-drawer.hidden {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
+
 @theme {
     --font-sans: 'Cairo', 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
     --font-display: 'Baloo Bhaijaan 2', cursive, sans-serif;
@@ -1770,9 +1784,19 @@ body.alameen-navigating-out main {
     will-change: opacity, transform;
 }
 
-.reveal-on-scroll.revealed {
+.reveal-on-scroll.revealed,
+.reveal-on-scroll.is-revealed {
     opacity: 1 !important;
     transform: translateY(0) !important;
+}
+
+/* Ensure Hero section is always visible from 0ms regardless of scroll state */
+#home,
+#home .hero-slider-canvas,
+.hero-slide.is-active {
+    opacity: 1 !important;
+    visibility: visible !important;
+    filter: none !important;
 }
 
 .reveal-left {

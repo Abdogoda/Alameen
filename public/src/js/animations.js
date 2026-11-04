@@ -230,6 +230,13 @@
             } catch {}
         }
 
+        // Guarantee hero section and its slides are ALWAYS 100% visible from initial paint
+        document.querySelectorAll('#home, #home .reveal-on-scroll, .hero-slide, .hero-slide *').forEach((heroEl) => {
+            heroEl.classList.remove('reveal-on-scroll', 'reveal-left', 'reveal-right', 'reveal-zoom', 'reveal-fade');
+            heroEl.classList.add('revealed', 'is-revealed');
+        });
+
+        // Only explicitly targeted below-the-fold cards and explicit reveal classes are observed
         const candidateSelectors = [
             '.reveal-on-scroll',
             '.reveal-left',
@@ -238,50 +245,50 @@
             '.reveal-fade',
             '.course-card',
             '.review-card',
-            '.stat-card',
-            '[data-flux-card]',
-            'main section',
-            '.grid > div:not([data-no-reveal])',
-            '.grid > a:not([data-no-reveal])',
-            'main > div > div:not([data-no-reveal])'
+            '.stat-card'
         ];
 
         const elementsToObserve = new Set();
 
         candidateSelectors.forEach((selector) => {
             document.querySelectorAll(selector).forEach((el) => {
-                // Ignore navigation bars, modals, toast, headers, sidebars
+                // Ignore hero section (#home), navigation bars, modals, toast, headers, sidebars
                 if (
-                    !el.closest('header') &&
-                    !el.closest('nav') &&
-                    !el.closest('aside') &&
-                    !el.closest('#sidebar-overlay') &&
-                    !el.closest('#alameen-loader') &&
-                    !el.closest('#alameen-nav-progress') &&
-                    !el.closest('#alameen-scroll-progress') &&
-                    !el.closest('#alameen-back-to-top') &&
-                    !el.classList.contains('fixed') &&
-                    !el.classList.contains('sticky') &&
-                    !el.id.includes('modal') &&
-                    el.id !== 'toast' &&
-                    !el.hasAttribute('data-no-reveal')
+                    el.closest('#home') ||
+                    el.closest('.hero-slide') ||
+                    el.closest('#hero-slider') ||
+                    el.id === 'home' ||
+                    el.closest('header') ||
+                    el.closest('nav') ||
+                    el.closest('aside') ||
+                    el.closest('#sidebar-overlay') ||
+                    el.closest('#alameen-loader') ||
+                    el.closest('#alameen-nav-progress') ||
+                    el.closest('#alameen-scroll-progress') ||
+                    el.closest('#alameen-back-to-top') ||
+                    el.classList.contains('fixed') ||
+                    el.classList.contains('sticky') ||
+                    el.id.includes('modal') ||
+                    el.id === 'toast' ||
+                    el.hasAttribute('data-no-reveal')
                 ) {
-                    elementsToObserve.add(el);
+                    return;
                 }
+                elementsToObserve.add(el);
             });
         });
 
         if ('IntersectionObserver' in window) {
             const observerOptions = {
                 root: null,
-                rootMargin: '0px 0px -30px 0px',
-                threshold: 0.05
+                rootMargin: '0px 0px 50px 0px',
+                threshold: 0.02
             };
 
             scrollObserver = new IntersectionObserver((entries, obs) => {
                 entries.forEach((entry) => {
                     if (entry.isIntersecting) {
-                        entry.target.classList.add('revealed');
+                        entry.target.classList.add('revealed', 'is-revealed');
                         obs.unobserve(entry.target);
                     }
                 });
@@ -313,17 +320,15 @@
 
                 // Check if element is already within the initial viewport
                 const rect = el.getBoundingClientRect();
-                if (rect.top < windowHeight - 40 && rect.bottom > 0) {
-                    setTimeout(() => {
-                        el.classList.add('revealed');
-                    }, 60);
+                if (rect.top < windowHeight && rect.bottom > 0) {
+                    el.classList.add('revealed', 'is-revealed');
                 } else {
                     scrollObserver.observe(el);
                 }
             });
         } else {
             // Fallback for older browsers
-            elementsToObserve.forEach((el) => el.classList.add('revealed'));
+            elementsToObserve.forEach((el) => el.classList.add('revealed', 'is-revealed'));
         }
     }
 

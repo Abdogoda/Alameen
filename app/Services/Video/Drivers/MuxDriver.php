@@ -243,6 +243,7 @@ class MuxDriver implements VideoDriverInterface
     {
         if (! $this->isConfigured()) {
             Log::warning('[MUX_DRIVER] getUpload called while MuxDriver is not configured.', ['upload_id' => $uploadId]);
+
             return null;
         }
 
@@ -272,6 +273,7 @@ class MuxDriver implements VideoDriverInterface
     {
         if (! $this->isConfigured()) {
             Log::warning('[MUX_DRIVER] getAsset called while MuxDriver is not configured.', ['asset_id' => $assetId]);
+
             return null;
         }
 
@@ -289,11 +291,6 @@ class MuxDriver implements VideoDriverInterface
             ]);
         } catch (\Throwable $e) {
             Log::warning('[MUX_DRIVER] getAsset exception: '.$e->getMessage(), ['asset_id' => $assetId]);
-        }
-
-        return null;
-    }
-            Log::warning('MUX getAsset exception: '.$e->getMessage());
         }
 
         return null;

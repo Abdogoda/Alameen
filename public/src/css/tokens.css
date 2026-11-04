@@ -1,3 +1,16 @@
+[x-cloak] {
+  display: none !important;
+}
+
+.marketing-drawer-overlay[style*="display: none"],
+.marketing-sidebar-drawer[style*="display: none"],
+.marketing-drawer-overlay.hidden,
+.marketing-sidebar-drawer.hidden {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
 :root {
   /* Primitive Colors (Extracted from Figma 1:249) */
   --color-brand-navy: #012383;
@@ -327,9 +340,19 @@ a.text-white * {
   will-change: opacity, transform;
 }
 
-.reveal-on-scroll.is-revealed {
-  opacity: 1;
-  transform: translateY(0);
+.reveal-on-scroll.is-revealed,
+.reveal-on-scroll.revealed {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
+/* Ensure Hero section is always visible from 0ms regardless of scroll state */
+#home,
+#home .hero-slider-canvas,
+.hero-slide.is-active {
+  opacity: 1 !important;
+  visibility: visible !important;
+  filter: none !important;
 }
 
 

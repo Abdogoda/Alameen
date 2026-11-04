@@ -369,94 +369,66 @@
     <!-- Fallback & Instant DOM Controller for Mobile Menu Drawer (Guarantees Zero Flash & Smooth Closing) -->
     <script>
         (function() {
-            function bindMobileMenu() {
-                var toggleBtn = document.getElementById('mobile-menu-toggle');
-                var closeBtn = document.getElementById('close-mobile-nav-btn');
+            function syncMobileNav() {
                 var menu = document.getElementById('mobile-nav-menu');
                 var overlay = document.getElementById('mobile-nav-overlay');
+                var header = document.getElementById('main-header');
 
-                function closeMenu() {
-                    if (menu) {
-                        menu.style.display = 'none';
-                        menu.classList.add('hidden');
-                    }
-                    if (overlay) {
-                        overlay.style.display = 'none';
-                        overlay.classList.add('hidden');
-                    }
+                // Strictly unlock body on page load / refresh
+                document.body.classList.remove('overflow-hidden');
+
+                function forceClose() {
+                    try {
+                        if (header && window.Alpine && typeof Alpine.$data === 'function') {
+                            var data = Alpine.$data(header);
+                            if (data && typeof data.mobileNavOpen !== 'undefined') {
+                                data.mobileNavOpen = false;
+                            }
+                        }
+                    } catch (e) {}
+
+                    if (menu) menu.style.display = 'none';
+                    if (overlay) overlay.style.display = 'none';
                     document.body.classList.remove('overflow-hidden');
                 }
 
-                function openMenu() {
-                    if (menu) {
-                        menu.style.display = 'flex';
-                        menu.classList.remove('hidden');
+                var closeBtn = document.getElementById('close-mobile-nav-btn');
+                if (closeBtn && !closeBtn.__boundClose) {
+                    closeBtn.__boundClose = true;
+                    closeBtn.addEventListener('click', forceClose);
+                }
+
+                if (overlay && !overlay.__boundClose) {
+                    overlay.__boundClose = true;
+                    overlay.addEventListener('click', forceClose);
+                }
+
+                document.querySelectorAll('.mobile-nav-link').forEach(function(l) {
+                    if (!l.__boundClose) {
+                        l.__boundClose = true;
+                        l.addEventListener('click', forceClose);
                     }
-                    if (overlay) {
-                        overlay.style.display = 'block';
-                        overlay.classList.remove('hidden');
-                    }
-                    document.body.classList.add('overflow-hidden');
-                }
-
-                // Strictly ensure menu is closed on fresh page boot
-                closeMenu();
-
-                if (toggleBtn && !toggleBtn.__hasMobileMenuBinding) {
-                    toggleBtn.__hasMobileMenuBinding = true;
-                    toggleBtn.addEventListener('click', function(e) {
-                        e.stopPropagation();
-                        var isCurrentlyOpen = menu && menu.style.display !== 'none' && !menu.classList.contains('hidden');
-                        if (isCurrentlyOpen) {
-                            closeMenu();
-                        } else {
-                            openMenu();
-                        }
-                    });
-                }
-
-                if (closeBtn && !closeBtn.__hasMobileMenuBinding) {
-                    closeBtn.__hasMobileMenuBinding = true;
-                    closeBtn.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        closeMenu();
-                    });
-                }
-
-                if (overlay && !overlay.__hasMobileMenuBinding) {
-                    overlay.__hasMobileMenuBinding = true;
-                    overlay.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        closeMenu();
-                    });
-                }
+                });
 
                 window.addEventListener('resize', function() {
                     if (window.innerWidth >= 1024) {
-                        closeMenu();
+                        forceClose();
                     }
                 });
 
                 window.addEventListener('keydown', function(e) {
                     if (e.key === 'Escape') {
-                        closeMenu();
+                        forceClose();
                     }
-                });
-
-                document.querySelectorAll('.mobile-nav-link').forEach(function(link) {
-                    link.addEventListener('click', function() {
-                        closeMenu();
-                    });
                 });
             }
 
             if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', bindMobileMenu);
+                document.addEventListener('DOMContentLoaded', syncMobileNav);
             } else {
-                bindMobileMenu();
+                syncMobileNav();
             }
-            document.addEventListener('livewire:navigated', bindMobileMenu);
+            document.addEventListener('livewire:navigated', syncMobileNav);
         })();
     </script>
 </header>

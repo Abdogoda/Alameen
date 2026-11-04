@@ -66,7 +66,7 @@
         if ($i === 4 && (empty($val) || $val === '/assets/images/alameen-images/6.jpeg' || $val === '/assets/images/alameen-images/4.jpeg' || !str_contains($val, '9.jpeg'))) {
             $val = '/assets/images/alameen-images/9.jpeg';
         }
-        if ($i === 7 && (empty($val) || str_contains($val, 'certificate.png'))) {
+        if ($i === 7 || str_contains((string) $val, 'certificate')) {
             $val = '/assets/images/alameen-images/14.png';
         }
         if ($i === 8 && (empty($val) || $val === '/assets/images/alameen-images/4.jpeg' || $val === '/assets/images/alameen-images/6.jpeg' || !str_contains($val, '12.jpeg'))) {
@@ -92,17 +92,17 @@
             <!-- Slide 1 Text -->
             <div class="w-full lg:max-w-[620px] xl:max-w-[680px] flex flex-col items-center lg:items-start text-center lg:text-start shrink-0 order-1 gap-3.5 sm:gap-5 lg:gap-[20px]">
               
-              <div class="slide-eyebrow inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#EAF1FB] border border-[#0B2A8F]/20 text-[#0B2A8F] text-xs sm:text-sm font-extrabold shadow-xs">
-                <span class="size-2 rounded-full bg-[#0B2A8F] animate-pulse"></span>
+              <div class="slide-eyebrow inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#EAF1FB] dark:bg-blue-950/60 border border-[#0B2A8F]/20 dark:border-blue-700/50 text-[#0B2A8F] dark:text-blue-300 text-xs sm:text-sm font-extrabold shadow-xs">
+                <span class="size-2 rounded-full bg-[#0B2A8F] dark:bg-blue-400 animate-pulse"></span>
                 <span>{{ __('landing.slide1Eyebrow') }}</span>
               </div>
 
               <div class="flex flex-col gap-2.5 sm:gap-4 items-center lg:items-start w-full">
-                <h1 class="slide-title font-['Baloo_Bhaijaan_2'] font-bold text-[24px] xs:text-[28px] sm:text-[36px] lg:text-[44px] xl:text-[48px] leading-[1.2] text-[#012383] w-full tracking-tight">
+                <h1 class="slide-title font-['Baloo_Bhaijaan_2'] font-bold text-[24px] xs:text-[28px] sm:text-[36px] lg:text-[44px] xl:text-[48px] leading-[1.2] text-[#012383] dark:text-white w-full tracking-tight">
                     {{ $heroBlock?->title ?: __('landing.slide1Title') }}
                 </h1>
 
-                <p class="slide-desc font-['Cairo'] font-semibold text-[14px] sm:text-[17px] lg:text-[20px] leading-[1.7] text-[#1E293B] dark:text-slate-300 w-full max-w-[580px]">
+                <p class="slide-desc font-['Cairo'] font-semibold text-[14px] sm:text-[17px] lg:text-[20px] leading-[1.7] text-[#1E293B] dark:text-slate-200 w-full max-w-[580px]">
                     {{ $heroBlock?->subtitle ?: __('landing.slide1Desc') }}
                 </p>
               </div>
@@ -114,7 +114,7 @@
                 >{{ $cta1Text }}</a>
                 <a
                   href="{{ $cta2Url }}"
-                  class="w-full sm:w-auto px-5 sm:px-6 h-[46px] sm:h-[56px] bg-white hover:bg-[#EAF1FB] text-[#012383] border border-[#DEE8F7] flex items-center justify-center rounded-[14px] sm:rounded-[16px] font-['Cairo'] font-bold text-[14px] sm:text-[16px] transition-colors cursor-pointer whitespace-nowrap shadow-xs"
+                  class="w-full sm:w-auto px-5 sm:px-6 h-[46px] sm:h-[56px] bg-white dark:bg-slate-900 hover:bg-[#EAF1FB] dark:hover:bg-slate-800 text-[#012383] dark:text-white border border-[#DEE8F7] dark:border-slate-700 flex items-center justify-center rounded-[14px] sm:rounded-[16px] font-['Cairo'] font-bold text-[14px] sm:text-[16px] transition-colors cursor-pointer whitespace-nowrap shadow-xs"
                 >{{ $cta2Text }}</a>
               </div>
 
@@ -236,17 +236,17 @@
             <!-- Slide 2 Text -->
             <div class="w-full lg:max-w-[620px] xl:max-w-[680px] flex flex-col items-center lg:items-start text-center lg:text-start shrink-0 order-1 gap-3.5 sm:gap-5 lg:gap-[20px]">
               
-              <div class="slide-eyebrow inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#EEF7F3] border border-[#10B77F]/30 text-[#10B77F] text-xs sm:text-sm font-extrabold shadow-xs">
+              <div class="slide-eyebrow inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#EEF7F3] dark:bg-emerald-950/60 border border-[#10B77F]/30 dark:border-emerald-700/50 text-[#10B77F] dark:text-emerald-400 text-xs sm:text-sm font-extrabold shadow-xs">
                 <span class="size-2 rounded-full bg-[#10B77F] animate-ping"></span>
                 <span>{{ __('آراء وتجارب المتدربين') }}</span>
               </div>
 
               <div class="flex flex-col gap-2.5 sm:gap-4 items-center lg:items-start w-full">
-                <h2 class="slide-title font-['Baloo_Bhaijaan_2'] font-bold text-[22px] xs:text-[26px] sm:text-[32px] lg:text-[38px] xl:text-[42px] leading-[1.25] text-[#012383] w-full tracking-tight">
+                <h2 class="slide-title font-['Baloo_Bhaijaan_2'] font-bold text-[22px] xs:text-[26px] sm:text-[32px] lg:text-[38px] xl:text-[42px] leading-[1.25] text-[#012383] dark:text-white w-full tracking-tight">
                     {{ $feedbackBlock?->title ?: 'مركز الأمين.. ثقتكم دايمًا مسؤولية بنعتز بيها، ورضاكم هو هدفنا اللي بنسعى ليه كل يوم' }}
                 </h2>
 
-                <p class="slide-desc font-['Cairo'] font-semibold text-[13px] sm:text-[16px] lg:text-[18px] leading-[1.7] text-[#1E293B] dark:text-slate-300 w-full max-w-[580px]">
+                <p class="slide-desc font-['Cairo'] font-semibold text-[13px] sm:text-[16px] lg:text-[18px] leading-[1.7] text-[#1E293B] dark:text-slate-200 w-full max-w-[580px]">
                     {{ $feedbackBlock?->subtitle ?: 'بنؤمن إن آراءكم وملاحظاتكم هي الدافع الحقيقي لينا علشان نتطور ونقدم الأفضل باستمرار ونكون عند حسن ظنكم وثقتكم فينا.' }}
                 </p>
               </div>
@@ -258,7 +258,7 @@
                 >{{ __('استكشف آراء المتدربين') }}</a>
                 <a
                   href="#contact"
-                  class="w-full sm:w-auto px-5 sm:px-6 h-[46px] sm:h-[56px] bg-white hover:bg-[#EAF1FB] text-[#012383] border border-[#DEE8F7] flex items-center justify-center rounded-[14px] sm:rounded-[16px] font-['Cairo'] font-bold text-[14px] sm:text-[16px] transition-colors cursor-pointer whitespace-nowrap shadow-xs"
+                  class="w-full sm:w-auto px-5 sm:px-6 h-[46px] sm:h-[56px] bg-white dark:bg-slate-900 hover:bg-[#EAF1FB] dark:hover:bg-slate-800 text-[#012383] dark:text-white border border-[#DEE8F7] dark:border-slate-700 flex items-center justify-center rounded-[14px] sm:rounded-[16px] font-['Cairo'] font-bold text-[14px] sm:text-[16px] transition-colors cursor-pointer whitespace-nowrap shadow-xs"
                 >{{ __('تواصل معنا') }}</a>
               </div>
 
@@ -308,15 +308,15 @@
             <!-- Slide 3 Text -->
             <div class="w-full lg:max-w-[620px] xl:max-w-[680px] flex flex-col items-center lg:items-start text-center lg:text-start shrink-0 order-1 gap-3.5 sm:gap-5 lg:gap-[20px]">
               
-              <div class="slide-eyebrow inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#EAF1FB] border border-[#0B2A8F]/20 text-[#0B2A8F] text-xs sm:text-sm font-extrabold shadow-xs">
-                <span class="size-2 rounded-full bg-[#0B2A8F] animate-pulse"></span>
+              <div class="slide-eyebrow inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#EAF1FB] dark:bg-blue-950/60 border border-[#0B2A8F]/20 dark:border-blue-700/50 text-[#0B2A8F] dark:text-blue-300 text-xs sm:text-sm font-extrabold shadow-xs">
+                <span class="size-2 rounded-full bg-[#0B2A8F] dark:bg-blue-400 animate-pulse"></span>
                 <span>{{ __('landing.slide3Eyebrow') }}</span>
               </div>
 
               <div class="flex flex-col gap-2.5 sm:gap-4 items-center lg:items-start w-full">
-                <h2 class="slide-title font-['Baloo_Bhaijaan_2'] font-bold text-[24px] xs:text-[28px] sm:text-[36px] lg:text-[44px] xl:text-[48px] leading-[1.2] text-[#012383] w-full tracking-tight">{{ __('landing.slide3Title') }}</h2>
+                <h2 class="slide-title font-['Baloo_Bhaijaan_2'] font-bold text-[24px] xs:text-[28px] sm:text-[36px] lg:text-[44px] xl:text-[48px] leading-[1.2] text-[#012383] dark:text-white w-full tracking-tight">{{ __('landing.slide3Title') }}</h2>
 
-                <p class="slide-desc font-['Cairo'] font-semibold text-[14px] sm:text-[17px] lg:text-[20px] leading-[1.7] text-[#1E293B] dark:text-slate-300 w-full max-w-[580px]">{{ __('landing.slide3Desc') }}</p>
+                <p class="slide-desc font-['Cairo'] font-semibold text-[14px] sm:text-[17px] lg:text-[20px] leading-[1.7] text-[#1E293B] dark:text-slate-200 w-full max-w-[580px]">{{ __('landing.slide3Desc') }}</p>
               </div>
 
               <div class="slide-ctas flex flex-wrap sm:flex-nowrap items-center justify-center lg:justify-start gap-2.5 sm:gap-3 pt-1 sm:pt-2 w-full sm:w-auto">
@@ -326,7 +326,7 @@
                 >{{ __('landing.slide3Cta1') }}</a>
                 <a
                   href="{{ route('certificates.index') }}"
-                  class="w-full sm:w-auto px-5 sm:px-6 h-[46px] sm:h-[56px] bg-white hover:bg-[#EAF1FB] text-[#012383] border border-[#DEE8F7] flex items-center justify-center rounded-[14px] sm:rounded-[16px] font-['Cairo'] font-bold text-[14px] sm:text-[16px] transition-colors cursor-pointer whitespace-nowrap shadow-xs"
+                  class="w-full sm:w-auto px-5 sm:px-6 h-[46px] sm:h-[56px] bg-white dark:bg-slate-900 hover:bg-[#EAF1FB] dark:hover:bg-slate-800 text-[#012383] dark:text-white border border-[#DEE8F7] dark:border-slate-700 flex items-center justify-center rounded-[14px] sm:rounded-[16px] font-['Cairo'] font-bold text-[14px] sm:text-[16px] transition-colors cursor-pointer whitespace-nowrap shadow-xs"
                 >{{ __('landing.slide3Cta2') }}</a>
               </div>
 
@@ -369,7 +369,7 @@
                 type="button"
                 id="slider-prev"
                 aria-label="{{ __('landing.prev') }}"
-                class="size-9 sm:size-10 rounded-full bg-white border border-[#DEE8F7] text-[#012383] hover:bg-[#EAF1FB] hover:border-[#0B2A8F]/40 flex items-center justify-center transition-all shadow-xs hover:shadow-md cursor-pointer"
+                class="size-9 sm:size-10 rounded-full bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-700 text-[#012383] dark:text-white hover:bg-[#EAF1FB] dark:hover:bg-slate-800 hover:border-[#0B2A8F]/40 flex items-center justify-center transition-all shadow-xs hover:shadow-md cursor-pointer"
               >
                 <svg class="size-4 sm:size-5 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
@@ -379,7 +379,7 @@
                 type="button"
                 id="slider-next"
                 aria-label="{{ __('landing.next') }}"
-                class="size-9 sm:size-10 rounded-full bg-white border border-[#DEE8F7] text-[#012383] hover:bg-[#EAF1FB] hover:border-[#0B2A8F]/40 flex items-center justify-center transition-all shadow-xs hover:shadow-md cursor-pointer"
+                class="size-9 sm:size-10 rounded-full bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-700 text-[#012383] dark:text-white hover:bg-[#EAF1FB] dark:hover:bg-slate-800 hover:border-[#0B2A8F]/40 flex items-center justify-center transition-all shadow-xs hover:shadow-md cursor-pointer"
               >
                 <svg class="size-4 sm:size-5 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
@@ -390,25 +390,25 @@
             <!-- Smooth Scroll Cue To Next Section -->
             <a
               href="#courses"
-              class="hidden sm:inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/90 border border-[#DEE8F7] hover:border-[#0B2A8F]/40 shadow-xs hover:shadow-sm transition-all cursor-pointer text-[#012383] group"
+              class="hidden sm:inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/90 dark:bg-slate-900/90 border border-[#DEE8F7] dark:border-slate-800 hover:border-[#0B2A8F]/40 shadow-xs hover:shadow-sm transition-all cursor-pointer text-[#012383] dark:text-blue-300 group"
               aria-label="{{ __('landing.jumpToCourses') }}"
             >
-              <div class="w-3.5 h-5 border-2 border-[#0B2A8F] rounded-full flex justify-center pt-0.5 group-hover:scale-105 transition-transform">
-                <div class="size-1 rounded-full bg-[#0B2A8F] animate-scroll-bounce"></div>
+              <div class="w-3.5 h-5 border-2 border-[#0B2A8F] dark:border-blue-400 rounded-full flex justify-center pt-0.5 group-hover:scale-105 transition-transform">
+                <div class="size-1 rounded-full bg-[#0B2A8F] dark:bg-blue-400 animate-scroll-bounce"></div>
               </div>
-              <span class="text-xs font-bold font-['Cairo'] text-[#0B2A8F] group-hover:text-[#012383]">
+              <span class="text-xs font-bold font-['Cairo'] text-[#0B2A8F] dark:text-blue-300 group-hover:text-[#012383] dark:group-hover:text-white">
                 {{ __('landing.exploreCoursesBelow') }}
               </span>
-              <svg class="size-3.5 text-[#0B2A8F] animate-scroll-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="size-3.5 text-[#0B2A8F] dark:text-blue-300 animate-scroll-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
               </svg>
             </a>
 
             <!-- Dot Indicators -->
             <div class="flex items-center gap-2">
-              <button type="button" class="slider-dot h-2 sm:h-2.5 rounded-full transition-all duration-300 w-6 sm:w-8 bg-[#012383] cursor-pointer" aria-label="{{ __('landing.slide') }} 1"></button>
-              <button type="button" class="slider-dot h-2 sm:h-2.5 rounded-full transition-all duration-300 w-2 sm:w-2.5 bg-[#CBD5E1] hover:bg-[#94A3B8] cursor-pointer" aria-label="{{ __('landing.slide') }} 2"></button>
-              <button type="button" class="slider-dot h-2 sm:h-2.5 rounded-full transition-all duration-300 w-2 sm:w-2.5 bg-[#CBD5E1] hover:bg-[#94A3B8] cursor-pointer" aria-label="{{ __('landing.slide') }} 3"></button>
+              <button type="button" class="slider-dot h-2 sm:h-2.5 rounded-full transition-all duration-300 w-6 sm:w-8 bg-[#012383] dark:bg-blue-500 cursor-pointer" aria-label="{{ __('landing.slide') }} 1"></button>
+              <button type="button" class="slider-dot h-2 sm:h-2.5 rounded-full transition-all duration-300 w-2 sm:w-2.5 bg-[#CBD5E1] dark:bg-slate-700 hover:bg-[#94A3B8] cursor-pointer" aria-label="{{ __('landing.slide') }} 2"></button>
+              <button type="button" class="slider-dot h-2 sm:h-2.5 rounded-full transition-all duration-300 w-2 sm:w-2.5 bg-[#CBD5E1] dark:bg-slate-700 hover:bg-[#94A3B8] cursor-pointer" aria-label="{{ __('landing.slide') }} 3"></button>
             </div>
 
           </div>
@@ -416,36 +416,36 @@
         </div>
 
         <!-- Learning Journey Footer Tabs ( رحلتك مع الأمين ) -->
-        <div class="w-full max-w-[1536px] mx-auto border-t border-[#DEE8F7] py-3 lg:h-[72px] flex flex-col sm:flex-row items-center justify-between shrink-0 z-20 gap-3 bg-white/80 backdrop-blur-xs mt-6 rounded-2xl px-3 sm:px-6 shadow-xs">
+        <div class="w-full max-w-[1536px] mx-auto border-t border-[#DEE8F7] dark:border-slate-800 py-3 lg:h-[72px] flex flex-col sm:flex-row items-center justify-between shrink-0 z-20 gap-3 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xs mt-6 rounded-2xl px-3 sm:px-6 shadow-xs">
           
-          <p class="font-['Cairo'] font-extrabold text-[15px] sm:text-[18px] lg:text-[20px] text-[#0B2A8F] whitespace-nowrap self-start sm:self-center">{{ __('landing.journeyTitle') }}</p>
+          <p class="font-['Cairo'] font-extrabold text-[15px] sm:text-[18px] lg:text-[20px] text-[#0B2A8F] dark:text-blue-300 whitespace-nowrap self-start sm:self-center">{{ __('landing.journeyTitle') }}</p>
 
           <div class="flex items-center gap-2 overflow-x-auto max-w-full pb-1 sm:pb-0 w-full sm:w-auto no-scrollbar">
             <button
               type="button"
               data-step-target="0"
-              class="step-tab flex gap-2 items-center px-3 sm:px-3.5 py-1.5 rounded-full transition-all cursor-pointer bg-[#EAF1FB] border border-[#DEE8F7] shadow-xs shrink-0"
+              class="step-tab flex gap-2 items-center px-3 sm:px-3.5 py-1.5 rounded-full transition-all cursor-pointer bg-[#EAF1FB] dark:bg-slate-800 border border-[#DEE8F7] dark:border-slate-700 shadow-xs shrink-0"
             >
-              <div class="step-dot size-2 rounded-full bg-[#0B2A8F] scale-125 transition-transform"></div>
-              <span class="step-text font-['Cairo'] font-black text-[13px] sm:text-[15px] lg:text-[17px] text-[#0B2A8F] whitespace-nowrap">{{ __('landing.step1') }}</span>
+              <div class="step-dot size-2 rounded-full bg-[#0B2A8F] dark:bg-blue-400 scale-125 transition-transform"></div>
+              <span class="step-text font-['Cairo'] font-black text-[13px] sm:text-[15px] lg:text-[17px] text-[#0B2A8F] dark:text-blue-300 whitespace-nowrap">{{ __('landing.step1') }}</span>
             </button>
 
             <button
               type="button"
               data-step-target="1"
-              class="step-tab flex gap-2 items-center px-3 sm:px-3.5 py-1.5 rounded-full transition-all cursor-pointer hover:bg-slate-100/60 shrink-0"
+              class="step-tab flex gap-2 items-center px-3 sm:px-3.5 py-1.5 rounded-full transition-all cursor-pointer hover:bg-slate-100/60 dark:hover:bg-slate-800/60 shrink-0"
             >
-              <div class="step-dot size-2 rounded-full bg-slate-400 transition-transform"></div>
-              <span class="step-text font-['Cairo'] font-semibold text-[13px] sm:text-[15px] lg:text-[17px] text-[#475569] whitespace-nowrap">{{ __('landing.step2') }}</span>
+              <div class="step-dot size-2 rounded-full bg-slate-400 dark:bg-slate-600 transition-transform"></div>
+              <span class="step-text font-['Cairo'] font-semibold text-[13px] sm:text-[15px] lg:text-[17px] text-[#475569] dark:text-slate-400 whitespace-nowrap">{{ __('landing.step2') }}</span>
             </button>
 
             <button
               type="button"
               data-step-target="2"
-              class="step-tab flex gap-2 items-center px-3 sm:px-3.5 py-1.5 rounded-full transition-all cursor-pointer hover:bg-slate-100/60 shrink-0"
+              class="step-tab flex gap-2 items-center px-3 sm:px-3.5 py-1.5 rounded-full transition-all cursor-pointer hover:bg-slate-100/60 dark:hover:bg-slate-800/60 shrink-0"
             >
-              <div class="step-dot size-2 rounded-full bg-slate-400 transition-transform"></div>
-              <span class="step-text font-['Cairo'] font-semibold text-[13px] sm:text-[15px] lg:text-[17px] text-[#475569] whitespace-nowrap">{{ __('landing.step3') }}</span>
+              <div class="step-dot size-2 rounded-full bg-slate-400 dark:bg-slate-600 transition-transform"></div>
+              <span class="step-text font-['Cairo'] font-semibold text-[13px] sm:text-[15px] lg:text-[17px] text-[#475569] dark:text-slate-400 whitespace-nowrap">{{ __('landing.step3') }}</span>
             </button>
           </div>
 

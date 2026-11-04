@@ -79,9 +79,9 @@
 
                     <div class="flex items-center gap-2 pt-2 border-t border-[#DEE8F7]/60 text-xs text-[#475569]">
                       <div class="size-6 rounded-full bg-[#EAF1FB] flex items-center justify-center font-bold text-[10px] text-[#0B2A8F]">
-                        د
+                        هـ
                       </div>
-                      <span>{{ __('د. سامي المنصور • محاضر التخاطب الشامل') }}</span>
+                      <span>{{ __('د. هنا المكاوي • أخصائية تخاطب وتأهيل لغوي') }}</span>
                     </div>
                   </div>
                 </div>

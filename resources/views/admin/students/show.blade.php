@@ -494,9 +494,9 @@
                                         <button 
                                             type="button" 
                                             onclick="openCourseCertificateModal({{ $course->id }}, '{{ addslashes($course->title) }}', {{ $progressPct }})"
-                                            class="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-purple-50 text-purple-700 hover:bg-purple-100 border border-purple-200 dark:bg-purple-950/40 dark:text-purple-300 dark:border-purple-800 transition-colors cursor-pointer"
+                                            class="px-2.5 py-1.5 rounded-lg text-xs font-bold {{ $progressPct >= 95 ? 'bg-emerald-600 text-white hover:bg-emerald-700' : 'bg-purple-50 text-purple-700 hover:bg-purple-100 border border-purple-200 dark:bg-purple-950/40 dark:text-purple-300 dark:border-purple-800' }} transition-colors cursor-pointer"
                                         >
-                                            🎓 {{ __('رفع شهادة') }}
+                                            🎓 {{ $progressPct >= 95 ? __('منح الشهادة (مكتمل)') : __('إصدار / رفع شهادة') }}
                                         </button>
                                     @else
                                         <span class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
@@ -1233,9 +1233,9 @@
                     </div>
 
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">{{ __('ملف الشهادة الجاهز (صورة أو PDF)') }} *</label>
-                        <input type="file" name="certificate_file" accept=".pdf,image/png,image/jpeg,image/webp" required class="w-full text-xs text-slate-600 dark:text-slate-300 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-[#012383] file:text-white hover:file:bg-[#0B2A8F] cursor-pointer">
-                        <span class="text-[10px] text-slate-400 mt-1 block">{{ __('ارفع ملف الشهادة الجاهز بصيغة PDF أو صورة (PNG, JPG, WEBP) بحد أقصى 20 ميجابايت.') }}</span>
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">{{ __('ملف الشهادة المرفق (اختياري - صورة أو PDF)') }}</label>
+                        <input type="file" name="certificate_file" accept=".pdf,image/png,image/jpeg,image/webp" class="w-full text-xs text-slate-600 dark:text-slate-300 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-[#012383] file:text-white hover:file:bg-[#0B2A8F] cursor-pointer">
+                        <span class="text-[10px] text-slate-400 mt-1 block">{{ __('اختياري: يمكنك رفع ملف شهادة مصمم (PDF أو صورة)، أو تركه فارغاً للاعتماد على النموذج الرقمي المعتمد للمنصة برمز QR.') }}</span>
                     </div>
 
                     <div>

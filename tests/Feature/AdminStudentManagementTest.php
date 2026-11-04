@@ -207,4 +207,75 @@ class AdminStudentManagementTest extends TestCase
         $this->assertFalse($progress->is_completed);
         $this->assertEquals(0.0, $progress->completion_percentage);
     }
+
+    public function test_student_does_not_get_certificate_automatically_upon_course_completion_admin_decides(): void
+    {
+        $student = User::factory()->create();
+        $course = Course::create([
+            'title_ar' => 'دورة التأهيل التخاطبي المتقدم',
+            'slug' => 'advanced-speech-therapy',
+            'price' => 1200,
+            'access_duration_days' => 365,
+            'is_published' => true,
+        ]);
+
+        $video = Video::create([
+            'course_id' => $course->id,
+            'title_ar' => 'محاضرة التقييم التشخيصي',
+            'slug' => 'diagnostic-evaluation',
+            'video_source' => 'mux',
+            'duration_seconds' => 600,
+            'min_completion_percentage' => 80,
+            'sort_order' => 1,
+            'is_published' => true,
+        ]);
+
+        // Enroll student
+        $student->courses()->attach($course->id, [
+            'status' => 'active',
+            'access_starts_at' => now(),
+            'access_expires_at' => now()->addDays(365),
+        ]);
+
+        // Student completes 100% of the video via API
+        $response = $this->actingAs($student)->postJson(route('videos.progress', $video), [
+            'watched_seconds' => 600,
+            'is_ended' => true,
+            'duration' => 600,
+        ]);
+
+        $response->assertOk();
+        $response->assertJson([
+            'success' => true,
+            'is_completed' => true,
+            'course_progress' => 100,
+            'certificate_issued' => false,
+        ]);
+
+        // Verify student does NOT receive certificate automatically
+        $this->assertDatabaseMissing('certificates', [
+            'user_id' => $student->id,
+            'course_id' => $course->id,
+        ]);
+
+        // Admin decides to issue certificate to the student
+        $adminResponse = $this->actingAs($this->admin, 'admin')
+            ->post(route('admin.students.certificates.store', $student), [
+                'course_id' => $course->id,
+                'completion_percentage' => 100,
+            ]);
+
+        $adminResponse->assertSessionHas('success');
+
+        // Now certificate exists
+        $this->assertDatabaseHas('certificates', [
+            'user_id' => $student->id,
+            'course_id' => $course->id,
+        ]);
+
+        // Student can now view certificate in settings
+        $certResponse = $this->actingAs($student)->get(route('settings.certificates'));
+        $certResponse->assertOk();
+        $certResponse->assertSee($course->title_ar);
+    }
 }

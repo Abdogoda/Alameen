@@ -397,14 +397,13 @@
                                                 <span>{{ __('عرض الشهادة') }}</span>
                                             </a>
                                         @else
-                                            <a
-                                                href="{{ route('certificates.index') }}"
-                                                class="h-10 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-xs transition-all"
-                                                wire:navigate
+                                            <div
+                                                class="h-10 px-2.5 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900/50 text-amber-700 dark:text-amber-300 font-bold text-[11px] flex items-center justify-center gap-1.5 text-center"
+                                                title="{{ __('الشهادة تصدر وتعتمد من قِبل إدارة الأكاديمية') }}"
                                             >
-                                                <span>🏆</span>
-                                                <span>{{ __('إصدار الشهادة') }}</span>
-                                            </a>
+                                                <svg class="size-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                                <span>{{ __('بانتظار اعتماد الشهادة') }}</span>
+                                            </div>
                                         @endif
 
                                         <a

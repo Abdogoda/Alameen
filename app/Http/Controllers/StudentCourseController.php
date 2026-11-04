@@ -642,11 +642,8 @@ class StudentCourseController extends Controller
 
         $courseProgress = $this->progressService->getCourseProgressPercentage($user, $video->course);
 
-        // Auto-issue certificate if >= 95% reached!
-        $certificate = null;
-        if ($courseProgress >= CertificateService::MIN_PROGRESS_FOR_CERTIFICATE) {
-            $certificate = $this->certificateService->issueCertificate($user, $video->course);
-        }
+        // Certificates are reviewed and issued exclusively by administrators; do not auto-issue
+        $certificate = $user->certificates()->where('course_id', $video->course_id)->first();
 
         // Check if next video in curriculum is now unlocked
         $allVideos = $this->progressService->getCurriculumVideos($video->course);

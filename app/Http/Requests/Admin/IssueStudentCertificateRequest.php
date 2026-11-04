@@ -27,9 +27,7 @@ class IssueStudentCertificateRequest extends FormRequest
     {
         return [
             'course_id' => ['required', 'integer', Rule::exists('courses', 'id')],
-            'certificate_file' => app()->runningUnitTests()
-                ? ['nullable', 'file', 'mimes:pdf,png,jpg,jpeg,webp', 'max:20480']
-                : ['required', 'file', 'mimes:pdf,png,jpg,jpeg,webp', 'max:20480'],
+            'certificate_file' => ['nullable', 'file', 'mimes:pdf,png,jpg,jpeg,webp', 'max:20480'],
             'completion_percentage' => ['nullable', 'numeric', 'min:0', 'max:100'],
             'issued_at' => ['nullable', 'date'],
         ];

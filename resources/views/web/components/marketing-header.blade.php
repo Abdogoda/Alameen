@@ -364,7 +364,6 @@
                 </div>
             </div>
         </div>
-    </div>
 
     <!-- Fallback & Instant DOM Controller for Mobile Menu Drawer (Guarantees Zero Flash & Smooth Closing) -->
     <script>

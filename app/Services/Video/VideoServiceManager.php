@@ -31,7 +31,7 @@ class VideoServiceManager extends Manager
             config('video.drivers.mux.token_secret'),
             config('video.drivers.mux.base_url', 'https://api.mux.com/video/v1'),
             config('video.drivers.mux.playback_policy', ['public']),
-            config('video.drivers.mux.cors_origin', '*')
+            config('video.drivers.mux.cors_origin', '*'),
         );
     }
 
@@ -42,7 +42,7 @@ class VideoServiceManager extends Manager
     {
         return new LocalDriver(
             config('video.drivers.local.disk', 'public'),
-            config('video.drivers.local.path', 'videos/lessons')
+            config('video.drivers.local.path', 'videos/lessons'),
         );
     }
 
@@ -70,7 +70,7 @@ class VideoServiceManager extends Manager
     public function isMuxConfigured(): bool
     {
         $configured = $this->driver('mux')->isConfigured();
-        Log::debug('[VIDEO_MANAGER] isMuxConfigured check: ' . ($configured ? 'TRUE' : 'FALSE'));
+        Log::debug('[VIDEO_MANAGER] isMuxConfigured check: '.($configured ? 'TRUE' : 'FALSE'));
 
         return $configured;
     }
@@ -83,7 +83,7 @@ class VideoServiceManager extends Manager
     public function createDirectUploadUrl(string $corsOrigin = '*', ?string $driverName = null): ?array
     {
         $driver = $driverName ? $this->driver($driverName) : $this->getActiveDriver();
-        Log::info("[VIDEO_MANAGER] createDirectUploadUrl using driver: " . $driver->name());
+        Log::info('[VIDEO_MANAGER] createDirectUploadUrl using driver: '.$driver->name());
 
         return $driver->createDirectUploadUrl($corsOrigin);
     }
@@ -122,7 +122,7 @@ class VideoServiceManager extends Manager
                 $result = $targetDriver->handleUpload($file);
                 if (! empty($result['video_url']) || ! empty($result['mux_playback_id']) || ! empty($result['mux_upload_id']) || ! empty($result['mux_asset_id'])) {
                     $result['driver_used'] = $targetDriver->name();
-                    Log::info('[VIDEO_MANAGER] handleVideoUpload succeeded using ' . $targetDriver->name(), $result);
+                    Log::info('[VIDEO_MANAGER] handleVideoUpload succeeded using '.$targetDriver->name(), $result);
 
                     return $result;
                 }

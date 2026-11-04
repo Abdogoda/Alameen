@@ -39,7 +39,7 @@ class CourseController extends Controller
     public function __construct(
         protected VideoServiceManager $videoManager,
         protected ChunkedUploadService $chunkedUploadService,
-        protected MuxVideoService $muxService
+        protected MuxVideoService $muxService,
     ) {}
 
     /**
@@ -372,7 +372,7 @@ class CourseController extends Controller
         Log::info('[VIDEO_UPLOAD] Mux Direct Upload URL successfully created', [
             'course_id' => $course->id,
             'upload_id' => $upload['id'],
-            'upload_url' => substr($upload['url'], 0, 40) . '...',
+            'upload_url' => substr($upload['url'], 0, 40).'...',
         ]);
 
         return response()->json([
@@ -397,12 +397,14 @@ class CourseController extends Controller
 
         if (! $muxDriver->isConfigured()) {
             Log::warning('[VIDEO_UPLOAD] checkMuxUploadStatus: Mux driver not configured.', ['upload_id' => $uploadId]);
+
             return response()->json(['success' => false, 'message' => __('خدمة MUX غير مهيأة.')], 400);
         }
 
         $upload = $muxDriver->getUpload($uploadId);
         if (! $upload) {
             Log::warning('[VIDEO_UPLOAD] checkMuxUploadStatus: Upload session not found on MUX.', ['upload_id' => $uploadId]);
+
             return response()->json(['success' => false, 'message' => __('لم يتم العثور على جلسة الرفع.')], 404);
         }
 
@@ -879,7 +881,7 @@ class CourseController extends Controller
                 [
                     'course_id' => $course->id,
                     'title_ar' => $validated['task_title_ar'],
-                    'instructions_ar' => $validated['task_instructions_ar'] ?? __('قم بإعداد وتسجيل التطبيق السريري المرفق بهذا الدرس.'),
+                    'instructions_ar' => $validated['task_instructions_ar'] ?? __('قم بإعداد وتسجيل التطبيق العملي المرفق بهذا الدرس.'),
                     'max_score' => 100,
                 ]
             );

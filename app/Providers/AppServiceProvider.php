@@ -5,6 +5,10 @@ namespace App\Providers;
 require_once __DIR__.'/../helpers.php';
 
 use App\Models\Admin;
+use App\Models\ContentBlock;
+use App\Models\Role;
+use App\Models\Setting;
+use App\Models\User;
 use App\Services\Cms\SettingsService;
 use App\Services\Localization\PhpFileLoader;
 use Carbon\CarbonImmutable;
@@ -14,6 +18,7 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
@@ -22,6 +27,7 @@ use Illuminate\Support\Str;
 use Illuminate\Translation\Translator;
 use Illuminate\Validation\Rules\Password;
 use Opcodes\LogViewer\Facades\LogViewer;
+use Throwable;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -90,7 +96,7 @@ class AppServiceProvider extends ServiceProvider
                             'currencyName' => $currencyName,
                             'cmsSettings' => $settingsService,
                         ]);
-                    } catch (\Throwable) {
+                    } catch (Throwable) {
                         // Ignore view rendering issues
                     }
                 });
@@ -122,7 +128,7 @@ class AppServiceProvider extends ServiceProvider
 
                 // Auto-sync dynamic media defaults for Hero and Slide 2 if legacy values are present
                 if (Schema::hasTable('content_blocks')) {
-                    $heroBlock = \App\Models\ContentBlock::where('section_key', 'hero')->first();
+                    $heroBlock = ContentBlock::where('section_key', 'hero')->first();
                     if ($heroBlock) {
                         $meta = $heroBlock->metadata ?? [];
                         $imgs = $meta['images'] ?? [];
@@ -138,11 +144,11 @@ class AppServiceProvider extends ServiceProvider
                         }
                     }
 
-                    $feedbackBlock = \App\Models\ContentBlock::where('section_key', 'feedback')->first();
+                    $feedbackBlock = ContentBlock::where('section_key', 'feedback')->first();
                     if ($feedbackBlock) {
                         $meta = $feedbackBlock->metadata ?? [];
                         $imgs = $meta['images'] ?? [];
-                        if (empty($imgs) || !isset($imgs[4]) || $imgs[4] !== '/assets/images/alameen-images/9.jpeg' || !isset($imgs[7]) || $imgs[7] !== '/assets/images/alameen-images/14.png') {
+                        if (empty($imgs) || ! isset($imgs[4]) || $imgs[4] !== '/assets/images/alameen-images/9.jpeg' || ! isset($imgs[7]) || $imgs[7] !== '/assets/images/alameen-images/14.png') {
                             $meta['images'] = [
                                 0 => '/assets/images/alameen-images/6.jpeg',
                                 1 => '/assets/images/alameen-images/1.jpeg',
@@ -160,7 +166,7 @@ class AppServiceProvider extends ServiceProvider
                     }
 
                     // Auto-sync auth artwork to 13.jpeg
-                    $authImgSetting = \App\Models\Setting::where('key', 'auth_login_image')->first();
+                    $authImgSetting = Setting::where('key', 'auth_login_image')->first();
                     if ($authImgSetting && (str_contains((string) $authImgSetting->value_ar, '6.jpeg') || str_contains((string) $authImgSetting->value_ar, 'auth-sculpture'))) {
                         $authImgSetting->update([
                             'value_ar' => '/assets/images/alameen-images/13.jpeg',
@@ -171,15 +177,15 @@ class AppServiceProvider extends ServiceProvider
 
                 // Auto-sync real Admins & purge dummy users
                 if (Schema::hasTable('roles') && Schema::hasTable('admins')) {
-                    $superAdminRole = \App\Models\Role::where('slug', 'super_admin')->first();
+                    $superAdminRole = Role::where('slug', 'super_admin')->first();
                     $superRoleId = $superAdminRole?->id;
 
                     // 1. Dr. Hana El-Mekawy as Owner
-                    \App\Models\Admin::query()->updateOrCreate(
+                    Admin::query()->updateOrCreate(
                         ['email' => 'hm2991479@gmail.com'],
                         [
                             'name' => 'د. هنا المكاوي',
-                            'password' => \Illuminate\Support\Facades\Hash::make('password'),
+                            'password' => Hash::make('password'),
                             'role_id' => $superRoleId,
                             'permissions' => ['*'],
                             'locale' => 'ar',
@@ -187,11 +193,11 @@ class AppServiceProvider extends ServiceProvider
                     );
 
                     // 2. Abdo Goda with All Permissions
-                    \App\Models\Admin::query()->updateOrCreate(
+                    Admin::query()->updateOrCreate(
                         ['email' => 'abdogoda0a@gmail.com'],
                         [
                             'name' => 'Abdo Goda',
-                            'password' => \Illuminate\Support\Facades\Hash::make('password'),
+                            'password' => Hash::make('password'),
                             'role_id' => $superRoleId,
                             'permissions' => ['*'],
                             'locale' => 'ar',
@@ -199,27 +205,27 @@ class AppServiceProvider extends ServiceProvider
                     );
 
                     // Purge dummy demo admins
-                    \App\Models\Admin::whereIn('email', [
+                    Admin::whereIn('email', [
                         'supervisor@alameen.edu.sa',
                         'instructor@alameen.edu.sa',
                         'finance@alameen.edu.sa',
-                        'support@alameen.edu.sa'
+                        'support@alameen.edu.sa',
                     ])->delete();
                 }
 
                 // Purge all dummy seeded users so the application is used directly with real students
                 if (Schema::hasTable('users')) {
-                    \App\Models\User::whereIn('email', [
+                    User::whereIn('email', [
                         'student@alameen.edu.sa',
                         'maryam@alameen.edu.sa',
                         'omar@alameen.edu.sa',
                         'fatima@alameen.edu.sa',
                         'youssef@alameen.edu.sa',
-                        'test@example.com'
+                        'test@example.com',
                     ])->delete();
                 }
             }
-        } catch (\Throwable) {
+        } catch (Throwable) {
             // Gracefully ignore during installation or CLI migrations
         }
     }

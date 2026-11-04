@@ -238,8 +238,10 @@ class SettingsService
         $raw = $this->get('social_whatsapp', 'https://wa.me/201005123784') ?: 'https://wa.me/201005123784';
         if (! str_starts_with($raw, 'http')) {
             $digits = preg_replace('/\D+/', '', $raw);
+
             return 'https://wa.me/'.(str_starts_with($digits, '2') ? $digits : '2'.$digits);
         }
+
         return $raw;
     }
 

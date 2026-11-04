@@ -12,8 +12,9 @@ use Symfony\Component\HttpFoundation\Response;
 class EnsureStudentPageEnabled
 {
     public function __construct(
-        protected SettingsService $settingsService
-    ) {}
+        protected SettingsService $settingsService,
+    ) {
+    }
 
     /**
      * Handle an incoming request.

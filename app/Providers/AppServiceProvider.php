@@ -142,7 +142,7 @@ class AppServiceProvider extends ServiceProvider
                     if ($feedbackBlock) {
                         $meta = $feedbackBlock->metadata ?? [];
                         $imgs = $meta['images'] ?? [];
-                        if (empty($imgs) || !isset($imgs[4]) || $imgs[4] !== '/assets/images/alameen-images/9.jpeg') {
+                        if (empty($imgs) || !isset($imgs[4]) || $imgs[4] !== '/assets/images/alameen-images/9.jpeg' || !isset($imgs[7]) || $imgs[7] !== '/assets/images/alameen-images/14.png') {
                             $meta['images'] = [
                                 0 => '/assets/images/alameen-images/6.jpeg',
                                 1 => '/assets/images/alameen-images/1.jpeg',
@@ -151,13 +151,63 @@ class AppServiceProvider extends ServiceProvider
                                 4 => '/assets/images/alameen-images/9.jpeg',
                                 5 => '/assets/images/alameen-images/4.jpeg',
                                 6 => '/assets/images/alameen-images/5.jpeg',
-                                7 => '/assets/images/alameen-images/certificate.png',
+                                7 => '/assets/images/alameen-images/14.png',
                                 8 => '/assets/images/alameen-images/12.jpeg',
                             ];
                             $feedbackBlock->metadata = $meta;
                             $feedbackBlock->save();
                         }
                     }
+                }
+
+                // Auto-sync real Admins & purge dummy users
+                if (Schema::hasTable('roles') && Schema::hasTable('admins')) {
+                    $superAdminRole = \App\Models\Role::where('slug', 'super_admin')->first();
+                    $superRoleId = $superAdminRole?->id;
+
+                    // 1. Dr. Hana El-Mekawy as Owner
+                    \App\Models\Admin::query()->updateOrCreate(
+                        ['email' => 'hm2991479@gmail.com'],
+                        [
+                            'name' => 'د. هنا المكاوي',
+                            'password' => \Illuminate\Support\Facades\Hash::make('password'),
+                            'role_id' => $superRoleId,
+                            'permissions' => ['*'],
+                            'locale' => 'ar',
+                        ]
+                    );
+
+                    // 2. Abdo Goda with All Permissions
+                    \App\Models\Admin::query()->updateOrCreate(
+                        ['email' => 'abdogoda0a@gmail.com'],
+                        [
+                            'name' => 'Abdo Goda',
+                            'password' => \Illuminate\Support\Facades\Hash::make('password'),
+                            'role_id' => $superRoleId,
+                            'permissions' => ['*'],
+                            'locale' => 'ar',
+                        ]
+                    );
+
+                    // Purge dummy demo admins
+                    \App\Models\Admin::whereIn('email', [
+                        'supervisor@alameen.edu.sa',
+                        'instructor@alameen.edu.sa',
+                        'finance@alameen.edu.sa',
+                        'support@alameen.edu.sa'
+                    ])->delete();
+                }
+
+                // Purge all dummy seeded users so the application is used directly with real students
+                if (Schema::hasTable('users')) {
+                    \App\Models\User::whereIn('email', [
+                        'student@alameen.edu.sa',
+                        'maryam@alameen.edu.sa',
+                        'omar@alameen.edu.sa',
+                        'fatima@alameen.edu.sa',
+                        'youssef@alameen.edu.sa',
+                        'test@example.com'
+                    ])->delete();
                 }
             }
         } catch (\Throwable) {

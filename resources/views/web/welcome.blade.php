@@ -50,7 +50,7 @@
         4 => '/assets/images/alameen-images/9.jpeg',
         5 => '/assets/images/alameen-images/4.jpeg',
         6 => '/assets/images/alameen-images/5.jpeg',
-        7 => '/assets/images/alameen-images/certificate.png',
+        7 => '/assets/images/alameen-images/14.png',
         8 => '/assets/images/alameen-images/12.jpeg',
     ];
     $feedbackImages = [];
@@ -65,6 +65,9 @@
         }
         if ($i === 4 && (empty($val) || $val === '/assets/images/alameen-images/6.jpeg' || $val === '/assets/images/alameen-images/4.jpeg' || !str_contains($val, '9.jpeg'))) {
             $val = '/assets/images/alameen-images/9.jpeg';
+        }
+        if ($i === 7 && (empty($val) || str_contains($val, 'certificate.png'))) {
+            $val = '/assets/images/alameen-images/14.png';
         }
         if ($i === 8 && (empty($val) || $val === '/assets/images/alameen-images/4.jpeg' || $val === '/assets/images/alameen-images/6.jpeg' || !str_contains($val, '12.jpeg'))) {
             $val = '/assets/images/alameen-images/12.jpeg';
@@ -285,6 +288,7 @@
                       alt="{{ $isDiagonal ? 'Dr. Hana Mekawy' : ('Feedback ' . ($idx + 1)) }}"
                       class="size-full object-cover {{ $objPosition }} group-hover:brightness-105 transition-all"
                       loading="lazy"
+                      onerror="this.onerror=null;this.src='/assets/images/alameen-images/1.jpeg';"
                     />
                     @if($isDiagonal)
                       <div class="absolute inset-x-0 bottom-0 py-0.5 bg-gradient-to-t from-black/50 to-transparent pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity flex justify-center">

@@ -9,7 +9,7 @@
  * 6. Review Modal & Feedback Workflow
  */
 
-document.addEventListener('DOMContentLoaded', () => {
+function initLanding() {
   // Only execute on pages containing the landing canvas / hero slider
   if (!document.getElementById('home') && !document.getElementById('hero-slider')) {
     return;
@@ -609,39 +609,47 @@ document.addEventListener('DOMContentLoaded', () => {
   // ==========================================
   // 5.1 REVIEW IMAGE LIGHTBOX MODAL HANDLER
   // ==========================================
-  const reviewLightbox = document.getElementById('review-image-lightbox');
-  const reviewLightboxImg = document.getElementById('review-lightbox-img');
-  const reviewLightboxCaption = document.getElementById('review-lightbox-caption');
-  const closeReviewLightboxBtn = document.getElementById('close-review-image-btn');
-
   window.openReviewImageLightbox = function (src, author) {
-    if (!reviewLightbox || !reviewLightboxImg) return;
-    reviewLightboxImg.src = src;
-    if (reviewLightboxCaption) {
+    const lightbox = document.getElementById('review-image-lightbox');
+    const img = document.getElementById('review-lightbox-img');
+    const caption = document.getElementById('review-lightbox-caption');
+    if (!lightbox || !img) return;
+
+    img.src = src;
+    if (caption) {
       const isEn = document.documentElement.lang === 'en';
       reviewLightboxCaption.textContent = author
         ? (isEn ? `Photo attached by ${author}` : `صورة مرفقة مع تقييم ${author}`)
         : (isEn ? 'Attached review photo' : 'صورة مرفقة مع التقييم');
     }
-    reviewLightbox.classList.remove('opacity-0', 'pointer-events-none');
+    lightbox.classList.remove('opacity-0', 'pointer-events-none');
+    lightbox.classList.add('opacity-100', 'pointer-events-auto');
+    document.body.classList.add('overflow-hidden');
   };
 
   window.closeReviewImageLightbox = function () {
-    if (!reviewLightbox) return;
-    reviewLightbox.classList.add('opacity-0', 'pointer-events-none');
-    if (reviewLightboxImg) {
+    const lightbox = document.getElementById('review-image-lightbox');
+    const img = document.getElementById('review-lightbox-img');
+    if (!lightbox) return;
+
+    lightbox.classList.add('opacity-0', 'pointer-events-none');
+    lightbox.classList.remove('opacity-100', 'pointer-events-auto');
+    document.body.classList.remove('overflow-hidden');
+    if (img) {
       setTimeout(() => {
-        if (reviewLightbox.classList.contains('opacity-0')) {
-          reviewLightboxImg.src = '';
+        if (lightbox.classList.contains('opacity-0')) {
+          img.src = '';
         }
       }, 300);
     }
   };
 
+  const closeReviewLightboxBtn = document.getElementById('close-review-image-btn');
   if (closeReviewLightboxBtn) {
     closeReviewLightboxBtn.addEventListener('click', window.closeReviewImageLightbox);
   }
 
+  const reviewLightbox = document.getElementById('review-image-lightbox');
   if (reviewLightbox) {
     reviewLightbox.addEventListener('click', (e) => {
       if (e.target === reviewLightbox) {
@@ -653,7 +661,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
       if (window.closeReviewImageLightbox) window.closeReviewImageLightbox();
-      if (closeHeroVideoModal) closeHeroVideoModal();
+      if (typeof closeHeroVideoModal === 'function') closeHeroVideoModal();
     }
   });
 
@@ -678,4 +686,11 @@ document.addEventListener('DOMContentLoaded', () => {
   } else {
     revealElements.forEach(el => el.classList.add('is-revealed'));
   }
-});
+}
+
+// Safe execution across all load cycles
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initLanding);
+} else {
+  initLanding();
+}

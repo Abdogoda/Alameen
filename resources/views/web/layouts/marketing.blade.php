@@ -46,6 +46,50 @@
 
         {{ $modals ?? '' }}
 
+        <!-- Review Lightbox Core Handlers (Available Globally Across All Marketing Pages) -->
+        <script>
+            window.openReviewImageLightbox = function (src, author) {
+                const lightbox = document.getElementById('review-image-lightbox');
+                const img = document.getElementById('review-lightbox-img');
+                const caption = document.getElementById('review-lightbox-caption');
+                if (!lightbox || !img) return;
+
+                img.src = src;
+                if (caption) {
+                    const isEn = document.documentElement.lang === 'en';
+                    caption.textContent = author
+                        ? (isEn ? `Photo attached by ${author}` : `صورة مرفقة مع تقييم ${author}`)
+                        : (isEn ? 'Attached review photo' : 'صورة مرفقة مع التقييم');
+                }
+                lightbox.classList.remove('opacity-0', 'pointer-events-none');
+                lightbox.classList.add('opacity-100', 'pointer-events-auto');
+                document.body.classList.add('overflow-hidden');
+            };
+
+            window.closeReviewImageLightbox = function () {
+                const lightbox = document.getElementById('review-image-lightbox');
+                const img = document.getElementById('review-lightbox-img');
+                if (!lightbox) return;
+
+                lightbox.classList.add('opacity-0', 'pointer-events-none');
+                lightbox.classList.remove('opacity-100', 'pointer-events-auto');
+                document.body.classList.remove('overflow-hidden');
+                if (img) {
+                    setTimeout(() => {
+                        if (lightbox.classList.contains('opacity-0')) {
+                            img.src = '';
+                        }
+                    }, 300);
+                }
+            };
+
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape' && window.closeReviewImageLightbox) {
+                    window.closeReviewImageLightbox();
+                }
+            });
+        </script>
+
         <!-- Landing & Animation Scripts -->
         @if(($active ?? '') === 'home')
         <script type="module" src="/src/js/landing.js"></script>

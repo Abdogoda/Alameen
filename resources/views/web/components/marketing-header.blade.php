@@ -28,7 +28,7 @@
 
 <!-- UNIFIED MASTER HEADER (Sticky at Top) -->
 <header
-    class="w-full bg-[#FAFCFF]/95 dark:bg-slate-900/95 border-b border-[#D7E3F5] dark:border-slate-800 flex items-center justify-between px-3.5 sm:px-6 lg:px-12 xl:px-20 2xl:px-28 py-2.5 sm:py-3.5 shrink-0 sticky top-0 z-40 shadow-xs transition-colors relative"
+    class="w-full bg-[#FAFCFF]/95 dark:bg-slate-900/95 border-b border-[#D7E3F5] dark:border-slate-800 px-3.5 sm:px-6 lg:px-12 xl:px-20 2xl:px-28 py-2.5 sm:py-3.5 shrink-0 sticky top-0 z-40 shadow-xs transition-colors relative"
     id="main-header"
     x-data="{ mobileNavOpen: false }"
     @keydown.window.escape="mobileNavOpen = false"
@@ -38,8 +38,10 @@
     <!-- Background Frosted Blur Layer (Separated so header is never a containing block for fixed overlays) -->
     <div class="absolute inset-0 -z-10 backdrop-blur-md pointer-events-none"></div>
 
-    <!-- Brand Identity -->
-    <a href="{{ route('home') }}" class="flex gap-2 sm:gap-2.5 items-center shrink-0 cursor-pointer">
+    <!-- Header Content Row (Strict 2-item on mobile, 3-item on desktop) -->
+    <div class="w-full flex items-center justify-between">
+        <!-- Brand Identity -->
+        <a href="{{ route('home') }}" class="flex gap-2 sm:gap-2.5 items-center shrink-0 cursor-pointer">
         <div class="size-8 sm:size-9 lg:size-10 shrink-0 relative flex items-center justify-center transition-all">
             <img src="{{ $siteLogo }}" alt="{{ $siteName }}" class="size-full object-contain pointer-events-none dark:hidden logo-theme-light" />
             <img src="{{ $siteLogoWhite ?? '/assets/images/logo-white.png' }}" alt="{{ $siteName }}" class="size-full object-contain pointer-events-none hidden dark:block logo-theme-dark" />
@@ -147,9 +149,10 @@
         </button>
 
     </div>
+    </div>
 
     <!-- Mobile Navigation Drawer (Sidebar) & Backdrop (Unified Direct Component) -->
-    <div class="marketing-drawer-container">
+    <div class="marketing-drawer-container contents">
         <!-- 1. Backdrop Overlay -->
         <div
             id="mobile-nav-overlay"

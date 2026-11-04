@@ -4,7 +4,7 @@
         <!-- Welcome Heading -->
         <div class="flex flex-col gap-2 items-start w-full">
             <p class="font-semibold text-[15px] leading-relaxed text-[#0B2A8F] w-full">
-                {{ __('مرحبًا بعودتك إلى الأمين') }}
+                {{ __('مرحبًا بعودتك إلى منصة الأمين') }}
             </p>
             <h1 class="font-['Cairo'] font-extrabold text-3xl sm:text-4xl text-[#012383] w-full leading-tight">
                 {{ __('تسجيل الدخول') }}

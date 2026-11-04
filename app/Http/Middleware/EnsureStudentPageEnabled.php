@@ -13,8 +13,7 @@ class EnsureStudentPageEnabled
 {
     public function __construct(
         protected SettingsService $settingsService,
-    ) {
-    }
+    ) {}
 
     /**
      * Handle an incoming request.
@@ -30,4 +29,3 @@ class EnsureStudentPageEnabled
         return $next($request);
     }
 }
-

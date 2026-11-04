@@ -35,7 +35,7 @@
                 $artImage = '/assets/images/alameen-images/13.jpeg';
             }
             $artEyebrow = $isRegister ? 'ابدأ رحلتك اليوم' : 'عودة إلى رحلتك';
-            $artTitle = $isRegister ? 'ابدأ رحلتك التعليمية مع مركز الأمين' : 'مرحبًا بعودتك إلى الأمين';
+            $artTitle = $isRegister ? 'ابدأ رحلتك التعليمية مع منصة الأمين' : 'مرحبًا بعودتك إلى منصة الأمين';
             $artSubtitle = $isRegister ? 'تعلّم التخاطب بأسلوب عملي وتطبيقي معتمد.' : 'سعداء بعودتك. لنواصل التعلّم معًا.';
         @endphp
 

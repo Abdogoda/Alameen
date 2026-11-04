@@ -139,7 +139,8 @@ return [
 
     // Student & Admin Auth Translations
     'تسجيل الدخول' => 'Log in',
-    'مرحبًا بعودتك إلى الأمين' => 'Welcome back to Al-Ameen',
+    'مرحبًا بعودتك إلى الأمين' => 'Welcome back to Al-Ameen Platform',
+    'مرحبًا بعودتك إلى منصة الأمين' => 'Welcome back to Al-Ameen Platform',
     'سجّل دخولك لمتابعة رحلتك التعليمية.' => 'Sign in to continue your learning journey.',
     'البريد الإلكتروني' => 'Email Address',
     'كلمة المرور' => 'Password',

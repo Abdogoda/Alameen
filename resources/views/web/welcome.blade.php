@@ -802,7 +802,7 @@
                   <div class="mt-1 pt-1">
                     <div
                       class="group/attach relative rounded-xl overflow-hidden border border-[#DEE8F7] bg-slate-50 cursor-pointer hover:border-[#0B2A8F] hover:shadow-xs transition-all"
-                      onclick="openReviewImageLightbox('{{ $card['image'] }}', '{{ addslashes($card['author']) }}')"
+                      onclick="openReviewImageLightbox(this.querySelector('img')?.getAttribute('src') || '{{ $card['image'] }}', '{{ addslashes($card['author']) }}')"
                       title="{{ __('انقر لتكبير الصورة') }}"
                     >
                       <img
@@ -1160,13 +1160,15 @@
     <!-- Fullscreen High-Resolution Review Image Lightbox Modal -->
     <div
       id="review-image-lightbox"
-      class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 opacity-0 pointer-events-none transition-opacity duration-300"
+      class="fixed inset-0 z-[9999] bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 opacity-0 pointer-events-none transition-opacity duration-300"
+      onclick="if(event.target === this) closeReviewImageLightbox()"
     >
       <div class="relative max-w-4xl max-h-[90vh] flex flex-col items-center">
         <button
           type="button"
           id="close-review-image-btn"
-          class="absolute -top-12 end-0 size-9 rounded-full bg-white/10 hover:bg-white/25 text-white flex items-center justify-center text-base font-bold transition-colors cursor-pointer"
+          onclick="closeReviewImageLightbox()"
+          class="absolute -top-12 end-0 size-9 rounded-full bg-white/15 hover:bg-white/30 text-white flex items-center justify-center text-lg font-bold transition-all cursor-pointer shadow-lg"
           aria-label="إغلاق"
         >
           ✕
@@ -1177,7 +1179,7 @@
             id="review-lightbox-img"
             src=""
             alt="صورة التقييم مكبرة"
-            class="max-w-full max-h-[80vh] object-contain rounded-2xl"
+            class="max-w-full max-h-[80vh] w-auto h-auto object-contain rounded-2xl shadow-2xl"
           />
         </div>
 

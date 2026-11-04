@@ -796,13 +796,15 @@
       <!-- Fullscreen High-Resolution Review Image Lightbox Modal -->
       <div
         id="review-image-lightbox"
-        class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 opacity-0 pointer-events-none transition-opacity duration-300"
+        class="fixed inset-0 z-[9999] bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 opacity-0 pointer-events-none transition-opacity duration-300"
+        onclick="if(event.target === this) closeReviewImageLightbox()"
       >
         <div class="relative max-w-4xl max-h-[90vh] flex flex-col items-center">
           <button
             type="button"
             id="close-review-image-btn"
-            class="absolute -top-12 end-0 size-9 rounded-full bg-white/10 hover:bg-white/25 text-white flex items-center justify-center text-base font-bold transition-colors cursor-pointer"
+            onclick="closeReviewImageLightbox()"
+            class="absolute -top-12 end-0 size-9 rounded-full bg-white/15 hover:bg-white/30 text-white flex items-center justify-center text-lg font-bold transition-all cursor-pointer shadow-lg"
             aria-label="إغلاق"
           >
             ✕
@@ -813,7 +815,7 @@
               id="review-lightbox-img"
               src=""
               alt="صورة التقييم مكبرة"
-              class="max-w-full max-h-[80vh] object-contain rounded-2xl"
+              class="max-w-full max-h-[80vh] w-auto h-auto object-contain rounded-2xl shadow-2xl"
             />
           </div>
 
@@ -1222,24 +1224,28 @@
             caption.textContent = author ? `صورة مرفقة - ${author}` : 'صورة مرفقة مع التقييم';
           }
           lightbox.classList.remove('opacity-0', 'pointer-events-none');
+          lightbox.classList.add('opacity-100', 'pointer-events-auto');
+          document.body.classList.add('overflow-hidden');
         };
 
-        function closeReviewImageLightbox() {
+        window.closeReviewImageLightbox = function () {
           const lightbox = document.getElementById('review-image-lightbox');
           const img = document.getElementById('review-lightbox-img');
           if (!lightbox) return;
           lightbox.classList.add('opacity-0', 'pointer-events-none');
+          lightbox.classList.remove('opacity-100', 'pointer-events-auto');
+          document.body.classList.remove('overflow-hidden');
           if (img) img.src = '';
-        }
+        };
 
-        document.getElementById('close-review-image-btn')?.addEventListener('click', closeReviewImageLightbox);
+        document.getElementById('close-review-image-btn')?.addEventListener('click', window.closeReviewImageLightbox);
         document.getElementById('review-image-lightbox')?.addEventListener('click', (e) => {
           if (e.target.id === 'review-image-lightbox') {
-            closeReviewImageLightbox();
+            window.closeReviewImageLightbox();
           }
         });
         document.addEventListener('keydown', (e) => {
-          if (e.key === 'Escape') closeReviewImageLightbox();
+          if (e.key === 'Escape') window.closeReviewImageLightbox();
         });
       });
     </script>

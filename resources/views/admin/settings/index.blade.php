@@ -192,7 +192,7 @@
 
                     {{-- Logo Asset URL & File Upload --}}
                     <div class="space-y-2">
-                        <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1.5">{{ __('رابط أو مسار الشعار (Logo Image Path):') }}</label>
+                        <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1.5">{{ __('شعار المنصة الأساسي (الوضع الفاتح - Logo):') }}</label>
                         <div class="flex items-center gap-3">
                             <input type="text" name="settings[site_logo][ar]" value="{{ $settings['site_logo']['value_ar'] ?? '/assets/images/logo.png' }}" class="flex-1 h-11 px-4 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-mono bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" />
                             <div class="size-11 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-1.5 shrink-0 flex items-center justify-center">
@@ -201,8 +201,56 @@
                         </div>
                         <input type="hidden" name="settings[site_logo][group]" value="branding" />
                         <div>
-                            <span class="text-[11px] font-bold text-slate-500 block mb-1">{{ __('أو ارفع ملف شعار جديد من جهازك (PNG / SVG / WEBP):') }}</span>
+                            <span class="text-[11px] font-bold text-slate-500 block mb-1">{{ __('رفع ملف شعار جديد (الوضع الفاتح):') }}</span>
                             <input type="file" name="site_logo_file" accept="image/png,image/jpeg,image/svg+xml,image/webp" class="w-full text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-[#012383] file:text-white hover:file:bg-[#0B2A8F] cursor-pointer" />
+                        </div>
+                    </div>
+
+                    {{-- White Logo Asset URL & File Upload (Dark Theme & Footer) --}}
+                    <div class="space-y-2">
+                        <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1.5">{{ __('الشعار الأبيض (الوضع الليلي والتذييل - White Logo):') }}</label>
+                        <div class="flex items-center gap-3">
+                            <input type="text" name="settings[site_logo_white][ar]" value="{{ $settings['site_logo_white']['value_ar'] ?? '/assets/images/logo-white.png' }}" class="flex-1 h-11 px-4 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-mono bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" />
+                            <div class="size-11 rounded-xl bg-[#031338] border border-blue-900/50 p-1.5 shrink-0 flex items-center justify-center shadow-xs">
+                                <img src="{{ platform_logo_white() }}" alt="White Logo" class="size-full object-contain" />
+                            </div>
+                        </div>
+                        <input type="hidden" name="settings[site_logo_white][group]" value="branding" />
+                        <div>
+                            <span class="text-[11px] font-bold text-slate-500 block mb-1">{{ __('رفع ملف شعار أبيض جديد (PNG/SVG شفاف):') }}</span>
+                            <input type="file" name="site_logo_white_file" accept="image/png,image/jpeg,image/svg+xml,image/webp" class="w-full text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-[#012383] file:text-white hover:file:bg-[#0B2A8F] cursor-pointer" />
+                        </div>
+                    </div>
+
+                    {{-- Footer Logo Asset URL & File Upload --}}
+                    <div class="space-y-2">
+                        <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1.5">{{ __('شعار التذييل المستقل (Footer Logo):') }}</label>
+                        <div class="flex items-center gap-3">
+                            <input type="text" name="settings[footer_logo][ar]" value="{{ $settings['footer_logo']['value_ar'] ?? '/assets/images/logo-white.png' }}" class="flex-1 h-11 px-4 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-mono bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" />
+                            <div class="size-11 rounded-xl bg-[#031338] border border-blue-900/50 p-1.5 shrink-0 flex items-center justify-center shadow-xs">
+                                <img src="{{ platform_footer_logo() }}" alt="Footer Logo" class="size-full object-contain" />
+                            </div>
+                        </div>
+                        <input type="hidden" name="settings[footer_logo][group]" value="branding" />
+                        <div>
+                            <span class="text-[11px] font-bold text-slate-500 block mb-1">{{ __('رفع ملف شعار جديد خاص بالفوتر:') }}</span>
+                            <input type="file" name="footer_logo_file" accept="image/png,image/jpeg,image/svg+xml,image/webp" class="w-full text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-[#012383] file:text-white hover:file:bg-[#0B2A8F] cursor-pointer" />
+                        </div>
+                    </div>
+
+                    {{-- Auth Pages Artwork Image (13.jpeg) --}}
+                    <div class="space-y-2">
+                        <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1.5">{{ __('صورة واجهات تسجيل الدخول والاشتراك (Auth Artwork):') }}</label>
+                        <div class="flex items-center gap-3">
+                            <input type="text" name="settings[auth_login_image][ar]" value="{{ $settings['auth_login_image']['value_ar'] ?? '/assets/images/alameen-images/13.jpeg' }}" class="flex-1 h-11 px-4 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-mono bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" />
+                            <div class="size-11 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 shrink-0 bg-slate-100 dark:bg-slate-800">
+                                <img src="{{ platform_auth_login_image() }}" alt="Auth Image" class="size-full object-cover object-top" />
+                            </div>
+                        </div>
+                        <input type="hidden" name="settings[auth_login_image][group]" value="branding" />
+                        <div>
+                            <span class="text-[11px] font-bold text-slate-500 block mb-1">{{ __('رفع صورة جديدة لواجهات تسجيل الدخول:') }}</span>
+                            <input type="file" name="auth_login_image_file" accept="image/png,image/jpeg,image/jpg,image/webp" class="w-full text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-[#012383] file:text-white hover:file:bg-[#0B2A8F] cursor-pointer" />
                         </div>
                     </div>
 
@@ -400,7 +448,7 @@
 
                     <div>
                         <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1.5">{{ __('نص الإعلان (Announcement Text):') }}</label>
-                        <input type="text" name="settings[announcement_text][ar]" placeholder="🎉 خصم 20% لفترة محدودة على المسار السريري الشامل!" value="{{ $settings['announcement_text']['value_ar'] ?? '' }}" class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-bold bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" />
+                        <input type="text" name="settings[announcement_text][ar]" placeholder="🎉 خصم 20% لفترة محدودة على كورس التخاطب الشامل!" value="{{ $settings['announcement_text']['value_ar'] ?? '' }}" class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-bold bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" />
                         <input type="hidden" name="settings[announcement_text][group]" value="announcement" />
                     </div>
 
@@ -428,7 +476,7 @@
                     </p>
                 </div>
 
-                <form method="POST" action="{{ route('admin.settings.content.update', 'hero') }}#cms" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <form method="POST" action="{{ route('admin.settings.content.update', 'hero') }}#cms" enctype="multipart/form-data" class="grid grid-cols-1 md:grid-cols-2 gap-5">
                     @csrf
 
                     <div>
@@ -468,6 +516,62 @@
                         </div>
                     </div>
 
+                    {{-- Hero Slide 1 Media Management (4 Slots: 2 Images, 2 Videos) --}}
+                    <div class="md:col-span-2 p-4 sm:p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-[#DEE8F7] dark:border-slate-800 flex flex-col gap-3">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <label class="text-xs font-bold text-[#012383] dark:text-blue-400 block">{{ __('وسائط الشريحة الأولى في الهيرو (Hero Slide 1 Media: 4 Slots):') }}</label>
+                                <span class="text-[11px] text-slate-500 dark:text-slate-400">{{ __('تحكم في الصورتين والفيديوهين الظاهرين في الشريحة الأولى. إذا تُرِك الحقل فارغاً، يتم الاعتماد تلقائياً على الوسائط الاحتياطية المحددة.') }}</span>
+                            </div>
+                            <span class="text-[11px] font-bold text-[#012383] dark:text-blue-300 bg-blue-50 dark:bg-blue-950/60 px-2.5 py-1 rounded-lg">4 خانات مخصصة</span>
+                        </div>
+
+                        @php
+                            $defaultHeroMedia = [
+                                0 => ['label' => 'خانة 1: صورة د. هنا (أعلى اليسار)', 'fallback' => '/assets/images/alameen-images/7.jpeg', 'type' => 'image', 'shape' => 'دائرية'],
+                                1 => ['label' => 'خانة 2: فيديو تدريبي 1 (أعلى اليمين)', 'fallback' => '/assets/images/alameen-images/1.mp4', 'type' => 'video', 'shape' => 'مستطيل دائري الزوايا'],
+                                2 => ['label' => 'خانة 3: فيديو تدريبي 2 (أسفل اليسار)', 'fallback' => '/assets/images/alameen-images/2.mp4', 'type' => 'video', 'shape' => 'مستطيل دائري الزوايا'],
+                                3 => ['label' => 'خانة 4: صورة د. هنا (أسفل اليمين)', 'fallback' => '/assets/images/alameen-images/8.jpeg', 'type' => 'image', 'shape' => 'كبسولة'],
+                            ];
+                            $currentHeroImages = $heroBlock->metadata['images'] ?? [];
+                        @endphp
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                            @foreach($defaultHeroMedia as $slot => $mediaInfo)
+                                @php
+                                    $currentVal = !empty($currentHeroImages[$slot]) ? $currentHeroImages[$slot] : $mediaInfo['fallback'];
+                                    $isVideo = str_ends_with(strtolower($currentVal), '.mp4') || str_ends_with(strtolower($currentVal), '.webm') || $mediaInfo['type'] === 'video';
+                                @endphp
+                                <div class="p-3.5 rounded-xl bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-700 flex flex-col gap-2.5 shadow-2xs">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-xs font-bold text-[#012383] dark:text-blue-400">{{ $mediaInfo['label'] }}</span>
+                                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-full {{ $isVideo ? 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300' : 'bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300' }}">
+                                            {{ $isVideo ? '🎬 فيديو' : '🖼️ صورة' }} ({{ $mediaInfo['shape'] }})
+                                        </span>
+                                    </div>
+
+                                    <div class="flex items-center gap-3">
+                                        <div class="size-16 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shrink-0 relative flex items-center justify-center">
+                                            @if($isVideo)
+                                                <video src="{{ $currentVal }}" autoplay loop muted playsinline class="size-full object-cover"></video>
+                                                <div class="absolute inset-0 bg-black/30 flex items-center justify-center text-white pointer-events-none">
+                                                    <span class="text-xs">▶</span>
+                                                </div>
+                                            @else
+                                                <img src="{{ $currentVal }}" alt="Slot {{ $slot }}" class="size-full object-cover" />
+                                            @endif
+                                        </div>
+                                        <div class="flex-1 flex flex-col gap-1.5">
+                                            <input type="text" name="metadata[images][{{ $slot }}]" value="{{ $currentVal }}" placeholder="{{ $mediaInfo['fallback'] }}" class="w-full h-9 px-3 rounded-lg border border-[#DEE8F7] dark:border-slate-700 text-xs font-mono bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" />
+                                            <input type="file" name="media_files[{{ $slot }}]" accept="{{ $isVideo ? 'video/mp4,video/webm,image/*' : 'image/*,video/mp4' }}" class="w-full text-[11px] text-slate-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:font-bold file:bg-[#012383] file:text-white hover:file:bg-[#0B2A8F] cursor-pointer" />
+                                        </div>
+                                    </div>
+                                    <span class="text-[10px] text-slate-400">القيمة الاحتياطية (Fallback): <code class="font-mono text-slate-600 dark:text-slate-300">{{ $mediaInfo['fallback'] }}</code></span>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+
                     {{-- Live Counter Badges --}}
                     <div class="md:col-span-2 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-[#DEE8F7] dark:border-slate-800">
                         <label class="text-xs font-bold text-[#012383] dark:text-blue-400 block mb-3">{{ __('إحصائيات المنصة الظاهرة للزوار (Statistics Counters):') }}</label>
@@ -477,7 +581,7 @@
                                 <input type="text" name="metadata[students_count]" value="{{ $heroBlock->metadata['students_count'] ?? '2500+' }}" class="w-full h-10 px-3 rounded-lg border border-[#DEE8F7] dark:border-slate-700 text-xs font-bold bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" />
                             </div>
                             <div>
-                                <span class="text-[11px] text-slate-500 dark:text-slate-400 block mb-1">{{ __('عدد الدورات السريرية:') }}</span>
+                                <span class="text-[11px] text-slate-500 dark:text-slate-400 block mb-1">{{ __('عدد الدورات التدريبية:') }}</span>
                                 <input type="text" name="metadata[courses_count]" value="{{ $heroBlock->metadata['courses_count'] ?? '45+' }}" class="w-full h-10 px-3 rounded-lg border border-[#DEE8F7] dark:border-slate-700 text-xs font-bold bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" />
                             </div>
                             <div>
@@ -500,6 +604,236 @@
                 </form>
             </div>
 
+            {{-- 3. Feedback Showcase Section (Hero Slide 2: 3x3 Masonry Grid) --}}
+            <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-3xl p-5 sm:p-7 shadow-xs">
+                <div class="border-b border-[#DEE8F7] dark:border-slate-800 pb-4 mb-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="font-['Baloo_Bhaijaan_2'] font-bold text-lg sm:text-xl text-[#012383] dark:text-blue-400">
+                                {{ __('شريحة آراء وتجارب المتدربين والشبكة التساعية (Slide 2: 3x3 Feedback Grid)') }}
+                            </h3>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">
+                                {{ __('تحكم كامل في نصوص الشريحة الثانية والشبكة المكونة من 9 صور: القطر الرئيسي لصور د. هنا والـ 6 خانات الأخرى لآراء المتدربين') }}
+                            </p>
+                        </div>
+                        <span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">
+                            9 خانات صور كاملة
+                        </span>
+                    </div>
+                </div>
+
+                <form method="POST" action="{{ route('admin.settings.content.update', 'feedback') }}#cms" enctype="multipart/form-data" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    @csrf
+
+                    <div>
+                        <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1.5">{{ __('عنوان شريحة الآراء (بالعربية):') }}</label>
+                        <input type="text" name="title_ar" value="{{ $feedbackBlock->title_ar }}" required class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-sm font-bold bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" />
+                    </div>
+
+                    <div>
+                        <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1.5">{{ __('عنوان شريحة الآراء (بالإنجليزية):') }}</label>
+                        <input type="text" name="title_en" value="{{ $feedbackBlock->title_en }}" class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-sm font-bold bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" />
+                    </div>
+
+                    <div class="md:col-span-2">
+                        <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1.5">{{ __('الوصف التمهيدي للشريحة:') }}</label>
+                        <textarea name="subtitle_ar" rows="2" class="w-full p-3 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-medium bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]">{{ $feedbackBlock->subtitle_ar }}</textarea>
+                    </div>
+
+                    {{-- 3x3 Matrix Grid Management --}}
+                    <div class="md:col-span-2 p-4 sm:p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-[#DEE8F7] dark:border-slate-800 flex flex-col gap-4">
+                        <div class="flex items-center justify-between border-b border-[#DEE8F7] dark:border-slate-700 pb-2">
+                            <div>
+                                <span class="text-xs font-bold text-[#012383] dark:text-blue-400 block">{{ __('إدارة صور الشبكة التساعية (3x3 Grid Media):') }}</span>
+                                <span class="text-[11px] text-slate-500 dark:text-slate-400">{{ __('القطر الرئيسي (الخانات 1، 5، 9) مخصص لصور د. هنا المكاوي، وباقي الخانات لسكرين شوت آراء المتدربين والشهادات.') }}</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="size-2 rounded-full bg-blue-600"></span>
+                                <span class="text-[10px] text-slate-600 dark:text-slate-300 font-bold">قطر د. هنا</span>
+                                <span class="size-2 rounded-full bg-emerald-500 ms-2"></span>
+                                <span class="text-[10px] text-slate-600 dark:text-slate-300 font-bold">آراء المتدربين</span>
+                            </div>
+                        </div>
+
+                        @php
+                            $defaultFeedbackSlots = [
+                                0 => ['label' => 'خانة 1 (أعلى اليمين - قطر رئيسي)', 'fallback' => '/assets/images/alameen-images/6.jpeg', 'is_diagonal' => true, 'desc' => 'د. هنا المكاوي في القاعة'],
+                                1 => ['label' => 'خانة 2 (أعلى المنتصف - رأي)', 'fallback' => '/assets/images/alameen-images/1.jpeg', 'is_diagonal' => false, 'desc' => 'سكرين شوت محادثة واتساب متدرب'],
+                                2 => ['label' => 'خانة 3 (أعلى اليسار - رأي)', 'fallback' => '/assets/images/alameen-images/2.jpeg', 'is_diagonal' => false, 'desc' => 'سكرين شوت تقييم متدرب'],
+                                3 => ['label' => 'خانة 4 (وسط اليمين - رأي)', 'fallback' => '/assets/images/alameen-images/3.jpeg', 'is_diagonal' => false, 'desc' => 'سكرين شوت رسالة تقدير وشكر'],
+                                4 => ['label' => 'خانة 5 (مركز الشبكة - قطر رئيسي)', 'fallback' => '/assets/images/alameen-images/9.jpeg', 'is_diagonal' => true, 'desc' => 'د. هنا المكاوي مع متدربي الدفعة (Round 5)'],
+                                5 => ['label' => 'خانة 6 (وسط اليسار - رأي)', 'fallback' => '/assets/images/alameen-images/4.jpeg', 'is_diagonal' => false, 'desc' => 'سكرين شوت انطباع تدريبي'],
+                                6 => ['label' => 'خانة 7 (أسفل اليمين - رأي)', 'fallback' => '/assets/images/alameen-images/5.jpeg', 'is_diagonal' => false, 'desc' => 'سكرين شوت رأي وملاحظات الدبلوم'],
+                                7 => ['label' => 'خانة 8 (أسفل المنتصف - شهادة)', 'fallback' => '/assets/images/alameen-images/certificate.png', 'is_diagonal' => false, 'desc' => 'نموذج شهادة التخرج والاعتماد'],
+                                8 => ['label' => 'خانة 9 (أسفل اليسار - قطر رئيسي)', 'fallback' => '/assets/images/alameen-images/12.jpeg', 'is_diagonal' => true, 'desc' => 'د. هنا والاحتفال بالسنوية السادسة لمركز الأمين'],
+                            ];
+                            $currentFeedbackImages = $feedbackBlock->metadata['images'] ?? [];
+                        @endphp
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+                            @foreach($defaultFeedbackSlots as $slot => $slotInfo)
+                                @php
+                                    $val = !empty($currentFeedbackImages[$slot]) ? $currentFeedbackImages[$slot] : $slotInfo['fallback'];
+                                    $isDiag = $slotInfo['is_diagonal'];
+                                @endphp
+                                <div class="p-3 rounded-xl bg-white dark:bg-slate-900 border {{ $isDiag ? 'border-blue-300 dark:border-blue-700 ring-1 ring-blue-100 dark:ring-blue-900/40' : 'border-[#DEE8F7] dark:border-slate-700' }} flex flex-col gap-2 shadow-2xs">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-[11px] font-bold text-[#012383] dark:text-blue-400">{{ $slotInfo['label'] }}</span>
+                                        <span class="text-[9px] font-bold px-1.5 py-0.5 rounded-full {{ $isDiag ? 'bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300' : 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300' }}">
+                                            {{ $isDiag ? '⭐ د. هنا' : '💬 رأي' }}
+                                        </span>
+                                    </div>
+
+                                    <div class="flex items-center gap-2.5">
+                                        <div class="size-14 rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shrink-0">
+                                            <img src="{{ $val }}" alt="Slot {{ $slot + 1 }}" class="size-full object-cover {{ $isDiag ? 'object-center' : 'object-top' }}" />
+                                        </div>
+                                        <div class="flex-1 flex flex-col gap-1">
+                                            <input type="text" name="metadata[images][{{ $slot }}]" value="{{ $val }}" placeholder="{{ $slotInfo['fallback'] }}" class="w-full h-8 px-2.5 rounded-md border border-[#DEE8F7] dark:border-slate-700 text-[11px] font-mono bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" />
+                                            <input type="file" name="media_files[{{ $slot }}]" accept="image/*" class="w-full text-[10px] text-slate-500 file:mr-1.5 file:py-0.5 file:px-2 file:rounded-md file:border-0 file:text-[10px] file:font-bold file:bg-[#012383] file:text-white hover:file:bg-[#0B2A8F] cursor-pointer" />
+                                        </div>
+                                    </div>
+                                    <span class="text-[9px] text-slate-400 truncate" title="{{ $slotInfo['desc'] }}">{{ $slotInfo['desc'] }}</span>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    <div class="md:col-span-2 flex justify-end">
+                        <button type="submit" class="px-6 h-11 rounded-xl bg-[#012383] hover:bg-[#0B2A8F] text-white font-bold text-xs shadow-sm transition-colors cursor-pointer flex items-center justify-center gap-2">
+                            <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            <span>{{ __('تحديث وحفظ شبكة الآراء فورياً') }}</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            {{-- 4. Trainee Reviews Section (آراء المتدربين والشهادات المصورة) --}}
+            <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-3xl p-5 sm:p-7 shadow-xs">
+                <div class="border-b border-[#DEE8F7] dark:border-slate-800 pb-4 mb-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="font-['Baloo_Bhaijaan_2'] font-bold text-lg sm:text-xl text-[#012383] dark:text-blue-400">
+                                {{ __('قسم آراء المتدربين والشهادات المرفقة (Reviews & Testimonials with Images)') }}
+                            </h3>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">
+                                {{ __('تحكم كامل في كروت الآراء الـ 3 الظاهرة في صفحة الهبوط مع إمكانية إرفاق صورة تجربة لكل متدرب وتكبيرها باللايت بوكس') }}
+                            </p>
+                        </div>
+                        <span class="px-3 py-1 rounded-full text-xs font-bold bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-800">
+                            دعم الصور واللايت بوكس
+                        </span>
+                    </div>
+                </div>
+
+                @php
+                    $reviewDefaults = [
+                        0 => [
+                            'author' => 'سارة المنصور',
+                            'role' => 'طالبة دراسات عليا - علوم التخاطب',
+                            'badge' => 'طالب معتمد',
+                            'title' => 'تمارين واضحة ونتائج مباشرة في تصحيح مخارج الحروف',
+                            'text' => 'الكورس ممتاز من حيث الترتيب المنهجي، الفيديوهات مركزة وملاحظات المحاضر على تحليلي الصوتي ساعدتني كثيراً في فهم مخارج الحروف وتطبيقها عملياً.',
+                            'image' => '/assets/images/alameen-images/2.jpeg',
+                        ],
+                        1 => [
+                            'author' => 'خالد العمري',
+                            'role' => 'أخصائي نطق وتخاطب مبتدئ',
+                            'badge' => 'أخصائي معتمد',
+                            'title' => 'أفضل استثمار في مسيرتي كطالب وباحث في علوم التخاطب',
+                            'text' => 'استفدت كثيراً من النماذج التطبيقية واستمارة الملاحظة المرفقة بتوجيه المحاضرين. أنصح كل دارس في علوم التخاطب بهذه المنصة.',
+                            'image' => '/assets/images/alameen-images/1.jpeg',
+                        ],
+                        2 => [
+                            'author' => 'فهد الدوسري',
+                            'role' => 'متدرب في مسار التخاطب الشامل',
+                            'badge' => 'طالب معتمد',
+                            'title' => 'منهجية علمية واضحة في تصحيح اللدغات الصوتية',
+                            'text' => 'الكورس قدّم تدريباً دقيقاً على تقنيات المحاكاة وتعديل مخارج الأصوات. التقييم المباشر للمهام من المحاضر عزز مهاراتي التطبيقية بشكل ملحوظ.',
+                            'image' => '/assets/images/alameen-images/3.jpeg',
+                        ],
+                    ];
+                    $currentReviews = $reviewsBlock->metadata['items'] ?? [];
+                @endphp
+
+                <form method="POST" action="{{ route('admin.settings.content.update', 'reviews') }}#cms" enctype="multipart/form-data" class="flex flex-col gap-5">
+                    @csrf
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1.5">{{ __('عنوان قسم آراء المتدربين:') }}</label>
+                            <input type="text" name="title_ar" value="{{ $reviewsBlock->title_ar }}" class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-sm font-bold bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" />
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1.5">{{ __('الوصف الفرعي للقسم:') }}</label>
+                            <input type="text" name="subtitle_ar" value="{{ $reviewsBlock->subtitle_ar }}" class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-medium bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" />
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                        @for($r = 0; $r < 3; $r++)
+                            @php
+                                $rItem = $currentReviews[$r] ?? $reviewDefaults[$r];
+                                $rImg = !empty($rItem['image']) ? $rItem['image'] : $reviewDefaults[$r]['image'];
+                            @endphp
+                            <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-[#DEE8F7] dark:border-slate-800 flex flex-col gap-3">
+                                <div class="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-slate-700">
+                                    <span class="text-xs font-bold text-[#012383] dark:text-blue-400">رأي متدرب {{ $r + 1 }}</span>
+                                    <span class="text-[10px] font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-950 px-2 py-0.5 rounded-full">★★★★★ 5/5</span>
+                                </div>
+
+                                <div>
+                                    <label class="text-[11px] font-bold text-slate-600 dark:text-slate-400 block mb-1">{{ __('اسم صاحب الرأي:') }}</label>
+                                    <input type="text" name="metadata[items][{{ $r }}][author]" value="{{ $rItem['author'] ?? $reviewDefaults[$r]['author'] }}" class="w-full h-9 px-3 rounded-lg border border-[#DEE8F7] dark:border-slate-700 text-xs font-bold bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" />
+                                </div>
+
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div>
+                                        <label class="text-[11px] font-bold text-slate-600 dark:text-slate-400 block mb-1">{{ __('الصفة / الدور:') }}</label>
+                                        <input type="text" name="metadata[items][{{ $r }}][role]" value="{{ $rItem['role'] ?? $reviewDefaults[$r]['role'] }}" class="w-full h-9 px-2.5 rounded-lg border border-[#DEE8F7] dark:border-slate-700 text-[11px] bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" />
+                                    </div>
+                                    <div>
+                                        <label class="text-[11px] font-bold text-slate-600 dark:text-slate-400 block mb-1">{{ __('شارة الاعتماد:') }}</label>
+                                        <input type="text" name="metadata[items][{{ $r }}][badge]" value="{{ $rItem['badge'] ?? $reviewDefaults[$r]['badge'] }}" class="w-full h-9 px-2.5 rounded-lg border border-[#DEE8F7] dark:border-slate-700 text-[11px] bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" />
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="text-[11px] font-bold text-slate-600 dark:text-slate-400 block mb-1">{{ __('عنوان الرأي الرئيسي:') }}</label>
+                                    <input type="text" name="metadata[items][{{ $r }}][title]" value="{{ $rItem['title'] ?? $reviewDefaults[$r]['title'] }}" class="w-full h-9 px-3 rounded-lg border border-[#DEE8F7] dark:border-slate-700 text-xs font-bold bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" />
+                                </div>
+
+                                <div>
+                                    <label class="text-[11px] font-bold text-slate-600 dark:text-slate-400 block mb-1">{{ __('نص الرأي التفصيلي:') }}</label>
+                                    <textarea name="metadata[items][{{ $r }}][text]" rows="2" class="w-full p-2.5 rounded-lg border border-[#DEE8F7] dark:border-slate-700 text-xs bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]">{{ $rItem['text'] ?? $reviewDefaults[$r]['text'] }}</textarea>
+                                </div>
+
+                                <div>
+                                    <label class="text-[11px] font-bold text-slate-600 dark:text-slate-400 block mb-1">{{ __('الصورة المرفقة بالرأي (مسار أو رفع ملف):') }}</label>
+                                    <div class="flex items-center gap-2">
+                                        <div class="size-11 rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shrink-0">
+                                            <img src="{{ $rImg }}" alt="Review {{ $r + 1 }}" class="size-full object-cover object-top" />
+                                        </div>
+                                        <div class="flex-1 flex flex-col gap-1">
+                                            <input type="text" name="metadata[items][{{ $r }}][image]" value="{{ $rImg }}" placeholder="{{ $reviewDefaults[$r]['image'] }}" class="w-full h-8 px-2.5 rounded-md border border-[#DEE8F7] dark:border-slate-700 text-[11px] font-mono bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" />
+                                            <input type="file" name="media_files[{{ $r }}]" accept="image/*" class="w-full text-[10px] text-slate-500 file:mr-1.5 file:py-0.5 file:px-2 file:rounded-md file:border-0 file:text-[10px] file:font-bold file:bg-[#012383] file:text-white hover:file:bg-[#0B2A8F] cursor-pointer" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endfor
+                    </div>
+
+                    <div class="flex justify-end pt-2">
+                        <button type="submit" class="px-6 h-11 rounded-xl bg-[#012383] hover:bg-[#0B2A8F] text-white font-bold text-xs shadow-sm transition-colors cursor-pointer flex items-center justify-center gap-2">
+                            <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            <span>{{ __('حفظ وتحديث آراء المتدربين فورياً') }}</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+            </div>
+
             {{-- 3. About Us & 4 Clinical Pillars --}}
             <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-3xl p-5 sm:p-7 shadow-xs">
                 <div class="border-b border-[#DEE8F7] dark:border-slate-800 pb-4 mb-6">
@@ -507,7 +841,7 @@
                         {{ __('قسم من نحن وركائز المنصة الأربعة (About Us & Pillars)') }}
                     </h3>
                     <p class="text-xs text-slate-500 dark:text-slate-400">
-                        {{ __('تحكم في ركائز التميز السريري التي تميز منصة الأمين في الصفحة الرئيسية') }}
+                        {{ __('تحكم في ركائز التميز والتدريب التي تميز منصة الأمين في الصفحة الرئيسية') }}
                     </p>
                 </div>
 
@@ -1614,7 +1948,7 @@
                                     </div>
                                     <div class="flex flex-col gap-1">
                                         <div class="flex items-center gap-2">
-                                            <h4 class="font-bold text-sm text-slate-900 dark:text-white">{{ __('المهام والتطبيقات السريرية (Clinical Tasks)') }}</h4>
+                                            <h4 class="font-bold text-sm text-slate-900 dark:text-white">{{ __('المهام والتطبيقات العملية (Tasks & Assignments)') }}</h4>
                                         </div>
                                         <span class="font-mono text-[11px] text-slate-400 dark:text-slate-500 dir-ltr text-start">/assignment</span>
                                         <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mt-1">
@@ -1674,7 +2008,7 @@
                                         </div>
                                         <span class="font-mono text-[11px] text-slate-400 dark:text-slate-500 dir-ltr text-start">/grades</span>
                                         <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mt-1">
-                                            {{ __('كشف الدرجات والتقييمات، ملاحظات المحاضرين السريرية، ونتائج التكليفات.') }}
+                                            {{ __('كشف الدرجات والتقييمات، ملاحظات المحاضرين التوجيهية، ونتائج التكليفات.') }}
                                         </p>
                                     </div>
                                 </div>

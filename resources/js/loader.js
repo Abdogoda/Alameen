@@ -34,7 +34,8 @@ function getOrCreateLoader() {
             <div class="alameen-voice-wave alameen-voice-wave-2"></div>
             <div class="alameen-voice-wave alameen-voice-wave-3"></div>
             <div class="alameen-loader-logo-capsule">
-                <img src="/assets/images/logo.png" alt="منصة الأمين" onerror="this.src='/assets/images/logo.png'; this.onerror=null;" />
+                <img src="/assets/images/logo.png" alt="منصة الأمين" class="dark:hidden logo-theme-light" onerror="this.src='/assets/images/logo.png'; this.onerror=null;" />
+                <img src="/assets/images/logo-white.png" alt="منصة الأمين" class="hidden dark:block logo-theme-dark" onerror="this.src='/assets/images/logo-white.png'; this.onerror=null;" />
             </div>
         </div>
         <div class="alameen-loader-equalizer">

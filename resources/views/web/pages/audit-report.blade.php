@@ -98,8 +98,8 @@
               </tr>
               <tr class="hover:bg-slate-50/70 transition-colors">
                 <td class="p-3.5 font-bold text-[#0B2A8F]">A5</td>
-                <td class="p-3.5 font-bold text-[#012383]">هيمنة Baloo Bhaijaan على السياق العيادي</td>
-                <td class="p-3.5 text-[#475569]">الخط ممتاز وجذاب في العناوين الإعلانية، لكن استخدامه في الشهادات المعتمدة، وسجل الدرجات، والتفاصيل الطبية يضفي طابعاً كرتونياً غير موثوق يضر بالرصانة الأكاديمية المطلوبة.</td>
+                <td class="p-3.5 font-bold text-[#012383]">هيمنة Baloo Bhaijaan على السياق التدريبي والأكاديمي</td>
+                <td class="p-3.5 text-[#475569]">الخط ممتاز وجذاب في العناوين الإعلانية، لكن استخدامه في الشهادات المعتمدة، وسجل الدرجات، والتفاصيل التدريبية يضفي طابعاً كرتونياً غير موثوق يضر بالرصانة الأكاديمية المطلوبة.</td>
                 <td class="p-3.5"><span class="px-2.5 py-1 rounded-full bg-amber-50 text-amber-800 border border-amber-200 text-[11px] font-bold whitespace-nowrap">(3) نمط AI عام يستوجب التحسين</span></td>
               </tr>
               <tr class="hover:bg-slate-50/70 transition-colors">
@@ -334,9 +334,9 @@
                 </p>
               </div>
               <div class="p-4 rounded-xl bg-[#EAF1FB]/50 border border-[#0B2A8F]/20">
-                <strong class="text-[#0B2A8F] block mb-1">البديل المقترح (Clinical Track Card):</strong>
+                <strong class="text-[#0B2A8F] block mb-1">البديل المقترح (Training Track Card):</strong>
                 <p class="text-[#012383] font-medium leading-relaxed">
-                  إعطاء البطاقة شخصية المسار العلاجي: شريط تخصصي دلالي (زمردي للنطق، نيلي لمخارج الحروف، موف للتدخل المبكر)، مع صور مصغرة للأخصائيين المعتمدين، ومؤشر حالة نبضي يوضح الخطوة التالية للطالب.
+                  إعطاء البطاقة شخصية المسار التدريبي: شريط تخصصي دلالي (زمردي للنطق، نيلي لمخارج الحروف، موف للتدخل المبكر)، مع صور مصغرة للأخصائيين المعتمدين، ومؤشر حالة نبضي يوضح الخطوة التالية للطالب.
                 </p>
               </div>
             </div>
@@ -358,7 +358,7 @@
               <div class="p-4 rounded-xl bg-[#EAF1FB]/50 border border-[#0B2A8F]/20">
                 <strong class="text-[#0B2A8F] block mb-1">البديل المقترح (Balanced Authority):</strong>
                 <p class="text-[#012383] font-medium leading-relaxed">
-                  حصر Baloo Bhaijaan 2 في الصفحة الرئيسية والهيرو الإعلاني، واستخدام Cairo Bold لكافة العناوين الأكاديمية والشهادات والتقارير الطبية لاستعادة الوقار والاعتمادية العيادية.
+                  حصر Baloo Bhaijaan 2 في الصفحة الرئيسية والهيرو الإعلاني، واستخدام Cairo Bold لكافة العناوين الأكاديمية والشهادات والتقارير التدريبية لاستعادة الوقار والاعتمادية المهنية.
                 </p>
               </div>
             </div>
@@ -444,7 +444,7 @@
               <li>• توحيد مقياس الحواف وإلغاء التقويس العشوائي.</li>
               <li>• استبدال البانر الكحلي المسود بأسطح تعليمية مشرقة.</li>
               <li>• ترشيد الشارات البيضاوية وإلغاء الفائض منها.</li>
-              <li>• إعادة ضبط الخطوط وإبراز الطابع العيادي الموثوق في الشهادات والتقارير.</li>
+              <li>• إعادة ضبط الخطوط وإبراز الطابع التدريبي والأكاديمي الموثوق في الشهادات والتقارير.</li>
             </ul>
           </div>
 
@@ -505,7 +505,7 @@
           <div class="p-4 rounded-xl border border-[#DEE8F7] bg-[#FAFCFF] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
               <span class="font-bold text-[#0B2A8F] block">D-2: معالجة بطاقة المهمة الكحلية القاتمة</span>
-              <span class="text-[#475569]">استبدال الخلفية الداكنة المظلمة بتدرج تعليمي عيادي مشرق ومبهج.</span>
+              <span class="text-[#475569]">استبدال الخلفية الداكنة المظلمة بتدرج تعليمي تدريبي مشرق ومبهج.</span>
             </div>
             <div class="flex items-center gap-3">
               <label class="flex items-center gap-1.5 cursor-pointer">

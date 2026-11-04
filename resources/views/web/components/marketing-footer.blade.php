@@ -24,6 +24,7 @@
     $youtubeUrl = $cmsSettings->get('social_youtube');
     $telegramUrl = $cmsSettings->get('social_telegram');
     $siteLogo = $cmsSettings->getLogoUrl();
+    $footerLogo = $cmsSettings->getFooterLogoUrl();
 @endphp
 
         <!-- Top Row: Main Columns -->
@@ -35,7 +36,7 @@
                 <!-- Brand Logo with soft badge -->
                 <a href="{{ route('home') }}" class="flex gap-3 items-center group w-fit">
                     <div class="size-12 rounded-2xl bg-white/10 p-1.5 backdrop-blur-xs border border-white/15 flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
-                        <img src="{{ $siteLogo }}" alt="{{ $siteName }}" class="size-full object-contain filter brightness-0 invert drop-shadow-sm" />
+                        <img src="{{ $footerLogo ?? ($siteLogoWhite ?? '/assets/images/logo-white.png') }}" alt="{{ $siteName }}" class="size-full object-contain drop-shadow-sm" />
                     </div>
                     <div class="flex flex-col text-start">
                         <span class="font-['Baloo_Bhaijaan_2'] font-extrabold text-2xl text-white tracking-tight leading-tight">

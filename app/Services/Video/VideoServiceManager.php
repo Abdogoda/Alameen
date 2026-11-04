@@ -58,6 +58,8 @@ class VideoServiceManager extends Manager
             return $driver;
         }
 
+        Log::info("[VIDEO_MANAGER] Default driver [{$defaultName}] is not configured, falling back to local server driver.");
+
         // Automatic fallback to local server driver if default driver (e.g. MUX) is not configured
         return $this->driver('local');
     }
@@ -67,7 +69,10 @@ class VideoServiceManager extends Manager
      */
     public function isMuxConfigured(): bool
     {
-        return $this->driver('mux')->isConfigured();
+        $configured = $this->driver('mux')->isConfigured();
+        Log::debug('[VIDEO_MANAGER] isMuxConfigured check: ' . ($configured ? 'TRUE' : 'FALSE'));
+
+        return $configured;
     }
 
     /**
@@ -78,6 +83,7 @@ class VideoServiceManager extends Manager
     public function createDirectUploadUrl(string $corsOrigin = '*', ?string $driverName = null): ?array
     {
         $driver = $driverName ? $this->driver($driverName) : $this->getActiveDriver();
+        Log::info("[VIDEO_MANAGER] createDirectUploadUrl using driver: " . $driver->name());
 
         return $driver->createDirectUploadUrl($corsOrigin);
     }
@@ -101,24 +107,36 @@ class VideoServiceManager extends Manager
         $driverName = $preferredDriver ?: $this->getDefaultDriver();
         $targetDriver = $this->driver($driverName);
 
+        Log::info('[VIDEO_MANAGER] handleVideoUpload initiated', [
+            'original_filename' => $file->getClientOriginalName(),
+            'file_size' => $file->getSize(),
+            'preferred_driver' => $preferredDriver,
+            'default_driver' => $this->getDefaultDriver(),
+            'target_driver' => $driverName,
+            'target_is_configured' => $targetDriver->isConfigured(),
+        ]);
+
         // 1. Try preferred driver if configured
         if ($targetDriver->isConfigured()) {
             try {
                 $result = $targetDriver->handleUpload($file);
                 if (! empty($result['video_url']) || ! empty($result['mux_playback_id']) || ! empty($result['mux_upload_id']) || ! empty($result['mux_asset_id'])) {
                     $result['driver_used'] = $targetDriver->name();
+                    Log::info('[VIDEO_MANAGER] handleVideoUpload succeeded using ' . $targetDriver->name(), $result);
 
                     return $result;
                 }
             } catch (\Throwable $e) {
-                Log::warning("Video driver [{$targetDriver->name()}] upload failed, executing fallback to local server storage: {$e->getMessage()}");
+                Log::warning("[VIDEO_MANAGER] Video driver [{$targetDriver->name()}] upload failed, executing fallback to local server storage: {$e->getMessage()}");
             }
         }
 
         // 2. Guaranteed fallback to local server storage
+        Log::info('[VIDEO_MANAGER] Falling back to local server storage driver');
         $localDriver = $this->driver('local');
         $result = $localDriver->handleUpload($file);
         $result['driver_used'] = 'local';
+        Log::info('[VIDEO_MANAGER] Local storage upload completed', $result);
 
         return $result;
     }

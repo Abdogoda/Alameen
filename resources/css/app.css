@@ -636,8 +636,29 @@ html.dark #alameen-loader,
 html.dark .alameen-loader-logo-capsule,
 [data-theme="dark"] .alameen-loader-logo-capsule,
 #alameen-loader.dark .alameen-loader-logo-capsule {
-    background: #FFFFFF !important;
-    box-shadow: 0 16px 36px -6px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.2) !important;
+    background: #0F172A !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    box-shadow: 0 16px 36px -6px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Universal Logo Dark Theme & Dark Background Switcher */
+html.dark .logo-theme-light,
+[data-theme="dark"] .logo-theme-light,
+.dark .logo-theme-light {
+    display: none !important;
+}
+html.dark .logo-theme-dark,
+[data-theme="dark"] .logo-theme-dark,
+.dark .logo-theme-dark {
+    display: block !important;
+}
+html:not(.dark) .logo-theme-light,
+[data-theme="light"] .logo-theme-light {
+    display: block !important;
+}
+html:not(.dark) .logo-theme-dark,
+[data-theme="light"] .logo-theme-dark {
+    display: none !important;
 }
 
 html.dark .alameen-voice-wave,

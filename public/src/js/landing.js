@@ -189,6 +189,16 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         }
       });
+
+      // Synchronize Hero Ambient Videos (Active on Slide 0, paused when inactive for peak performance)
+      const heroVideos = [document.getElementById('hero-video-1'), document.getElementById('hero-video-2')].filter(Boolean);
+      heroVideos.forEach(v => {
+        if (currentIndex === 0) {
+          v.play().catch(() => { });
+        } else {
+          v.pause();
+        }
+      });
     }
 
     function nextSlide() {
@@ -249,6 +259,119 @@ document.addEventListener('DOMContentLoaded', () => {
     goToSlide(0);
     startAutoPlay();
   }
+
+  // ==========================================
+  // 2.1 HERO FAST VIDEO ENGINE & CACHE PRELOAD
+  // ==========================================
+  async function initFastHeroVideos() {
+    const videoConfigs = [
+      { id: 'hero-video-1', url: '/assets/images/alameen-images/1.mp4' },
+      { id: 'hero-video-2', url: '/assets/images/alameen-images/2.mp4' }
+    ];
+
+    // Ensure immediate playback and muted state for zero browser blocking
+    videoConfigs.forEach(({ id }) => {
+      const vid = document.getElementById(id);
+      if (vid) {
+        vid.muted = true;
+        vid.play().catch(() => { });
+      }
+    });
+
+    // Save and cache in CacheStorage for instant 0ms retrieval on reload/navigation
+    if ('caches' in window) {
+      try {
+        const cache = await caches.open('alameen-hero-videos-v1');
+        for (const { id, url } of videoConfigs) {
+          const videoEl = document.getElementById(id);
+          if (!videoEl) continue;
+
+          let response = await cache.match(url);
+          if (!response) {
+            try {
+              response = await fetch(url);
+              if (response && response.ok) {
+                cache.put(url, response.clone());
+              }
+            } catch (e) { }
+          }
+
+          if (response && response.ok) {
+            try {
+              const blob = await response.blob();
+              const blobUrl = URL.createObjectURL(blob);
+              if (videoEl.src !== blobUrl) {
+                const wasPlaying = !videoEl.paused;
+                const currentTime = videoEl.currentTime;
+                videoEl.src = blobUrl;
+                videoEl.currentTime = currentTime;
+                if (wasPlaying) {
+                  videoEl.play().catch(() => { });
+                }
+              }
+            } catch (e) { }
+          }
+        }
+      } catch (err) { }
+    }
+  }
+  initFastHeroVideos();
+
+  // ==========================================
+  // 2.2 HERO VIDEO LIGHTBOX MODAL HANDLER
+  // ==========================================
+  const heroVideoModal = document.getElementById('hero-video-modal');
+  const heroModalCard = document.getElementById('hero-video-modal-card');
+  const heroModalPlayer = document.getElementById('hero-modal-video-player');
+  const heroModalTitle = document.getElementById('hero-modal-video-title');
+  const closeHeroModalBtn = document.getElementById('close-hero-video-modal-btn');
+
+  function openHeroVideoModal(src, title) {
+    if (!heroVideoModal || !heroModalPlayer) return;
+    heroModalPlayer.src = src;
+    heroModalPlayer.muted = false; // with sound!
+    if (heroModalTitle && title) heroModalTitle.textContent = title;
+
+    heroVideoModal.classList.remove('opacity-0', 'pointer-events-none');
+    if (heroModalCard) heroModalCard.classList.remove('scale-95');
+    heroModalPlayer.play().catch(() => { });
+  }
+
+  function closeHeroVideoModal() {
+    if (!heroVideoModal || !heroModalPlayer) return;
+    heroModalPlayer.pause();
+    heroModalPlayer.src = '';
+    heroVideoModal.classList.add('opacity-0', 'pointer-events-none');
+    if (heroModalCard) heroModalCard.classList.add('scale-95');
+  }
+
+  document.querySelectorAll('.hero-video-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const src = card.getAttribute('data-video-src');
+      const title = card.getAttribute('data-video-title');
+      if (src) {
+        openHeroVideoModal(src, title);
+      }
+    });
+  });
+
+  if (closeHeroModalBtn) {
+    closeHeroModalBtn.addEventListener('click', closeHeroVideoModal);
+  }
+
+  if (heroVideoModal) {
+    heroVideoModal.addEventListener('click', (e) => {
+      if (e.target === heroVideoModal) {
+        closeHeroVideoModal();
+      }
+    });
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && heroVideoModal && !heroVideoModal.classList.contains('pointer-events-none')) {
+      closeHeroVideoModal();
+    }
+  });
 
   // ==========================================
   // 3. COURSES CATALOG FILTER & SEARCH (#courses)
@@ -359,6 +482,62 @@ document.addEventListener('DOMContentLoaded', () => {
   const modalStars = document.querySelectorAll('.modal-star');
   let selectedRating = 5;
 
+  // File upload preview elements
+  const modalUploadBox = document.getElementById('modal-upload-box');
+  const modalFileInput = document.getElementById('modal-file-input');
+  const modalUploadPlaceholder = document.getElementById('modal-upload-placeholder');
+  const modalPreviewWrap = document.getElementById('modal-image-preview-wrap');
+  const modalPreviewImg = document.getElementById('modal-image-preview');
+  const modalImageName = document.getElementById('modal-image-name');
+  const removeModalImageBtn = document.getElementById('remove-modal-image-btn');
+
+  if (modalUploadBox && modalFileInput) {
+    modalUploadBox.addEventListener('click', (e) => {
+      if (e.target.closest('#remove-modal-image-btn')) return;
+      modalFileInput.click();
+    });
+
+    modalFileInput.addEventListener('change', () => {
+      if (modalFileInput.files && modalFileInput.files[0]) {
+        const file = modalFileInput.files[0];
+        if (file.type.startsWith('image/')) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            if (modalPreviewImg) modalPreviewImg.src = e.target.result;
+            if (modalImageName) modalImageName.textContent = file.name;
+            modalUploadPlaceholder?.classList.add('hidden');
+            modalPreviewWrap?.classList.remove('hidden');
+            modalUploadBox?.classList.add('border-[#0B2A8F]', 'bg-blue-50/40');
+          };
+          reader.readAsDataURL(file);
+        } else {
+          if (modalImageName) modalImageName.textContent = file.name;
+          modalUploadPlaceholder?.classList.add('hidden');
+          modalPreviewWrap?.classList.remove('hidden');
+        }
+      }
+    });
+
+    removeModalImageBtn?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (modalFileInput) modalFileInput.value = '';
+      if (modalPreviewImg) modalPreviewImg.src = '';
+      modalPreviewWrap?.classList.add('hidden');
+      modalUploadPlaceholder?.classList.remove('hidden');
+      modalUploadBox?.classList.remove('border-[#0B2A8F]', 'bg-blue-50/40');
+    });
+  }
+
+  function resetReviewModalForm() {
+    if (document.getElementById('modal-review-title')) document.getElementById('modal-review-title').value = '';
+    if (document.getElementById('modal-review-text')) document.getElementById('modal-review-text').value = '';
+    if (modalFileInput) modalFileInput.value = '';
+    if (modalPreviewImg) modalPreviewImg.src = '';
+    modalPreviewWrap?.classList.add('hidden');
+    modalUploadPlaceholder?.classList.remove('hidden');
+    modalUploadBox?.classList.remove('border-[#0B2A8F]', 'bg-blue-50/40');
+  }
+
   function showReviewModal() {
     if (reviewModal) {
       reviewModal.classList.remove('hidden');
@@ -370,6 +549,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (reviewModal) {
       reviewModal.classList.add('hidden');
       reviewModal.classList.remove('flex');
+      resetReviewModalForm();
     }
   }
 
@@ -413,8 +593,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (window.AlameenButtonLoader) {
           window.AlameenButtonLoader.setButtonLoading(submitReviewBtn, false);
         }
-        if (document.getElementById('modal-review-title')) document.getElementById('modal-review-title').value = '';
-        if (document.getElementById('modal-review-text')) document.getElementById('modal-review-text').value = '';
 
         if (toast && toastMessage) {
           const isEn = document.documentElement.lang === 'en';
@@ -427,6 +605,57 @@ document.addEventListener('DOMContentLoaded', () => {
       }, 450);
     });
   }
+
+  // ==========================================
+  // 5.1 REVIEW IMAGE LIGHTBOX MODAL HANDLER
+  // ==========================================
+  const reviewLightbox = document.getElementById('review-image-lightbox');
+  const reviewLightboxImg = document.getElementById('review-lightbox-img');
+  const reviewLightboxCaption = document.getElementById('review-lightbox-caption');
+  const closeReviewLightboxBtn = document.getElementById('close-review-image-btn');
+
+  window.openReviewImageLightbox = function (src, author) {
+    if (!reviewLightbox || !reviewLightboxImg) return;
+    reviewLightboxImg.src = src;
+    if (reviewLightboxCaption) {
+      const isEn = document.documentElement.lang === 'en';
+      reviewLightboxCaption.textContent = author
+        ? (isEn ? `Photo attached by ${author}` : `صورة مرفقة مع تقييم ${author}`)
+        : (isEn ? 'Attached review photo' : 'صورة مرفقة مع التقييم');
+    }
+    reviewLightbox.classList.remove('opacity-0', 'pointer-events-none');
+  };
+
+  window.closeReviewImageLightbox = function () {
+    if (!reviewLightbox) return;
+    reviewLightbox.classList.add('opacity-0', 'pointer-events-none');
+    if (reviewLightboxImg) {
+      setTimeout(() => {
+        if (reviewLightbox.classList.contains('opacity-0')) {
+          reviewLightboxImg.src = '';
+        }
+      }, 300);
+    }
+  };
+
+  if (closeReviewLightboxBtn) {
+    closeReviewLightboxBtn.addEventListener('click', window.closeReviewImageLightbox);
+  }
+
+  if (reviewLightbox) {
+    reviewLightbox.addEventListener('click', (e) => {
+      if (e.target === reviewLightbox) {
+        window.closeReviewImageLightbox();
+      }
+    });
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      if (window.closeReviewImageLightbox) window.closeReviewImageLightbox();
+      if (closeHeroVideoModal) closeHeroVideoModal();
+    }
+  });
 
   // ==========================================
   // 6. CALM SCROLL REVEAL MICRO-ANIMATIONS

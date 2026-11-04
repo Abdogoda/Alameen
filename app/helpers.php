@@ -46,6 +46,48 @@ if (! function_exists('platform_logo')) {
     }
 }
 
+if (! function_exists('platform_logo_white')) {
+    /**
+     * Retrieve the white version of platform logo for dark theme & dark backgrounds.
+     */
+    function platform_logo_white(): string
+    {
+        try {
+            return app(SettingsService::class)->getLogoWhiteUrl();
+        } catch (Throwable) {
+            return '/assets/images/logo-white.png';
+        }
+    }
+}
+
+if (! function_exists('platform_footer_logo')) {
+    /**
+     * Retrieve the footer logo URL (defaults to white logo on dark background).
+     */
+    function platform_footer_logo(): string
+    {
+        try {
+            return app(SettingsService::class)->getFooterLogoUrl();
+        } catch (Throwable) {
+            return '/assets/images/logo-white.png';
+        }
+    }
+}
+
+if (! function_exists('platform_auth_login_image')) {
+    /**
+     * Retrieve the auth artwork image URL (for login, register, reset password).
+     */
+    function platform_auth_login_image(?string $default = null): string
+    {
+        try {
+            return app(SettingsService::class)->getAuthLoginImageUrl() ?: ($default ?? '/assets/images/alameen-images/13.jpeg');
+        } catch (Throwable) {
+            return $default ?? '/assets/images/alameen-images/13.jpeg';
+        }
+    }
+}
+
 if (! function_exists('platform_tagline')) {
     /**
      * Retrieve the official platform tagline / description.

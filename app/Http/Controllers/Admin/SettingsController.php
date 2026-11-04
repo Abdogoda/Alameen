@@ -39,13 +39,13 @@ class SettingsController extends Controller
         $heroBlock = ContentBlock::firstOrCreate(
             ['section_key' => 'hero'],
             [
-                'title_ar' => 'أتقن الممارسة الإكلينيكية في التخاطب والنطق بأعلى المعايير العالمية',
-                'title_en' => 'Master Clinical Speech-Language Pathology with Global Standards',
-                'subtitle_ar' => 'دورات سريرية متقدمة، فيديوهات تطبيقية عملية، وتقييم صوتي سريري مباشر مع شهادات معتمدة برمز تحقق.',
-                'subtitle_en' => 'Advanced clinical courses, practical demonstrations, voice assignment grading, and verifiable certificates.',
+                'title_ar' => 'كورس التخاطب الشامل مع هنا المكاوي – Round 5',
+                'title_en' => 'Comprehensive Speech Therapy Course with Hana Mekawy – Round 5',
+                'subtitle_ar' => 'دورات تخاطب شاملة , فيديوهات وتطبيقات عملية , شهادة معتمدة من مركز الامين',
+                'subtitle_en' => 'Comprehensive speech therapy courses, practical video demonstrations, and verified certification from Al-Ameen Center.',
                 'metadata' => [
                     'cta_primary_ar' => 'استكشف المسارات التدريبية',
-                    'cta_primary_en' => 'Explore Clinical Tracks',
+                    'cta_primary_en' => 'Explore Training Tracks',
                     'cta_primary_url' => '/courses',
                     'cta_secondary_ar' => 'تواصل معنا',
                     'cta_secondary_en' => 'Contact Us',
@@ -64,8 +64,8 @@ class SettingsController extends Controller
             [
                 'title_ar' => 'منصة مركز الأمين.. شريكك الأول في تأهيل التخاطب والنطق',
                 'title_en' => 'Al-Ameen Platform.. Your Premier Partner in Speech & Pronunciation Rehabilitation',
-                'subtitle_ar' => 'منصة تعليمية متخصصة تجمع بين المعرفة الأكاديمية والتطبيق السريري لتمكين طلاب التخاطب والدارسين من إتقان مهارات التشخيص والعلاج بأعلى معايير الجودة العلمية.',
-                'subtitle_en' => 'A specialized educational platform combining academic knowledge and clinical application to empower speech therapy students and practitioners to master diagnostic and therapeutic skills with the highest scientific quality standards.',
+                'subtitle_ar' => 'منصة تعليمية متخصصة تجمع بين المعرفة الأكاديمية والتطبيق العملي لتمكين طلاب التخاطب والدارسين من إتقان مهارات التشخيص والعلاج بأعلى معايير الجودة العلمية.',
+                'subtitle_en' => 'A specialized educational platform combining academic knowledge and practical application to empower speech therapy students and practitioners to master diagnostic and therapeutic skills with the highest scientific quality standards.',
                 'metadata' => [
                     'pillars' => [
                         [
@@ -107,8 +107,8 @@ class SettingsController extends Controller
             [
                 'title_ar' => 'الأسئلة الشائعة والأكثر تكراراً',
                 'title_en' => 'Frequently Asked Questions',
-                'subtitle_ar' => 'كل ما تحتاج لمعرفته حول التسجيل، طرق الدفع المتاحة، والشهادات السريرية المعتمدة.',
-                'subtitle_en' => 'Everything you need to know about registration, payment methods, and certified clinical credentials.',
+                'subtitle_ar' => 'كل ما تحتاج لمعرفته حول التسجيل، طرق الدفع المتاحة، والشهادات المعتمدة من مركز الأمين.',
+                'subtitle_en' => 'Everything you need to know about registration, payment methods, and certified credentials.',
                 'metadata' => [
                     'items' => [
                         [
@@ -120,14 +120,80 @@ class SettingsController extends Controller
                         [
                             'question_ar' => 'هل الفيديوهات والمحاضرات مفتوحة بالكامل أم مقيدة بتسلسل؟',
                             'question_en' => 'Are video lectures unlocked all at once or sequentially locked?',
-                            'answer_ar' => 'حرصاً على الفائدة السريرية والتراكم العلمي، تطبق المنصة نظام القفل المتسلسل؛ حيث يفتح كل فيديو بعد إكمال نسبة المشاهدة المطلوبة للمحاضرة السابقة.',
+                            'answer_ar' => 'حرصاً على الفائدة والتراكم العلمي والتطبيقي، تطبق المنصة نظام القفل المتسلسل؛ حيث يفتح كل فيديو بعد إكمال نسبة المشاهدة المطلوبة للمحاضرة السابقة.',
                             'answer_en' => 'To guarantee scientific progression, sequential video locking is enforced: video N+1 unlocks only after reaching the required watch percentage of video N.',
                         ],
                         [
                             'question_ar' => 'ما هي شروط الحصول على الشهادة الرقمية المعتمدة؟',
                             'question_en' => 'What are the requirements to obtain the verified digital certificate?',
-                            'answer_ar' => 'يشترط إكمال 95% على الأقل من مجموع فيديوهات الدورة والمهام السريرية. تصدر الشهادة برمز فريد مع رمز استجابة سريعة (QR Code) للفحص والتحقق.',
+                            'answer_ar' => 'يشترط إكمال 95% على الأقل من مجموع فيديوهات الدورة والمهام التدريبية. تصدر الشهادة برمز فريد مع رمز استجابة سريعة (QR Code) للفحص والتحقق.',
                             'answer_en' => 'You must complete at least 95% of total course video progress. Certificates are generated with a unique verification code and QR code.',
+                        ],
+                    ],
+                ],
+                'is_active' => true,
+            ]
+        );
+
+        $feedbackBlock = ContentBlock::firstOrCreate(
+            ['section_key' => 'feedback'],
+            [
+                'title_ar' => 'مركز الأمين.. ثقتكم دايمًا مسؤولية بنعتز بيها، ورضاكم هو هدفنا اللي بنسعى ليه كل يوم',
+                'title_en' => 'Al-Ameen Center.. Your Trust Is Our Responsibility, Your Satisfaction Is Our Daily Goal',
+                'subtitle_ar' => 'بنؤمن إن آراءكم وملاحظاتكم هي الدافع الحقيقي لينا علشان نتطور ونقدم الأفضل باستمرار ونكون عند حسن ظنكم وثقتكم فينا.',
+                'subtitle_en' => 'We believe your feedback is the true motivation for us to continuously evolve, deliver excellence, and exceed expectations.',
+                'metadata' => [
+                    'images' => [
+                        '/assets/images/alameen-images/6.jpeg',
+                        '/assets/images/alameen-images/1.jpeg',
+                        '/assets/images/alameen-images/2.jpeg',
+                        '/assets/images/alameen-images/3.jpeg',
+                        '/assets/images/alameen-images/9.jpeg',
+                        '/assets/images/alameen-images/4.jpeg',
+                        '/assets/images/alameen-images/5.jpeg',
+                        '/assets/images/alameen-images/certificate.png',
+                        '/assets/images/alameen-images/12.jpeg',
+                    ],
+                ],
+                'is_active' => true,
+            ]
+        );
+
+        $reviewsBlock = ContentBlock::firstOrCreate(
+            ['section_key' => 'reviews'],
+            [
+                'title_ar' => 'آراء المتدربين والدارسين وتجاربهم التطبيقية',
+                'title_en' => 'Trainee Reviews & Practical Experiences',
+                'subtitle_ar' => 'قصص نجاح واقعية وانطباعات موثقة من أخصائيي وطلاب التخاطب الذين انضموا لدوراتنا التدريبية.',
+                'subtitle_en' => 'Real success stories and verified impressions from speech therapy specialists and students who completed our courses.',
+                'metadata' => [
+                    'items' => [
+                        [
+                            'author' => 'سارة المنصور',
+                            'role' => 'طالبة دراسات عليا - علوم التخاطب',
+                            'badge' => 'طالب معتمد',
+                            'rating' => 5,
+                            'title' => 'تمارين واضحة ونتائج مباشرة في تصحيح مخارج الحروف',
+                            'text' => 'الكورس ممتاز من حيث الترتيب المنهجي، الفيديوهات مركزة وملاحظات المحاضر على تحليلي الصوتي ساعدتني كثيراً في فهم مخارج الحروف وتطبيقها عملياً.',
+                            'image' => '/assets/images/alameen-images/2.jpeg',
+                        ],
+                        [
+                            'author' => 'خالد العمري',
+                            'role' => 'أخصائي نطق وتخاطب مبتدئ',
+                            'badge' => 'أخصائي معتمد',
+                            'rating' => 5,
+                            'title' => 'أفضل استثمار في مسيرتي كطالب وباحث في علوم التخاطب',
+                            'text' => 'استفدت كثيراً من النماذج التطبيقية واستمارة الملاحظة المرفقة بتوجيه المحاضرين. أنصح كل دارس في علوم التخاطب بهذه المنصة.',
+                            'image' => '/assets/images/alameen-images/1.jpeg',
+                        ],
+                        [
+                            'author' => 'فهد الدوسري',
+                            'role' => 'متدرب في مسار التخاطب الشامل',
+                            'badge' => 'طالب معتمد',
+                            'rating' => 5,
+                            'title' => 'منهجية علمية واضحة في تصحيح اللدغات الصوتية',
+                            'text' => 'الكورس قدّم تدريباً دقيقاً على تقنيات المحاكاة وتعديل مخارج الأصوات. التقييم المباشر للمهام من المحاضر عزز مهاراتي التطبيقية بشكل ملحوظ.',
+                            'image' => '/assets/images/alameen-images/3.jpeg',
                         ],
                     ],
                 ],
@@ -151,7 +217,7 @@ class SettingsController extends Controller
             $sampleCertificate->setRelation('course', (object) ['title' => 'دبلوم أساسيات وتطبيقات التخاطب وتنمية اللغة']);
         }
 
-        return view('admin.settings.index', compact('settings', 'heroBlock', 'aboutBlock', 'faqBlock', 'menus', 'sampleCertificate'));
+        return view('admin.settings.index', compact('settings', 'heroBlock', 'aboutBlock', 'faqBlock', 'feedbackBlock', 'reviewsBlock', 'menus', 'sampleCertificate'));
     }
 
     /**
@@ -179,6 +245,33 @@ class SettingsController extends Controller
             if (is_string($path)) {
                 $url = Storage::url($path);
                 $this->settingsService->set('site_logo', $url, $url, 'branding');
+            }
+        }
+
+        // Handle white logo image file upload (for dark theme & dark footer)
+        if ($request->hasFile('site_logo_white_file')) {
+            $path = $request->file('site_logo_white_file')->store('branding', 'public');
+            if (is_string($path)) {
+                $url = Storage::url($path);
+                $this->settingsService->set('site_logo_white', $url, $url, 'branding');
+            }
+        }
+
+        // Handle independent footer logo image file upload
+        if ($request->hasFile('footer_logo_file')) {
+            $path = $request->file('footer_logo_file')->store('branding', 'public');
+            if (is_string($path)) {
+                $url = Storage::url($path);
+                $this->settingsService->set('footer_logo', $url, $url, 'branding');
+            }
+        }
+
+        // Handle auth artwork image file upload (13.jpeg)
+        if ($request->hasFile('auth_login_image_file')) {
+            $path = $request->file('auth_login_image_file')->store('branding', 'public');
+            if (is_string($path)) {
+                $url = Storage::url($path);
+                $this->settingsService->set('auth_login_image', $url, $url, 'branding');
             }
         }
 
@@ -220,7 +313,7 @@ class SettingsController extends Controller
     }
 
     /**
-     * Update website CMS content block (Hero, About, FAQ, Announcement).
+     * Update website CMS content block (Hero, Feedback, About, FAQ, Reviews, Announcement).
      */
     public function updateContentBlock(UpdateContentBlockRequest $request, string $sectionKey): RedirectResponse
     {
@@ -238,14 +331,51 @@ class SettingsController extends Controller
         if (array_key_exists('content_en', $validated)) {
             $block->content_en = $validated['content_en'];
         }
-        if (array_key_exists('metadata', $validated)) {
-            $block->metadata = $validated['metadata'];
+
+        $metadata = $block->metadata ?? [];
+        if (array_key_exists('metadata', $validated) && is_array($validated['metadata'])) {
+            $metadata = array_replace_recursive($metadata, $validated['metadata']);
         }
 
+        // Handle uploaded media files (e.g. hero images/videos, feedback grid images, reviews images)
+        if ($request->hasFile('media_files')) {
+            $files = $request->file('media_files');
+            if (is_array($files)) {
+                if ($sectionKey === 'reviews') {
+                    $items = $metadata['items'] ?? [];
+                    foreach ($files as $idx => $file) {
+                        if ($file && $file->isValid()) {
+                            $path = $file->store('cms/reviews', 'public');
+                            if (is_string($path)) {
+                                $items[(int) $idx]['image'] = Storage::url($path);
+                            }
+                        }
+                    }
+                    $metadata['items'] = $items;
+                } else {
+                    $images = $metadata['images'] ?? [];
+                    $folder = $sectionKey === 'hero' ? 'cms/hero' : 'cms/feedback';
+                    foreach ($files as $idx => $file) {
+                        if ($file && $file->isValid()) {
+                            $path = $file->store($folder, 'public');
+                            if (is_string($path)) {
+                                $images[(int) $idx] = Storage::url($path);
+                            }
+                        }
+                    }
+                    ksort($images);
+                    $metadata['images'] = $images;
+                }
+            }
+        }
+
+        $block->metadata = $metadata;
         $block->is_active = $request->boolean('is_active', true);
         $block->save();
 
-        return back()->with('success', __('تم حفظ وتحديث محتوى القسم بنجاح.'));
+        $this->settingsService->flushCache();
+
+        return back()->with('success', __('تم حفظ وتحديث محتوى القسم وتفريغ الكاش بنجاح.'));
     }
 
     /**

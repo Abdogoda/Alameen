@@ -137,7 +137,7 @@
 
     @else
         <div class="flex items-center justify-center h-full text-slate-400 text-sm font-['Cairo']">
-            {{ __('المحتوى المرئي قيد المعالجة السريرية الآمنة') }}
+            {{ __('المحتوى المرئي قيد المعالجة الآمنة') }}
         </div>
     @endif
 
@@ -254,7 +254,7 @@
                     navigator.mediaDevices.getDisplayMedia = () => {
                         this.triggerShield(
                             '{{ __('تم رصد محاولة تسجيل أو مشاركة الشاشة') }}',
-                            '{{ __('تسجيل المحاضرات السريرية محمي بحقوق الملكية الفكرية ومحظور تماماً. يرجى إغلاق برنامج التسجيل للمتابعة.') }}'
+                            '{{ __('تسجيل المحاضرات محمي بحقوق الملكية الفكرية ومحظور تماماً. يرجى إغلاق برنامج التسجيل للمتابعة.') }}'
                         );
                         return Promise.reject(new DOMException('Screen recording is strictly prohibited.', 'NotAllowedError'));
                     };

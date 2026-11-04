@@ -53,7 +53,8 @@
             <div class="relative group mb-4">
                 <div class="absolute -inset-2 rounded-3xl bg-gradient-to-r from-blue-600/15 via-indigo-500/15 to-blue-400/15 blur-lg opacity-75 group-hover:opacity-100 transition-opacity duration-500"></div>
                 <div class="relative size-16 sm:size-18 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700/80 p-2.5 shadow-xl shadow-blue-950/5 flex items-center justify-center transition-all duration-300 group-hover:scale-105 group-hover:shadow-2xl ring-4 ring-blue-500/5 dark:ring-blue-400/10">
-                    <img src="{{ $siteLogo ?? '/assets/images/logo.png' }}" alt="{{ $siteName ?? 'منصة الأمين' }}" class="size-full object-contain pointer-events-none drop-shadow-xs" />
+                    <img src="{{ $siteLogo ?? '/assets/images/logo.png' }}" alt="{{ $siteName ?? 'منصة الأمين' }}" class="size-full object-contain pointer-events-none drop-shadow-xs dark:hidden logo-theme-light" />
+                    <img src="{{ $siteLogoWhite ?? '/assets/images/logo-white.png' }}" alt="{{ $siteName ?? 'منصة الأمين' }}" class="size-full object-contain pointer-events-none drop-shadow-xs hidden dark:block logo-theme-dark" />
                 </div>
             </div>
 

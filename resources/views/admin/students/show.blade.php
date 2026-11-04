@@ -1,6 +1,6 @@
 <x-admin-layout::admin
     :title="__('إدارة ملف الطالب: :name', ['name' => $user->name])"
-    :description="__('سجل المشاهدة، اشتراكات الكورسات، التكليفات السريرية، الشهادات، وإيصالات الدفع')"
+    :description="__('سجل المشاهدة، اشتراكات الكورسات، التكليفات والمهام، الشهادات، وإيصالات الدفع')"
     contentClass="p-3.5 sm:p-6 lg:p-8 flex flex-col gap-5 sm:gap-6 w-full min-w-0"
 >
     <x-slot:actions>
@@ -239,10 +239,10 @@
             </div>
         </div>
 
-        {{-- Clinical Tasks --}}
+        {{-- Tasks & Submissions --}}
         <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-2xl p-4 shadow-2xs flex flex-col justify-between">
             <div class="flex items-center justify-between text-slate-500 dark:text-slate-400">
-                <span class="text-[11px] font-bold">{{ __('المهام السريرية') }}</span>
+                <span class="text-[11px] font-bold">{{ __('المهام والتقييم') }}</span>
                 <div class="size-7 rounded-lg bg-indigo-50 dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
                     <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"/></svg>
                 </div>
@@ -321,7 +321,7 @@
                 class="px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shrink-0 cursor-pointer whitespace-nowrap"
             >
                 <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"/></svg>
-                <span>{{ __('التكليفات والمهام السريرية') }}</span>
+                <span>{{ __('التكليفات والمهام') }}</span>
                 <span class="px-1.5 py-0.5 rounded-md text-[10px] font-bold" :class="currentTab === 'tasks' ? 'bg-white/20 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200'">{{ $user->taskSubmissions->count() }}</span>
             </button>
 
@@ -628,11 +628,11 @@
             @endif
         </div>
 
-        {{-- TAB 3: CLINICAL TASKS & SUBMISSIONS --}}
+        {{-- TAB 3: TASKS & SUBMISSIONS --}}
         <div x-show="currentTab === 'tasks'" x-cloak class="flex flex-col gap-4">
             <div>
-                <h3 class="text-base font-bold text-slate-900 dark:text-white">{{ __('التسجيلات والمهام السريرية المقدمة من الطالب') }}</h3>
-                <p class="text-xs text-slate-500">{{ __('الاستماع للتسجيلات الصوتية، مراجعة ملاحظات الحالة، ورصد التقييمات السريرية') }}</p>
+                <h3 class="text-base font-bold text-slate-900 dark:text-white">{{ __('التسجيلات والمهام التدريبية المقدمة من الطالب') }}</h3>
+                <p class="text-xs text-slate-500">{{ __('الاستماع للتسجيلات الصوتية، مراجعة ملاحظات الحالة، ورصد التقييمات التدريبية') }}</p>
             </div>
 
             @if($user->taskSubmissions->isEmpty())
@@ -640,8 +640,8 @@
                     <div class="size-16 rounded-2xl bg-indigo-50 dark:bg-slate-800 text-indigo-500 mx-auto flex items-center justify-center mb-3">
                         <svg class="size-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"/></svg>
                     </div>
-                    <h4 class="text-sm font-bold text-slate-800 dark:text-slate-200">{{ __('لا توجد أي مهام سريرية مرفوعة حتى الآن') }}</h4>
-                    <p class="text-xs text-slate-400 mt-1">{{ __('عندما يقوم الطالب برفع تسجيل صوتي للتطبيق السريري، سيظهر هنا مباشرة للمعاينة والتقييم.') }}</p>
+                    <h4 class="text-sm font-bold text-slate-800 dark:text-slate-200">{{ __('لا توجد أي مهام تدريبية مرفوعة حتى الآن') }}</h4>
+                    <p class="text-xs text-slate-400 mt-1">{{ __('عندما يقوم الطالب برفع تسجيل صوتي للتطبيق العملي، سيظهر هنا مباشرة للمعاينة والتقييم.') }}</p>
                 </div>
             @else
                 <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
@@ -650,7 +650,7 @@
                             <div>
                                 <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-2.5 min-w-0">
                                     <div class="min-w-0 flex-1">
-                                        <h4 class="font-bold text-sm text-slate-900 dark:text-white truncate" title="{{ $submission->task?->title ?? __('مهمة سريرية') }}">{{ $submission->task?->title ?? __('مهمة سريرية') }}</h4>
+                                        <h4 class="font-bold text-sm text-slate-900 dark:text-white truncate" title="{{ $submission->task?->title ?? __('مهمة تدريبية') }}">{{ $submission->task?->title ?? __('مهمة تدريبية') }}</h4>
                                         <div class="text-[11px] text-slate-400 mt-0.5 flex items-center gap-1.5 flex-wrap">
                                             <span class="truncate max-w-[200px]">{{ $submission->task?->course?->title ?? '—' }}</span>
                                             <span>•</span>
@@ -693,10 +693,10 @@
                                     </div>
                                 @endif
 
-                                {{-- Clinical Feedback if graded --}}
+                                {{-- Feedback if graded --}}
                                 @if($submission->clinical_feedback)
                                     <div class="mt-3 p-3 rounded-xl bg-blue-50/60 dark:bg-slate-800/60 text-xs text-slate-700 dark:text-slate-200 border border-blue-100 dark:border-slate-700 break-words">
-                                        <strong class="text-[#0B2A8F] dark:text-blue-300 block text-[10px]">{{ __('ملاحظات المشرف السريري (:grader):', ['grader' => $submission->grader?->name ?? __('المشرف')]) }}</strong>
+                                        <strong class="text-[#0B2A8F] dark:text-blue-300 block text-[10px]">{{ __('ملاحظات المشرف (:grader):', ['grader' => $submission->grader?->name ?? __('المشرف')]) }}</strong>
                                         <p class="mt-1 font-medium leading-relaxed">{{ $submission->clinical_feedback }}</p>
                                     </div>
                                 @endif
@@ -714,7 +714,7 @@
 
                                 <button 
                                     type="button" 
-                                    onclick="openGradeModal({{ $submission->id }}, '{{ addslashes($submission->task?->title ?? __('مهمة سريرية')) }}', {{ $submission->score ?? 0 }}, '{{ addslashes($submission->clinical_feedback ?? '') }}', {{ $submission->task?->max_score ?? 100 }})"
+                                    onclick="openGradeModal({{ $submission->id }}, '{{ addslashes($submission->task?->title ?? __('مهمة تدريبية')) }}', {{ $submission->score ?? 0 }}, '{{ addslashes($submission->clinical_feedback ?? '') }}', {{ $submission->task?->max_score ?? 100 }})"
                                     class="px-3 py-1.5 rounded-lg text-xs font-bold bg-[#012383] text-white hover:bg-[#0B2A8F] transition-colors cursor-pointer self-start sm:self-auto"
                                 >
                                     {{ $submission->isGraded() ? __('تعديل التقييم') : __('تقييم ورصد الدرجة') }}
@@ -1250,7 +1250,7 @@
             <div class="modal-overlay fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity cursor-pointer" onclick="closeModal('modal-grade-task')"></div>
             <div class="modal-content relative bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full p-5 sm:p-7 border border-[#DEE8F7] dark:border-slate-800 shadow-2xl z-10 max-h-[90vh] overflow-y-auto">
                 <div class="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
-                    <h3 class="font-bold text-base text-slate-900 dark:text-white">{{ __('تقييم ورصد درجة المهمة السريرية') }}</h3>
+                    <h3 class="font-bold text-base text-slate-900 dark:text-white">{{ __('تقييم ورصد درجة المهمة التدريبية') }}</h3>
                     <button type="button" onclick="closeModal('modal-grade-task')" class="p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer">
                         <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                     </button>
@@ -1260,7 +1260,7 @@
                     @csrf
 
                     <div>
-                        <label class="block text-xs font-bold text-slate-500 mb-1">{{ __('المهمة السريرية') }}</label>
+                        <label class="block text-xs font-bold text-slate-500 mb-1">{{ __('المهمة التدريبية') }}</label>
                         <input type="text" id="grade-task-title" readonly class="w-full h-10 px-3.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-xs font-bold text-slate-700 dark:text-slate-300 cursor-not-allowed">
                     </div>
 
@@ -1273,7 +1273,7 @@
                     </div>
 
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">{{ __('التغذية الراجعة والملاحظات السريرية') }}</label>
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">{{ __('التغذية الراجعة والملاحظات والتقييم') }}</label>
                         <textarea id="grade-task-feedback" name="clinical_feedback" rows="4" placeholder="{{ __('اكتب توجيهاتك للطالب بناء على التسجيل الصوتي...') }}" class="w-full p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-medium text-slate-800 dark:text-slate-200 outline-none focus:border-[#012383] resize-none"></textarea>
                     </div>
 

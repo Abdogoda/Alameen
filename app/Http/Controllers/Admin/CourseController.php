@@ -29,6 +29,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
@@ -331,9 +332,23 @@ class CourseController extends Controller
      */
     public function getMuxDirectUploadUrl(Course $course): JsonResponse
     {
+        Log::info('[VIDEO_UPLOAD] Mux Direct Upload URL requested by client', [
+            'course_id' => $course->id,
+            'course_title' => $course->title_ar,
+            'client_ip' => request()->ip(),
+            'host' => request()->getSchemeAndHttpHost(),
+            'is_mux_configured' => $this->videoManager->isMuxConfigured(),
+        ]);
+
         $muxDriver = $this->videoManager->driver('mux');
 
         if (! $muxDriver->isConfigured()) {
+            Log::warning('[VIDEO_UPLOAD] Mux Direct Upload URL rejected: Mux driver is not configured.', [
+                'course_id' => $course->id,
+                'has_token_id' => ! empty($muxDriver->getTokenId()),
+                'has_token_secret' => ! empty($muxDriver->getTokenSecret()),
+            ]);
+
             return response()->json([
                 'success' => false,
                 'message' => __('خدمة MUX غير مهيأة على السيرفر، يتم الرفع المباشر عبر السيرفر المحلي.'),
@@ -343,11 +358,22 @@ class CourseController extends Controller
         $corsOrigin = request()->getSchemeAndHttpHost() ?: '*';
         $upload = $muxDriver->createDirectUploadUrl($corsOrigin);
         if (! $upload || empty($upload['url'])) {
+            Log::error('[VIDEO_UPLOAD] Failed to generate MUX Direct Upload URL from MuxDriver.', [
+                'course_id' => $course->id,
+                'cors_origin' => $corsOrigin,
+            ]);
+
             return response()->json([
                 'success' => false,
                 'message' => __('فشل إنشاء رابط الرفع لمنصة MUX.'),
             ], 500);
         }
+
+        Log::info('[VIDEO_UPLOAD] Mux Direct Upload URL successfully created', [
+            'course_id' => $course->id,
+            'upload_id' => $upload['id'],
+            'upload_url' => substr($upload['url'], 0, 40) . '...',
+        ]);
 
         return response()->json([
             'success' => true,
@@ -361,20 +387,33 @@ class CourseController extends Controller
      */
     public function checkMuxUploadStatus(Course $course, string $uploadId): JsonResponse
     {
+        Log::info('[VIDEO_UPLOAD] Checking MUX direct upload status', [
+            'course_id' => $course->id,
+            'upload_id' => $uploadId,
+        ]);
+
         /** @var MuxDriver $muxDriver */
         $muxDriver = $this->videoManager->driver('mux');
 
         if (! $muxDriver->isConfigured()) {
+            Log::warning('[VIDEO_UPLOAD] checkMuxUploadStatus: Mux driver not configured.', ['upload_id' => $uploadId]);
             return response()->json(['success' => false, 'message' => __('خدمة MUX غير مهيأة.')], 400);
         }
 
         $upload = $muxDriver->getUpload($uploadId);
         if (! $upload) {
+            Log::warning('[VIDEO_UPLOAD] checkMuxUploadStatus: Upload session not found on MUX.', ['upload_id' => $uploadId]);
             return response()->json(['success' => false, 'message' => __('لم يتم العثور على جلسة الرفع.')], 404);
         }
 
         $assetId = $upload['asset_id'] ?? null;
         $uploadStatus = $upload['status'] ?? 'waiting';
+
+        Log::info('[VIDEO_UPLOAD] MUX upload session polled', [
+            'upload_id' => $uploadId,
+            'upload_status' => $uploadStatus,
+            'asset_id' => $assetId,
+        ]);
 
         if (! $assetId) {
             return response()->json([
@@ -404,6 +443,14 @@ class CourseController extends Controller
         if ($playbackId) {
             $playbackToken = app(MuxTokenService::class)->generatePlaybackToken($playbackId);
         }
+
+        Log::info('[VIDEO_UPLOAD] MUX Asset details retrieved', [
+            'asset_id' => $assetId,
+            'asset_status' => $assetStatus,
+            'playback_id' => $playbackId,
+            'duration_seconds' => $durationSeconds,
+            'has_playback_token' => ! empty($playbackToken),
+        ]);
 
         return response()->json([
             'success' => true,
@@ -543,6 +590,15 @@ class CourseController extends Controller
         // 1. Save this chunk
         $this->chunkedUploadService->saveChunk($uploadId, $chunkIndex, $request->file('file_chunk'));
 
+        if ($chunkIndex === 0) {
+            Log::info('[VIDEO_UPLOAD] Local chunked upload initiated', [
+                'course_id' => $course->id,
+                'upload_id' => $uploadId,
+                'filename' => $originalFilename,
+                'total_chunks' => $totalChunks,
+            ]);
+        }
+
         // 2. Check if all chunks have arrived
         if (! $this->chunkedUploadService->isComplete($uploadId, $totalChunks)) {
             // Disconnect database connection immediately to prevent connection exhaustion on shared hosting (avoid on sqlite :memory: tests)
@@ -557,6 +613,13 @@ class CourseController extends Controller
                 'progress_percentage' => round((($chunkIndex + 1) / $totalChunks) * 100, 1),
             ]);
         }
+
+        Log::info('[VIDEO_UPLOAD] All video chunks received, merging files', [
+            'course_id' => $course->id,
+            'upload_id' => $uploadId,
+            'total_chunks' => $totalChunks,
+            'filename' => $originalFilename,
+        ]);
 
         // 3. All chunks received -> Merge & Process video file
         try {
@@ -573,6 +636,14 @@ class CourseController extends Controller
             // to ensure an instantaneous response (< 1s) and prevent 504 Gateway Timeouts from reverse proxies (e.g. Hostinger hcdn).
             // Direct browser-to-MUX upload is handled asynchronously by the client.
             $uploadResult = $this->videoManager->handleVideoUpload($mergedFile, 'local');
+
+            Log::info('[VIDEO_UPLOAD] Chunks merged and saved to local server', [
+                'course_id' => $course->id,
+                'upload_id' => $uploadId,
+                'video_source' => $uploadResult['video_source'],
+                'video_url' => $uploadResult['video_url'],
+                'driver_used' => $uploadResult['driver_used'],
+            ]);
 
             // Clean up temporary merged file
             @unlink($mergedFile->getRealPath());
@@ -672,7 +743,27 @@ class CourseController extends Controller
             $videoData['mux_playback_id'] = $parsed['mux_playback_id'];
         }
 
+        Log::info('[VIDEO_UPLOAD] storeVideo form submitted', [
+            'course_id' => $course->id,
+            'title_ar' => $validated['title_ar'] ?? null,
+            'input_video_source' => $validated['video_source'] ?? null,
+            'input_mux_playback_id' => $validated['mux_playback_id'] ?? null,
+            'input_mux_asset_id' => $validated['mux_asset_id'] ?? null,
+            'input_mux_upload_id' => $validated['mux_upload_id'] ?? null,
+            'has_file' => $request->hasFile('video_file'),
+            'input_video_url' => $validated['video_url'] ?? null,
+        ]);
+
         $video = Video::create($videoData);
+
+        Log::info('[VIDEO_UPLOAD] Video record created in database', [
+            'video_id' => $video->id,
+            'course_id' => $course->id,
+            'final_video_source' => $video->video_source,
+            'video_url' => $video->video_url,
+            'mux_playback_id' => $video->mux_playback_id,
+            'mux_asset_id' => $video->mux_asset_id,
+        ]);
 
         // Optional attached Clinical Task
         if (! empty($validated['task_title_ar'])) {
@@ -758,7 +849,28 @@ class CourseController extends Controller
             $updateData['bunny_video_id'] = null;
         }
 
+        Log::info('[VIDEO_UPLOAD] updateVideo form submitted', [
+            'course_id' => $course->id,
+            'video_id' => $video->id,
+            'title_ar' => $validated['title_ar'] ?? null,
+            'upload_tab' => $uploadTab,
+            'input_video_source' => $validated['video_source'] ?? null,
+            'input_mux_playback_id' => $validated['mux_playback_id'] ?? null,
+            'input_mux_asset_id' => $validated['mux_asset_id'] ?? null,
+            'has_file' => $request->hasFile('video_file'),
+            'input_video_url' => $validated['video_url'] ?? null,
+        ]);
+
         $video->update($updateData);
+
+        Log::info('[VIDEO_UPLOAD] Video record updated in database', [
+            'video_id' => $video->id,
+            'course_id' => $course->id,
+            'final_video_source' => $video->video_source,
+            'video_url' => $video->video_url,
+            'mux_playback_id' => $video->mux_playback_id,
+            'mux_asset_id' => $video->mux_asset_id,
+        ]);
 
         // Update or create linked clinical task
         if (! empty($validated['task_title_ar'])) {

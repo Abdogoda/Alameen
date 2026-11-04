@@ -1,4 +1,4 @@
-<x-layouts::app :title="__('تسليم المهمة السريرية والتدريب الصوتي')">
+<x-layouts::app :title="__('تسليم المهمة التدريبية والتدريب الصوتي')">
     <div class="flex flex-col gap-6 w-full text-start">
         
         <!-- Page Introduction & Breadcrumbs -->
@@ -9,7 +9,7 @@
                     <span>{{ __('لوحة الطالب') }}</span>
                 </a>
                 <span class="text-slate-300 dark:text-slate-600">/</span>
-                <a href="{{ route('assignments.index') }}" class="hover:underline" wire:navigate>{{ __('المهام السريرية') }}</a>
+                <a href="{{ route('assignments.index') }}" class="hover:underline" wire:navigate>{{ __('المهام') }}</a>
                 <span class="text-slate-300 dark:text-slate-600">/</span>
                 <span class="text-[#012383] dark:text-white font-bold">{{ $task?->title ?? __('التدريب الصوتي') }}</span>
             </nav>
@@ -50,7 +50,7 @@
                 <div class="flex flex-col gap-1 items-start text-start">
                     <div class="flex items-center gap-2 flex-wrap">
                         <h3 class="font-bold text-base sm:text-lg text-[#012383] dark:text-white leading-tight">
-                            {{ __('التدريب السريري التفاعلي') }}
+                            {{ __('التدريب العملي التفاعلي') }}
                         </h3>
                         <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60 shadow-2xs">
                             <span class="size-1.5 rounded-full bg-emerald-500"></span>
@@ -58,7 +58,7 @@
                         </span>
                     </div>
                     <p class="font-medium text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed max-w-2xl">
-                        {{ __('سجّل صوتك مباشرة عبر المايكروفون أو ارفع ملفك الصوتي لتقييم مخارج الحروف سريرياً.') }}
+                        {{ __('سجّل صوتك مباشرة عبر المايكروفون أو ارفع ملفك الصوتي لتقييم مخارج الحروف عملياً.') }}
                     </p>
                 </div>
             </div>
@@ -91,7 +91,7 @@
                     </div>
                     <div>
                         <h3 class="font-bold text-lg text-[#012383] dark:text-white">
-                            {{ $submission->status === 'graded' ? __('نتيجة وتقييم المهمة السريرية') : __('تم تسليم المهمة • بانتظار التقييم السريري') }}
+                            {{ $submission->status === 'graded' ? __('نتيجة وتقييم المهمة التدريبية') : __('تم تسليم المهمة • بانتظار التقييم والمراجعة') }}
                         </h3>
                         <p class="text-xs text-slate-400 dark:text-slate-500">
                             {{ __('تاريخ التسليم:') }} {{ $submission->created_at?->format('d/m/Y h:i A') }}
@@ -101,7 +101,7 @@
 
                 @if($submission->status === 'graded')
                     <div class="text-center px-4 py-2 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60">
-                        <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400 block">{{ __('الدرجة السريرية') }}</span>
+                        <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400 block">{{ __('الدرجة والتقييم') }}</span>
                         <span class="text-2xl font-black text-emerald-700 dark:text-emerald-300">{{ $submission->score }} / 100</span>
                     </div>
                 @else
@@ -131,7 +131,7 @@
             <!-- Supervisor Feedback -->
             @if($submission->clinical_feedback)
             <div class="p-4 rounded-xl bg-blue-50/70 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-900/60 flex flex-col gap-1.5">
-                <span class="text-xs font-bold text-[#0B2A8F] dark:text-blue-300">📝 {{ __('ملاحظات وتوجيهات المشرف السريري:') }}</span>
+                <span class="text-xs font-bold text-[#0B2A8F] dark:text-blue-300">📝 {{ __('ملاحظات وتوجيهات المحاضر المشرف:') }}</span>
                 <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed font-medium">
                     {{ $submission->clinical_feedback }}
                 </p>
@@ -153,7 +153,7 @@
                 <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-2xl p-6 sm:p-7 flex flex-col gap-4 text-start w-full shadow-xs">
                     <div class="flex items-center justify-between border-b border-[#DEE8F7]/60 dark:border-slate-800 pb-3">
                         <h2 class="font-['Baloo_Bhaijaan_2'] font-bold text-xl text-[#012383] dark:text-white">
-                            {{ __('المطلوب في هذه المهمة السريرية') }}
+                            {{ __('المطلوب في هذه المهمة التدريبية') }}
                         </h2>
                         <span class="text-xs font-bold text-[#0B2A8F] dark:text-blue-300 bg-[#EAF1FB] dark:bg-slate-800 border border-[#DEE8F7] dark:border-slate-700 px-3 py-1 rounded-full">
                             {{ __('تسجيل صوتي مباشر') }}
@@ -247,7 +247,7 @@
                     <!-- Student Notes -->
                     <div class="flex flex-col gap-2">
                         <label class="font-bold text-sm text-[#012383] dark:text-slate-200">
-                            {{ __('ملاحظتك للمشرف السريري (اختياري):') }}
+                            {{ __('ملاحظتك للمحاضر المشرف (اختياري):') }}
                         </label>
                         <textarea
                             name="student_notes"
@@ -263,7 +263,7 @@
                             type="submit"
                             class="bg-[#012383] hover:bg-[#0B2A8F] dark:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-xl h-11 px-8 flex items-center justify-center font-bold text-sm shadow-xs transition-all cursor-pointer active:scale-95"
                         >
-                            {{ __('إرسال التسجيل السريري للمراجعة') }}
+                            {{ __('إرسال التسجيل الصوتي للمراجعة') }}
                         </button>
                     </div>
                 </form>
@@ -271,7 +271,7 @@
 
             </div>
 
-            <!-- Sidebar Info & Clinical Tips -->
+            <!-- Sidebar Info & Practical Tips -->
             <div class="w-full lg:w-[320px] shrink-0 flex flex-col gap-4">
                 <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-2xl p-5 sm:p-6 flex flex-col gap-4 w-full shadow-xs">
                     <h3 class="font-['Baloo_Bhaijaan_2'] font-bold text-lg text-[#012383] dark:text-white">

@@ -2,6 +2,7 @@
 @php
     $heroBlock = \App\Models\ContentBlock::where('section_key', 'hero')->first();
     $feedbackBlock = \App\Models\ContentBlock::where('section_key', 'feedback')->first();
+    $reviewsBlock = \App\Models\ContentBlock::where('section_key', 'reviews')->first();
     $aboutBlock = \App\Models\ContentBlock::where('section_key', 'about')->first();
     $faqBlock = \App\Models\ContentBlock::where('section_key', 'faq')->first();
     $cmsSettings = app(\App\Services\Cms\SettingsService::class);
@@ -14,24 +15,32 @@
     $cta2Url = !empty($heroMeta['cta_secondary_url']) ? $heroMeta['cta_secondary_url'] : '#about';
     $studentsCount = $heroMeta['students_count'] ?? '2500+';
 
-    $heroImages = $heroMeta['images'] ?? [
-        '/assets/images/alameen-images/6.jpeg',
-        '/assets/images/alameen-images/1.jpeg',
-        '/assets/images/alameen-images/2.jpeg',
-        '/assets/images/alameen-images/3.jpeg',
+    $defaultHeroImages = [
+        0 => '/assets/images/alameen-images/7.jpeg',
+        1 => '/assets/images/alameen-images/1.mp4',
+        2 => '/assets/images/alameen-images/2.mp4',
+        3 => '/assets/images/alameen-images/8.jpeg',
     ];
+    $heroImages = [];
+    for ($i = 0; $i < 4; $i++) {
+        $heroImages[$i] = !empty($heroMeta['images'][$i]) ? $heroMeta['images'][$i] : $defaultHeroImages[$i];
+    }
 
-    $feedbackImages = $feedbackMeta['images'] ?? [
-        '/assets/images/alameen-images/6.jpeg',
-        '/assets/images/alameen-images/1.jpeg',
-        '/assets/images/alameen-images/2.jpeg',
-        '/assets/images/alameen-images/3.jpeg',
-        '/assets/images/alameen-images/6.jpeg',
-        '/assets/images/alameen-images/4.jpeg',
-        '/assets/images/alameen-images/5.jpeg',
-        '/assets/images/alameen-images/2.jpeg',
-        '/assets/images/alameen-images/6.jpeg',
+    $defaultFeedbackImages = [
+        0 => '/assets/images/alameen-images/6.jpeg',
+        1 => '/assets/images/alameen-images/1.jpeg',
+        2 => '/assets/images/alameen-images/2.jpeg',
+        3 => '/assets/images/alameen-images/3.jpeg',
+        4 => '/assets/images/alameen-images/9.jpeg',
+        5 => '/assets/images/alameen-images/4.jpeg',
+        6 => '/assets/images/alameen-images/5.jpeg',
+        7 => '/assets/images/alameen-images/certificate.png',
+        8 => '/assets/images/alameen-images/12.jpeg',
     ];
+    $feedbackImages = [];
+    for ($i = 0; $i < 9; $i++) {
+        $feedbackImages[$i] = !empty($feedbackMeta['images'][$i]) ? $feedbackMeta['images'][$i] : $defaultFeedbackImages[$i];
+    }
 @endphp
 <!-- SECTION 1: #home (HERO SLIDER SHOWCASE)                                   -->
       <!-- ========================================================================= -->
@@ -78,42 +87,110 @@
 
             </div>
 
-            <!-- Slide 1 Photo Grid Collage -->
-            <div class="slide-visual w-full max-w-[300px] xs:max-w-[340px] sm:max-w-[420px] lg:max-w-[480px] aspect-square shrink-0 order-2 mx-auto lg:mx-0 relative" dir="ltr">
-              <div class="grid grid-cols-2 gap-2.5 sm:gap-[16px] size-full">
+            <!-- Slide 1 Photo & Video Collage (Sleek, Compact & Fast-Loading) -->
+            <div class="slide-visual w-full max-w-[260px] xs:max-w-[300px] sm:max-w-[360px] lg:max-w-[400px] aspect-square shrink-0 order-2 mx-auto lg:mx-0 relative" dir="ltr">
+              <div class="grid grid-cols-2 gap-2.5 sm:gap-[14px] size-full">
                 
-                <div class="bg-[#DCE8F2] overflow-hidden rounded-full aspect-square w-full relative shadow-sm hover:scale-[1.02] transition-transform">
-                  <img src="{{ $heroImages[0] ?? '/assets/images/alameen-images/6.jpeg' }}" alt="{{ __('landing.slide1ImgAlt1') }}" class="size-full object-cover pointer-events-none" />
+                <!-- 1. Image 7 (Dr. Hana at the podium) -->
+                <div class="bg-[#DCE8F2] dark:bg-slate-800 overflow-hidden rounded-full aspect-square w-full relative shadow-sm hover:scale-[1.02] transition-transform group">
+                  <img
+                    src="{{ $heroImages[0] ?? '/assets/images/alameen-images/7.jpeg' }}"
+                    alt="{{ __('landing.slide1ImgAlt1') }}"
+                    class="size-full object-cover object-[center_20%] pointer-events-none group-hover:scale-105 transition-transform duration-500"
+                    loading="eager"
+                    fetchpriority="high"
+                  />
                 </div>
 
-                <div class="bg-[#152D4D] overflow-hidden rounded-[16px] sm:rounded-[20px] aspect-square w-full relative shadow-sm group hover:scale-[1.02] transition-transform cursor-pointer">
-                  <img src="{{ $heroImages[1] ?? '/assets/images/alameen-images/1.jpeg' }}" alt="{{ __('landing.slide1ImgAlt2') }}" class="size-full object-cover pointer-events-none" />
-                  <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 size-[42px] sm:size-[56px] rounded-full group-hover:scale-110 transition-transform animate-pulse-glow">
-                    <img src="/assets/images/play.svg" alt="{{ __('landing.play') }}" class="size-full" />
+                <!-- 2. Video 1 (Lecture Hall Demonstration) -->
+                <div
+                  class="hero-video-card bg-[#152D4D] overflow-hidden rounded-[16px] sm:rounded-[20px] aspect-square w-full relative shadow-sm group hover:scale-[1.02] transition-transform cursor-pointer"
+                  data-video-src="{{ $heroImages[1] ?? '/assets/images/alameen-images/1.mp4' }}"
+                  data-video-title="{{ __('شرح عملي من الدورة التدريبية') }}"
+                  title="{{ __('انقر للمشاهدة مع الصوت') }}"
+                >
+                  <video
+                    id="hero-video-1"
+                    src="{{ $heroImages[1] ?? '/assets/images/alameen-images/1.mp4' }}"
+                    autoplay
+                    loop
+                    muted
+                    playsinline
+                    preload="auto"
+                    class="size-full object-cover object-center pointer-events-none"
+                  ></video>
+
+                  <!-- Live Badge -->
+                  <div class="absolute top-2 end-2 bg-[#012383]/85 backdrop-blur-xs text-white text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-xs pointer-events-none z-10">
+                    <span class="size-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span>{{ __('فيديو') }}</span>
+                  </div>
+
+                  <!-- Play/Sound Hover Cue -->
+                  <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none z-10">
+                    <div class="size-8 sm:size-10 rounded-full bg-white/95 text-[#012383] flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform">
+                      <svg class="size-4 sm:size-5 translate-x-0.5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M8 5v14l11-7z" />
+                      </svg>
+                    </div>
                   </div>
                 </div>
 
-                <div class="bg-[#EDF2F7] overflow-hidden rounded-[16px] sm:rounded-[20px] aspect-square w-full relative shadow-sm group hover:scale-[1.02] transition-transform cursor-pointer">
-                  <img src="{{ $heroImages[2] ?? '/assets/images/alameen-images/2.jpeg' }}" alt="{{ __('landing.slide1ImgAlt3') }}" class="size-full object-cover pointer-events-none" />
-                  <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 size-[42px] sm:size-[56px] rounded-full group-hover:scale-110 transition-transform animate-pulse-glow">
-                    <img src="/assets/images/play.svg" alt="{{ __('landing.play') }}" class="size-full" />
+                <!-- 3. Video 2 (Interactive Student Applications) -->
+                <div
+                  class="hero-video-card bg-[#EDF2F7] dark:bg-slate-800 overflow-hidden rounded-[16px] sm:rounded-[20px] aspect-square w-full relative shadow-sm group hover:scale-[1.02] transition-transform cursor-pointer"
+                  data-video-src="{{ $heroImages[2] ?? '/assets/images/alameen-images/2.mp4' }}"
+                  data-video-title="{{ __('تطبيق تدريبي مباشر مع الطلاب') }}"
+                  title="{{ __('انقر للمشاهدة مع الصوت') }}"
+                >
+                  <video
+                    id="hero-video-2"
+                    src="{{ $heroImages[2] ?? '/assets/images/alameen-images/2.mp4' }}"
+                    autoplay
+                    loop
+                    muted
+                    playsinline
+                    preload="auto"
+                    class="size-full object-cover object-center pointer-events-none"
+                  ></video>
+
+                  <!-- Live Badge -->
+                  <div class="absolute top-2 end-2 bg-[#012383]/85 backdrop-blur-xs text-white text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-xs pointer-events-none z-10">
+                    <span class="size-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span>{{ __('تطبيق') }}</span>
+                  </div>
+
+                  <!-- Play/Sound Hover Cue -->
+                  <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none z-10">
+                    <div class="size-8 sm:size-10 rounded-full bg-white/95 text-[#012383] flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform">
+                      <svg class="size-4 sm:size-5 translate-x-0.5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M8 5v14l11-7z" />
+                      </svg>
+                    </div>
                   </div>
                 </div>
 
-                <div class="bg-[#203C60] overflow-hidden rounded-tl-[16px] rounded-bl-[16px] sm:rounded-tl-[20px] sm:rounded-bl-[20px] rounded-tr-[50%] rounded-br-[50%] aspect-square w-full relative shadow-sm hover:scale-[1.02] transition-transform">
-                  <img src="{{ $heroImages[3] ?? '/assets/images/alameen-images/3.jpeg' }}" alt="{{ __('landing.slide1ImgAlt4') }}" class="size-full object-cover pointer-events-none relative z-10" />
+                <!-- 4. Image 8 (Dr. Hana clinical presentation) -->
+                <div class="bg-[#203C60] overflow-hidden rounded-tl-[16px] rounded-bl-[16px] sm:rounded-tl-[20px] sm:rounded-bl-[20px] rounded-tr-[50%] rounded-br-[50%] aspect-square w-full relative shadow-sm hover:scale-[1.02] transition-transform group">
+                  <img
+                    src="{{ $heroImages[3] ?? '/assets/images/alameen-images/8.jpeg' }}"
+                    alt="{{ __('landing.slide1ImgAlt4') }}"
+                    class="size-full object-cover object-center pointer-events-none relative z-10 group-hover:scale-105 transition-transform duration-500"
+                    loading="eager"
+                    fetchpriority="high"
+                  />
                 </div>
 
               </div>
 
               <!-- Floating Trust Badge with Automatic Gentle Floating Animation -->
-              <div class="animate-float-slow absolute -bottom-3 start-2 sm:-bottom-4 sm:start-4 bg-white/95 backdrop-blur-md border border-[#DEE8F7] px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl shadow-card flex items-center gap-2 sm:gap-2.5 z-20">
-                <div class="size-7 sm:size-8 rounded-full bg-[#EEF7F3] flex items-center justify-center text-emerald-700 font-bold text-xs shadow-xs">
+              <div class="animate-float-slow absolute -bottom-3 start-2 sm:-bottom-4 sm:start-4 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border border-[#DEE8F7] dark:border-slate-800 px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-xl sm:rounded-2xl shadow-card flex items-center gap-2 z-20">
+                <div class="size-6 sm:size-7 rounded-full bg-[#EEF7F3] dark:bg-emerald-950 flex items-center justify-center text-emerald-700 dark:text-emerald-400 font-bold text-xs shadow-xs">
                   ✓
                 </div>
                 <div class="flex flex-col text-start">
-                  <span class="text-[11px] sm:text-xs font-bold text-[#012383]">{{ $studentsCount }} {{ __('طالب ومتدرب') }}</span>
-                  <span class="text-[10px] sm:text-[11px] text-[#475569]">{{ __('إشراف وتدريب متقدم') }}</span>
+                  <span class="text-[10px] sm:text-[11px] font-bold text-[#012383] dark:text-white">{{ $studentsCount }} {{ __('طالب ومتدرب') }}</span>
+                  <span class="text-[9px] sm:text-[10px] text-[#475569] dark:text-slate-400">{{ __('إشراف وتدريب متقدم') }}</span>
                 </div>
               </div>
             </div>
@@ -154,12 +231,36 @@
 
             </div>
 
-            <!-- Slide 2 Feedback 9-Photo Masonry Grid -->
-            <div class="slide-visual w-full max-w-[340px] xs:max-w-[400px] sm:max-w-[460px] lg:max-w-[520px] shrink-0 order-2 mx-auto lg:mx-0 relative">
-              <div class="grid grid-cols-3 gap-2 sm:gap-2.5 p-2.5 sm:p-3 bg-white/95 border border-[#DEE8F7] rounded-[22px] shadow-xl backdrop-blur-xs">
+            <!-- Slide 2 Feedback 9-Photo Masonry Grid (Diagonal = Her Images, Others = Feedback) -->
+            <div class="slide-visual w-full max-w-[280px] xs:max-w-[330px] sm:max-w-[390px] lg:max-w-[440px] shrink-0 order-2 mx-auto lg:mx-0 relative">
+              <div class="grid grid-cols-3 gap-2 sm:gap-2.5 p-2 sm:p-2.5 bg-white/95 dark:bg-slate-900/90 border border-[#DEE8F7] dark:border-slate-800 rounded-[20px] shadow-xl backdrop-blur-xs">
                 @foreach(array_slice($feedbackImages, 0, 9) as $idx => $fImg)
-                  <div class="aspect-square rounded-xl overflow-hidden border border-slate-100 shadow-2xs group relative hover:scale-105 hover:z-20 transition-all duration-300 bg-slate-50">
-                    <img src="{{ $fImg }}" alt="Feedback {{ $idx + 1 }}" class="size-full object-cover group-hover:brightness-105 transition-all" />
+                  @php
+                    $isDiagonal = in_array($idx, [0, 4, 8]);
+                    // Adaptive positioning for optimal framing regardless of dimensions
+                    $objPosition = 'object-center';
+                    if ($idx === 0) {
+                        $objPosition = 'object-center'; // 6.jpeg
+                    } elseif ($idx === 4) {
+                        $objPosition = 'object-[center_60%]'; // 9.jpeg: Dr. Hana selfie + classroom
+                    } elseif ($idx === 8) {
+                        $objPosition = 'object-center'; // 12.jpeg: Anniversary celebration group frame
+                    } else {
+                        $objPosition = 'object-top'; // Feedback screenshots: preserve text at top
+                    }
+                  @endphp
+                  <div class="aspect-square rounded-xl overflow-hidden border {{ $isDiagonal ? 'border-[#0B2A8F]/30 dark:border-blue-500/40 shadow-xs ring-1 ring-[#0B2A8F]/15' : 'border-slate-100 dark:border-slate-800 shadow-2xs' }} group relative hover:scale-105 hover:z-20 transition-all duration-300 bg-slate-50 dark:bg-slate-800">
+                    <img
+                      src="{{ $fImg }}"
+                      alt="{{ $isDiagonal ? 'Dr. Hana Mekawy' : ('Feedback ' . ($idx + 1)) }}"
+                      class="size-full object-cover {{ $objPosition }} group-hover:brightness-105 transition-all"
+                      loading="lazy"
+                    />
+                    @if($isDiagonal)
+                      <div class="absolute inset-x-0 bottom-0 py-0.5 bg-gradient-to-t from-black/50 to-transparent pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity flex justify-center">
+                        <span class="text-[9px] text-white font-bold">{{ $idx === 4 ? 'Round 5' : ($idx === 8 ? 'مركز الأمين' : 'د. هنا') }}</span>
+                      </div>
+                    @endif
                   </div>
                 @endforeach
               </div>
@@ -597,75 +698,110 @@
 
         </div>
 
+        @php
+            $defaultReviewCards = [
+                0 => [
+                    'author' => __('reviews.testimonial1Author'),
+                    'role' => __('reviews.testimonial1Role'),
+                    'badge' => __('reviews.badgeCertifiedStudent'),
+                    'title' => __('reviews.testimonial1Title'),
+                    'text' => __('reviews.testimonial1Text'),
+                    'image' => '/assets/images/alameen-images/2.jpeg',
+                    'initial' => 'أ',
+                    'delay' => '0ms',
+                ],
+                1 => [
+                    'author' => __('reviews.testimonial2Author'),
+                    'role' => __('reviews.testimonial2Role'),
+                    'badge' => __('reviews.badgeCertifiedSpecialist'),
+                    'title' => __('reviews.testimonial2Title'),
+                    'text' => __('reviews.testimonial2Text'),
+                    'image' => '/assets/images/alameen-images/1.jpeg',
+                    'initial' => 'خ',
+                    'delay' => '150ms',
+                ],
+                2 => [
+                    'author' => __('reviews.testimonial3Author'),
+                    'role' => __('reviews.testimonial3Role'),
+                    'badge' => __('reviews.badgeCertifiedStudent'),
+                    'title' => __('reviews.testimonial3Title'),
+                    'text' => __('reviews.testimonial3Text'),
+                    'image' => '/assets/images/alameen-images/3.jpeg',
+                    'initial' => 'ف',
+                    'delay' => '300ms',
+                ],
+            ];
+            $savedReviews = $reviewsBlock?->metadata['items'] ?? [];
+            $reviewCards = [];
+            for ($k = 0; $k < 3; $k++) {
+                $saved = $savedReviews[$k] ?? [];
+                $def = $defaultReviewCards[$k];
+                $reviewCards[$k] = [
+                    'author' => !empty($saved['author']) ? $saved['author'] : $def['author'],
+                    'role' => !empty($saved['role']) ? $saved['role'] : $def['role'],
+                    'badge' => !empty($saved['badge']) ? $saved['badge'] : $def['badge'],
+                    'title' => !empty($saved['title']) ? $saved['title'] : $def['title'],
+                    'text' => !empty($saved['text']) ? $saved['text'] : $def['text'],
+                    'image' => !empty($saved['image']) ? $saved['image'] : $def['image'],
+                    'initial' => mb_substr(!empty($saved['author']) ? $saved['author'] : $def['author'], 0, 1),
+                    'delay' => $def['delay'],
+                ];
+            }
+        @endphp
+
         <!-- Reviews Cards Grid (3 Columns) -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          
-          <div class="reveal-on-scroll bg-[#FAFCFF] border border-[#DEE8F7] hover:border-[#0B2A8F] rounded-[20px] p-5 sm:p-6 shadow-xs hover:shadow-card hover:-translate-y-1 transition-all flex flex-col justify-between gap-4">
-            <div class="flex flex-col gap-3">
-              <div class="flex items-center justify-between">
-                <div class="flex items-center gap-1 text-[#F59E0B] text-sm">★★★★★</div>
-                <span class="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">{{ __('reviews.badgeCertifiedStudent') }}</span>
-              </div>
-              <h4 class="font-bold text-[#012383] text-base">{{ __('reviews.testimonial1Title') }}</h4>
-              <p class="text-xs text-[#475569] leading-relaxed">
-                {{ __('reviews.testimonial1Text') }}
-              </p>
-            </div>
-            <div class="flex items-center gap-3 pt-3 border-t border-[#DEE8F7]">
-              <div class="size-9 rounded-full bg-[#EAF1FB] flex items-center justify-center font-bold text-xs text-[#0B2A8F]">
-                أ
-              </div>
-              <div class="flex flex-col">
-                <span class="text-xs font-bold text-[#012383]">{{ __('reviews.testimonial1Author') }}</span>
-                <span class="text-[11px] text-[#475569]">{{ __('reviews.testimonial1Role') }}</span>
-              </div>
-            </div>
-          </div>
+          @foreach($reviewCards as $idx => $card)
+            <div class="reveal-on-scroll bg-[#FAFCFF] border border-[#DEE8F7] hover:border-[#0B2A8F] rounded-[20px] p-5 sm:p-6 shadow-xs hover:shadow-card hover:-translate-y-1 transition-all flex flex-col justify-between gap-4" style="transition-delay: {{ $card['delay'] }};">
+              <div class="flex flex-col gap-3">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-1 text-[#F59E0B] text-sm">★★★★★</div>
+                  <span class="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">{{ $card['badge'] }}</span>
+                </div>
+                <h4 class="font-bold text-[#012383] text-base">{{ $card['title'] }}</h4>
+                <p class="text-xs text-[#475569] leading-relaxed">
+                  {{ $card['text'] }}
+                </p>
 
-          <div class="reveal-on-scroll bg-[#FAFCFF] border border-[#DEE8F7] hover:border-[#0B2A8F] rounded-[20px] p-5 sm:p-6 shadow-xs hover:shadow-card hover:-translate-y-1 transition-all flex flex-col justify-between gap-4" style="transition-delay: 150ms;">
-            <div class="flex flex-col gap-3">
-              <div class="flex items-center justify-between">
-                <div class="flex items-center gap-1 text-[#F59E0B] text-sm">★★★★★</div>
-                <span class="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">{{ __('reviews.badgeCertifiedSpecialist') }}</span>
+                <!-- Attached Review Image -->
+                @if(!empty($card['image']))
+                  <div class="mt-1 pt-1">
+                    <div
+                      class="group/attach relative rounded-xl overflow-hidden border border-[#DEE8F7] bg-slate-50 cursor-pointer hover:border-[#0B2A8F] hover:shadow-xs transition-all"
+                      onclick="openReviewImageLightbox('{{ $card['image'] }}', '{{ addslashes($card['author']) }}')"
+                      title="{{ __('انقر لتكبير الصورة') }}"
+                    >
+                      <img
+                        src="{{ $card['image'] }}"
+                        alt="صورة تجربة {{ $card['author'] }}"
+                        class="w-full h-36 sm:h-40 object-cover object-top group-hover/attach:scale-105 transition-transform duration-300"
+                        loading="lazy"
+                      />
+                      <div class="absolute inset-0 bg-black/25 opacity-0 group-hover/attach:opacity-100 transition-opacity flex items-center justify-center gap-1.5 text-white text-xs font-bold pointer-events-none">
+                        <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7" />
+                        </svg>
+                        <span>{{ __('تكبير الصورة') }}</span>
+                      </div>
+                      <span class="absolute bottom-2 start-2 bg-black/65 backdrop-blur-xs text-white text-[10px] font-bold px-2 py-0.5 rounded-md flex items-center gap-1 pointer-events-none">
+                        <span>📷</span>
+                        <span>{{ __('صورة مرفقة') }}</span>
+                      </span>
+                    </div>
+                  </div>
+                @endif
               </div>
-              <h4 class="font-bold text-[#012383] text-base">{{ __('reviews.testimonial2Title') }}</h4>
-              <p class="text-xs text-[#475569] leading-relaxed">
-                {{ __('reviews.testimonial2Text') }}
-              </p>
-            </div>
-            <div class="flex items-center gap-3 pt-3 border-t border-[#DEE8F7]">
-              <div class="size-9 rounded-full bg-[#EAF1FB] flex items-center justify-center font-bold text-xs text-[#0B2A8F]">
-                ط
-              </div>
-              <div class="flex flex-col">
-                <span class="text-xs font-bold text-[#012383]">{{ __('reviews.testimonial2Author') }}</span>
-                <span class="text-[11px] text-[#475569]">{{ __('reviews.testimonial2Role') }}</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="reveal-on-scroll bg-[#FAFCFF] border border-[#DEE8F7] hover:border-[#0B2A8F] rounded-[20px] p-5 sm:p-6 shadow-xs hover:shadow-card hover:-translate-y-1 transition-all flex flex-col justify-between gap-4" style="transition-delay: 300ms;">
-            <div class="flex flex-col gap-3">
-              <div class="flex items-center justify-between">
-                <div class="flex items-center gap-1 text-[#F59E0B] text-sm">★★★★★</div>
-                <span class="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">{{ __('reviews.badgeCertifiedStudent') }}</span>
-              </div>
-              <h4 class="font-bold text-[#012383] text-base">{{ __('reviews.testimonial3Title') }}</h4>
-              <p class="text-xs text-[#475569] leading-relaxed">
-                {{ __('reviews.testimonial3Text') }}
-              </p>
-            </div>
-            <div class="flex items-center gap-3 pt-3 border-t border-[#DEE8F7]">
-              <div class="size-9 rounded-full bg-[#EAF1FB] flex items-center justify-center font-bold text-xs text-[#0B2A8F]">
-                ن
-              </div>
-              <div class="flex flex-col">
-                <span class="text-xs font-bold text-[#012383]">{{ __('reviews.testimonial3Author') }}</span>
-                <span class="text-[11px] text-[#475569]">{{ __('reviews.testimonial3Role') }}</span>
+              <div class="flex items-center gap-3 pt-3 border-t border-[#DEE8F7]">
+                <div class="size-9 rounded-full bg-[#EAF1FB] flex items-center justify-center font-bold text-xs text-[#0B2A8F]">
+                  {{ $card['initial'] }}
+                </div>
+                <div class="flex flex-col">
+                  <span class="text-xs font-bold text-[#012383]">{{ $card['author'] }}</span>
+                  <span class="text-[11px] text-[#475569]">{{ $card['role'] }}</span>
+                </div>
               </div>
             </div>
-          </div>
-
+          @endforeach
         </div>
 
       </section>
@@ -927,6 +1063,47 @@
             class="bg-[#FAFCFF] border border-[#DEE8F7] rounded-xl p-3 text-xs text-[#012383] outline-none resize-none"
           ></textarea>
         </div>
+
+        <!-- File Upload Dropzone with Live Image Preview -->
+        <div class="flex flex-col gap-1.5">
+          <label class="text-xs font-bold text-[#012383]">{{ __('reviews.modalUploadLabel') }}</label>
+          <input type="file" id="modal-file-input" accept="image/*,.pdf" class="hidden" />
+          
+          <div
+            id="modal-upload-box"
+            class="border-2 border-dashed border-[#DEE8F7] hover:border-[#0B2A8F] rounded-xl p-3 text-center cursor-pointer transition-colors bg-[#FAFCFF] flex flex-col items-center justify-center gap-2 group"
+          >
+            <!-- Default Placeholder State -->
+            <div id="modal-upload-placeholder" class="flex flex-col items-center gap-1.5 py-1">
+              <div class="size-8 rounded-full bg-[#EAF1FB] text-[#0B2A8F] flex items-center justify-center text-sm group-hover:scale-110 transition-transform">
+                <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <p id="modal-upload-filename" class="text-xs text-[#012383] font-bold">
+                {{ __('انقر لرفع صورة التقييم أو لقطة شاشة') }}
+              </p>
+              <span class="text-[10px] text-[#475569]">PNG, JPG, WebP أو لقطات محادثات حتى 5MB</span>
+            </div>
+
+            <!-- Live Preview State (Hidden initially) -->
+            <div id="modal-image-preview-wrap" class="hidden w-full flex flex-col items-center gap-2 py-1">
+              <div class="relative max-h-36 rounded-lg overflow-hidden border border-[#DEE8F7] shadow-xs bg-black/5">
+                <img id="modal-image-preview" src="" alt="معاينة الصورة" class="max-h-36 object-contain rounded-lg" />
+                <button
+                  type="button"
+                  id="remove-modal-image-btn"
+                  class="absolute top-1 end-1 size-6 rounded-full bg-red-600 hover:bg-red-700 text-white flex items-center justify-center text-xs font-bold transition-colors cursor-pointer shadow-md"
+                  title="إزالة الصورة"
+                >
+                  ✕
+                </button>
+              </div>
+              <span id="modal-image-name" class="text-[11px] text-[#012383] font-semibold truncate max-w-[220px]"></span>
+            </div>
+          </div>
+        </div>
+
         <div class="flex items-center justify-end gap-3 pt-2">
           <button
             type="button"
@@ -942,6 +1119,68 @@
           >
             {{ __('reviews.modalSubmitBtn') }}
           </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fullscreen High-Resolution Review Image Lightbox Modal -->
+    <div
+      id="review-image-lightbox"
+      class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 opacity-0 pointer-events-none transition-opacity duration-300"
+    >
+      <div class="relative max-w-4xl max-h-[90vh] flex flex-col items-center">
+        <button
+          type="button"
+          id="close-review-image-btn"
+          class="absolute -top-12 end-0 size-9 rounded-full bg-white/10 hover:bg-white/25 text-white flex items-center justify-center text-base font-bold transition-colors cursor-pointer"
+          aria-label="إغلاق"
+        >
+          ✕
+        </button>
+
+        <div class="overflow-hidden rounded-2xl border border-white/20 shadow-2xl bg-black/40 flex items-center justify-center">
+          <img
+            id="review-lightbox-img"
+            src=""
+            alt="صورة التقييم مكبرة"
+            class="max-w-full max-h-[80vh] object-contain rounded-2xl"
+          />
+        </div>
+
+        <div class="mt-3 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-sm text-white text-xs font-semibold flex items-center gap-2">
+          <span>📷</span>
+          <span id="review-lightbox-caption">{{ __('صورة مرفقة مع التقييم') }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hero Video Lightbox Modal with Full Controls & Sound -->
+    <div
+      id="hero-video-modal"
+      class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6 opacity-0 pointer-events-none transition-opacity duration-300"
+    >
+      <div class="bg-slate-900 border border-slate-700/80 rounded-2xl w-full max-w-3xl overflow-hidden shadow-2xl flex flex-col transform scale-95 transition-transform duration-300" id="hero-video-modal-card">
+        <div class="flex items-center justify-between px-4 py-3 border-b border-slate-800 bg-slate-950/80">
+          <div class="flex items-center gap-2">
+            <span class="size-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span id="hero-modal-video-title" class="text-xs sm:text-sm font-bold text-white">{{ __('تطبيق عملي من مركز الأمين') }}</span>
+          </div>
+          <button
+            type="button"
+            id="close-hero-video-modal-btn"
+            class="size-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center text-sm font-bold transition-colors cursor-pointer"
+            aria-label="إغلاق"
+          >
+            ✕
+          </button>
+        </div>
+        <div class="aspect-video w-full bg-black relative flex items-center justify-center">
+          <video
+            id="hero-modal-video-player"
+            controls
+            playsinline
+            class="size-full object-contain"
+          ></video>
         </div>
       </div>
     </div>

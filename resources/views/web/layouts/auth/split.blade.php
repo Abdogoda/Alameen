@@ -29,8 +29,11 @@
         @php
             $cmsSettings = app(\App\Services\Cms\SettingsService::class);
             $isRegister = request()->routeIs('register');
-            $defaultArt = $isRegister ? '/assets/images/auth-sculpture.png' : '/assets/images/alameen-images/6.jpeg';
-            $artImage = $cmsSettings->get('auth_login_image', $defaultArt) ?: $defaultArt;
+            $defaultArt = '/assets/images/alameen-images/13.jpeg';
+            $artImage = $authLoginImage ?? ($cmsSettings->get('auth_login_image', $defaultArt) ?: $defaultArt);
+            if ($artImage === '/assets/images/alameen-images/6.jpeg' || $artImage === '/assets/images/auth-sculpture.png') {
+                $artImage = '/assets/images/alameen-images/13.jpeg';
+            }
             $artEyebrow = $isRegister ? 'ابدأ رحلتك اليوم' : 'عودة إلى رحلتك';
             $artTitle = $isRegister ? 'ابدأ رحلتك التعليمية مع مركز الأمين' : 'مرحبًا بعودتك إلى الأمين';
             $artSubtitle = $isRegister ? 'تعلّم التخاطب بأسلوب عملي وتطبيقي معتمد.' : 'سعداء بعودتك. لنواصل التعلّم معًا.';
@@ -44,7 +47,8 @@
                 <!-- Brand Logo (Top of Form) -->
                 <a href="{{ route('home') }}" class="flex items-center gap-3 mb-6 self-start group transition-transform hover:scale-[1.01]" wire:navigate>
                     <div class="size-11 sm:size-12 shrink-0 relative flex items-center justify-center transition-all">
-                        <img src="/assets/images/logo.png" alt="{{ __('brand.name') }}" class="size-full object-contain pointer-events-none" />
+                        <img src="{{ $siteLogo ?? '/assets/images/logo.png' }}" alt="{{ __('brand.name') }}" class="size-full object-contain pointer-events-none dark:hidden logo-theme-light" />
+                        <img src="{{ $siteLogoWhite ?? '/assets/images/logo-white.png' }}" alt="{{ __('brand.name') }}" class="size-full object-contain pointer-events-none hidden dark:block logo-theme-dark" />
                     </div>
                     <span class="font-['Baloo_Bhaijaan_2'] font-extrabold text-2xl sm:text-[26px] leading-tight text-[#012383] dark:text-white group-hover:text-[#0b2a8f] transition-colors">
                         {{ __('brand.name') }}
@@ -58,8 +62,8 @@
 
             <!-- Visual Illustration Card (Left side in RTL) -->
             <div class="hidden lg:flex flex-col h-[640px] xl:h-[700px] w-[440px] xl:w-[500px] items-center justify-end overflow-hidden relative rounded-[28px] shrink-0 shadow-xl border border-[#dee8f7] dark:border-slate-800">
-                <!-- Desk / Sculpture Image -->
-                <img src="{{ $artImage }}" alt="منصة مركز الأمين" class="absolute inset-0 size-full object-cover rounded-[28px] pointer-events-none" />
+                <!-- Desk / Portrait Image -->
+                <img src="{{ $artImage }}" alt="منصة مركز الأمين" class="absolute inset-0 size-full object-cover object-top rounded-[28px] pointer-events-none" />
                 
                 <!-- Dark Blue Gradient Overlay for High Contrast Text Readability -->
                 <div class="absolute inset-0 rounded-[28px] pointer-events-none" style="background: linear-gradient(180deg, rgba(1, 14, 64, 0) 30%, rgba(1, 14, 64, 0.72) 65%, rgba(1, 14, 64, 0.95) 100%);"></div>

@@ -573,7 +573,7 @@
                     </div>
 
                     <div>
-                        <label class="text-xs font-bold text-[#012383] dark:text-blue-400 block mb-1">{{ __('المهمة السريرية الملحقة:') }}</label>
+                        <label class="text-xs font-bold text-[#012383] dark:text-blue-400 block mb-1">{{ __('المهمة التدريبية الملحقة:') }}</label>
                         <input type="text" name="task_title_ar" id="edit-lesson-task" class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200 outline-none focus:border-[#0B2A8F] bg-slate-50/50 dark:bg-slate-800/50" />
                     </div>
 
@@ -629,7 +629,7 @@
 
                     <div>
                         <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">{{ __('وصف موجز للمستوى:') }}</label>
-                        <textarea name="description_ar" rows="2" placeholder="{{ __('أهداف المستوى والمحاور السريرية المندرجة تحته...') }}" class="w-full p-3.5 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-medium text-slate-700 dark:text-slate-200 outline-none focus:border-[#0B2A8F] resize-none bg-slate-50/50 dark:bg-slate-800/50"></textarea>
+                        <textarea name="description_ar" rows="2" placeholder="{{ __('أهداف المستوى والمحاور التدريبية المندرجة تحته...') }}" class="w-full p-3.5 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-medium text-slate-700 dark:text-slate-200 outline-none focus:border-[#0B2A8F] resize-none bg-slate-50/50 dark:bg-slate-800/50"></textarea>
                     </div>
 
                     <div class="flex items-center gap-2">
@@ -822,7 +822,7 @@
                             </div>
                         </div>
                         <p class="text-[11px] text-slate-500 dark:text-slate-400">
-                            {{ __('الحد الأدنى لمشاهدة المتدرب للدرس قبل اعتباره مكتملاً وإتاحة الدرس التالي أو المهمة السريرية.') }}
+                            {{ __('الحد الأدنى لمشاهدة المتدرب للدرس قبل اعتباره مكتملاً وإتاحة الدرس التالي أو المهمة التدريبية.') }}
                         </p>
                     </div>
 

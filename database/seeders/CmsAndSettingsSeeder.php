@@ -51,9 +51,15 @@ class CmsAndSettingsSeeder extends Seeder
                 'group' => 'branding',
             ],
             [
+                'key' => 'site_logo_white',
+                'value_ar' => '/assets/images/logo-white.png',
+                'value_en' => '/assets/images/logo-white.png',
+                'group' => 'branding',
+            ],
+            [
                 'key' => 'footer_logo',
-                'value_ar' => '/assets/images/logo.png',
-                'value_en' => '/assets/images/logo.png',
+                'value_ar' => '/assets/images/logo-white.png',
+                'value_en' => '/assets/images/logo-white.png',
                 'group' => 'branding',
             ],
 
@@ -278,8 +284,8 @@ class CmsAndSettingsSeeder extends Seeder
             // Auth Artwork (Requirement 24)
             [
                 'key' => 'auth_login_image',
-                'value_ar' => '/assets/images/alameen-images/6.jpeg',
-                'value_en' => '/assets/images/alameen-images/6.jpeg',
+                'value_ar' => '/assets/images/alameen-images/13.jpeg',
+                'value_en' => '/assets/images/alameen-images/13.jpeg',
                 'group' => 'branding',
             ],
         ];
@@ -311,10 +317,10 @@ class CmsAndSettingsSeeder extends Seeder
                     'courses_count' => '45+',
                     'supervisors_count' => '12+',
                     'images' => [
-                        '/assets/images/alameen-images/6.jpeg',
-                        '/assets/images/alameen-images/4.jpeg',
-                        '/assets/images/alameen-images/2.jpeg',
-                        '/assets/images/alameen-images/1.jpeg',
+                        '/assets/images/alameen-images/7.jpeg',
+                        '/assets/images/alameen-images/1.mp4',
+                        '/assets/images/alameen-images/2.mp4',
+                        '/assets/images/alameen-images/8.jpeg',
                     ],
                 ],
                 'is_active' => true,
@@ -340,11 +346,11 @@ class CmsAndSettingsSeeder extends Seeder
                         '/assets/images/alameen-images/1.jpeg',
                         '/assets/images/alameen-images/2.jpeg',
                         '/assets/images/alameen-images/3.jpeg',
-                        '/assets/images/alameen-images/6.jpeg',
+                        '/assets/images/alameen-images/9.jpeg',
                         '/assets/images/alameen-images/4.jpeg',
                         '/assets/images/alameen-images/5.jpeg',
-                        '/assets/images/alameen-images/2.jpeg',
-                        '/assets/images/alameen-images/6.jpeg',
+                        '/assets/images/alameen-images/certificate.png',
+                        '/assets/images/alameen-images/12.jpeg',
                     ],
                 ],
                 'is_active' => true,
@@ -440,6 +446,49 @@ class CmsAndSettingsSeeder extends Seeder
                             'question_en' => 'What are the requirements to obtain the verified digital certificate?',
                             'answer_ar' => 'يشترط إكمال 95% على الأقل من مجموع فيديوهات الدورة والمهام التطبيقية. تصدر الشهادة برمز فريد مع رمز استجابة سريعة (QR Code) للفحص والتحقق.',
                             'answer_en' => 'You must complete at least 95% of total course video progress. Certificates are generated with a unique verification code and QR code.',
+                        ],
+                    ],
+                ],
+                'is_active' => true,
+            ]
+        );
+
+        // Block 6: Reviews & Testimonials with Images
+        ContentBlock::query()->updateOrCreate(
+            ['section_key' => 'reviews'],
+            [
+                'title_ar' => 'آراء المتدربين والدارسين وتجاربهم التطبيقية',
+                'title_en' => 'Trainee Reviews & Practical Experiences',
+                'subtitle_ar' => 'قصص نجاح واقعية وانطباعات موثقة من أخصائيي وطلاب التخاطب الذين انضموا لدوراتنا التدريبية.',
+                'subtitle_en' => 'Real success stories and verified impressions from speech therapy specialists and students who completed our courses.',
+                'metadata' => [
+                    'items' => [
+                        [
+                            'author' => 'سارة المنصور',
+                            'role' => 'طالبة دراسات عليا - علوم التخاطب',
+                            'badge' => 'طالب معتمد',
+                            'rating' => 5,
+                            'title' => 'تمارين واضحة ونتائج مباشرة في تصحيح مخارج الحروف',
+                            'text' => 'الكورس ممتاز من حيث الترتيب المنهجي، الفيديوهات مركزة وملاحظات المحاضر على تحليلي الصوتي ساعدتني كثيراً في فهم مخارج الحروف وتطبيقها عملياً.',
+                            'image' => '/assets/images/alameen-images/2.jpeg',
+                        ],
+                        [
+                            'author' => 'خالد العمري',
+                            'role' => 'أخصائي نطق وتخاطب مبتدئ',
+                            'badge' => 'أخصائي معتمد',
+                            'rating' => 5,
+                            'title' => 'أفضل استثمار في مسيرتي كطالب وباحث في علوم التخاطب',
+                            'text' => 'استفدت كثيراً من النماذج التطبيقية واستمارة الملاحظة المرفقة بتوجيه المحاضرين. أنصح كل دارس في علوم التخاطب بهذه المنصة.',
+                            'image' => '/assets/images/alameen-images/1.jpeg',
+                        ],
+                        [
+                            'author' => 'فهد الدوسري',
+                            'role' => 'متدرب في مسار التخاطب الشامل',
+                            'badge' => 'طالب معتمد',
+                            'rating' => 5,
+                            'title' => 'منهجية علمية واضحة في تصحيح اللدغات الصوتية',
+                            'text' => 'الكورس قدّم تدريباً دقيقاً على تقنيات المحاكاة وتعديل مخارج الأصوات. التقييم المباشر للمهام من المحاضر عزز مهاراتي التطبيقية بشكل ملحوظ.',
+                            'image' => '/assets/images/alameen-images/3.jpeg',
                         ],
                     ],
                 ],
@@ -826,7 +875,7 @@ class CmsAndSettingsSeeder extends Seeder
             [
                 'level_id' => $level4->id,
                 'title_ar' => 'الدرس ١٨: استراتيجيات الإرشاد الأسري والمتابعة المنزلية وتسجيل الملاحظات',
-                'title_en' => 'Lesson 18: Family Counseling Strategies & Clinical Observation Notes',
+                'title_en' => 'Lesson 18: Family Counseling Strategies & Practical Observation Notes',
                 'slug' => 'family-counseling-observation-notes',
                 'video_source' => 'mux',
                 'mux_playback_id' => 'DS00Spx1CV902MCtP7ToneAwBpR00uoJq',
@@ -841,7 +890,7 @@ class CmsAndSettingsSeeder extends Seeder
             [
                 'level_id' => $level4->id,
                 'title_ar' => 'الدرس ١٩: ورشة المحاكاة العملية ومراجعة التقدم للحالات الواقعية',
-                'title_en' => 'Lesson 19: Clinical Simulation Workshop & Progress Review',
+                'title_en' => 'Lesson 19: Practical Simulation Workshop & Progress Review',
                 'slug' => 'simulation-workshop-progress-review',
                 'video_source' => 'mux',
                 'mux_playback_id' => 'DS00Spx1CV902MCtP7ToneAwBpR00uoJq',
@@ -851,7 +900,7 @@ class CmsAndSettingsSeeder extends Seeder
                 'min_completion_percentage' => 80,
                 'sort_order' => 19,
                 'is_free_preview' => false,
-                'task_title' => 'تقرير تحليل جلسة محاكاة سريرية',
+                'task_title' => 'تقرير تحليل جلسة محاكاة عملية',
             ],
             [
                 'level_id' => $level4->id,

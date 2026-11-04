@@ -340,7 +340,7 @@
                                             {{ $item['total_lessons'] }} {{ __('محاضرة تدريبية') }}
                                         </span>
                                         <span class="text-white/90 text-[11px] font-bold">
-                                            {{ $c->level ?? __('البرنامج السريري المتكامل') }}
+                                            {{ $c->level ?? __('البرنامج التدريبي المتكامل') }}
                                         </span>
                                     </div>
                                 </div>
@@ -458,7 +458,7 @@
             <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-[#DEE8F7] dark:border-slate-800 pb-4">
                 <div class="flex flex-col gap-0.5">
                     <h2 class="font-['Baloo_Bhaijaan_2'] font-bold text-xl text-[#012383] dark:text-white">
-                        {{ __('دليل البرامج الأكاديمية والسريرية المتاحة') }}
+                        {{ __('دليل البرامج التدريبية المعتمدة') }}
                     </h2>
                     <p class="text-xs text-slate-500 dark:text-slate-400">
                         {{ __('استكشف باقي التخصصات والمستويات المعتمدة في منصة الأمين وانضم إليها فوراً.') }}
@@ -521,7 +521,7 @@
                             <div class="p-4 sm:p-5 flex flex-col gap-2.5">
                                 <div class="flex items-center gap-2">
                                     <span class="px-2.5 py-0.5 rounded-md bg-[#EAF1FB] dark:bg-slate-800 text-[#0B2A8F] dark:text-blue-300 text-[11px] font-bold">
-                                        {{ __('تخاطب ونطق سريري') }}
+                                        {{ __('تخاطب ونطق') }}
                                     </span>
                                 </div>
 

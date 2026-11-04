@@ -60,6 +60,6 @@ class ClinicalTaskController extends Controller
             $validated['clinical_feedback'] ?? null
         );
 
-        return back()->with('success', __('تم تقييم ورصد درجة التسجيل السريري بنجاح.'));
+        return back()->with('success', __('تم تقييم ورصد درجة المهمة التدريبية بنجاح.'));
     }
 }

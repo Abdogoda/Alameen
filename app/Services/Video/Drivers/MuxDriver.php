@@ -182,16 +182,28 @@ class MuxDriver implements VideoDriverInterface
     public function createDirectUploadUrl(string $corsOrigin = '*'): ?array
     {
         if (! $this->isConfigured()) {
+            Log::warning('[MUX_DRIVER] createDirectUploadUrl called while MuxDriver is not configured.', [
+                'has_token_id' => ! empty($this->getTokenId()),
+                'has_token_secret' => ! empty($this->getTokenSecret()),
+            ]);
+
             return null;
         }
 
         try {
             $policy = $this->getPlaybackPolicy();
+            $effectiveCors = $corsOrigin ?: $this->corsOrigin;
+
+            Log::info('[MUX_DRIVER] Requesting direct upload from MUX API', [
+                'url' => "{$this->baseUrl}/uploads",
+                'cors_origin' => $effectiveCors,
+                'playback_policy' => $policy,
+            ]);
 
             $response = Http::withBasicAuth($this->getTokenId(), $this->getTokenSecret())
                 ->acceptJson()
                 ->post("{$this->baseUrl}/uploads", [
-                    'cors_origin' => $corsOrigin ?: $this->corsOrigin,
+                    'cors_origin' => $effectiveCors,
                     'new_asset_settings' => [
                         'playback_policy' => $policy,
                         'video_quality' => 'basic',
@@ -200,12 +212,25 @@ class MuxDriver implements VideoDriverInterface
                 ]);
 
             if ($response->successful()) {
-                return $response->json('data');
+                $data = $response->json('data');
+                Log::info('[MUX_DRIVER] Direct upload URL created successfully from Mux API', [
+                    'upload_id' => $data['id'] ?? null,
+                    'status' => $data['status'] ?? null,
+                ]);
+
+                return $data;
             }
 
-            Log::error('MUX Direct Upload creation failed: '.$response->body());
+            Log::error('[MUX_DRIVER] Direct Upload creation failed from Mux API', [
+                'http_status' => $response->status(),
+                'response_body' => $response->body(),
+            ]);
         } catch (\Throwable $e) {
-            Log::error('MUX API request exception: '.$e->getMessage());
+            Log::error('[MUX_DRIVER] MUX API request exception: '.$e->getMessage(), [
+                'exception' => get_class($e),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+            ]);
         }
 
         return null;
@@ -217,6 +242,7 @@ class MuxDriver implements VideoDriverInterface
     public function getUpload(string $uploadId): ?array
     {
         if (! $this->isConfigured()) {
+            Log::warning('[MUX_DRIVER] getUpload called while MuxDriver is not configured.', ['upload_id' => $uploadId]);
             return null;
         }
 
@@ -228,8 +254,12 @@ class MuxDriver implements VideoDriverInterface
             if ($response->successful()) {
                 return $response->json('data');
             }
+
+            Log::warning('[MUX_DRIVER] getUpload returned unsuccessful status: HTTP '.$response->status().' - '.$response->body(), [
+                'upload_id' => $uploadId,
+            ]);
         } catch (\Throwable $e) {
-            Log::warning('MUX getUpload exception: '.$e->getMessage());
+            Log::warning('[MUX_DRIVER] getUpload exception: '.$e->getMessage(), ['upload_id' => $uploadId]);
         }
 
         return null;
@@ -241,6 +271,7 @@ class MuxDriver implements VideoDriverInterface
     public function getAsset(string $assetId): ?array
     {
         if (! $this->isConfigured()) {
+            Log::warning('[MUX_DRIVER] getAsset called while MuxDriver is not configured.', ['asset_id' => $assetId]);
             return null;
         }
 
@@ -252,7 +283,16 @@ class MuxDriver implements VideoDriverInterface
             if ($response->successful()) {
                 return $response->json('data');
             }
+
+            Log::warning('[MUX_DRIVER] getAsset returned unsuccessful status: HTTP '.$response->status().' - '.$response->body(), [
+                'asset_id' => $assetId,
+            ]);
         } catch (\Throwable $e) {
+            Log::warning('[MUX_DRIVER] getAsset exception: '.$e->getMessage(), ['asset_id' => $assetId]);
+        }
+
+        return null;
+    }
             Log::warning('MUX getAsset exception: '.$e->getMessage());
         }
 

@@ -68,6 +68,9 @@ class AppServiceProvider extends ServiceProvider
                         $settingsService = app(SettingsService::class);
                         $siteName = $settingsService->getSiteName();
                         $siteLogo = $settingsService->getLogoUrl();
+                        $siteLogoWhite = $settingsService->getLogoWhiteUrl();
+                        $footerLogo = $settingsService->getFooterLogoUrl();
+                        $authLoginImage = $settingsService->getAuthLoginImageUrl();
                         $siteTagline = $settingsService->getSiteTagline();
                         $currencySymbol = $settingsService->getCurrencySymbol();
                         $currencyName = $settingsService->getCurrencyName();
@@ -79,6 +82,9 @@ class AppServiceProvider extends ServiceProvider
                         $view->with([
                             'siteName' => $siteName,
                             'siteLogo' => $siteLogo,
+                            'siteLogoWhite' => $siteLogoWhite,
+                            'footerLogo' => $footerLogo,
+                            'authLoginImage' => $authLoginImage,
                             'siteTagline' => $siteTagline,
                             'currencySymbol' => $currencySymbol,
                             'currencyName' => $currencyName,
@@ -93,6 +99,9 @@ class AppServiceProvider extends ServiceProvider
                 $settingsService = app(SettingsService::class);
                 $siteName = $settingsService->getSiteName();
                 $siteLogo = $settingsService->getLogoUrl();
+                $siteLogoWhite = $settingsService->getLogoWhiteUrl();
+                $footerLogo = $settingsService->getFooterLogoUrl();
+                $authLoginImage = $settingsService->getAuthLoginImageUrl();
                 $siteTagline = $settingsService->getSiteTagline();
                 $currencySymbol = $settingsService->getCurrencySymbol();
                 $currencyName = $settingsService->getCurrencyName();
@@ -103,6 +112,9 @@ class AppServiceProvider extends ServiceProvider
 
                 View::share('siteName', $siteName);
                 View::share('siteLogo', $siteLogo);
+                View::share('siteLogoWhite', $siteLogoWhite);
+                View::share('footerLogo', $footerLogo);
+                View::share('authLoginImage', $authLoginImage);
                 View::share('siteTagline', $siteTagline);
                 View::share('currencySymbol', $currencySymbol);
                 View::share('currencyName', $currencyName);

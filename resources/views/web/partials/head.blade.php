@@ -108,9 +108,15 @@
     }
     html.dark .alameen-loader-logo-capsule,
     [data-theme="dark"] .alameen-loader-logo-capsule {
-        background: #FFFFFF !important;
-        box-shadow: 0 16px 36px -6px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.2) !important;
+        background: #0F172A !important;
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        box-shadow: 0 16px 36px -6px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.1) !important;
     }
+    /* Instant Zero-Flash Logo Theme Switching */
+    html.dark .logo-theme-light, [data-theme="dark"] .logo-theme-light { display: none !important; }
+    html.dark .logo-theme-dark, [data-theme="dark"] .logo-theme-dark { display: block !important; }
+    html:not(.dark) .logo-theme-light, [data-theme="light"] .logo-theme-light { display: block !important; }
+    html:not(.dark) .logo-theme-dark, [data-theme="light"] .logo-theme-dark { display: none !important; }
     html.dark .alameen-voice-wave,
     [data-theme="dark"] .alameen-voice-wave {
         border-color: rgba(96, 165, 250, 0.25) !important;
@@ -165,6 +171,12 @@
 <link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;600;700;800&family=Cairo:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/src/css/tokens.css">
 <link rel="stylesheet" href="/src/css/animations.css">
+
+<!-- Hero Media Instant Performance Preload (Fast Loading & Zero Buffer) -->
+<link rel="preload" as="video" href="/assets/images/alameen-images/1.mp4" type="video/mp4">
+<link rel="preload" as="video" href="/assets/images/alameen-images/2.mp4" type="video/mp4">
+<link rel="preload" as="image" href="/assets/images/alameen-images/7.jpeg">
+<link rel="preload" as="image" href="/assets/images/alameen-images/8.jpeg">
 
 @fonts
 

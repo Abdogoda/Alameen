@@ -27,6 +27,8 @@ class UpdateContentBlockRequest extends FormRequest
             'content_ar' => ['nullable', 'string'],
             'content_en' => ['nullable', 'string'],
             'metadata' => ['nullable', 'array'],
+            'media_files' => ['nullable', 'array'],
+            'media_files.*' => ['nullable', 'file', 'max:51200'],
             'is_active' => ['nullable', 'boolean'],
         ];
     }

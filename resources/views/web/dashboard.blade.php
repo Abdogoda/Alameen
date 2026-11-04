@@ -145,7 +145,7 @@
                     <span class="text-xs text-slate-400 font-semibold">{{ __('شهادة معتمدة') }}</span>
                 </div>
                 <div class="pt-2 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-                    <span>{{ __('المهام السريرية:') }}</span>
+                    <span>{{ __('المهام والواجبات:') }}</span>
                     <span class="font-bold text-[#012383] dark:text-blue-300">{{ $stats['tasks_count'] ?? 0 }} {{ __('مسلّمة') }}</span>
                 </div>
             </div>
@@ -256,7 +256,7 @@
 
                 <!-- Level Badge -->
                 <div class="absolute bottom-3 start-3 bg-black/60 backdrop-blur-md rounded-lg px-2.5 py-1 text-[11px] text-white font-bold z-10">
-                    {{ $heroCourse?->level ?? __('برنامج تدريبي سريري') }}
+                    {{ $heroCourse?->level ?? __('برنامج تدريبي معتمد') }}
                 </div>
             </div>
 
@@ -346,7 +346,7 @@
                                 <div class="p-4 sm:p-5 flex flex-col gap-2 text-start w-full">
                                     <div class="flex items-center gap-2">
                                         <span class="text-[11px] font-bold text-[#0B2A8F] dark:text-blue-300 px-2 py-0.5 rounded bg-[#EAF1FB] dark:bg-slate-800">
-                                            {{ $c->level ?? __('برنامج تدريبي سريري متكامل') }}
+                                            {{ $c->level ?? __('برنامج تدريبي معتمد') }}
                                         </span>
                                     </div>
 
@@ -355,7 +355,7 @@
                                     </h3>
 
                                     <p class="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed">
-                                        {{ $desc ?: __('برنامج تدريبي سريري متكامل') }}
+                                        {{ $desc ?: __('برنامج تدريبي متكامل') }}
                                     </p>
                                 </div>
                             </div>
@@ -434,7 +434,7 @@
                             <div class="p-4 sm:p-5 flex flex-col gap-2 text-start w-full">
                                 <div class="flex items-center gap-2">
                                     <span class="text-[11px] font-bold text-[#0B2A8F] dark:text-blue-300 px-2 py-0.5 rounded bg-[#EAF1FB] dark:bg-slate-800">
-                                        {{ __('برنامج تدريبي سريري متكامل') }}
+                                        {{ __('برنامج تدريبي معتمد') }}
                                     </span>
                                 </div>
 

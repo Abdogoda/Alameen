@@ -10,6 +10,7 @@
     $announcementUrl = $cmsSettings->get('announcement_url');
     $siteName = $cmsSettings->getSiteName();
     $siteLogo = $cmsSettings->getLogoUrl();
+    $siteLogoWhite = $cmsSettings->getLogoWhiteUrl();
 @endphp
 
 @if($announcementEnabled && !empty($announcementText))
@@ -40,7 +41,8 @@
     <!-- Brand Identity -->
     <a href="{{ route('home') }}" class="flex gap-2 sm:gap-2.5 items-center shrink-0 cursor-pointer">
         <div class="size-8 sm:size-9 lg:size-10 shrink-0 relative flex items-center justify-center transition-all">
-            <img src="{{ $siteLogo }}" alt="{{ $siteName }}" class="size-full object-contain pointer-events-none" />
+            <img src="{{ $siteLogo }}" alt="{{ $siteName }}" class="size-full object-contain pointer-events-none dark:hidden logo-theme-light" />
+            <img src="{{ $siteLogoWhite ?? '/assets/images/logo-white.png' }}" alt="{{ $siteName }}" class="size-full object-contain pointer-events-none hidden dark:block logo-theme-dark" />
         </div>
         <span class="font-['Baloo_Bhaijaan_2'] font-bold text-base sm:text-lg lg:text-[21px] leading-tight text-[#012383] dark:text-white whitespace-nowrap tracking-tight">
             {{ $siteName }}
@@ -184,7 +186,8 @@
                     <div class="flex items-center justify-between pb-4 border-b border-[#D7E3F5] dark:border-slate-800 shrink-0">
                         <a href="{{ route('home') }}" @click="mobileNavOpen = false" class="flex items-center gap-2.5 cursor-pointer min-w-0">
                             <div class="size-8 rounded-xl bg-[#EAF1FB] dark:bg-slate-800 flex items-center justify-center p-1 shrink-0 border border-[#DEE8F7] dark:border-slate-700 shadow-xs">
-                                <img src="{{ $siteLogo }}" alt="{{ $siteName }}" class="size-full object-contain pointer-events-none" />
+                                <img src="{{ $siteLogo }}" alt="{{ $siteName }}" class="size-full object-contain pointer-events-none dark:hidden logo-theme-light" />
+                                <img src="{{ $siteLogoWhite ?? '/assets/images/logo-white.png' }}" alt="{{ $siteName }}" class="size-full object-contain pointer-events-none hidden dark:block logo-theme-dark" />
                             </div>
                             <div class="flex flex-col min-w-0">
                                 <span class="font-['Baloo_Bhaijaan_2'] font-bold text-base leading-tight text-[#012383] dark:text-white truncate">

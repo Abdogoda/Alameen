@@ -106,6 +106,77 @@ class SettingsService
     }
 
     /**
+     * Retrieve the white version of platform logo for dark theme and dark backgrounds.
+     */
+    public function getLogoWhiteUrl(): string
+    {
+        $logo = $this->get('site_logo_white', '/assets/images/logo-white.png')
+            ?: $this->get('site_logo_dark', '/assets/images/logo-white.png');
+
+        if (empty($logo)) {
+            return '/assets/images/logo-white.png';
+        }
+
+        $logo = rtrim(trim($logo), '/');
+
+        if (str_starts_with($logo, 'http://') || str_starts_with($logo, 'https://') || str_starts_with($logo, 'data:')) {
+            return $logo;
+        }
+
+        if (! str_starts_with($logo, '/')) {
+            $logo = '/'.$logo;
+        }
+
+        return $logo;
+    }
+
+    /**
+     * Retrieve the footer logo URL (defaults to white logo for dark footer background).
+     */
+    public function getFooterLogoUrl(): string
+    {
+        $logo = $this->get('footer_logo', '/assets/images/logo-white.png');
+        if (empty($logo)) {
+            return $this->getLogoWhiteUrl();
+        }
+
+        $logo = rtrim(trim($logo), '/');
+
+        if (str_starts_with($logo, 'http://') || str_starts_with($logo, 'https://') || str_starts_with($logo, 'data:')) {
+            return $logo;
+        }
+
+        if (! str_starts_with($logo, '/')) {
+            $logo = '/'.$logo;
+        }
+
+        return $logo;
+    }
+
+    /**
+     * Retrieve the auth artwork image URL (for login, register, reset password pages).
+     */
+    public function getAuthLoginImageUrl(): string
+    {
+        $img = $this->get('auth_login_image', '/assets/images/alameen-images/13.jpeg');
+        if (empty($img)) {
+            return '/assets/images/alameen-images/13.jpeg';
+        }
+
+        $img = rtrim(trim($img), '/');
+
+        if (str_starts_with($img, 'http://') || str_starts_with($img, 'https://') || str_starts_with($img, 'data:')) {
+            return $img;
+        }
+
+        if (! str_starts_with($img, '/')) {
+            $img = '/'.$img;
+        }
+
+        return $img;
+    }
+
+    /**
      * Retrieve the dynamic currency symbol (e.g. ج.م).
      */
     public function getCurrencySymbol(): string

@@ -1,6 +1,6 @@
 <x-admin-layout::admin
-    :title="__('مركز تصحيح المهام والتقييم السريري')"
-    :description="__('مراجعة حلول الطلاب للمهام السريرية الملحقة بالفيديوهات ورصد الدرجات وإرسال الملاحظات التوجيهية')"
+    :title="__('مركز تصحيح المهام والتقييم')"
+    :description="__('مراجعة حلول الطلاب للمهام التدريبية الملحقة بالفيديوهات ورصد الدرجات وإرسال الملاحظات التوجيهية')"
     contentClass="p-3.5 sm:p-6 lg:p-8 flex flex-col gap-5 sm:gap-6 w-full min-w-0"
 >
     <x-slot:actions>
@@ -66,7 +66,7 @@
                 <thead>
                     <tr class="bg-slate-50/80 dark:bg-slate-800/50 border-b border-[#DEE8F7] dark:border-slate-800 text-[12px] font-bold text-slate-500">
                         <th class="py-4 px-5">{{ __('الطالب') }}</th>
-                        <th class="py-4 px-4">{{ __('المهمة السريرية / الكورس') }}</th>
+                        <th class="py-4 px-4">{{ __('المهمة التدريبية / الكورس') }}</th>
                         <th class="py-4 px-4">{{ __('تاريخ التسليم') }}</th>
                         <th class="py-4 px-4">{{ __('التسجيل الصوتي والملاحظات') }}</th>
                         <th class="py-4 px-4 text-center">{{ __('الدرجة') }}</th>
@@ -82,7 +82,7 @@
                             <div class="text-[11px] text-slate-400 font-mono">{{ $sub->user?->email }}</div>
                         </td>
                         <td class="py-4 px-4">
-                            <div class="font-bold text-slate-800 dark:text-slate-200">{{ $sub->task?->title ?? __('مهمة تقييم سريري') }}</div>
+                            <div class="font-bold text-slate-800 dark:text-slate-200">{{ $sub->task?->title ?? __('مهمة تقييم وتدريب') }}</div>
                             <div class="text-[11px] text-slate-400">{{ $sub->task?->course?->title ?? __('الكورس التدريبي') }}</div>
                         </td>
                         <td class="py-4 px-4">
@@ -168,7 +168,7 @@
                 </div>
 
                 <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 flex flex-col gap-1">
-                    <span class="font-bold text-xs text-slate-800 dark:text-slate-200">{{ $sub->task?->title ?? __('مهمة تقييم سريري') }}</span>
+                    <span class="font-bold text-xs text-slate-800 dark:text-slate-200">{{ $sub->task?->title ?? __('مهمة تقييم وتدريب') }}</span>
                     <span class="text-[11px] text-slate-400">{{ $sub->task?->course?->title ?? __('الكورس التدريبي') }}</span>
                     <div class="text-[10px] text-slate-400 mt-1 flex items-center justify-between">
                         <span>{{ $sub->created_at?->format('d/m/Y h:i A') }}</span>
@@ -237,7 +237,7 @@
                         <svg class="size-5 text-[#0B2A8F] dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                     </div>
                     <div class="min-w-0">
-                        <h3 class="font-bold text-base sm:text-lg text-[#012383] dark:text-blue-400 truncate">{{ __('رصد تقييم المهمة السريرية') }}</h3>
+                        <h3 class="font-bold text-base sm:text-lg text-[#012383] dark:text-blue-400 truncate">{{ __('رصد تقييم المهمة التدريبية') }}</h3>
                         <p id="grade-task-subtitle" class="text-xs text-slate-500 truncate"></p>
                     </div>
                 </div>
@@ -253,7 +253,7 @@
 
                     <div>
                         <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                            {{ __('الملاحظات والتوجيهات السريرية للطالب') }}
+                            {{ __('الملاحظات والتوجيهات للطالب') }}
                         </label>
                         <textarea name="clinical_feedback" id="grade-feedback-input" rows="4" placeholder="{{ __('اكتب ملاحظاتك التوجيهية وتصويب مخارج الحروف أو نبرة الصوت...') }}" class="w-full p-3 rounded-xl border border-[#DEE8F7] dark:border-slate-800 text-xs font-medium text-slate-700 dark:text-slate-200 outline-none focus:border-[#0B2A8F] bg-slate-50/50 dark:bg-slate-800/50"></textarea>
                     </div>

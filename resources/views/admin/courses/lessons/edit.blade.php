@@ -511,7 +511,7 @@
         </div>
 
         {{-- ===================================================== --}}
-        {{-- CARD 3: Attached Clinical Task Details                --}}
+        {{-- CARD 3: Attached Practical Task Details            --}}
         {{-- ===================================================== --}}
         <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-2xl sm:rounded-3xl p-5 sm:p-7 shadow-xs space-y-4">
             <div class="border-b border-[#DEE8F7]/80 dark:border-slate-800 pb-3 flex items-center justify-between">
@@ -521,7 +521,7 @@
                     </span>
                     <div>
                         <h3 class="font-bold text-base sm:text-lg text-[#012383] dark:text-white leading-tight">
-                            {{ __('المهمة السريرية الملحقة بالدرس') }}
+                            {{ __('المهمة التدريبية الملحقة بالدرس') }}
                         </h3>
                         <p class="text-xs text-slate-400">
                             {{ __('تفتح المهمة تلقائياً للمتدرب بعد تحقيق نسبة إكمال المشاهدة المطلوبة') }}
@@ -532,7 +532,7 @@
 
             <div>
                 <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1.5">
-                    {{ __('عنوان المهمة السريرية بالعربية:') }}
+                    {{ __('عنوان المهمة التدريبية بالعربية:') }}
                 </label>
                 <input 
                     type="text" 
@@ -649,12 +649,30 @@
         }
 
         function startVideoUpload(file) {
-            if (isUploading) return;
+            console.log('[VIDEO_UPLOAD] startVideoUpload initiated (Edit Lesson)', {
+                fileName: file.name,
+                fileSize: formatBytes(file.size),
+                fileSizeBytes: file.size,
+                fileType: file.type,
+                isMuxConfigured: IS_MUX_CONFIGURED,
+                upchunkAvailable: typeof UpChunk !== 'undefined'
+            });
+
+            if (isUploading) {
+                console.warn('[VIDEO_UPLOAD] Upload already in progress. Action ignored.');
+                return;
+            }
 
             // When MUX is configured, upload directly to MUX (Zero Gateway Timeout, Zero Server Load)
             if (IS_MUX_CONFIGURED && typeof UpChunk !== 'undefined') {
+                console.log('[VIDEO_UPLOAD] Path chosen: MUX Direct Cloud Upload via UpChunk');
                 return startMuxDirectUpload(file);
             }
+
+            console.warn('[VIDEO_UPLOAD] Path chosen: Fallback to Local Server Upload because:', {
+                isMuxConfigured: IS_MUX_CONFIGURED,
+                upchunkAvailable: typeof UpChunk !== 'undefined'
+            });
 
             // Fallback: Local server chunked upload
             return startLocalChunkedUpload(file);
@@ -701,6 +719,8 @@
             if (submitBtn) submitBtn.disabled = true;
 
             try {
+                console.log('[VIDEO_UPLOAD] Requesting MUX Direct Upload URL from backend:', MUX_DIRECT_UPLOAD_URL);
+
                 // Step 1: Request Direct Upload URL from MUX
                 const res = await fetch(MUX_DIRECT_UPLOAD_URL, {
                     method: 'POST',
@@ -712,10 +732,17 @@
 
                 if (!res.ok) {
                     const err = await res.json().catch(() => ({}));
+                    console.error('[VIDEO_UPLOAD] Backend rejected MUX Direct Upload request:', {
+                        status: res.status,
+                        statusText: res.statusText,
+                        errorData: err
+                    });
                     throw new Error(err.message || 'فشل في إنشاء رابط الرفع لمنصة MUX.');
                 }
 
                 const data = await res.json();
+                console.log('[VIDEO_UPLOAD] MUX Direct Upload URL successfully obtained:', data);
+
                 if (!data.success || !data.upload_url) {
                     throw new Error(data.message || 'رابط رفع MUX غير متوفر.');
                 }
@@ -724,6 +751,8 @@
                 const uploadId = data.upload_id;
 
                 if (statusText) statusText.textContent = '{{ __("جاري الرفع المباشر إلى MUX...") }}';
+
+                console.log('[VIDEO_UPLOAD] Initializing @mux/upchunk upload to endpoint:', uploadUrl);
 
                 // Step 2: Stream directly to MUX via UpChunk
                 const upload = UpChunk.createUpload({
@@ -751,9 +780,14 @@
 
                     if (chunksEl) chunksEl.textContent = `${percent}%`;
                     if (partsPctEl) partsPctEl.textContent = `${percent}%`;
+
+                    if (percent % 25 === 0) {
+                        console.log(`[VIDEO_UPLOAD MUX] UpChunk Progress: ${percent}%`);
+                    }
                 });
 
                 upload.on('success', () => {
+                    console.log('[VIDEO_UPLOAD MUX] Direct upload to MUX cloud finished 100%. Starting Asset status poller...');
                     processingBanner.classList.remove('hidden');
                     if (statusBadge) {
                         statusBadge.className = 'inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-amber-100 text-amber-900 dark:bg-amber-950/70 dark:text-amber-200 border border-amber-200 dark:border-amber-900 transition-all animate-pulse';
@@ -766,14 +800,20 @@
 
                     const poller = setInterval(async () => {
                         pollCount++;
+                        console.log(`[VIDEO_UPLOAD MUX] Polling asset status attempt #${pollCount}...`);
                         try {
                             const pollRes = await fetch(statusUrl, {
                                 headers: { 'Accept': 'application/json' }
                             });
                             if (pollRes.ok) {
                                 const pollData = await pollRes.json();
+                                console.log('[VIDEO_UPLOAD MUX] Poll response data:', pollData);
                                 if (pollData.asset_id) {
                                     clearInterval(poller);
+                                    console.log('[VIDEO_UPLOAD MUX] Asset is ready!', {
+                                        assetId: pollData.asset_id,
+                                        playbackId: pollData.playback_id
+                                    });
 
                                     // Populate hidden form inputs
                                     const uploadTabField = document.getElementById('field-upload-tab');
@@ -813,12 +853,13 @@
                                 }
                             }
                         } catch (err) {
-                            console.warn('Poll error:', err);
+                            console.warn('[VIDEO_UPLOAD MUX] Poll network error:', err);
                         }
 
                         // Max 45 attempts (90 seconds)
                         if (pollCount > 45) {
                             clearInterval(poller);
+                            console.warn('[VIDEO_UPLOAD MUX] Polling timed out after 90 seconds. Storing upload ID.');
                             document.getElementById('field-video-source').value = 'mux';
                             document.getElementById('field-mux-upload-id').value = uploadId;
                             processingBanner.classList.add('hidden');
@@ -831,7 +872,7 @@
                 });
 
                 upload.on('error', (err) => {
-                    console.error('Mux UpChunk error:', err);
+                    console.error('[VIDEO_UPLOAD MUX] UpChunk upload error:', err);
                     isUploading = false;
                     if (statusBadge) {
                         statusBadge.className = 'inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-rose-100 text-rose-800 border border-rose-200';
@@ -842,7 +883,11 @@
                 });
 
             } catch (err) {
-                console.warn('MUX direct upload initialization failed, falling back to local chunked upload:', err);
+                console.error('[VIDEO_UPLOAD] MUX direct upload initialization failed:', err);
+                console.warn('[VIDEO_UPLOAD] Fallback triggered: Calling startLocalChunkedUpload(file)');
+                if (statusText) {
+                    statusText.textContent = `تنبيه: تعذر الاتصال بـ MUX (${err.message})، جاري الرفع على السيرفر المحلي بدلاً من ذلك...`;
+                }
                 return startLocalChunkedUpload(file);
             }
         }

@@ -48,7 +48,7 @@
                                 {{ __('المحاضرة مقيدة بالتسلسل الإلزامي') }}
                             </h3>
                             <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
-                                {{ __('حرصاً على التدرج السريري للمنهج، لا يمكنك فتح هذه المحاضرة أو هذا المستوى حتى تكمل المحاضرة الحالية أولاً. بمجرد إكمال أي درس أو مستوى يمكنك فتحه ومراجعته في أي وقت.') }}
+                                {{ __('حرصاً على التدرج التعليمي والتطبيقي للمنهج، لا يمكنك فتح هذه المحاضرة أو هذا المستوى حتى تكمل المحاضرة الحالية أولاً. بمجرد إكمال أي درس أو مستوى يمكنك فتحه ومراجعته في أي وقت.') }}
                             </p>
                         </div>
 
@@ -141,10 +141,10 @@
                     <!-- Task Tab Content -->
                     <div x-show="activeTab === 'task'" class="flex flex-col gap-2.5" style="display: none;">
                         <h3 class="font-['Baloo_Bhaijaan_2'] font-bold text-lg sm:text-xl text-[#012383] dark:text-white text-start w-full">
-                            {{ __('المهمة والتطبيق السريري') }}
+                            {{ __('المهمة والتطبيق العملي') }}
                         </h3>
                         <p class="font-['Cairo'] font-medium text-xs sm:text-sm leading-relaxed text-slate-600 dark:text-slate-300 text-start w-full">
-                            {{ __('تسجيل صوتي وتطبيق عملي لمخارج الحروف مع استمارة الملاحظة السريرية المعتمدة.') }}
+                            {{ __('تسجيل صوتي وتطبيق عملي لمخارج الحروف مع استمارة الملاحظة والتقييم المعتمدة.') }}
                         </p>
                     </div>
 
@@ -290,7 +290,7 @@
                                                     <span>{{ __(':min دقيقة', ['min' => $lVideo->duration_minutes]) }}</span>
                                                     @if($lVideo->clinicalTask)
                                                         <span>•</span>
-                                                        <span>{{ __('مهمة سريرية') }}</span>
+                                                        <span>{{ __('مهمة تدريبية') }}</span>
                                                     @endif
                                                     @if($isCompleted && ! $isActive)
                                                         <span>•</span>

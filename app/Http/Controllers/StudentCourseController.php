@@ -496,7 +496,7 @@ class StudentCourseController extends Controller
         $task = $task ?? ClinicalTask::with('course')->first();
 
         if ($task && $task->course instanceof Course && ! $this->enrollmentService->hasActiveAccess($user, $task->course)) {
-            abort(403, __('لا تملك صلاحية الوصول إلى هذه المهمة السريرية.'));
+            abort(403, __('لا تملك صلاحية الوصول إلى هذه المهمة التدريبية.'));
         }
 
         $submission = $task ? TaskSubmission::where('task_id', $task->id)->where('user_id', $user->id)->first() : null;
@@ -541,7 +541,7 @@ class StudentCourseController extends Controller
             studentNotes: $request->input('student_notes')
         );
 
-        return back()->with('success', __('تم تسليم المهمة السريرية بنجاح! بانتظار مراجعة وتقييم المحاضر.'));
+        return back()->with('success', __('تم تسليم المهمة التدريبية بنجاح! بانتظار مراجعة وتقييم المحاضر.'));
     }
 
     /**
@@ -912,7 +912,7 @@ class StudentCourseController extends Controller
             [
                 'level_id' => $level4->id,
                 'title_ar' => 'الدرس ١٨: استراتيجيات الإرشاد الأسري والمتابعة المنزلية وتسجيل الملاحظات',
-                'title_en' => 'Lesson 18: Family Counseling Strategies & Clinical Observation Notes',
+                'title_en' => 'Lesson 18: Family Counseling Strategies & Practical Observation Notes',
                 'slug' => 'family-counseling-observation-notes',
                 'video_source' => 'mux',
                 'mux_playback_id' => 'DS00Spx1CV902MCtP7ToneAwBpR00uoJq',
@@ -928,7 +928,7 @@ class StudentCourseController extends Controller
             [
                 'level_id' => $level4->id,
                 'title_ar' => 'الدرس ١٩: ورشة المحاكاة العملية ومراجعة التقدم للحالات الواقعية',
-                'title_en' => 'Lesson 19: Clinical Simulation Workshop & Progress Review',
+                'title_en' => 'Lesson 19: Practical Simulation Workshop & Progress Review',
                 'slug' => 'simulation-workshop-progress-review',
                 'video_source' => 'mux',
                 'mux_playback_id' => 'DS00Spx1CV902MCtP7ToneAwBpR00uoJq',
@@ -939,7 +939,7 @@ class StudentCourseController extends Controller
                 'sort_order' => 19,
                 'is_free_preview' => false,
                 'is_published' => true,
-                'task_title' => 'تقرير تحليل جلسة محاكاة سريرية',
+                'task_title' => 'تقرير تحليل جلسة محاكاة عملية',
             ],
             [
                 'level_id' => $level4->id,

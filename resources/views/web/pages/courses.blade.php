@@ -32,26 +32,8 @@
 
         </section>
 
-        <!-- 2. FILTER TABS & COURSE GRID (WorkDo Product Grid) -->
+        <!-- 2. COURSE GRID -->
         <section class="flex flex-col gap-6">
-          
-          <!-- Category Filter Bar -->
-          <div class="flex flex-wrap items-center justify-between gap-3 bg-white border border-[#DEE8F7] rounded-[16px] p-3 shadow-xs">
-            <div class="flex flex-wrap items-center gap-2" id="catalog-category-group">
-              <button
-                type="button"
-                data-cat="all"
-                class="catalog-filter active px-4 py-1.5 rounded-full text-xs font-bold transition-all bg-[#012383] text-white cursor-pointer shadow-xs"
-              >
-                {{ __('landing.courseCategoryAll') }}
-              </button>
-            </div>
-
-            <!-- Stats Badge -->
-            <span class="text-xs font-bold text-[#0B2A8F] bg-[#EAF1FB] px-3.5 py-1.5 rounded-full border border-[#DEE8F7]">
-              {{ __('catalog.pathBadge') }}
-            </span>
-          </div>
 
           @php
             $courses = \App\Models\Course::query()
@@ -99,7 +81,7 @@
                       <div class="size-6 rounded-full bg-[#EAF1FB] flex items-center justify-center font-bold text-[10px] text-[#0B2A8F]">
                         د
                       </div>
-                      <span>{{ __('د. سامي المنصور • محاضر التخاطب السريري') }}</span>
+                      <span>{{ __('د. سامي المنصور • محاضر التخاطب الشامل') }}</span>
                     </div>
                   </div>
                 </div>
@@ -137,25 +119,22 @@
     <x-slot:scripts>
         <script>
           // ==========================================
-          // Catalog Interactive Filtering Script
+          // Course Search & Filtering Script
           // ==========================================
           document.addEventListener('DOMContentLoaded', () => {
-            const catButtons = document.querySelectorAll('.catalog-filter');
             const courseCards = document.querySelectorAll('.course-card');
             const searchInput = document.getElementById('course-search-input');
             const emptyState = document.getElementById('catalog-empty');
 
-            let activeCat = 'all';
             let searchQuery = '';
 
             function filterCatalog() {
               let visibleCount = 0;
               courseCards.forEach(card => {
-                const matchesCat = activeCat === 'all' || card.getAttribute('data-category') === activeCat;
                 const title = card.getAttribute('data-title')?.toLowerCase() || '';
                 const matchesSearch = !searchQuery || title.includes(searchQuery);
 
-                if (matchesCat && matchesSearch) {
+                if (matchesSearch) {
                   card.style.display = 'flex';
                   visibleCount++;
                 } else {
@@ -171,20 +150,6 @@
                 emptyState?.classList.remove('flex');
               }
             }
-
-            catButtons.forEach(btn => {
-              btn.addEventListener('click', () => {
-                catButtons.forEach(b => {
-                  b.classList.remove('active', 'bg-[#012383]', 'text-white');
-                  b.classList.add('bg-[#EAF1FB]', 'text-[#0B2A8F]');
-                });
-                btn.classList.add('active', 'bg-[#012383]', 'text-white');
-                btn.classList.remove('bg-[#EAF1FB]', 'text-[#0B2A8F]');
-
-                activeCat = btn.getAttribute('data-cat') || 'all';
-                filterCatalog();
-              });
-            });
 
             searchInput?.addEventListener('input', (e) => {
               searchQuery = e.target.value.trim().toLowerCase();

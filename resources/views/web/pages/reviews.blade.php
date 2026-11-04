@@ -157,6 +157,14 @@
             </button>
             <button
               type="button"
+              data-filter="images"
+              class="filter-pill px-4 py-1.5 rounded-full text-xs font-bold transition-all bg-[#EAF1FB] text-[#0B2A8F] hover:bg-[#DEE8F7] cursor-pointer flex items-center gap-1.5"
+            >
+              <span>📷</span>
+              <span data-i18n="reviews.filterWithImages">{{ __('آراء بالصور المرفقة') }}</span>
+            </button>
+            <button
+              type="button"
               data-filter="5star"
               class="filter-pill px-4 py-1.5 rounded-full text-xs font-bold transition-all bg-[#EAF1FB] text-[#0B2A8F] hover:bg-[#DEE8F7] cursor-pointer"
               data-i18n="reviews.filter5Star"
@@ -264,7 +272,7 @@
         <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="reviews-grid">
           
           <!-- Card 1 -->
-          <article class="review-card bg-white border border-[#DEE8F7] rounded-[20px] p-6 shadow-xs flex flex-col justify-between hover:shadow-card hover:-translate-y-1 transition-all" data-category="speech" data-rating="5" data-cert="true" data-helpful="24" data-order="1">
+          <article class="review-card bg-white border border-[#DEE8F7] rounded-[20px] p-6 shadow-xs flex flex-col justify-between hover:shadow-card hover:-translate-y-1 transition-all" data-category="speech" data-rating="5" data-cert="true" data-has-image="true" data-helpful="24" data-order="1">
             <div class="flex flex-col gap-3">
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-3">
@@ -289,6 +297,32 @@
               <p class="text-xs text-[#475569] font-medium leading-relaxed">
                 {{ __('reviews.card1Text') }}
               </p>
+
+              <!-- Attached Review Image -->
+              <div class="mt-1 pt-1">
+                <div
+                  class="group/attach relative rounded-xl overflow-hidden border border-[#DEE8F7] bg-slate-50 cursor-pointer hover:border-[#0B2A8F] hover:shadow-xs transition-all"
+                  onclick="openReviewImageLightbox('/assets/images/alameen-images/2.jpeg', '{{ __('reviews.card1Author') }}')"
+                  title="{{ __('انقر لتكبير الصورة') }}"
+                >
+                  <img
+                    src="/assets/images/alameen-images/2.jpeg"
+                    alt="صورة تجربة {{ __('reviews.card1Author') }}"
+                    class="w-full h-36 sm:h-40 object-cover object-top group-hover/attach:scale-105 transition-transform duration-300"
+                    loading="lazy"
+                  />
+                  <div class="absolute inset-0 bg-black/25 opacity-0 group-hover/attach:opacity-100 transition-opacity flex items-center justify-center gap-1.5 text-white text-xs font-bold pointer-events-none">
+                    <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7" />
+                    </svg>
+                    <span>{{ __('تكبير الصورة') }}</span>
+                  </div>
+                  <span class="absolute bottom-2 start-2 bg-black/65 backdrop-blur-xs text-white text-[10px] font-bold px-2 py-0.5 rounded-md flex items-center gap-1 pointer-events-none">
+                    <span>📷</span>
+                    <span>{{ __('صورة مرفقة') }}</span>
+                  </span>
+                </div>
+              </div>
             </div>
 
             <div class="mt-4 pt-3 border-t border-[#DEE8F7] flex items-center justify-between text-xs">
@@ -301,7 +335,7 @@
           </article>
 
           <!-- Card 2 -->
-          <article class="review-card bg-white border border-[#DEE8F7] rounded-[20px] p-6 shadow-xs flex flex-col justify-between hover:shadow-card hover:-translate-y-1 transition-all" data-category="articulation" data-rating="5" data-cert="true" data-helpful="18" data-order="2">
+          <article class="review-card bg-white border border-[#DEE8F7] rounded-[20px] p-6 shadow-xs flex flex-col justify-between hover:shadow-card hover:-translate-y-1 transition-all" data-category="articulation" data-rating="5" data-cert="true" data-has-image="true" data-helpful="18" data-order="2">
             <div class="flex flex-col gap-3">
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-3">
@@ -325,6 +359,32 @@
               <p class="text-xs text-[#475569] font-medium leading-relaxed">
                 {{ __('reviews.card2Text') }}
               </p>
+
+              <!-- Attached Review Image -->
+              <div class="mt-1 pt-1">
+                <div
+                  class="group/attach relative rounded-xl overflow-hidden border border-[#DEE8F7] bg-slate-50 cursor-pointer hover:border-[#0B2A8F] hover:shadow-xs transition-all"
+                  onclick="openReviewImageLightbox('/assets/images/alameen-images/1.jpeg', '{{ __('reviews.card2Author') }}')"
+                  title="{{ __('انقر لتكبير الصورة') }}"
+                >
+                  <img
+                    src="/assets/images/alameen-images/1.jpeg"
+                    alt="صورة تجربة {{ __('reviews.card2Author') }}"
+                    class="w-full h-36 sm:h-40 object-cover object-top group-hover/attach:scale-105 transition-transform duration-300"
+                    loading="lazy"
+                  />
+                  <div class="absolute inset-0 bg-black/25 opacity-0 group-hover/attach:opacity-100 transition-opacity flex items-center justify-center gap-1.5 text-white text-xs font-bold pointer-events-none">
+                    <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7" />
+                    </svg>
+                    <span>{{ __('تكبير الصورة') }}</span>
+                  </div>
+                  <span class="absolute bottom-2 start-2 bg-black/65 backdrop-blur-xs text-white text-[10px] font-bold px-2 py-0.5 rounded-md flex items-center gap-1 pointer-events-none">
+                    <span>📷</span>
+                    <span>{{ __('صورة مرفقة') }}</span>
+                  </span>
+                </div>
+              </div>
             </div>
 
             <div class="mt-4 pt-3 border-t border-[#DEE8F7] flex items-center justify-between text-xs">
@@ -337,7 +397,7 @@
           </article>
 
           <!-- Card 3 -->
-          <article class="review-card bg-white border border-[#DEE8F7] rounded-[20px] p-6 shadow-xs flex flex-col justify-between hover:shadow-card hover:-translate-y-1 transition-all" data-category="parent" data-rating="5" data-cert="false" data-helpful="31" data-order="3">
+          <article class="review-card bg-white border border-[#DEE8F7] rounded-[20px] p-6 shadow-xs flex flex-col justify-between hover:shadow-card hover:-translate-y-1 transition-all" data-category="parent" data-rating="5" data-cert="false" data-has-image="true" data-helpful="31" data-order="3">
             <div class="flex flex-col gap-3">
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-3">
@@ -361,6 +421,32 @@
               <p class="text-xs text-[#475569] font-medium leading-relaxed">
                 {{ __('reviews.card3Text') }}
               </p>
+
+              <!-- Attached Review Image -->
+              <div class="mt-1 pt-1">
+                <div
+                  class="group/attach relative rounded-xl overflow-hidden border border-[#DEE8F7] bg-slate-50 cursor-pointer hover:border-[#0B2A8F] hover:shadow-xs transition-all"
+                  onclick="openReviewImageLightbox('/assets/images/alameen-images/3.jpeg', '{{ __('reviews.card3Author') }}')"
+                  title="{{ __('انقر لتكبير الصورة') }}"
+                >
+                  <img
+                    src="/assets/images/alameen-images/3.jpeg"
+                    alt="صورة تجربة {{ __('reviews.card3Author') }}"
+                    class="w-full h-36 sm:h-40 object-cover object-top group-hover/attach:scale-105 transition-transform duration-300"
+                    loading="lazy"
+                  />
+                  <div class="absolute inset-0 bg-black/25 opacity-0 group-hover/attach:opacity-100 transition-opacity flex items-center justify-center gap-1.5 text-white text-xs font-bold pointer-events-none">
+                    <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7" />
+                    </svg>
+                    <span>{{ __('تكبير الصورة') }}</span>
+                  </div>
+                  <span class="absolute bottom-2 start-2 bg-black/65 backdrop-blur-xs text-white text-[10px] font-bold px-2 py-0.5 rounded-md flex items-center gap-1 pointer-events-none">
+                    <span>📷</span>
+                    <span>{{ __('صورة مرفقة') }}</span>
+                  </span>
+                </div>
+              </div>
             </div>
 
             <div class="mt-4 pt-3 border-t border-[#DEE8F7] flex items-center justify-between text-xs">
@@ -373,7 +459,7 @@
           </article>
 
           <!-- Card 4 -->
-          <article class="review-card bg-white border border-[#DEE8F7] rounded-[20px] p-6 shadow-xs flex flex-col justify-between hover:shadow-card hover:-translate-y-1 transition-all" data-category="stuttering" data-rating="4" data-cert="true" data-helpful="14" data-order="4">
+          <article class="review-card bg-white border border-[#DEE8F7] rounded-[20px] p-6 shadow-xs flex flex-col justify-between hover:shadow-card hover:-translate-y-1 transition-all" data-category="stuttering" data-rating="4" data-cert="true" data-has-image="true" data-helpful="14" data-order="4">
             <div class="flex flex-col gap-3">
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-3">
@@ -397,6 +483,32 @@
               <p class="text-xs text-[#475569] font-medium leading-relaxed">
                 {{ __('reviews.card4Text') }}
               </p>
+
+              <!-- Attached Review Image (Certificate Verification) -->
+              <div class="mt-1 pt-1">
+                <div
+                  class="group/attach relative rounded-xl overflow-hidden border border-[#DEE8F7] bg-slate-50 cursor-pointer hover:border-[#0B2A8F] hover:shadow-xs transition-all"
+                  onclick="openReviewImageLightbox('/assets/images/alameen-images/certificate.png', '{{ __('reviews.card4Author') }}')"
+                  title="{{ __('انقر لتكبير الشهادة المعتمدة') }}"
+                >
+                  <img
+                    src="/assets/images/alameen-images/certificate.png"
+                    alt="شهادة معتمدة {{ __('reviews.card4Author') }}"
+                    class="w-full h-36 sm:h-40 object-cover object-center group-hover/attach:scale-105 transition-transform duration-300"
+                    loading="lazy"
+                  />
+                  <div class="absolute inset-0 bg-black/25 opacity-0 group-hover/attach:opacity-100 transition-opacity flex items-center justify-center gap-1.5 text-white text-xs font-bold pointer-events-none">
+                    <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7" />
+                    </svg>
+                    <span>{{ __('تكبير الشهادة') }}</span>
+                  </div>
+                  <span class="absolute bottom-2 start-2 bg-emerald-800/80 backdrop-blur-xs text-white text-[10px] font-bold px-2 py-0.5 rounded-md flex items-center gap-1 pointer-events-none">
+                    <span>🎓</span>
+                    <span>{{ __('شهادة موثقة') }}</span>
+                  </span>
+                </div>
+              </div>
             </div>
 
             <div class="mt-4 pt-3 border-t border-[#DEE8F7] flex items-center justify-between text-xs">
@@ -409,7 +521,7 @@
           </article>
 
           <!-- Card 5 -->
-          <article class="review-card bg-white border border-[#DEE8F7] rounded-[20px] p-6 shadow-xs flex flex-col justify-between hover:shadow-card hover:-translate-y-1 transition-all" data-category="speech" data-rating="5" data-cert="true" data-helpful="20" data-order="5">
+          <article class="review-card bg-white border border-[#DEE8F7] rounded-[20px] p-6 shadow-xs flex flex-col justify-between hover:shadow-card hover:-translate-y-1 transition-all" data-category="speech" data-rating="5" data-cert="true" data-has-image="true" data-helpful="20" data-order="5">
             <div class="flex flex-col gap-3">
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-3">
@@ -433,6 +545,32 @@
               <p class="text-xs text-[#475569] font-medium leading-relaxed">
                 {{ __('reviews.card5Text') }}
               </p>
+
+              <!-- Attached Review Image -->
+              <div class="mt-1 pt-1">
+                <div
+                  class="group/attach relative rounded-xl overflow-hidden border border-[#DEE8F7] bg-slate-50 cursor-pointer hover:border-[#0B2A8F] hover:shadow-xs transition-all"
+                  onclick="openReviewImageLightbox('/assets/images/alameen-images/4.jpeg', '{{ __('reviews.card5Author') }}')"
+                  title="{{ __('انقر لتكبير الصورة') }}"
+                >
+                  <img
+                    src="/assets/images/alameen-images/4.jpeg"
+                    alt="صورة تجربة {{ __('reviews.card5Author') }}"
+                    class="w-full h-36 sm:h-40 object-cover object-top group-hover/attach:scale-105 transition-transform duration-300"
+                    loading="lazy"
+                  />
+                  <div class="absolute inset-0 bg-black/25 opacity-0 group-hover/attach:opacity-100 transition-opacity flex items-center justify-center gap-1.5 text-white text-xs font-bold pointer-events-none">
+                    <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7" />
+                    </svg>
+                    <span>{{ __('تكبير الصورة') }}</span>
+                  </div>
+                  <span class="absolute bottom-2 start-2 bg-black/65 backdrop-blur-xs text-white text-[10px] font-bold px-2 py-0.5 rounded-md flex items-center gap-1 pointer-events-none">
+                    <span>📷</span>
+                    <span>{{ __('صورة مرفقة') }}</span>
+                  </span>
+                </div>
+              </div>
             </div>
 
             <div class="mt-4 pt-3 border-t border-[#DEE8F7] flex items-center justify-between text-xs">
@@ -445,7 +583,7 @@
           </article>
 
           <!-- Card 6 -->
-          <article class="review-card bg-white border border-[#DEE8F7] rounded-[20px] p-6 shadow-xs flex flex-col justify-between hover:shadow-card hover:-translate-y-1 transition-all" data-category="speech" data-rating="5" data-cert="true" data-helpful="28" data-order="6">
+          <article class="review-card bg-white border border-[#DEE8F7] rounded-[20px] p-6 shadow-xs flex flex-col justify-between hover:shadow-card hover:-translate-y-1 transition-all" data-category="speech" data-rating="5" data-cert="true" data-has-image="true" data-helpful="28" data-order="6">
             <div class="flex flex-col gap-3">
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-3">
@@ -469,6 +607,32 @@
               <p class="text-xs text-[#475569] font-medium leading-relaxed">
                 {{ __('reviews.card6Text') }}
               </p>
+
+              <!-- Attached Review Image -->
+              <div class="mt-1 pt-1">
+                <div
+                  class="group/attach relative rounded-xl overflow-hidden border border-[#DEE8F7] bg-slate-50 cursor-pointer hover:border-[#0B2A8F] hover:shadow-xs transition-all"
+                  onclick="openReviewImageLightbox('/assets/images/alameen-images/5.jpeg', '{{ __('reviews.card6Author') }}')"
+                  title="{{ __('انقر لتكبير الصورة') }}"
+                >
+                  <img
+                    src="/assets/images/alameen-images/5.jpeg"
+                    alt="صورة تجربة {{ __('reviews.card6Author') }}"
+                    class="w-full h-36 sm:h-40 object-cover object-top group-hover/attach:scale-105 transition-transform duration-300"
+                    loading="lazy"
+                  />
+                  <div class="absolute inset-0 bg-black/25 opacity-0 group-hover/attach:opacity-100 transition-opacity flex items-center justify-center gap-1.5 text-white text-xs font-bold pointer-events-none">
+                    <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7" />
+                    </svg>
+                    <span>{{ __('تكبير الصورة') }}</span>
+                  </div>
+                  <span class="absolute bottom-2 start-2 bg-black/65 backdrop-blur-xs text-white text-[10px] font-bold px-2 py-0.5 rounded-md flex items-center gap-1 pointer-events-none">
+                    <span>📷</span>
+                    <span>{{ __('صورة مرفقة') }}</span>
+                  </span>
+                </div>
+              </div>
             </div>
 
             <div class="mt-4 pt-3 border-t border-[#DEE8F7] flex items-center justify-between text-xs">
@@ -564,20 +728,43 @@
               ></textarea>
             </div>
 
-            <!-- File Upload Dropzone -->
-            <div class="flex flex-col gap-1">
+            <!-- File Upload Dropzone with Live Image Preview -->
+            <div class="flex flex-col gap-1.5">
               <label class="text-xs font-bold text-[#012383]" data-i18n="reviews.modalUploadLabel">{{ __('reviews.modalUploadLabel') }}</label>
               <input type="file" id="modal-file-input" accept="image/*,.pdf" class="hidden" />
+              
               <div
                 id="modal-upload-box"
-                class="border-2 border-dashed border-[#DEE8F7] hover:border-[#0B2A8F] rounded-xl p-2.5 text-center cursor-pointer transition-colors bg-[#FAFCFF] flex items-center justify-center gap-2"
+                class="border-2 border-dashed border-[#DEE8F7] hover:border-[#0B2A8F] rounded-xl p-3 text-center cursor-pointer transition-colors bg-[#FAFCFF] flex flex-col items-center justify-center gap-2 group"
               >
-                <svg class="size-4 text-[#0B2A8F] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                </svg>
-                <p id="modal-upload-filename" class="text-[11px] text-[#475569] font-medium" data-i18n="reviews.modalUploadHint">
-                  {{ __('reviews.modalUploadHint') }}
-                </p>
+                <!-- Default Placeholder State -->
+                <div id="modal-upload-placeholder" class="flex flex-col items-center gap-1.5 py-1">
+                  <div class="size-8 rounded-full bg-[#EAF1FB] text-[#0B2A8F] flex items-center justify-center text-sm group-hover:scale-110 transition-transform">
+                    <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                  </div>
+                  <p id="modal-upload-filename" class="text-xs text-[#012383] font-bold">
+                    {{ __('انقر لرفع صورة التقييم أو لقطة شاشة') }}
+                  </p>
+                  <span class="text-[10px] text-[#475569]">PNG, JPG, WebP أو لقطات محادثات حتى 5MB</span>
+                </div>
+
+                <!-- Live Preview State (Hidden initially) -->
+                <div id="modal-image-preview-wrap" class="hidden w-full flex flex-col items-center gap-2 py-1">
+                  <div class="relative max-h-36 rounded-lg overflow-hidden border border-[#DEE8F7] shadow-xs bg-black/5">
+                    <img id="modal-image-preview" src="" alt="معاينة الصورة" class="max-h-36 object-contain rounded-lg" />
+                    <button
+                      type="button"
+                      id="remove-modal-image-btn"
+                      class="absolute top-1 end-1 size-6 rounded-full bg-red-600 hover:bg-red-700 text-white flex items-center justify-center text-xs font-bold transition-colors cursor-pointer shadow-md"
+                      title="إزالة الصورة"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                  <span id="modal-image-name" class="text-[11px] text-[#012383] font-semibold truncate max-w-[220px]"></span>
+                </div>
               </div>
             </div>
 
@@ -606,6 +793,37 @@
         </div>
       </div>
 
+      <!-- Fullscreen High-Resolution Review Image Lightbox Modal -->
+      <div
+        id="review-image-lightbox"
+        class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 opacity-0 pointer-events-none transition-opacity duration-300"
+      >
+        <div class="relative max-w-4xl max-h-[90vh] flex flex-col items-center">
+          <button
+            type="button"
+            id="close-review-image-btn"
+            class="absolute -top-12 end-0 size-9 rounded-full bg-white/10 hover:bg-white/25 text-white flex items-center justify-center text-base font-bold transition-colors cursor-pointer"
+            aria-label="إغلاق"
+          >
+            ✕
+          </button>
+
+          <div class="overflow-hidden rounded-2xl border border-white/20 shadow-2xl bg-black/40 flex items-center justify-center">
+            <img
+              id="review-lightbox-img"
+              src=""
+              alt="صورة التقييم مكبرة"
+              class="max-w-full max-h-[80vh] object-contain rounded-2xl"
+            />
+          </div>
+
+          <div class="mt-3 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-sm text-white text-xs font-semibold flex items-center gap-2">
+            <span>📷</span>
+            <span id="review-lightbox-caption">{{ __('صورة مرفقة مع التقييم') }}</span>
+          </div>
+        </div>
+      </div>
+
       <!-- ============================================== -->
     </x-slot:modals>
 
@@ -631,10 +849,13 @@
             const cat = card.getAttribute('data-category');
             const rating = card.getAttribute('data-rating');
             const cert = card.getAttribute('data-cert');
+            const hasImg = card.getAttribute('data-has-image');
 
             let matches = false;
             if (activeFilter === 'all') {
               matches = true;
+            } else if (activeFilter === 'images') {
+              matches = (hasImg === 'true');
             } else if (activeFilter === '5star') {
               matches = (rating === '5');
             } else if (activeFilter === 'cert') {
@@ -658,7 +879,7 @@
             const spotCert = spotlightCard.getAttribute('data-cert') || 'true';
 
             let showSpotlight = false;
-            if (activeFilter === 'all') {
+            if (activeFilter === 'all' || activeFilter === 'images') {
               showSpotlight = true;
             } else if (activeFilter === '5star') {
               showSpotlight = (spotRating === '5');
@@ -773,17 +994,45 @@
         // File dropzone click & preview
         const uploadBox = document.getElementById('modal-upload-box');
         const fileInput = document.getElementById('modal-file-input');
-        const uploadFilename = document.getElementById('modal-upload-filename');
+        const uploadPlaceholder = document.getElementById('modal-upload-placeholder');
+        const previewWrap = document.getElementById('modal-image-preview-wrap');
+        const previewImg = document.getElementById('modal-image-preview');
+        const imageName = document.getElementById('modal-image-name');
+        const removeImageBtn = document.getElementById('remove-modal-image-btn');
 
-        uploadBox?.addEventListener('click', () => {
+        uploadBox?.addEventListener('click', (e) => {
+          if (e.target.closest('#remove-modal-image-btn')) return;
           fileInput?.click();
         });
 
         fileInput?.addEventListener('change', () => {
-          if (fileInput.files && fileInput.files[0] && uploadFilename) {
-            uploadFilename.textContent = fileInput.files[0].name;
-            uploadBox?.classList.add('border-[#0B2A8F]', 'bg-blue-50/60');
+          if (fileInput.files && fileInput.files[0]) {
+            const file = fileInput.files[0];
+            if (file.type.startsWith('image/')) {
+              const reader = new FileReader();
+              reader.onload = (e) => {
+                if (previewImg) previewImg.src = e.target.result;
+                if (imageName) imageName.textContent = file.name;
+                uploadPlaceholder?.classList.add('hidden');
+                previewWrap?.classList.remove('hidden');
+                uploadBox?.classList.add('border-[#0B2A8F]', 'bg-blue-50/40');
+              };
+              reader.readAsDataURL(file);
+            } else {
+              if (imageName) imageName.textContent = file.name;
+              uploadPlaceholder?.classList.add('hidden');
+              previewWrap?.classList.remove('hidden');
+            }
           }
+        });
+
+        removeImageBtn?.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (fileInput) fileInput.value = '';
+          if (previewImg) previewImg.src = '';
+          previewWrap?.classList.add('hidden');
+          uploadPlaceholder?.classList.remove('hidden');
+          uploadBox?.classList.remove('border-[#0B2A8F]', 'bg-blue-50/40');
         });
 
         const resetModalForm = () => {
@@ -792,12 +1041,10 @@
           if (titleInput) titleInput.value = '';
           if (textInput) textInput.value = '';
           if (fileInput) fileInput.value = '';
-          if (uploadFilename) {
-            uploadFilename.textContent = document.documentElement.lang === 'en'
-              ? 'Click to browse or drop file here (PNG, JPG, PDF up to 5MB)'
-              : 'انقر لاختيار ملف أو اسحبه هنا (PNG, JPG, PDF حتى 5MB)';
-          }
-          uploadBox?.classList.remove('border-[#0B2A8F]', 'bg-blue-50/60');
+          if (previewImg) previewImg.src = '';
+          previewWrap?.classList.add('hidden');
+          uploadPlaceholder?.classList.remove('hidden');
+          uploadBox?.classList.remove('border-[#0B2A8F]', 'bg-blue-50/40');
         };
 
         const showModal = () => {
@@ -869,11 +1116,16 @@
           const selectedCourse = courseMap[courseSelect?.value] || { cat: 'speech', name: 'دورة تدريبية' };
           const starString = '★'.repeat(rating) + '☆'.repeat(5 - rating);
 
+          const uploadedImgSrc = (previewImg && previewImg.src && !previewWrap.classList.contains('hidden'))
+            ? previewImg.src
+            : null;
+
           const newCard = document.createElement('article');
           newCard.className = 'review-card bg-white border border-[#DEE8F7] rounded-[20px] p-6 shadow-xs flex flex-col justify-between hover:shadow-card hover:-translate-y-1 transition-all';
           newCard.setAttribute('data-category', selectedCourse.cat);
           newCard.setAttribute('data-rating', rating);
           newCard.setAttribute('data-cert', 'true');
+          newCard.setAttribute('data-has-image', uploadedImgSrc ? 'true' : 'false');
           newCard.setAttribute('data-helpful', '0');
           newCard.setAttribute('data-order', '0');
 
@@ -900,6 +1152,31 @@
 
               <h5 class="text-xs font-bold text-[#012383] mt-1">«${title}»</h5>
               <p class="text-xs text-[#475569] font-medium leading-relaxed">${text}</p>
+
+              ${uploadedImgSrc ? `
+              <div class="mt-1 pt-1">
+                <div
+                  class="group/attach relative rounded-xl overflow-hidden border border-[#DEE8F7] bg-slate-50 cursor-pointer hover:border-[#0B2A8F] hover:shadow-xs transition-all"
+                  onclick="openReviewImageLightbox('${uploadedImgSrc}', '${title}')"
+                  title="${document.documentElement.lang === 'en' ? 'Click to zoom' : 'انقر لتكبير الصورة'}"
+                >
+                  <img
+                    src="${uploadedImgSrc}"
+                    alt="صورة تجربة الطالب"
+                    class="w-full h-36 sm:h-40 object-cover object-top group-hover/attach:scale-105 transition-transform duration-300"
+                  />
+                  <div class="absolute inset-0 bg-black/25 opacity-0 group-hover/attach:opacity-100 transition-opacity flex items-center justify-center gap-1.5 text-white text-xs font-bold pointer-events-none">
+                    <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7" />
+                    </svg>
+                    <span>${document.documentElement.lang === 'en' ? 'Zoom Image' : 'تكبير الصورة'}</span>
+                  </div>
+                  <span class="absolute bottom-2 start-2 bg-black/65 backdrop-blur-xs text-white text-[10px] font-bold px-2 py-0.5 rounded-md flex items-center gap-1 pointer-events-none">
+                    <span>📷</span>
+                    <span>${document.documentElement.lang === 'en' ? 'Attached Image' : 'صورة مرفقة'}</span>
+                  </span>
+                </div>
+              </div>` : ''}
             </div>
 
             <div class="mt-4 pt-3 border-t border-[#DEE8F7] flex items-center justify-between text-xs">
@@ -917,8 +1194,7 @@
           attachHelpfulHandlers();
 
           hideModal();
-          if (titleInput) titleInput.value = '';
-          if (textInput) textInput.value = '';
+          resetModalForm();
 
           applyFilter();
 
@@ -930,6 +1206,40 @@
               toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
             }, 3500);
           }
+        });
+
+        // ----------------------------------------------------
+        // 4. IMAGE LIGHTBOX HANDLER
+        // ----------------------------------------------------
+        window.openReviewImageLightbox = function (src, author) {
+          const lightbox = document.getElementById('review-image-lightbox');
+          const img = document.getElementById('review-lightbox-img');
+          const caption = document.getElementById('review-lightbox-caption');
+          if (!lightbox || !img) return;
+
+          img.src = src;
+          if (caption) {
+            caption.textContent = author ? `صورة مرفقة - ${author}` : 'صورة مرفقة مع التقييم';
+          }
+          lightbox.classList.remove('opacity-0', 'pointer-events-none');
+        };
+
+        function closeReviewImageLightbox() {
+          const lightbox = document.getElementById('review-image-lightbox');
+          const img = document.getElementById('review-lightbox-img');
+          if (!lightbox) return;
+          lightbox.classList.add('opacity-0', 'pointer-events-none');
+          if (img) img.src = '';
+        }
+
+        document.getElementById('close-review-image-btn')?.addEventListener('click', closeReviewImageLightbox);
+        document.getElementById('review-image-lightbox')?.addEventListener('click', (e) => {
+          if (e.target.id === 'review-image-lightbox') {
+            closeReviewImageLightbox();
+          }
+        });
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape') closeReviewImageLightbox();
         });
       });
     </script>

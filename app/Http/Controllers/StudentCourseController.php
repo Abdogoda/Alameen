@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Student\RecordProgressRequest;
 use App\Http\Requests\Student\SubmitAssignmentRequest;
 use App\Http\Requests\Student\SubmitReceiptRequest;
+use App\Models\Admin;
 use App\Models\Certificate;
 use App\Models\ClinicalTask;
 use App\Models\Course;
@@ -16,6 +17,7 @@ use App\Models\TaskSubmission;
 use App\Models\User;
 use App\Models\Video;
 use App\Models\VideoProgress;
+use App\Notifications\UnifiedNotification;
 use App\Services\Certificate\CertificateService;
 use App\Services\Clinical\ClinicalTaskService;
 use App\Services\Cms\SettingsService;
@@ -27,6 +29,9 @@ use App\Services\Video\VideoProgressService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
@@ -200,7 +205,7 @@ class StudentCourseController extends Controller
         /** @var User|null $user */
         $user = $request->user();
 
-        if (! $user) {
+        if (! $user instanceof User) {
             return view('web.pages.courses', compact('allCourses'));
         }
 
@@ -327,7 +332,7 @@ class StudentCourseController extends Controller
             $course = Course::query()->where('is_published', true)->orderBy('sort_order')->first() ?? Course::first();
         }
 
-        if (! $course) {
+        if (! $course instanceof Course) {
             abort(404, __('لا توجد دورات تدريبية متاحة حالياً.'));
         }
 
@@ -624,10 +629,15 @@ class StudentCourseController extends Controller
         /** @var User $user */
         $user = $request->user();
 
+        $isEnded = $request->boolean('is_ended', false);
+        $actualDuration = $request->filled('duration') ? (int) round((float) $request->input('duration')) : null;
+
         $progress = $this->progressService->recordProgress(
             user: $user,
             video: $video,
-            currentWatchedSeconds: (int) $validated['watched_seconds']
+            currentWatchedSeconds: (int) round((float) $validated['watched_seconds']),
+            isEnded: $isEnded,
+            actualDuration: $actualDuration
         );
 
         $courseProgress = $this->progressService->getCourseProgressPercentage($user, $video->course);
@@ -638,12 +648,28 @@ class StudentCourseController extends Controller
             $certificate = $this->certificateService->issueCertificate($user, $video->course);
         }
 
+        // Check if next video in curriculum is now unlocked
+        $allVideos = $this->progressService->getCurriculumVideos($video->course);
+        $currentIndex = $allVideos->search(fn ($v) => $v->id === $video->id);
+        $nextVideo = null;
+        if ($currentIndex !== false && isset($allVideos[$currentIndex + 1])) {
+            $nextCandidate = $allVideos[$currentIndex + 1];
+            if ($this->progressService->canAccessVideo($user, $nextCandidate)) {
+                $nextVideo = [
+                    'id' => $nextCandidate->id,
+                    'title' => $nextCandidate->title_ar,
+                    'url' => route('lessons.show', [$video->course->slug, $nextCandidate->slug]),
+                ];
+            }
+        }
+
         return response()->json([
             'success' => true,
             'completion_percentage' => $progress->completion_percentage,
-            'is_completed' => $progress->is_completed,
+            'is_completed' => (bool) $progress->is_completed,
             'course_progress' => $courseProgress,
             'certificate_issued' => $certificate !== null,
+            'next_video' => $nextVideo,
         ]);
     }
 
@@ -1162,5 +1188,106 @@ class StudentCourseController extends Controller
                 ]
             );
         }
+    }
+
+    /**
+     * Handle security violation / screen recording incident.
+     * Immediately suspends student account, invalidates session, logs them out,
+     * and notifies all administrators with all incident metadata.
+     */
+    public function reportViolation(Request $request, ?Video $video = null): JsonResponse
+    {
+        /** @var User|null $user */
+        $user = $request->user('web') ?: Auth::user();
+
+        if (! $user) {
+            return response()->json([
+                'status' => 'unauthenticated',
+                'redirect' => route('login'),
+            ], 401);
+        }
+
+        if (! $video && $request->filled('video_id')) {
+            $video = Video::find($request->input('video_id'));
+        }
+
+        // 1. Immediately deactivate/suspend the student account
+        $user->update(['status' => 'suspended']);
+
+        // 2. Incident metadata
+        $incidentType = (string) $request->input('incident_type', 'screen_recording_attempt');
+        $ip = $request->ip();
+        $userAgent = $request->userAgent();
+        $course = $video?->course;
+        $videoTitle = $video?->title_ar ?? __('غير محدد');
+        $courseTitle = $course?->title_ar ?? __('غير محدد');
+
+        Log::warning('[SECURITY_VIOLATION] Screen recording attempt intercepted. Student suspended immediately.', [
+            'user_id' => $user->id,
+            'user_name' => $user->name,
+            'user_email' => $user->email,
+            'user_phone' => $user->phone,
+            'ip' => $ip,
+            'user_agent' => $userAgent,
+            'video_id' => $video?->id,
+            'video_title' => $videoTitle,
+            'course_id' => $course?->id,
+            'course_title' => $courseTitle,
+            'incident_type' => $incidentType,
+        ]);
+
+        // 3. Send urgent notification to all administrators
+        try {
+            $admins = Admin::all();
+            if ($admins->isNotEmpty()) {
+                $notification = new UnifiedNotification(
+                    title: [
+                        'ar' => '🚨 رصد محاولة تسجيل شاشة — تم إيقاف الحساب فوراً',
+                        'en' => '🚨 Screen Recording Detected — Account Suspended',
+                    ],
+                    body: [
+                        'ar' => "تم رصد محاولة تسجيل شاشة للمحاضرة '{$videoTitle}' بواسطة الطالب {$user->name} (هاتف: {$user->phone}). تم إيقاف الحساب فوراً وتسجيل الخروج.",
+                        'en' => "Screen recording attempt detected for lecture '{$videoTitle}' by student {$user->name} (Phone: {$user->phone}). Account suspended immediately.",
+                    ],
+                    channels: ['database'],
+                    type: 'security',
+                    actionUrl: route('admin.students.show', $user->id),
+                    actionText: [
+                        'ar' => 'فحص ملف الطالب وبيانات الانتهاك',
+                        'en' => 'Review Student Profile & Violation',
+                    ],
+                    data: [
+                        'incident' => 'screen_recording_blocked',
+                        'student_id' => $user->id,
+                        'student_name' => $user->name,
+                        'student_phone' => $user->phone,
+                        'student_email' => $user->email,
+                        'ip_address' => $ip,
+                        'user_agent' => $userAgent,
+                        'video_id' => $video?->id,
+                        'video_title' => $videoTitle,
+                        'course_id' => $course?->id,
+                        'course_title' => $courseTitle,
+                        'incident_type' => $incidentType,
+                        'reported_at' => now()->toIso8601String(),
+                    ]
+                );
+
+                Notification::send($admins, $notification);
+            }
+        } catch (\Throwable $e) {
+            Log::error('[SECURITY_VIOLATION] Failed to dispatch admin notification: ' . $e->getMessage());
+        }
+
+        // 4. Invalidate session and log student out immediately
+        Auth::guard('web')->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return response()->json([
+            'status' => 'suspended',
+            'message' => __('تم رصد محاولة تسجيل شاشة. تم إيقاف الحساب فوراً وتسجيل الخروج لأسباب أمنية.'),
+            'redirect' => route('login'),
+        ]);
     }
 }

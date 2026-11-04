@@ -572,7 +572,7 @@
 
     {{-- Mux Player & UpChunk --}}
     <script src="https://cdn.jsdelivr.net/npm/@mux/mux-player"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mux/upchunk@3/dist/index.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mux/upchunk@3/dist/upchunk.min.js"></script>
 
     <script>
         const IS_MUX_CONFIGURED = {{ !empty($isMuxConfigured) ? 'true' : 'false' }};

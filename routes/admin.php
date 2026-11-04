@@ -111,6 +111,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::put('students/{user}', [StudentManagerController::class, 'update'])->name('students.update');
         Route::put('students/{user}/password', [StudentManagerController::class, 'updatePassword'])->name('students.password.update');
         Route::post('students/{user}/toggle', [StudentManagerController::class, 'toggleStatus'])->name('students.toggle');
+        Route::post('students/{user}/approve', [StudentManagerController::class, 'approve'])->name('students.approve');
         Route::post('students/{user}/enroll', [StudentManagerController::class, 'enrollCourse'])->name('students.enroll');
         Route::put('students/{user}/enrollments/{course}', [StudentManagerController::class, 'updateEnrollment'])->name('students.enrollments.update');
         Route::delete('students/{user}/enrollments/{course}', [StudentManagerController::class, 'revokeEnrollment'])->name('students.enrollments.destroy');

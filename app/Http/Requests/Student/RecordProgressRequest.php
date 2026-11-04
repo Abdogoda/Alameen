@@ -37,7 +37,9 @@ class RecordProgressRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'watched_seconds' => ['required', 'integer', 'min:0'],
+            'watched_seconds' => ['required', 'numeric', 'min:0'],
+            'is_ended' => ['nullable'],
+            'duration' => ['nullable', 'numeric', 'min:0'],
         ];
     }
 }

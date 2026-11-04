@@ -18,6 +18,14 @@
             <a href="{{ route('admin.students.index', ['status' => 'active', 'search' => $search]) }}" class="px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 {{ $status === 'active' ? 'bg-[#012383] text-white dark:bg-blue-600' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-[#EAF1FB] dark:hover:bg-slate-700 dark:hover:text-white' }}">
                 {{ __('نشط ومفعل') }} ({{ $counts['active'] ?? 0 }})
             </a>
+            <a href="{{ route('admin.students.index', ['status' => 'pending', 'search' => $search]) }}" class="px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 {{ $status === 'pending' ? 'bg-amber-600 text-white' : 'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 hover:bg-amber-100 border border-amber-200/80 dark:border-amber-800/80' }}">
+                <span class="inline-flex items-center gap-1.5">
+                    @if(($counts['pending'] ?? 0) > 0)
+                        <span class="size-2 rounded-full bg-amber-500 animate-pulse"></span>
+                    @endif
+                    <span>{{ __('بانتظار الموافقة') }} ({{ $counts['pending'] ?? 0 }})</span>
+                </span>
+            </a>
             <a href="{{ route('admin.students.index', ['status' => 'suspended', 'search' => $search]) }}" class="px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 {{ $status === 'suspended' ? 'bg-[#012383] text-white dark:bg-blue-600' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-[#EAF1FB] dark:hover:bg-slate-700 dark:hover:text-white' }}">
                 {{ __('ملغي الصلاحية') }} ({{ $counts['suspended'] ?? 0 }})
             </a>
@@ -85,6 +93,11 @@
                                 <span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800">
                                     {{ __('نشط ومفعل') }}
                                 </span>
+                            @elseif($student->isPending())
+                                <span class="px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-300 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-700 inline-flex items-center gap-1.5 animate-pulse">
+                                    <span class="size-1.5 rounded-full bg-amber-500"></span>
+                                    {{ __('بانتظار الموافقة') }}
+                                </span>
                             @else
                                 <span class="px-3 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200 dark:bg-rose-950/40 dark:text-rose-300 dark:border-rose-800">
                                     {{ __('معلق / ملغي الصلاحية') }}
@@ -93,6 +106,16 @@
                         </td>
                         <td class="py-4 px-5 text-center">
                             <div class="flex items-center justify-center gap-1.5 flex-wrap">
+                                @if($student->isPending())
+                                    <form method="POST" action="{{ route('admin.students.approve', $student->id) }}">
+                                        @csrf
+                                        <button type="submit" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs transition-colors cursor-pointer inline-flex items-center gap-1">
+                                            <svg class="size-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                            <span>{{ __('موافقة واعتماد') }}</span>
+                                        </button>
+                                    </form>
+                                @endif
+
                                 <a 
                                     href="{{ route('admin.students.show', $student) }}" 
                                     class="px-3 py-1.5 rounded-lg text-xs font-bold bg-[#EAF1FB] text-[#012383] hover:bg-[#DEE8F7] dark:bg-blue-950/60 dark:text-blue-300 dark:hover:bg-blue-900/60 dark:hover:text-blue-200 border border-[#DEE8F7] dark:border-blue-900 dark:hover:border-blue-700 transition-colors inline-flex items-center gap-1.5"
@@ -105,7 +128,7 @@
                                 <form 
                                     method="POST" 
                                     action="{{ route('admin.students.toggle', $student->id) }}"
-                                    data-confirm="{{ $student->isActive() ? __('هل أنت متأكد من تعليق حساب هذا الطالب؟') : __('هل أنت متأكد من إعادة تنشيط هذا الحساب؟') }}"
+                                    data-confirm="{{ $student->isActive() ? __('هل أنت متأكد من تعليق حساب هذا الطالب؟') : __('هل أنت متأكد من تنشيط هذا الحساب؟') }}"
                                     data-confirm-title="{{ $student->isActive() ? __('تعليق حساب الطالب') : __('تنشيط حساب الطالب') }}"
                                     data-confirm-btn="{{ $student->isActive() ? __('نعم، علّق الحساب') : __('نعم، نشّط الحساب') }}"
                                     data-confirm-danger="{{ $student->isActive() ? 'true' : 'false' }}"
@@ -115,7 +138,7 @@
                                         <button type="submit" class="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 dark:bg-rose-950/40 dark:text-rose-300 dark:border-rose-800 dark:hover:bg-rose-900/60 dark:hover:text-rose-200 transition-colors cursor-pointer">
                                             {{ __('تعليق') }}
                                         </button>
-                                    @else
+                                    @elseif(!$student->isPending())
                                         <button type="submit" class="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800 dark:hover:bg-emerald-900/60 dark:hover:text-emerald-200 transition-colors cursor-pointer">
                                             {{ __('تنشيط') }}
                                         </button>
@@ -154,6 +177,10 @@
                         <span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800 shrink-0">
                             {{ __('نشط') }}
                         </span>
+                    @elseif($student->isPending())
+                        <span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-50 text-amber-700 border border-amber-300 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-700 shrink-0 animate-pulse">
+                            {{ __('بانتظار الموافقة') }}
+                        </span>
                     @else
                         <span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-rose-50 text-rose-700 border border-rose-200 dark:bg-rose-950/40 dark:text-rose-300 dark:border-rose-800 shrink-0">
                             {{ __('معلق') }}
@@ -179,6 +206,16 @@
                     </div>
                 </div>
 
+                @if($student->isPending())
+                    <form method="POST" action="{{ route('admin.students.approve', $student->id) }}" class="w-full">
+                        @csrf
+                        <button type="submit" class="w-full py-2.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
+                            <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            <span>{{ __('موافقة واعتماد حساب الطالب') }}</span>
+                        </button>
+                    </form>
+                @endif
+
                 <div class="grid grid-cols-2 gap-2 pt-1">
                     <a href="{{ route('admin.students.show', $student) }}" class="py-2 rounded-xl text-xs font-bold bg-[#EAF1FB] text-[#012383] hover:bg-[#DEE8F7] dark:bg-blue-950/60 dark:text-blue-300 dark:hover:bg-blue-900/60 dark:hover:text-blue-200 border border-blue-200 dark:border-blue-900 dark:hover:border-blue-700 transition-colors flex items-center justify-center gap-1.5">
                         <svg class="size-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
@@ -200,6 +237,11 @@
                             </button>
                         @else
                             <button type="submit" class="w-full py-2 rounded-xl text-xs font-bold bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800 dark:hover:bg-emerald-900/60 dark:hover:text-emerald-200 transition-colors cursor-pointer text-center">
+                                {{ __('تنشيط الحساب') }}
+                            </button>
+                        @endif
+                    </form>
+                </div>
                                 {{ __('إعادة التنشيط') }}
                             </button>
                         @endif

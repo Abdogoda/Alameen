@@ -25,10 +25,10 @@ return [
     'slide1Desc' => 'Comprehensive speech therapy courses, practical videos & exercises, and accredited certificate from Al-Ameen Center',
     'slide1Cta1' => 'Explore Training Paths',
     'slide1Cta2' => 'Contact Us',
-    'slide1ImgAlt1' => 'Practical Training',
-    'slide1ImgAlt2' => 'Skill Development',
-    'slide1ImgAlt3' => 'Interactive Sessions',
-    'slide1ImgAlt4' => 'Academic Accreditation',
+    'slide1ImgAlt1' => 'Practical Clinical Speech Therapy Training - Al-Ameen Center',
+    'slide1ImgAlt2' => 'Professional Speech-Language Pathologist Skill Development',
+    'slide1ImgAlt3' => 'Interactive Articulation and Stuttering Rehabilitation Sessions',
+    'slide1ImgAlt4' => 'Verified Academic Accreditation and Certifications from Al-Ameen Center',
 
     // Slide 2
     'slide2Eyebrow' => 'Interactive Video Training',

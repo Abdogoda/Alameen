@@ -288,6 +288,227 @@ class CmsAndSettingsSeeder extends Seeder
                 'value_en' => '/assets/images/alameen-images/13.jpeg',
                 'group' => 'branding',
             ],
+
+            // -------------------------------------------------------------
+            // Global & Per-Page SEO Settings (Search Engine Optimization)
+            // -------------------------------------------------------------
+            [
+                'key' => 'seo_meta_title',
+                'value_ar' => 'مركز الأمين للتدريب والتأهيل التخاطبي | كورس التخاطب الشامل مع هنا المكاوي',
+                'value_en' => 'Al-Ameen Center for Speech Rehabilitation | Comprehensive Speech Therapy with Hana Mekawy',
+                'group' => 'seo',
+            ],
+            [
+                'key' => 'seo_meta_description',
+                'value_ar' => 'المنصة الأكاديمية والسريرية الأولى لتدريب وتأهيل أخصائي النطق والتخاطب في الوطن العربي. كورسات معتمدة، فيديوهات عملية سريرية، وشهادات موثقة مع نخبة استشاريي التخاطب.',
+                'value_en' => 'The leading clinical and academic platform for training speech-language pathologists across the Arab world. Accredited courses, clinical videos, and verified certifications.',
+                'group' => 'seo',
+            ],
+            [
+                'key' => 'seo_meta_keywords',
+                'value_ar' => 'تخاطب, دورات تخاطب, كورس التخاطب الشامل, هنا المكاوي, مركز الأمين, أخصائي نطق, تدريب تخاطب, تعديل سلوك, علاج التلعثم, لدغات الحروف, تأخر نمو اللغة, توحد, شهادات معتمدة تخاطب',
+                'value_en' => 'speech therapy, speech pathologist, Hana Mekawy, Al-Ameen Center, speech training, articulation disorder, stuttering therapy, autism rehabilitation, clinical speech courses',
+                'group' => 'seo',
+            ],
+            [
+                'key' => 'seo_author',
+                'value_ar' => 'مركز الأمين - أ.د. هناء المكاوي',
+                'value_en' => 'Al-Ameen Center - Prof. Hana Mekawy',
+                'group' => 'seo',
+            ],
+            [
+                'key' => 'seo_robots',
+                'value_ar' => 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1',
+                'value_en' => 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1',
+                'group' => 'seo',
+            ],
+            [
+                'key' => 'seo_canonical_base_url',
+                'value_ar' => '',
+                'value_en' => '',
+                'group' => 'seo',
+            ],
+            [
+                'key' => 'seo_og_type',
+                'value_ar' => 'website',
+                'value_en' => 'website',
+                'group' => 'seo',
+            ],
+            [
+                'key' => 'seo_og_image',
+                'value_ar' => '/assets/images/alameen-images/6.jpeg',
+                'value_en' => '/assets/images/alameen-images/6.jpeg',
+                'group' => 'seo',
+            ],
+            [
+                'key' => 'seo_twitter_card',
+                'value_ar' => 'summary_large_image',
+                'value_en' => 'summary_large_image',
+                'group' => 'seo',
+            ],
+            [
+                'key' => 'seo_twitter_handle',
+                'value_ar' => '@alameencenter',
+                'value_en' => '@alameencenter',
+                'group' => 'seo',
+            ],
+            [
+                'key' => 'seo_google_verification',
+                'value_ar' => '',
+                'value_en' => '',
+                'group' => 'seo',
+            ],
+            [
+                'key' => 'seo_bing_verification',
+                'value_ar' => '',
+                'value_en' => '',
+                'group' => 'seo',
+            ],
+            [
+                'key' => 'seo_head_custom_scripts',
+                'value_ar' => '',
+                'value_en' => '',
+                'group' => 'seo',
+            ],
+            [
+                'key' => 'seo_body_custom_scripts',
+                'value_ar' => '',
+                'value_en' => '',
+                'group' => 'seo',
+            ],
+            [
+                'key' => 'seo_sitemap_enabled',
+                'value_ar' => '1',
+                'value_en' => '1',
+                'group' => 'seo',
+            ],
+            [
+                'key' => 'seo_robots_txt',
+                'value_ar' => "User-agent: *\nAllow: /\nAllow: /assets/\nAllow: /build/\nAllow: /src/\n\nDisallow: /admin/\nDisallow: /dashboard\nDisallow: /lesson/\nDisallow: /assignment/\nDisallow: /grades\nDisallow: /result\nDisallow: /user-profile\nDisallow: /storage/videos/lessons/\nDisallow: /webhooks/\n\nSitemap: ".url('/sitemap.xml'),
+                'value_en' => "User-agent: *\nAllow: /\nAllow: /assets/\nAllow: /build/\nAllow: /src/\n\nDisallow: /admin/\nDisallow: /dashboard\nDisallow: /lesson/\nDisallow: /assignment/\nDisallow: /grades\nDisallow: /result\nDisallow: /user-profile\nDisallow: /storage/videos/lessons/\nDisallow: /webhooks/\n\nSitemap: ".url('/sitemap.xml'),
+                'group' => 'seo',
+            ],
+            [
+                'key' => 'seo_schema_org_enabled',
+                'value_ar' => '1',
+                'value_en' => '1',
+                'group' => 'seo',
+            ],
+            [
+                'key' => 'seo_schema_org_name',
+                'value_ar' => 'مركز الأمين للتدريب والتأهيل التخاطبي',
+                'value_en' => 'Al-Ameen Center for Speech Training & Rehabilitation',
+                'group' => 'seo',
+            ],
+            // Per-Page SEO Settings
+            [
+                'key' => 'seo_page_home_title',
+                'value_ar' => 'كورس التخاطب الشامل مع هنا المكاوي | مركز الأمين',
+                'value_en' => 'Comprehensive Speech Therapy Course with Hana Mekawy | Al-Ameen Center',
+                'group' => 'seo_pages',
+            ],
+            [
+                'key' => 'seo_page_home_description',
+                'value_ar' => 'سجل الآن في كورس التخاطب الشامل Round 5 مع هنا المكاوي. تدريب سريري عملي، فيديوهات واقعية مع الحالات، وتأهيل كامل لسوق العمل بشهادة معتمدة.',
+                'value_en' => 'Enroll now in Round 5 of the Comprehensive Speech Therapy Course with Hana Mekawy. Practical clinical training, real patient videos, and accredited certification.',
+                'group' => 'seo_pages',
+            ],
+            [
+                'key' => 'seo_page_home_keywords',
+                'value_ar' => 'كورس هنا المكاوي, كورس التخاطب الشامل, تدريب تخاطب, مركز الأمين, دورات نطق وتخاطب, شهادة معتمدة تخاطب',
+                'value_en' => 'Hana Mekawy course, speech therapy course, speech pathology training, Al-Ameen Center, speech certifications',
+                'group' => 'seo_pages',
+            ],
+            [
+                'key' => 'seo_page_courses_title',
+                'value_ar' => 'دليل المسارات والدورات التدريبية في التخاطب | مركز الأمين',
+                'value_en' => 'Speech Therapy Training Tracks & Courses Directory | Al-Ameen Center',
+                'group' => 'seo_pages',
+            ],
+            [
+                'key' => 'seo_page_courses_description',
+                'value_ar' => 'استكشف أحدث الدورات التخصصية والمسارات الأكاديمية في أمراض التخاطب، تعديل السلوك، وعيوب النطق المصممة للارتقاء بمهارات الأخصائيين.',
+                'value_en' => 'Explore our specialized courses and academic tracks in speech disorders, behavioral modification, and articulation therapy designed for speech specialists.',
+                'group' => 'seo_pages',
+            ],
+            [
+                'key' => 'seo_page_courses_keywords',
+                'value_ar' => 'دورات تخاطب, مسارات تدريبية تخاطب, عيوب النطق, تعديل السلوك, دورات أخصائي تخاطب',
+                'value_en' => 'speech courses, clinical speech tracks, speech therapy directory, speech disorders courses',
+                'group' => 'seo_pages',
+            ],
+            [
+                'key' => 'seo_page_reviews_title',
+                'value_ar' => 'آراء وتقييمات المتدربين والخرّيجين | مركز الأمين',
+                'value_en' => 'Student Reviews & Graduate Testimonials | Al-Ameen Center',
+                'group' => 'seo_pages',
+            ],
+            [
+                'key' => 'seo_page_reviews_description',
+                'value_ar' => 'شاهد تجارب وآراء مئات الخريجين والمتدربين في كورس التخاطب الشامل مع هنا المكاوي، وتقييماتهم الواقعية لجودة المحتوى والتطبيق السريري.',
+                'value_en' => 'Read real reviews and feedback from hundreds of graduates in the Comprehensive Speech Therapy course with Hana Mekawy.',
+                'group' => 'seo_pages',
+            ],
+            [
+                'key' => 'seo_page_reviews_keywords',
+                'value_ar' => 'آراء متدربي مركز الأمين, تقييمات كورس هنا المكاوي, تجارب خريجي التخاطب, شهادات الطلاب',
+                'value_en' => 'student testimonials, Al-Ameen center reviews, Hana Mekawy course ratings',
+                'group' => 'seo_pages',
+            ],
+            [
+                'key' => 'seo_page_contact_title',
+                'value_ar' => 'تواصل معنا والمقر الرئيسي | مركز الأمين للتخاطب',
+                'value_en' => 'Contact Us & Headquarters | Al-Ameen Speech Center',
+                'group' => 'seo_pages',
+            ],
+            [
+                'key' => 'seo_page_contact_description',
+                'value_ar' => 'تواصل مع فريق الدعم الأكاديمي والاستشاري بمركز الأمين للتخاطب، أو تفضل بزيارة مقرنا الرئيسي. متاحون يومياً للرد على استفساراتكم.',
+                'value_en' => 'Contact our academic advising and support team at Al-Ameen Center, or visit our headquarters. We are ready to help with any inquiries.',
+                'group' => 'seo_pages',
+            ],
+            [
+                'key' => 'seo_page_contact_keywords',
+                'value_ar' => 'رقم مركز الأمين للتخاطب, عنوان مركز الأمين, واتساب مركز الأمين, استفسارات دورات التخاطب',
+                'value_en' => 'Al-Ameen contact number, speech center address, WhatsApp Al-Ameen, course inquiries',
+                'group' => 'seo_pages',
+            ],
+            [
+                'key' => 'seo_page_audit_title',
+                'value_ar' => 'تقرير التقييم السريري ومعايير الجودة | مركز الأمين',
+                'value_en' => 'Clinical Quality & Audit Report | Al-Ameen Center',
+                'group' => 'seo_pages',
+            ],
+            [
+                'key' => 'seo_page_audit_description',
+                'value_ar' => 'تقرير تقييم الأداء السريري المعتمد وفق أعلى المعايير الدولية لتأهيل أخصائيي النطق والتخاطب بمركز الأمين.',
+                'value_en' => 'Certified clinical audit and performance evaluation report adhering to international speech pathology training standards.',
+                'group' => 'seo_pages',
+            ],
+            [
+                'key' => 'seo_page_audit_keywords',
+                'value_ar' => 'تقرير الجودة السريرية, تقييم تدريب التخاطب, معايير مركز الأمين, شهادات الجودة',
+                'value_en' => 'clinical audit report, speech training quality standards, accredited speech evaluation',
+                'group' => 'seo_pages',
+            ],
+            [
+                'key' => 'seo_page_verify_certificate_title',
+                'value_ar' => 'فحص والتحقق من صحة الشهادات الصادرة | مركز الأمين',
+                'value_en' => 'Verify Issued Certificates & Credentials | Al-Ameen Center',
+                'group' => 'seo_pages',
+            ],
+            [
+                'key' => 'seo_page_verify_certificate_description',
+                'value_ar' => 'البوابة الرسمية للتحقق الفوري من صحة واعتماد شهادات المتدربين الصادرة من مركز الأمين باستخدام الرمز المرجعي أو كود QR.',
+                'value_en' => 'Official portal for instantly verifying credentials and certificates issued by Al-Ameen Center via reference code or QR.',
+                'group' => 'seo_pages',
+            ],
+            [
+                'key' => 'seo_page_verify_certificate_keywords',
+                'value_ar' => 'التحقق من الشهادات, فحص كود الشهادة, شهادات مركز الأمين المعتمدة, استعلام عن شهادة تخاطب',
+                'value_en' => 'certificate verification, verify credential, Al-Ameen certificate checker',
+                'group' => 'seo_pages',
+            ],
         ];
 
         foreach ($settings as $s) {

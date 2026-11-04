@@ -170,9 +170,16 @@
     }
 </style>
 
-<title>
-    {{ filled($title ?? null) ? $title.' - '.(filled($siteName ?? null) ? $siteName : platform_name()) : (filled($siteName ?? null) ? $siteName : platform_name()) }}
-</title>
+@include('partials.seo', [
+    'title' => $title ?? null,
+    'description' => $description ?? null,
+    'keywords' => $keywords ?? null,
+    'image' => $image ?? null,
+    'type' => $type ?? null,
+    'canonical' => $canonical ?? null,
+    'robots' => $robots ?? null,
+    'course' => $course ?? null,
+])
 
 <!-- Favicons & App Icons -->
 <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2">

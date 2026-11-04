@@ -22,6 +22,17 @@
     $videoId = $video?->id ?? null;
 @endphp
 
+<script>
+    (function() {
+        try {
+            var lock = localStorage.getItem('alameen_video_locked_until') || sessionStorage.getItem('alameen_video_locked_until');
+            if (lock && parseInt(lock, 10) > Date.now()) {
+                document.documentElement.classList.add('alameen-video-locked-mode');
+            }
+        } catch(e) {}
+    })();
+</script>
+
 <div 
     x-data="videoWatermarkPlayer(@js($studentData), {{ $videoId ? (int) $videoId : 'null' }})" 
     x-init="initPlayer()"
@@ -42,6 +53,22 @@
         mux-player::part(cast-button),
         mux-player::part(airplay-button) {
             display: none !important;
+            pointer-events: none !important;
+        }
+        .alameen-blackout-active {
+            visibility: hidden !important;
+            opacity: 0 !important;
+            filter: brightness(0) !important;
+            pointer-events: none !important;
+        }
+        /* Instant lockout style applied before DOM paints */
+        .alameen-video-locked-mode #alameen-mux-player,
+        .alameen-video-locked-mode video,
+        .alameen-video-locked-mode iframe {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            filter: brightness(0) !important;
             pointer-events: none !important;
         }
     </style>
@@ -148,16 +175,11 @@
         style="opacity: 1;"
     ></canvas>
 
-    {{-- Anti-Screen Recording & Privacy Shield Overlay (Triggered on screen recording, blur, or screenshot attempts) --}}
+    {{-- Anti-Screen Recording & Zero-Latency Privacy Shield Overlay (Instant solid black screen with no bypass buttons) --}}
     <div 
         x-show="shieldActive" 
-        x-transition:enter="transition ease-out duration-150"
-        x-transition:enter-start="opacity-0"
-        x-transition:enter-end="opacity-100"
-        x-transition:leave="transition ease-in duration-100"
-        x-transition:leave-start="opacity-100"
-        x-transition:leave-end="opacity-0"
-        class="absolute inset-0 z-40 bg-black/95 backdrop-blur-md flex flex-col items-center justify-center text-center p-6 text-white select-none pointer-events-auto"
+        x-cloak
+        class="absolute inset-0 z-50 bg-black flex flex-col items-center justify-center text-center p-6 text-white select-none pointer-events-auto"
         style="display: none;"
     >
         <div class="size-16 rounded-2xl bg-rose-500/20 text-rose-400 flex items-center justify-center border border-rose-500/30 mb-4 animate-pulse">
@@ -165,18 +187,64 @@
         </div>
         <h4 class="font-['Cairo'] font-bold text-lg text-rose-300" x-text="shieldTitle"></h4>
         <p class="font-['Cairo'] text-xs text-slate-300 mt-2 max-w-md leading-relaxed" x-text="shieldMessage"></p>
-        <button 
-            type="button" 
-            @click="dismissShield()"
-            class="mt-5 px-6 py-2.5 rounded-xl bg-[#0B2A8F] hover:bg-[#012383] text-white font-['Cairo'] font-bold text-xs shadow-md transition-all cursor-pointer"
-        >
-            {{ __('العودة لمتابعة المحاضرة') }}
-        </button>
+        
+        <div class="mt-5 inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-rose-950/60 border border-rose-500/40 text-rose-300 font-['Cairo'] text-xs font-semibold">
+            <svg class="size-4 animate-spin shrink-0 text-rose-400" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+            <span>{{ __('حظر أمني نشط: يرجى إيقاف برنامج أو أداة تسجيل الشاشة تماماً.') }}</span>
+        </div>
+        <template x-if="remainingLockSeconds > 0">
+            <div class="mt-2 text-slate-400 font-mono text-[11px] font-bold">
+                <span>{{ __('إعادة الفحص الأمني بعد:') }} </span>
+                <span class="text-rose-400" x-text="formatCountdown(remainingLockSeconds)"></span>
+            </div>
+        </template>
+    </div>
+
+    {{-- Lesson Completed Success Banner Overlay --}}
+    <div 
+        x-show="completionBannerActive" 
+        x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="opacity-0 translate-y-4"
+        x-transition:enter-end="opacity-100 translate-y-0"
+        class="absolute inset-x-3 bottom-3 z-40 p-4 rounded-2xl bg-slate-900/95 backdrop-blur-md border border-emerald-500/50 text-white shadow-2xl flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3"
+        style="display: none;"
+    >
+        <div class="flex items-center gap-3 min-w-0">
+            <div class="size-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 border border-emerald-500/40">
+                <svg class="size-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+            <div class="min-w-0">
+                <h4 class="font-['Cairo'] font-bold text-xs sm:text-sm text-emerald-300 truncate">{{ __('أحسنت! تم إكمال هذا الدرس بنجاح وتم فتح المحاضرة التالية.') }}</h4>
+                <p class="font-['Cairo'] text-[11px] text-slate-300 mt-0.5 truncate" x-text="completionMessage"></p>
+            </div>
+        </div>
+        <div class="flex items-center gap-2 shrink-0">
+            <template x-if="nextVideoUrl">
+                <a 
+                    :href="nextVideoUrl" 
+                    class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-['Cairo'] font-bold text-xs shadow-md transition-all flex items-center justify-center gap-1.5 w-full sm:w-auto"
+                >
+                    <span>{{ __('الانتقال للمحاضرة التالية') }}</span>
+                    <svg class="size-3.5 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                </a>
+            </template>
+        </div>
     </div>
 </div>
 
 <script>
     function videoWatermarkPlayer(student, videoId) {
+        const isPersistentlyLocked = () => {
+            try {
+                const lockUntil = parseInt(localStorage.getItem('alameen_video_locked_until') || sessionStorage.getItem('alameen_video_locked_until') || '0', 10);
+                return lockUntil > Date.now();
+            } catch (e) {
+                return false;
+            }
+        };
+
+        const initiallyLocked = isPersistentlyLocked();
+
         return {
             student: student,
             videoId: videoId,
@@ -184,9 +252,14 @@
             ctx: null,
             animId: null,
             tokenRefreshTimer: null,
-            shieldActive: false,
-            shieldTitle: '',
-            shieldMessage: '',
+            countdownTimer: null,
+            remainingLockSeconds: 0,
+            shieldActive: initiallyLocked,
+            shieldTitle: initiallyLocked ? '{{ __('تم حظر عرض المحتوى لأسباب أمنية') }}' : '',
+            shieldMessage: initiallyLocked ? '{{ __('تم رصد محاولة تسجيل أو تصوير الشاشة. تم إيقاف المشغل وحظر العرض لحماية المحتوى.') }}' : '',
+            completionBannerActive: false,
+            completionMessage: '',
+            nextVideoUrl: null,
             gridShiftX: 0,
             gridShiftY: 0,
             badgeX: 60,
@@ -206,7 +279,26 @@
                         this.startLoop();
                     }
 
+                    // Check if already persistently locked from earlier recording attempt or page refresh
+                    if (isPersistentlyLocked()) {
+                        this.instantBlackout(
+                            '{{ __('تم حظر عرض المحتوى لأسباب أمنية') }}',
+                            '{{ __('تم رصد محاولة تسجيل أو تصوير الشاشة. تم إيقاف المشغل وحظر العرض لحماية المحتوى.') }}'
+                        );
+                        return;
+                    }
+
+                    // Check if window is loaded in background or lacks focus
+                    if (document.hidden || (typeof document.hasFocus === 'function' && !document.hasFocus())) {
+                        this.instantBlackout(
+                            '{{ __('تم إيقاف العرض وحظر التسجيل') }}',
+                            '{{ __('نافذة المحاضرة غير نشطة أو تم تشغيل تطبيق آخر فوقها.') }}'
+                        );
+                        return;
+                    }
+
                     this.setupAntiScreenRecording();
+                    this.setupProgressTracking();
 
                     // Auto refresh signed MUX playback token before expiration (every 45 minutes)
                     if (this.videoId) {
@@ -224,106 +316,245 @@
                 this.canvas.height = rect.height;
             },
 
-            pauseVideo() {
-                try {
-                    const mux = document.getElementById('alameen-mux-player');
-                    if (mux && typeof mux.pause === 'function') {
-                        mux.pause();
-                    }
-                    const nativeVid = this.$el.querySelector('video');
-                    if (nativeVid && typeof nativeVid.pause === 'function') {
-                        nativeVid.pause();
-                    }
-                } catch (e) {}
+            getPlayerElement() {
+                return document.getElementById('alameen-mux-player') 
+                    || this.$el.querySelector('video') 
+                    || this.$el.querySelector('iframe');
             },
 
-            triggerShield(title, message) {
-                this.pauseVideo();
+            formatCountdown(sec) {
+                if (sec <= 0) return '0:00';
+                const m = Math.floor(sec / 60);
+                const s = sec % 60;
+                return `${m}:${s < 10 ? '0' : ''}${s}`;
+            },
+
+            instantBlackout(title, message, incidentType = 'screen_recording_attempt') {
+                // 1. Persist lockout in localStorage & sessionStorage (persists across refresh & new tabs)
+                try {
+                    const lockUntil = Date.now() + (15 * 60 * 1000); // 15 minutes lockout
+                    localStorage.setItem('alameen_video_locked_until', lockUntil.toString());
+                    sessionStorage.setItem('alameen_video_locked_until', lockUntil.toString());
+                    document.documentElement.classList.add('alameen-video-locked-mode');
+                } catch (e) {}
+
+                // 2. Immediately pause, mute, and blank out player DOM element
+                const player = this.getPlayerElement();
+                if (player) {
+                    try {
+                        if (typeof player.pause === 'function') player.pause();
+                        if ('muted' in player) player.muted = true;
+                        if ('volume' in player) player.volume = 0;
+                    } catch (e) {}
+                    player.classList.add('alameen-blackout-active');
+                    player.style.setProperty('visibility', 'hidden', 'important');
+                    player.style.setProperty('opacity', '0', 'important');
+                    player.style.setProperty('filter', 'brightness(0)', 'important');
+                }
+
+                // 3. Immediately fill watermark canvas with solid pitch black
+                if (this.ctx && this.canvas) {
+                    this.ctx.save();
+                    this.ctx.fillStyle = '#000000';
+                    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+                    this.ctx.restore();
+                }
+
+                // 4. Trigger solid black shield overlay immediately with zero delay
                 this.shieldTitle = title;
                 this.shieldMessage = message;
                 this.shieldActive = true;
+
+                // 5. Deactivate student account immediately, alert admins with full metadata, and reload to force logout
+                this.reportViolationAndReload(incidentType);
             },
 
-            dismissShield() {
+            reportViolationAndReload(incidentType) {
+                if (this._isReportingViolation) return;
+                this._isReportingViolation = true;
+
+                const tokenMeta = document.querySelector('meta[name="csrf-token"]');
+                const csrf = tokenMeta ? tokenMeta.getAttribute('content') : '{{ csrf_token() }}';
+
+                const url = this.videoId 
+                    ? `/videos/${this.videoId}/report-violation` 
+                    : `/security/report-violation`;
+
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': csrf,
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({
+                        video_id: this.videoId,
+                        incident_type: incidentType,
+                        timestamp: new Date().toISOString()
+                    })
+                })
+                .catch(() => {})
+                .finally(() => {
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 400);
+                });
+            },
+
+            startLockCountdown() {
+                if (this.countdownTimer) clearInterval(this.countdownTimer);
+
+                const update = () => {
+                    try {
+                        const lockUntil = parseInt(localStorage.getItem('alameen_video_locked_until') || '0', 10);
+                        const diff = lockUntil - Date.now();
+                        if (diff > 0) {
+                            this.remainingLockSeconds = Math.ceil(diff / 1000);
+                        } else {
+                            this.remainingLockSeconds = 0;
+                            clearInterval(this.countdownTimer);
+                            this.countdownTimer = null;
+                            // Only auto-unlock if the student is actively on the page and focused
+                            if (document.hasFocus() && !document.hidden) {
+                                this.unlockPlayer();
+                            }
+                        }
+                    } catch (e) {
+                        this.remainingLockSeconds = 0;
+                    }
+                };
+
+                update();
+                this.countdownTimer = setInterval(update, 1000);
+            },
+
+            unlockPlayer() {
+                try {
+                    localStorage.removeItem('alameen_video_locked_until');
+                    sessionStorage.removeItem('alameen_video_locked_until');
+                    document.documentElement.classList.remove('alameen-video-locked-mode');
+                } catch (e) {}
+
                 this.shieldActive = false;
+
+                const player = this.getPlayerElement();
+                if (player) {
+                    player.classList.remove('alameen-blackout-active');
+                    player.style.removeProperty('visibility');
+                    player.style.removeProperty('opacity');
+                    player.style.removeProperty('filter');
+                    if ('muted' in player) player.muted = false;
+                    if ('volume' in player) player.volume = 1;
+                }
             },
 
             setupAntiScreenRecording() {
-                // 1. Intercept Screen Capture API (navigator.mediaDevices.getDisplayMedia)
+                // 1. Edge Touch Interception (Mobile Screen Recorder Pull-down)
+                // When user touches the top edge to pull notification drawer / quick settings:
+                const handleTouchEdge = (e) => {
+                    if (e.touches && e.touches[0]) {
+                        const y = e.touches[0].clientY;
+                        if (y <= 65 || y >= (window.innerHeight - 45)) {
+                            this.instantBlackout(
+                                '{{ __('تم إيقاف العرض وحظر الحساب') }}',
+                                '{{ __('تم رصد محاولة تسجيل الشاشة. تم إيقاف الحساب وتسجيل الخروج فوراً.') }}',
+                                'mobile_edge_swipe'
+                            );
+                        }
+                    }
+                };
+                window.addEventListener('touchstart', handleTouchEdge, { capture: true, passive: true });
+                window.addEventListener('touchmove', handleTouchEdge, { capture: true, passive: true });
+
+                // 2. Window Blur & Visibility Change (Instant Zero-Latency Blanking)
+                document.addEventListener('visibilitychange', () => {
+                    if (document.hidden || document.visibilityState !== 'visible') {
+                        this.instantBlackout(
+                            '{{ __('تم إيقاف العرض وحظر الحساب') }}',
+                            '{{ __('تم رصد مغادرة نافذة المحاضرة أو تشغيل نافذة/تطبيق آخر فوق المشغل.') }}',
+                            'visibility_hidden'
+                        );
+                    }
+                }, true);
+
+                window.addEventListener('blur', () => {
+                    this.instantBlackout(
+                        '{{ __('تم إيقاف العرض وحظر الحساب') }}',
+                        '{{ __('تم رصد مغادرة نافذة المحاضرة أو فقدان تركيز الصفحة.') }}',
+                        'window_blur'
+                    );
+                }, true);
+
+                window.addEventListener('pagehide', () => {
+                    this.instantBlackout(
+                        '{{ __('تم إيقاف العرض وحظر الحساب') }}',
+                        '{{ __('تم الانتقال خارج الصفحة.') }}',
+                        'page_hide'
+                    );
+                }, true);
+
+                // 3. Continuous Focus & Visibility Integrity Check (Every 250ms)
+                setInterval(() => {
+                    if (document.hidden || (typeof document.hasFocus === 'function' && !document.hasFocus())) {
+                        if (!this.shieldActive) {
+                            this.instantBlackout(
+                                '{{ __('تم إيقاف العرض وحظر الحساب') }}',
+                                '{{ __('تم رصد نافذة منبثقة أو فقدان تركيز الصفحة.') }}',
+                                'focus_loss_polling'
+                            );
+                        }
+                    }
+                }, 250);
+
+                // 4. Intercept Screen Capture API (getDisplayMedia)
                 if (navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia) {
                     navigator.mediaDevices.getDisplayMedia = () => {
-                        this.triggerShield(
+                        this.instantBlackout(
                             '{{ __('تم رصد محاولة تسجيل أو مشاركة الشاشة') }}',
-                            '{{ __('تسجيل المحاضرات محمي بحقوق الملكية الفكرية ومحظور تماماً. يرجى إغلاق برنامج التسجيل للمتابعة.') }}'
+                            '{{ __('تسجيل المحاضرات محمي بحقوق الملكية الفكرية ومحظور تماماً.') }}',
+                            'get_display_media_intercepted'
                         );
                         return Promise.reject(new DOMException('Screen recording is strictly prohibited.', 'NotAllowedError'));
                     };
                 }
 
-                // 2. Window Blur & Visibility Change (Pause & Shield when switching windows or launching screen recorder)
-                document.addEventListener('visibilitychange', () => {
-                    if (document.hidden) {
-                        this.triggerShield(
-                            '{{ __('تم إيقاف العرض مؤقتاً لحماية المحتوى') }}',
-                            '{{ __('تم رصد مغادرة نافذة المحاضرة أو تشغيل نافذة أخرى. يرجى البقاء داخل الصفحة للمتابعة.') }}'
-                        );
-                    }
-                });
-
-                window.addEventListener('blur', () => {
-                    this.triggerShield(
-                        '{{ __('تم إيقاف العرض مؤقتاً لحماية المحتوى') }}',
-                        '{{ __('تم رصد مغادرة نافذة المحاضرة أو تشغيل نافذة أخرى. يرجى البقاء داخل الصفحة للمتابعة.') }}'
-                    );
-                });
-
-                // 3. Screenshot Keys & Shortcuts Interception
+                // 5. Screenshot Keys & Shortcuts Interception
                 const blockScreenshot = (e) => {
-                    // PrintScreen
                     if (e.key === 'PrintScreen' || e.code === 'PrintScreen' || e.keyCode === 44) {
                         e.preventDefault();
                         this.nullifyClipboardAndAlert();
                         return;
                     }
-
-                    // Windows Snipping Tool (Win + Shift + S) or Mac Screenshots (Cmd + Shift + 3/4/5)
                     if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'S' || e.key === 's')) {
                         e.preventDefault();
                         this.nullifyClipboardAndAlert();
                         return;
                     }
-
                     if (e.metaKey && e.shiftKey && ['3', '4', '5'].includes(e.key)) {
                         e.preventDefault();
                         this.nullifyClipboardAndAlert();
                         return;
                     }
-
-                    // Print (Ctrl + P)
                     if ((e.ctrlKey || e.metaKey) && (e.key === 'p' || e.key === 'P')) {
                         e.preventDefault();
                         this.nullifyClipboardAndAlert();
                         return;
                     }
-
-                    // Save Page (Ctrl + S)
                     if ((e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'S')) {
                         e.preventDefault();
                         return;
                     }
-
-                    // View Source (Ctrl + U)
                     if ((e.ctrlKey || e.metaKey) && (e.key === 'u' || e.key === 'U')) {
                         e.preventDefault();
                         return;
                     }
-
-                    // DevTools (F12 or Ctrl+Shift+I/J/C)
                     if (e.key === 'F12' || ((e.ctrlKey || e.metaKey) && e.shiftKey && ['I', 'J', 'C'].includes(e.key.toUpperCase()))) {
                         e.preventDefault();
-                        this.triggerShield(
+                        this.instantBlackout(
                             '{{ __('أدوات المطورين محظورة') }}',
-                            '{{ __('تم رصد محاولة فحص الصفحة أو استخراج عناصر الفيديو.') }}'
+                            '{{ __('تم رصد محاولة فحص الصفحة أو استخراج عناصر الفيديو.') }}',
+                            'devtools_opened'
                         );
                         return;
                     }
@@ -336,24 +567,24 @@
                     }
                 }, true);
 
-                // 4. Disable Picture-in-Picture on players
-                const nativeVid = this.$el.querySelector('video');
-                if (nativeVid) {
-                    nativeVid.disablePictureInPicture = true;
-                    nativeVid.addEventListener('enterpictureinpicture', () => {
+                // 6. Disable PiP and Cast
+                const playerEl = this.getPlayerElement();
+                if (playerEl && 'disablePictureInPicture' in playerEl) {
+                    playerEl.disablePictureInPicture = true;
+                    playerEl.addEventListener('enterpictureinpicture', () => {
                         if (document.exitPictureInPicture) document.exitPictureInPicture();
                     });
                 }
             },
 
             nullifyClipboardAndAlert() {
-                this.pauseVideo();
                 if (navigator.clipboard && navigator.clipboard.writeText) {
                     navigator.clipboard.writeText('⚠️ تصوير الشاشة أو تسجيل المحاضرات ممنوع قانونياً ومحمي بحقوق الملكية الفكرية - أكاديمية الأمين.');
                 }
-                this.triggerShield(
+                this.instantBlackout(
                     '{{ __('تم رصد محاولة تصوير أو تسجيل الشاشة') }}',
-                    '{{ __('تصوير أو تسجيل المحاضرات محمي بحقوق الملكية الفكرية. تم تعطيل الالتقاط وتوثيق المحاولة برقم الهوية.') }}'
+                    '{{ __('تصوير أو تسجيل المحاضرات محمي بحقوق الملكية الفكرية. تم تعطيل الالتقاط وتوثيق المحاولة برقم الهوية.') }}',
+                    'screenshot_attempt'
                 );
             },
 
@@ -379,10 +610,149 @@
                 } catch (e) {}
             },
 
+            setupProgressTracking() {
+                if (!this.videoId) return;
+
+                const getPlayer = () => document.getElementById('alameen-mux-player') || this.$el.querySelector('video');
+
+                let lastSentSeconds = -1;
+                let lastSendTime = 0;
+                let isSending = false;
+                let hasTriggeredCompletion = false;
+
+                window.playerResume = (sec) => {
+                    const p = getPlayer();
+                    if (p && !isNaN(sec) && sec > 0) {
+                        p.currentTime = sec;
+                        if (typeof p.play === 'function') {
+                            p.play().catch(() => {});
+                        }
+                    }
+                };
+
+                const sendProgress = async (seconds, isEnded = false, duration = null) => {
+                    if (isSending) return;
+                    if (!isEnded && Math.abs(seconds - lastSentSeconds) < 3) return;
+
+                    isSending = true;
+                    lastSentSeconds = seconds;
+                    lastSendTime = Date.now();
+
+                    try {
+                        const tokenMeta = document.querySelector('meta[name="csrf-token"]');
+                        const csrf = tokenMeta ? tokenMeta.getAttribute('content') : '{{ csrf_token() }}';
+
+                        const res = await fetch(`/videos/${this.videoId}/progress`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json',
+                                'X-CSRF-TOKEN': csrf,
+                                'X-Requested-With': 'XMLHttpRequest'
+                            },
+                            body: JSON.stringify({
+                                watched_seconds: Math.max(0, Math.floor(seconds)),
+                                is_ended: isEnded ? 1 : 0,
+                                duration: duration && duration > 0 ? Math.floor(duration) : null
+                            })
+                        });
+
+                        if (res.ok) {
+                            const data = await res.json();
+                            if (data.is_completed && !hasTriggeredCompletion) {
+                                hasTriggeredCompletion = true;
+                                this.onLessonCompleted(data);
+                            }
+                        }
+                    } catch (e) {
+                        console.warn('[Video Progress] Sync heartbeat error:', e);
+                    } finally {
+                        isSending = false;
+                    }
+                };
+
+                const attachEvents = (player) => {
+                    if (!player || player._progressEventsAttached) return;
+                    player._progressEventsAttached = true;
+
+                    // Periodic playback progress (every 6-8 seconds)
+                    player.addEventListener('timeupdate', () => {
+                        const current = player.currentTime || 0;
+                        const dur = player.duration || null;
+                        const now = Date.now();
+
+                        if (now - lastSendTime >= 7000 && current > 0) {
+                            sendProgress(current, false, dur);
+                        }
+                    });
+
+                    // Pause event: save immediate bookmark
+                    player.addEventListener('pause', () => {
+                        if (player.currentTime > 0) {
+                            sendProgress(player.currentTime, false, player.duration || null);
+                        }
+                    });
+
+                    // Ended event: mark 100% completed immediately
+                    player.addEventListener('ended', () => {
+                        const dur = player.duration || player.currentTime || 0;
+                        sendProgress(dur, true, dur);
+                    });
+                };
+
+                // Attach listener as soon as player DOM element is available
+                let attempts = 0;
+                const attachTimer = setInterval(() => {
+                    attempts++;
+                    const p = getPlayer();
+                    if (p) {
+                        attachEvents(p);
+                        clearInterval(attachTimer);
+                    } else if (attempts >= 20) {
+                        clearInterval(attachTimer);
+                    }
+                }, 400);
+            },
+
+            onLessonCompleted(data) {
+                this.completionBannerActive = true;
+                if (data.next_video) {
+                    this.nextVideoUrl = data.next_video.url;
+                    this.completionMessage = '{{ __('المحاضرة التالية:') }} ' + data.next_video.title;
+                } else {
+                    this.nextVideoUrl = null;
+                    this.completionMessage = '{{ __('تهانينا! لقد أتممت جميع محاضرات هذا الكورس.') }}';
+                }
+
+                // If user reached end of video, gently prompt / redirect after 3.5 seconds
+                const player = document.getElementById('alameen-mux-player') || this.$el.querySelector('video');
+                if (player && (player.ended || (player.duration && player.currentTime >= player.duration - 1))) {
+                    if (this.nextVideoUrl) {
+                        setTimeout(() => {
+                            if (this.nextVideoUrl) {
+                                window.location.href = this.nextVideoUrl;
+                            }
+                        }, 3500);
+                    } else {
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 3000);
+                    }
+                }
+            },
+
             startLoop() {
                 let lastTime = 0;
                 const render = (time) => {
                     if (!this.ctx || !this.canvas) return;
+
+                    // If shield is active, enforce solid pitch black every single frame
+                    if (this.shieldActive) {
+                        this.ctx.fillStyle = '#000000';
+                        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+                        this.animId = requestAnimationFrame(render);
+                        return;
+                    }
 
                     if (!lastTime) lastTime = time;
                     const elapsed = Math.min((time - lastTime) / 1000, 0.1);
@@ -394,8 +764,8 @@
                     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
                     // 1. Shift the full-frame watermark pattern very slowly and smoothly across (X, Y)
-                    this.gridShiftX += 0.08 * speedFactor;
-                    this.gridShiftY += 0.05 * speedFactor;
+                    this.gridShiftX += 0.10 * speedFactor;
+                    this.gridShiftY += 0.06 * speedFactor;
 
                     const offsetX = this.gridShiftX % this.colSpacing;
                     const offsetY = this.gridShiftY % this.rowSpacing;
@@ -408,9 +778,9 @@
                     const line1 = `${this.student.name} • ${this.student.phone}`;
                     const line2 = `ID: ${this.student.id} • IP: ${this.student.ip} • ${dateStr} ${timeStr}`;
 
-                    // 2. STRICT OPACITY 0.1 ON ALL VIDEO FRAME AS REQUESTED
+                    // 2. High-legibility security grid across the entire video frame
                     this.ctx.save();
-                    this.ctx.globalAlpha = 0.10; // Exactly 0.1 opacity
+                    this.ctx.globalAlpha = 0.15;
                     this.ctx.font = '700 12.5px "Noto Sans Arabic", "Cairo", Inter, system-ui, sans-serif';
 
                     // Angled watermark across the entire frame (-22 degrees)
@@ -428,7 +798,7 @@
                         for (let y = startY + offsetY; y < endY; y += this.rowSpacing) {
                             this.ctx.fillStyle = '#FFFFFF';
                             this.ctx.shadowColor = '#000000';
-                            this.ctx.shadowBlur = 3;
+                            this.ctx.shadowBlur = 4;
                             this.ctx.fillText(line1, x, y);
                             this.ctx.font = '500 10.5px monospace';
                             this.ctx.fillText(line2, x, y + 15);
@@ -438,26 +808,42 @@
 
                     this.ctx.restore();
 
-                    // 3. Dynamic drifting secondary watermark badge (slow and gentle movement)
+                    // 3. Dynamic drifting forensic watermark badge (high-contrast floating pill)
                     this.badgeX += this.badgeVx * speedFactor;
                     this.badgeY += this.badgeVy * speedFactor;
 
-                    if (this.badgeX <= 25 || this.badgeX + 240 >= this.canvas.width - 25) {
+                    const badgeW = 270;
+                    const badgeH = 46;
+
+                    if (this.badgeX <= 15 || this.badgeX + badgeW >= this.canvas.width - 15) {
                         this.badgeVx = -this.badgeVx;
                     }
-                    if (this.badgeY <= 35 || this.badgeY + 45 >= this.canvas.height - 35) {
+                    if (this.badgeY <= 15 || this.badgeY + badgeH >= this.canvas.height - 15) {
                         this.badgeVy = -this.badgeVy;
                     }
 
                     this.ctx.save();
-                    this.ctx.globalAlpha = 0.10; // Exactly 0.1 opacity
-                    this.ctx.font = '800 13px "Cairo", system-ui, sans-serif';
+                    // Draw semi-transparent dark rounded pill background
+                    this.ctx.globalAlpha = 0.45;
+                    this.ctx.fillStyle = '#0f172a';
+                    this.ctx.beginPath();
+                    if (typeof this.ctx.roundRect === 'function') {
+                        this.ctx.roundRect(this.badgeX, this.badgeY, badgeW, badgeH, 10);
+                    } else {
+                        this.ctx.rect(this.badgeX, this.badgeY, badgeW, badgeH);
+                    }
+                    this.ctx.fill();
+
+                    // Draw pill forensic text
+                    this.ctx.globalAlpha = 0.90;
+                    this.ctx.font = '800 12px "Cairo", system-ui, sans-serif';
                     this.ctx.fillStyle = '#FFFFFF';
                     this.ctx.shadowColor = '#000000';
                     this.ctx.shadowBlur = 4;
-                    this.ctx.fillText(`🔒 ${this.student.name} • ${this.student.phone}`, this.badgeX, this.badgeY);
-                    this.ctx.font = '600 11px monospace';
-                    this.ctx.fillText(`ID: ${this.student.id} • ${this.student.ip}`, this.badgeX, this.badgeY + 16);
+                    this.ctx.fillText(`🔒 ${this.student.name} • ${this.student.phone}`, this.badgeX + 12, this.badgeY + 18);
+                    this.ctx.font = '600 10px monospace';
+                    this.ctx.fillStyle = '#E2E8F0';
+                    this.ctx.fillText(`ID: ${this.student.id} • IP: ${this.student.ip}`, this.badgeX + 12, this.badgeY + 34);
                     this.ctx.restore();
 
                     this.animId = requestAnimationFrame(render);

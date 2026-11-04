@@ -6,6 +6,7 @@ use Database\Factories\UserFactory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -76,11 +77,19 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
     }
 
     /**
-     * Check if the student account is active.
+     * Check if the student account is active / approved.
      */
     public function isActive(): bool
     {
         return $this->status === 'active';
+    }
+
+    /**
+     * Check if the student account is pending admin approval.
+     */
+    public function isPending(): bool
+    {
+        return $this->status === 'pending';
     }
 
     /**
@@ -89,6 +98,28 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
     public function isSuspended(): bool
     {
         return $this->status === 'suspended';
+    }
+
+    /**
+     * Scope query to only pending students.
+     *
+     * @param  Builder<User>  $query
+     * @return Builder<User>
+     */
+    public function scopePending(Builder $query): Builder
+    {
+        return $query->where('status', 'pending');
+    }
+
+    /**
+     * Scope query to only active/approved students.
+     *
+     * @param  Builder<User>  $query
+     * @return Builder<User>
+     */
+    public function scopeActive(Builder $query): Builder
+    {
+        return $query->where('status', 'active');
     }
 
     /**

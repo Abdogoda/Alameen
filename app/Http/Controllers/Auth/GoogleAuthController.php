@@ -88,9 +88,22 @@ class GoogleAuthController extends Controller
                 'avatar' => $googleUser->getAvatar(),
                 'email_verified_at' => now(),
                 'locale' => app()->getLocale(),
+                'status' => 'pending',
                 'password' => bcrypt(Str::random(32)),
             ]);
             $user->save();
+        }
+
+        if ($user->status === 'pending') {
+            return redirect()->route('login')->withErrors([
+                'email' => __('حسابك قيد المراجعة وبانتظار موافقة إدارة المنصة. يرجى الانتظار حتى يتم اعتماد الحساب لتتمكن من تسجيل الدخول.'),
+            ]);
+        }
+
+        if ($user->status === 'suspended') {
+            return redirect()->route('login')->withErrors([
+                'email' => __('تم إيقاف هذا الحساب. يرجى التواصل مع إدارة المنصة.'),
+            ]);
         }
 
         Auth::login($user, remember: true);

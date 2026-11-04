@@ -71,7 +71,7 @@ class GoogleAuthenticationTest extends TestCase
         $this->assertEquals('https://lh3.googleusercontent.com/avatar.jpg', $user->avatar);
     }
 
-    public function test_new_user_can_register_and_authenticate_via_google(): void
+    public function test_new_user_registering_via_google_is_marked_pending_and_redirected_to_login(): void
     {
         $abstractUser = Mockery::mock(SocialiteUser::class);
         $abstractUser->shouldReceive('getId')->andReturn('google-new-id-98765');
@@ -87,11 +87,12 @@ class GoogleAuthenticationTest extends TestCase
 
         $response = $this->get(route('auth.google.callback'));
 
-        $response->assertRedirect(route('dashboard'));
-        $this->assertAuthenticated();
+        $response->assertRedirect(route('login'));
+        $this->assertGuest();
 
         $user = User::where('email', 'newstudent@example.com')->first();
         $this->assertNotNull($user);
+        $this->assertTrue($user->isPending());
         $this->assertEquals('google-new-id-98765', $user->google_id);
         $this->assertEquals('New Student', $user->name);
         $this->assertNotNull($user->email_verified_at);

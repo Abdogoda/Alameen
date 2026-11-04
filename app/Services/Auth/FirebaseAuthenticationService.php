@@ -94,12 +94,18 @@ class FirebaseAuthenticationService
                 'firebase_uid' => $firebaseUid,
                 'google_id' => $googleId,
                 'avatar' => $avatar,
-                'status' => 'active',
+                'status' => 'pending',
                 'email_verified_at' => $emailVerified ? now() : null,
                 'locale' => app()->getLocale(),
                 'password' => Hash::make(Str::random(32)),
             ]);
             $user->save();
+        }
+
+        if ($user->status === 'pending') {
+            throw ValidationException::withMessages([
+                'email' => [__('حسابك قيد المراجعة وبانتظار موافقة إدارة المنصة. يرجى الانتظار حتى يتم اعتماد الحساب لتتمكن من تسجيل الدخول.')],
+            ]);
         }
 
         if ($user->isSuspended()) {

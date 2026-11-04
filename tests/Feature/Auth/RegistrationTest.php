@@ -24,7 +24,7 @@ class RegistrationTest extends TestCase
         $response->assertOk();
     }
 
-    public function test_new_users_can_register(): void
+    public function test_new_users_can_register_and_are_marked_pending_without_direct_login(): void
     {
         $response = $this->post(route('register.store'), [
             'name' => 'John Doe',
@@ -34,8 +34,13 @@ class RegistrationTest extends TestCase
         ]);
 
         $response->assertSessionHasNoErrors()
-            ->assertRedirect(route('dashboard', absolute: false));
+            ->assertRedirect(route('login'));
 
-        $this->assertAuthenticated();
+        $this->assertGuest();
+
+        $this->assertDatabaseHas('users', [
+            'email' => 'test@example.com',
+            'status' => 'pending',
+        ]);
     }
 }

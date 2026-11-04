@@ -54,13 +54,23 @@
                 <span>{{ __('تغيير كلمة المرور') }}</span>
             </button>
 
+            @if($user->isPending())
+                <form method="POST" action="{{ route('admin.students.approve', $user->id) }}">
+                    @csrf
+                    <button type="submit" class="h-9 sm:h-10 px-4 sm:px-5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center gap-1.5 transition-all shadow-sm cursor-pointer whitespace-nowrap animate-pulse">
+                        <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                        <span>{{ __('موافقة واعتماد حساب الطالب') }}</span>
+                    </button>
+                </form>
+            @endif
+
             {{-- Toggle Status Form --}}
             <form 
                 method="POST" 
                 action="{{ route('admin.students.toggle', $user->id) }}"
-                data-confirm="{{ $user->isActive() ? __('هل أنت متأكد من تعليق حساب هذا الطالب ومنعه من الوصول لمنصة التدريب؟') : __('هل أنت متأكد من إعادة تنشيط هذا الحساب؟') }}"
-                data-confirm-title="{{ $user->isActive() ? __('تعليق حساب الطالب') : __('تنشيط حساب الطالب') }}"
-                data-confirm-btn="{{ $user->isActive() ? __('نعم، علّق الحساب') : __('نعم، نشّط الحساب') }}"
+                data-confirm="{{ $user->isActive() ? __('هل أنت متأكد من تعليق حساب هذا الطالب ومنعه من الوصول لمنصة التدريب؟') : ($user->isPending() ? __('هل أنت متأكد من اعتماد وتفعيل حساب الطالب؟') : __('هل أنت متأكد من إعادة تنشيط هذا الحساب؟')) }}"
+                data-confirm-title="{{ $user->isActive() ? __('تعليق حساب الطالب') : ($user->isPending() ? __('اعتماد حساب الطالب') : __('تنشيط حساب الطالب')) }}"
+                data-confirm-btn="{{ $user->isActive() ? __('نعم، علّق الحساب') : ($user->isPending() ? __('نعم، اعتمد الحساب') : __('نعم، نشّط الحساب')) }}"
                 data-confirm-danger="{{ $user->isActive() ? 'true' : 'false' }}"
             >
                 @csrf
@@ -68,6 +78,11 @@
                     <button type="submit" class="h-9 sm:h-10 px-3.5 sm:px-4 rounded-xl bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 dark:bg-rose-950/40 dark:text-rose-300 dark:border-rose-800 font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer whitespace-nowrap">
                         <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
                         <span>{{ __('تعليق الحساب') }}</span>
+                    </button>
+                @elseif($user->isPending())
+                    <button type="submit" class="h-9 sm:h-10 px-3.5 sm:px-4 rounded-xl bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800 font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer whitespace-nowrap">
+                        <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                        <span>{{ __('تفعيل الحساب') }}</span>
                     </button>
                 @else
                     <button type="submit" class="h-9 sm:h-10 px-3.5 sm:px-4 rounded-xl bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800 font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer whitespace-nowrap">
@@ -1021,6 +1036,7 @@
                             <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">{{ __('حالة الحساب') }} *</label>
                             <select name="status" required class="w-full h-11 px-3.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-bold text-slate-800 dark:text-slate-200 outline-none focus:border-[#012383]">
                                 <option value="active" @selected(old('status', $user->status) === 'active')>{{ __('نشط ومفعل') }}</option>
+                                <option value="pending" @selected(old('status', $user->status) === 'pending')>{{ __('بانتظار الموافقة') }}</option>
                                 <option value="suspended" @selected(old('status', $user->status) === 'suspended')>{{ __('معلق / ملغي الصلاحية') }}</option>
                             </select>
                         </div>

@@ -521,7 +521,7 @@
     {{-- ===================================================== --}}
     {{-- Client-Side Resilient Video Upload & Streaming Engine  --}}
     {{-- ===================================================== --}}
-    <script src="https://cdn.jsdelivr.net/npm/@mux/upchunk@3/dist/index.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mux/upchunk@3/dist/upchunk.min.js"></script>
     <script>
         const IS_MUX_CONFIGURED = {{ $isMuxConfigured ? 'true' : 'false' }};
         const MUX_DIRECT_UPLOAD_URL = "{{ route('admin.courses.videos.mux.direct_upload', $course) }}";

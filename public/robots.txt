@@ -1,2 +1,22 @@
+# =========================================================================
+# Al-Ameen Speech Center - Robots.txt Rules for Search Engine Crawlers
+# =========================================================================
 User-agent: *
-Disallow:
+Allow: /
+Allow: /assets/
+Allow: /build/
+Allow: /src/
+
+# Prevent crawlers from accessing private student LMS and admin endpoints
+Disallow: /admin/
+Disallow: /dashboard
+Disallow: /lesson/
+Disallow: /assignment/
+Disallow: /grades
+Disallow: /result
+Disallow: /user-profile
+Disallow: /storage/videos/lessons/
+Disallow: /webhooks/
+
+# Dynamic XML Sitemap Index
+Sitemap: http://localhost/sitemap.xml

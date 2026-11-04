@@ -65,7 +65,7 @@
 
     {{-- Interactive Multi-Tab Control Tower Container --}}
     <div x-data="{ 
-        validTabs: ['branding', 'contact', 'cms', 'faq', 'academic', 'payments', 'mux', 'menus', 'theme', 'pages'],
+        validTabs: ['branding', 'seo', 'contact', 'cms', 'faq', 'academic', 'payments', 'mux', 'menus', 'theme', 'pages'],
         activeTab: 'branding',
         init() {
             const rawHash = (window.location.hash || '').replace(/^#/, '').trim();
@@ -98,6 +98,11 @@
             <button type="button" @click="setTab('branding')" :class="activeTab === 'branding' ? 'bg-[#012383] text-white shadow-xs font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" class="shrink-0 px-4 py-2.5 rounded-xl text-xs whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer">
                 <span class="shrink-0 text-sm">🏢</span>
                 <span class="shrink-0 font-bold whitespace-nowrap">{{ __('الهوية والعلامة التجارية') }}</span>
+            </button>
+
+            <button type="button" @click="setTab('seo')" :class="activeTab === 'seo' ? 'bg-[#012383] text-white shadow-xs font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" class="shrink-0 px-4 py-2.5 rounded-xl text-xs whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer">
+                <span class="shrink-0 text-sm">🚀</span>
+                <span class="shrink-0 font-bold whitespace-nowrap">{{ __('محركات البحث وSEO') }}</span>
             </button>
 
             <button type="button" @click="setTab('pages')" :class="activeTab === 'pages' ? 'bg-[#012383] text-white shadow-xs font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" class="shrink-0 px-4 py-2.5 rounded-xl text-xs whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer">
@@ -281,6 +286,11 @@
                 </form>
             </div>
         </div>
+
+        {{-- ======================================================== --}}
+        {{-- TAB: محركات البحث وSEO (Search Engine Optimization)       --}}
+        {{-- ======================================================== --}}
+        @include('admin.settings.partials.seo-tab')
 
         {{-- ======================================================== --}}
         {{-- TAB 2: التواصل والدعم الفني ووسائل التواصل (Contact)    --}}

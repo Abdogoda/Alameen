@@ -4,11 +4,16 @@ namespace App\Providers;
 
 use App\Actions\Fortify\CreateNewUser;
 use App\Actions\Fortify\ResetUserPassword;
+use App\Models\User;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
+use Laravel\Fortify\Contracts\RegisterResponse;
 use Laravel\Fortify\Fortify;
 
 class FortifyServiceProvider extends ServiceProvider
@@ -18,7 +23,22 @@ class FortifyServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Custom registration response: logout immediately and require admin approval
+        $this->app->singleton(RegisterResponse::class, function () {
+            return new class implements RegisterResponse
+            {
+                public function toResponse($request)
+                {
+                    Auth::guard('web')->logout();
+                    $request->session()->invalidate();
+                    $request->session()->regenerateToken();
+
+                    return redirect()->route('login')->with('status', __(
+                        'تم تسجيل حسابك بنجاح! حسابك حالياً قيد المراجعة وبانتظار موافقة إدارة المنصة. ستتمكن من تسجيل الدخول فور اعتماد الحساب.'
+                    ));
+                }
+            };
+        });
     }
 
     /**
@@ -27,8 +47,37 @@ class FortifyServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->configureActions();
+        $this->configureAuthentication();
         $this->configureViews();
         $this->configureRateLimiting();
+    }
+
+    /**
+     * Configure Fortify authentication rules and pending approval enforcement.
+     */
+    private function configureAuthentication(): void
+    {
+        Fortify::authenticateUsing(function (Request $request) {
+            $user = User::where('email', $request->email)->first();
+
+            if ($user && Hash::check($request->password, $user->password)) {
+                if ($user->status === 'pending') {
+                    throw ValidationException::withMessages([
+                        Fortify::username() => [__('حسابك قيد المراجعة والموافقة من قِبل إدارة المنصة. يرجى الانتظار حتى يتم تفعيل الحساب لتتمكن من تسجيل الدخول.')],
+                    ]);
+                }
+
+                if ($user->status === 'suspended') {
+                    throw ValidationException::withMessages([
+                        Fortify::username() => [__('تم إيقاف هذا الحساب. يرجى التواصل مع إدارة المنصة.')],
+                    ]);
+                }
+
+                return $user;
+            }
+
+            return null;
+        });
     }
 
     /**

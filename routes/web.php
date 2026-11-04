@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\FirebaseAuthController;
 use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Controllers\Auth\PasswordResetOtpController;
 use App\Http\Controllers\LocaleController;
+use App\Http\Controllers\SeoController;
 use App\Http\Controllers\Student\SupportTicketController;
 use App\Http\Controllers\StudentCourseController;
 use App\Http\Controllers\Webhooks\MuxWebhookController;
@@ -42,6 +43,12 @@ Route::middleware('guest')->group(function () {
         ->middleware('throttle:otp')
         ->name('password.update');
 });
+
+// -------------------------------------------------------------
+// SEO, Sitemaps & Search Engine Crawlers
+// -------------------------------------------------------------
+Route::get('sitemap.xml', [SeoController::class, 'sitemap'])->name('seo.sitemap');
+Route::get('robots.txt', [SeoController::class, 'robots'])->name('seo.robots');
 
 // -------------------------------------------------------------
 // Public Web Pages (Marketing & Catalogue)
@@ -121,6 +128,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('videos/{video}/progress', [StudentCourseController::class, 'recordProgress'])
         ->middleware('throttle:video-progress')
         ->name('videos.progress');
+    Route::post('videos/{video}/report-violation', [StudentCourseController::class, 'reportViolation'])
+        ->name('videos.report-violation');
+    Route::post('security/report-violation', [StudentCourseController::class, 'reportViolation'])
+        ->name('security.report-violation');
     Route::post('courses/{course}/receipt', [StudentCourseController::class, 'submitReceipt'])
         ->middleware('throttle:uploads')
         ->name('courses.receipt.submit');

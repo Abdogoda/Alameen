@@ -309,6 +309,23 @@ class SettingsController extends Controller
             $this->settingsService->set('certificate_signatory_title', $title, $title, 'certificates');
         }
 
+        // Handle custom SEO OpenGraph social sharing image upload
+        if ($request->hasFile('seo_og_image_file')) {
+            $path = $request->file('seo_og_image_file')->store('seo', 'public');
+            if (is_string($path)) {
+                $url = Storage::url($path);
+                $this->settingsService->set('seo_og_image', $url, $url, 'seo');
+            }
+        }
+
+        // Keep physical public/robots.txt synced with custom robots rules
+        if (isset($settings['seo_robots_txt']['ar'])) {
+            try {
+                @file_put_contents(public_path('robots.txt'), (string) $settings['seo_robots_txt']['ar']);
+            } catch (\Throwable) {
+            }
+        }
+
         return back()->with('success', __('تم حفظ وتحديث إعدادات المنصة وتفريغ الكاش الفوري بنجاح.'));
     }
 

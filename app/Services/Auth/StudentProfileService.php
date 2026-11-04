@@ -41,13 +41,13 @@ class StudentProfileService
     }
 
     /**
-     * Change user status (active / suspended).
+     * Change user status (active / pending / suspended).
      */
     public function setStatus(User $user, string $status): User
     {
-        if (! in_array($status, ['active', 'suspended'], true)) {
+        if (! in_array($status, ['active', 'pending', 'suspended'], true)) {
             throw ValidationException::withMessages([
-                'status' => __('الحالة المحددة غير صالحة. يجب أن تكون active أو suspended'),
+                'status' => __('الحالة المحددة غير صالحة. يجب أن تكون active أو pending أو suspended'),
             ]);
         }
 
@@ -55,6 +55,14 @@ class StudentProfileService
         $user->save();
 
         return $user;
+    }
+
+    /**
+     * Approve and activate a student account.
+     */
+    public function approve(User $user): User
+    {
+        return $this->activate($user);
     }
 
     /**

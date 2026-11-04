@@ -28,6 +28,7 @@ class UpdateSettingsRequest extends FormRequest
             'site_logo_white_file' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp,svg', 'max:5120'],
             'footer_logo_file' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp,svg', 'max:5120'],
             'auth_login_image_file' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:10240'],
+            'seo_og_image_file' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp,svg', 'max:5120'],
             'certificate_default_template' => ['nullable', 'string', 'in:royal_gold,clinical_emerald,modern_navy,custom'],
             'certificate_custom_bg_file' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:10240'],
             'certificate_stamp_file' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:5120'],

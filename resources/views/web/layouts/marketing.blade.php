@@ -8,9 +8,9 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}" class="scroll-smooth">
     <head>
         @include('partials.head')
-        <title>{{ filled($title ?? null) ? $title . ' | ' . (filled($siteName ?? null) ? $siteName : platform_name()) : (filled($siteName ?? null) ? $siteName : platform_name()) }}</title>
     </head>
     <body class="bg-[#FAFCFF] dark:bg-slate-950 min-h-screen text-[#334155] dark:text-slate-100 font-body antialiased selection:bg-[#EAF1FB] selection:text-[#0B2A8F] w-full max-w-full relative transition-colors">
+        {!! app(\App\Services\Seo\SeoService::class)->getCustomBodyScripts() !!}
         
         <!-- Top-Level Pre-Rendered Themed Loader (At the top of everything from 0ms) -->
         @persist('alameen-loader')

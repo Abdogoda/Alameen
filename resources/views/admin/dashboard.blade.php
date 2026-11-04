@@ -2,6 +2,8 @@
 
     @php
         $totalStudents = \App\Models\User::count();
+        $pendingStudentsCount = \App\Models\User::where('status', 'pending')->count();
+        $pendingStudentsList = \App\Models\User::where('status', 'pending')->latest()->take(6)->get();
         $pendingReceipts = $pendingReceiptsCount ?? (\Illuminate\Support\Facades\Schema::hasTable('payment_receipts') ? \App\Models\PaymentReceipt::where('status', 'pending')->count() : 0);
         $pendingTasks = $pendingTasksCount ?? (\Illuminate\Support\Facades\Schema::hasTable('task_submissions') ? \App\Models\TaskSubmission::where('status', 'pending')->count() : 0);
         $totalVideos = \App\Models\Video::count();
@@ -64,12 +66,47 @@
         </div>
 
         <!-- ============================================== -->
+        <!-- PENDING STUDENTS APPROVAL ALERT BANNER         -->
+        <!-- ============================================== -->
+        @if($pendingStudentsCount > 0)
+            <div class="p-5 rounded-2xl sm:rounded-3xl bg-amber-500/10 border-2 border-amber-400 dark:border-amber-600/80 shadow-md flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                <div class="flex items-center gap-3.5">
+                    <div class="size-12 sm:size-14 rounded-2xl bg-amber-500 text-white flex items-center justify-center shrink-0 shadow-md ring-4 ring-amber-500/20">
+                        <svg class="size-6 sm:size-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="px-2.5 py-0.5 rounded-full text-[11px] font-black bg-amber-500 text-white uppercase tracking-wider">{{ __('تنبيه إداري عاجل') }}</span>
+                            <span class="text-xs font-bold text-amber-800 dark:text-amber-300">
+                                {{ __(':count طالب جديد بانتظار الاعتماد والموافقة', ['count' => $pendingStudentsCount]) }}
+                            </span>
+                        </div>
+                        <h3 class="text-base sm:text-lg font-black text-[#012383] dark:text-amber-200 mt-1">
+                            {{ __('يوجد حسابات طلاب جديدة تم تسجيلها بانتظار موافقة الإدارة لتتمكن من تسجيل الدخول') }}
+                        </h3>
+                        <p class="text-xs text-slate-600 dark:text-slate-300 mt-0.5">
+                            {{ __('لن يتمكن أي طالب جديد من تسجيل الدخول أو استعراض صفحات المنصة التدريبية حتى تقوم باعتماد حسابه.') }}
+                        </p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2 w-full md:w-auto shrink-0">
+                    <a href="{{ route('admin.students.index', ['status' => 'pending']) }}" class="w-full md:w-auto px-5 py-3 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all cursor-pointer">
+                        <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <span>{{ __('مراجعة واعتماد الطلاب (:count)', ['count' => $pendingStudentsCount]) }}</span>
+                        <svg class="size-3.5 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                    </a>
+                </div>
+            </div>
+        @endif
+
+        <!-- ============================================== -->
         <!-- 2. CORE KPIS STATS CARDS                       -->
         <!-- ============================================== -->
         <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-5">
             
             <!-- KPI 1: Registered Students -->
-            <a href="{{ route('admin.students.index') }}" class="group bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-2xl p-5 shadow-xs hover:shadow-card hover:border-[#0B2A8F]/40 dark:hover:border-blue-500/40 transition-all flex flex-col justify-between gap-4 cursor-pointer">
+            <a href="{{ route('admin.students.index') }}" class="group bg-white dark:bg-slate-900 border {{ $pendingStudentsCount > 0 ? 'border-amber-300 dark:border-amber-700/60 bg-amber-50/10' : 'border-[#DEE8F7] dark:border-slate-800' }} rounded-2xl p-5 shadow-xs hover:shadow-card hover:border-[#0B2A8F]/40 dark:hover:border-blue-500/40 transition-all flex flex-col justify-between gap-4 cursor-pointer">
                 <div class="flex items-center justify-between">
                     <span class="text-xs font-bold text-slate-500 dark:text-slate-400">{{ __('إجمالي الطلاب المسجلين') }}</span>
                     <div class="size-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
@@ -77,7 +114,14 @@
                     </div>
                 </div>
                 <div>
-                    <h3 class="text-3xl font-black text-[#012383] dark:text-blue-400 font-['Cairo'] tracking-tight">{{ number_format($totalStudents) }}</h3>
+                    <div class="flex items-baseline justify-between gap-2">
+                        <h3 class="text-3xl font-black text-[#012383] dark:text-blue-400 font-['Cairo'] tracking-tight">{{ number_format($totalStudents) }}</h3>
+                        @if($pendingStudentsCount > 0)
+                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-300 dark:border-amber-800 shrink-0">
+                                {{ $pendingStudentsCount }} {{ __('بانتظار الموافقة') }}
+                            </span>
+                        @endif
+                    </div>
                     <div class="flex items-center justify-between mt-2 pt-2 border-t border-slate-100 dark:border-slate-800/80">
                         <span class="text-xs text-slate-500 dark:text-slate-400 font-medium">{{ __('طالب في مسار التخاطب') }}</span>
                         <span class="text-xs text-emerald-600 dark:text-emerald-400 font-bold group-hover:translate-x-[-2px] rtl:group-hover:translate-x-[2px] transition-transform">{{ __('عرض') }} ←</span>
@@ -160,6 +204,74 @@
             <!-- Left 2 Cols: Course Overview & Health Architecture -->
             <div class="lg:col-span-2 flex flex-col gap-5 sm:gap-6 min-w-0">
                 
+                @if($pendingStudentsList->isNotEmpty())
+                    <!-- PENDING STUDENTS ROSTER CARD -->
+                    <div class="bg-white dark:bg-slate-900 border-2 border-amber-300 dark:border-amber-700/80 rounded-2xl sm:rounded-3xl p-5 sm:p-6 shadow-xs flex flex-col gap-4 min-w-0">
+                        <div class="flex items-center justify-between gap-3 border-b border-amber-100 dark:border-slate-800 pb-3 flex-wrap">
+                            <div class="flex items-center gap-2.5">
+                                <div class="size-9 rounded-xl bg-amber-100 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 flex items-center justify-center shrink-0">
+                                    <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-base text-[#012383] dark:text-white leading-tight">
+                                        {{ __('طلبات تسجيل الطلاب بانتظار الموافقة والاعتماد') }}
+                                    </h3>
+                                    <p class="text-xs text-slate-400">
+                                        {{ __('لن يتمكن الطلاب الجدد من تسجيل الدخول حتى تعتمد حساباتهم هنا') }}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <a href="{{ route('admin.students.index', ['status' => 'pending']) }}" class="text-xs font-bold text-amber-700 dark:text-amber-400 hover:underline">
+                                {{ __('عرض جميع الطلاب المعلقين (:count)', ['count' => $pendingStudentsCount]) }} ←
+                            </a>
+                        </div>
+
+                        <div class="divide-y divide-slate-100 dark:divide-slate-800">
+                            @foreach($pendingStudentsList as $pendingStudent)
+                                <div class="py-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                                    <div class="flex items-center gap-3 min-w-0">
+                                        <div class="size-10 rounded-full bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 flex items-center justify-center font-bold text-sm shrink-0 border border-amber-300 dark:border-amber-800">
+                                            {{ mb_substr($pendingStudent->name, 0, 1) }}
+                                        </div>
+                                        <div class="min-w-0">
+                                            <div class="flex items-center gap-2">
+                                                <h4 class="font-bold text-sm text-[#012383] dark:text-white truncate">{{ $pendingStudent->name }}</h4>
+                                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800">
+                                                    {{ __('بانتظار الاعتماد') }}
+                                                </span>
+                                            </div>
+                                            <div class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 mt-0.5 flex-wrap">
+                                                <span class="font-mono">{{ $pendingStudent->email }}</span>
+                                                @if($pendingStudent->phone)
+                                                    <span>•</span>
+                                                    <span class="font-mono" dir="ltr">{{ $pendingStudent->phone }}</span>
+                                                @endif
+                                                <span>•</span>
+                                                <span class="text-[11px] text-slate-400">{{ $pendingStudent->created_at?->diffForHumans() }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex items-center gap-2 w-full sm:w-auto shrink-0 justify-end">
+                                        <form method="POST" action="{{ route('admin.students.approve', $pendingStudent->id) }}">
+                                            @csrf
+                                            <button type="submit" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs transition-colors flex items-center gap-1 cursor-pointer">
+                                                <svg class="size-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                                <span>{{ __('موافقة واعتماد') }}</span>
+                                            </button>
+                                        </form>
+
+                                        <a href="{{ route('admin.students.show', $pendingStudent) }}" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 transition-colors">
+                                            {{ __('التفاصيل') }}
+                                        </a>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
+
                 <!-- Active Diploma Control Card -->
                 <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-2xl sm:rounded-3xl p-5 sm:p-6 shadow-xs flex flex-col justify-between gap-5 min-w-0">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#DEE8F7] dark:border-slate-800 pb-4">
@@ -283,6 +395,26 @@
 
                     <div class="flex flex-col gap-2.5">
                         
+                        <!-- Approve Pending Students Action -->
+                        <a href="{{ route('admin.students.index', ['status' => 'pending']) }}" class="flex items-center justify-between p-3 rounded-xl border {{ $pendingStudentsCount > 0 ? 'border-amber-400 bg-amber-50/50 dark:bg-amber-950/20' : 'border-[#DEE8F7] dark:border-slate-800' }} hover:border-amber-500 hover:bg-amber-100/50 dark:hover:bg-slate-800 transition-colors group">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <div class="size-9 rounded-lg bg-amber-100 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 flex items-center justify-center shrink-0">
+                                    <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
+                                </div>
+                                <div class="flex flex-col min-w-0">
+                                    <span class="font-bold text-xs text-[#012383] dark:text-blue-300 truncate">{{ __('اعتماد الطلاب الجدد') }}</span>
+                                    <span class="text-[10px] text-slate-400 truncate">
+                                        @if($pendingStudentsCount > 0)
+                                            <span class="text-amber-600 dark:text-amber-400 font-bold">{{ $pendingStudentsCount }} {{ __('طالب بانتظار الموافقة') }}</span>
+                                        @else
+                                            {{ __('لا يوجد طلبات معلقة') }}
+                                        @endif
+                                    </span>
+                                </div>
+                            </div>
+                            <span class="text-xs text-amber-600 dark:text-amber-400 font-bold group-hover:translate-x-[-2px] rtl:group-hover:translate-x-[2px] transition-transform">←</span>
+                        </a>
+
                         <!-- Review Receipts Action -->
                         <a href="{{ route('admin.receipts.index') }}" class="flex items-center justify-between p-3 rounded-xl border border-[#DEE8F7] dark:border-slate-800 hover:border-amber-400 hover:bg-amber-50/40 dark:hover:bg-slate-800 transition-colors group">
                             <div class="flex items-center gap-3 min-w-0">

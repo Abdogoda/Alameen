@@ -430,7 +430,7 @@ class VideoProgressService
     /**
      * Record watched time and recalculate completion percentage.
      */
-    public function recordProgress(User $user, Video $video, int $currentWatchedSeconds): VideoProgress
+    public function recordProgress(User $user, Video $video, int $currentWatchedSeconds, bool $isEnded = false, ?int $actualDuration = null): VideoProgress
     {
         if (! $this->canAccessVideo($user, $video)) {
             throw new AccessDeniedHttpException(
@@ -443,11 +443,24 @@ class VideoProgressService
             'video_id' => $video->id,
         ]);
 
-        $maxWatched = max($progress->watched_seconds ?? 0, $currentWatchedSeconds);
-        $duration = max(1, $video->duration_seconds);
+        // Auto-heal video duration if player detected actual media duration (e.g. video was shorter/longer than default 1200s placeholder)
+        if ($actualDuration && $actualDuration > 0 && ($video->duration_seconds === 1200 || empty($video->duration_seconds) || abs($video->duration_seconds - $actualDuration) > 10)) {
+            $video->update(['duration_seconds' => $actualDuration]);
+            $video->refresh();
+        }
 
-        $percentage = min(100.0, round(($maxWatched / $duration) * 100, 2));
-        $isCompleted = ($percentage >= $video->min_completion_percentage) || ($progress->is_completed ?? false);
+        $effectiveDuration = ($actualDuration && $actualDuration > 0) ? $actualDuration : max(1, $video->duration_seconds);
+        $maxWatched = max($progress->watched_seconds ?? 0, $currentWatchedSeconds);
+
+        if ($isEnded) {
+            $percentage = 100.0;
+            $isCompleted = true;
+            $maxWatched = max($maxWatched, $effectiveDuration);
+        } else {
+            $percentage = min(100.0, round(($maxWatched / $effectiveDuration) * 100, 2));
+            $requiredPercentage = (float) ($video->min_completion_percentage ?: 80);
+            $isCompleted = ($percentage >= $requiredPercentage) || ($progress->is_completed ?? false);
+        }
 
         $progress->watched_seconds = $maxWatched;
         $progress->completion_percentage = $percentage;

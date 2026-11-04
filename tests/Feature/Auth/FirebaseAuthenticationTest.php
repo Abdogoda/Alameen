@@ -139,7 +139,7 @@ class FirebaseAuthenticationTest extends TestCase
         $this->assertEquals('google-user-456', $user->google_id);
     }
 
-    public function test_new_student_user_registers_automatically_via_firebase_google(): void
+    public function test_new_student_user_registering_via_firebase_is_marked_pending(): void
     {
         FirebaseTokenVerifier::fake([
             'uid' => 'firebase-new-student-789',
@@ -154,20 +154,16 @@ class FirebaseAuthenticationTest extends TestCase
             'id_token' => 'valid-new-user-token',
         ]);
 
-        $response->assertStatus(200)
+        $response->assertStatus(422)
             ->assertJson([
-                'success' => true,
-                'redirect' => route('dashboard'),
+                'success' => false,
             ]);
 
-        $this->assertAuthenticated('web');
+        $this->assertGuest('web');
 
         $user = User::where('email', 'newstudent@alameen.edu.sa')->first();
         $this->assertNotNull($user);
-        $this->assertEquals('Fatima Student', $user->name);
-        $this->assertEquals('firebase-new-student-789', $user->firebase_uid);
-        $this->assertEquals('active', $user->status);
-        $this->assertNotNull($user->email_verified_at);
+        $this->assertTrue($user->isPending());
     }
 
     public function test_suspended_student_cannot_authenticate_via_firebase(): void

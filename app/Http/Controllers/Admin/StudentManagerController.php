@@ -47,7 +47,7 @@ class StudentManagerController extends Controller
 
         $query = User::with(['courses', 'videoProgress', 'certificates'])->latest();
 
-        if ($status !== 'all' && in_array($status, ['active', 'suspended'], true)) {
+        if ($status !== 'all' && in_array($status, ['active', 'pending', 'suspended'], true)) {
             $query->where('status', $status);
         }
 
@@ -65,6 +65,7 @@ class StudentManagerController extends Controller
 
         $counts = [
             'all' => User::count(),
+            'pending' => User::where('status', 'pending')->count(),
             'active' => User::where('status', 'active')->count(),
             'suspended' => User::where('status', 'suspended')->count(),
         ];
@@ -159,6 +160,16 @@ class StudentManagerController extends Controller
         $user->save();
 
         return back()->with('success', __('تم تعيين كلمة مرور جديدة لحساب الطالب بنجاح.'));
+    }
+
+    /**
+     * Approve and activate a newly registered student account.
+     */
+    public function approve(User $user): RedirectResponse
+    {
+        $this->profileService->activate($user);
+
+        return back()->with('success', __('تم اعتماد وتفعيل حساب الطالب (:name) بنجاح ويمكنه الآن تسجيل الدخول.', ['name' => $user->name]));
     }
 
     /**

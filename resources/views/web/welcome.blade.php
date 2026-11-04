@@ -285,7 +285,7 @@
                   <div class="aspect-square rounded-xl overflow-hidden border {{ $isDiagonal ? 'border-[#0B2A8F]/30 dark:border-blue-500/40 shadow-xs ring-1 ring-[#0B2A8F]/15' : 'border-slate-100 dark:border-slate-800 shadow-2xs' }} group relative hover:scale-105 hover:z-20 transition-all duration-300 bg-slate-50 dark:bg-slate-800">
                     <img
                       src="{{ $fImg }}"
-                      alt="{{ $isDiagonal ? 'Dr. Hana Mekawy' : ('Feedback ' . ($idx + 1)) }}"
+                      alt="{{ $isDiagonal ? (app()->getLocale() === 'en' ? 'Prof. Hana Mekawy - Speech Therapy Consultant' : 'أ.د. هناء المكاوي - استشاري التخاطب وعيوب النطق') : (app()->getLocale() === 'en' ? 'Student Feedback and Review - Al-Ameen Speech Center ' . ($idx + 1) : 'تقييم ورأي أحد المتدربين في كورس التخاطب الشامل بمركز الأمين ' . ($idx + 1)) }}"
                       class="size-full object-cover {{ $objPosition }} group-hover:brightness-105 transition-all"
                       loading="lazy"
                       onerror="this.onerror=null;this.src='/assets/images/alameen-images/1.jpeg';"

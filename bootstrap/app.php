@@ -2,6 +2,7 @@
 
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\EnsureCourseAccessValid;
+use App\Http\Middleware\EnsureStudentIsApproved;
 use App\Http\Middleware\EnsureStudentPageEnabled;
 use App\Http\Middleware\SetCrossOriginHeaders;
 use App\Http\Middleware\SetLocale;
@@ -32,12 +33,14 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             SetCrossOriginHeaders::class,
             SetLocale::class,
+            EnsureStudentIsApproved::class,
         ]);
 
         $middleware->alias([
             'admin' => AdminMiddleware::class,
             'course.access' => EnsureCourseAccessValid::class,
             'page.enabled' => EnsureStudentPageEnabled::class,
+            'student.approved' => EnsureStudentIsApproved::class,
         ]);
 
         $middleware->redirectGuestsTo(fn (Request $request) => $request->is('admin*') ? route('admin.login') : route('login'));

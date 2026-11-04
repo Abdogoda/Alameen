@@ -577,7 +577,7 @@
 
     {{-- Official MUX Player & UpChunk Resumable Direct Uploader --}}
     <script src="https://cdn.jsdelivr.net/npm/@mux/mux-player"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mux/upchunk@3/dist/index.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mux/upchunk@3/dist/upchunk.min.js"></script>
 
     {{-- Resilient Video Upload & Streaming Client Engine --}}
     <script>

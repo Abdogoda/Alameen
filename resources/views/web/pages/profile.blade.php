@@ -277,9 +277,9 @@
         saveBtn?.addEventListener('click', () => {
           const isEn = document.documentElement.lang === 'en';
           toastMessage.textContent = isEn ? 'Changes have been saved successfully!' : 'تم حفظ التغييرات بنجاح!';
-          toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+          toast.classList.remove('-translate-y-20', 'translate-y-20', 'opacity-0', 'pointer-events-none');
           setTimeout(() => {
-            toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+            toast.classList.add('-translate-y-20', 'opacity-0', 'pointer-events-none');
           }, 3500);
         });
 
@@ -287,9 +287,9 @@
         cancelBtn?.addEventListener('click', () => {
           const isEn = document.documentElement.lang === 'en';
           toastMessage.textContent = isEn ? 'Changes reverted.' : 'تم التراجع عن التغييرات.';
-          toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+          toast.classList.remove('-translate-y-20', 'translate-y-20', 'opacity-0', 'pointer-events-none');
           setTimeout(() => {
-            toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+            toast.classList.add('-translate-y-20', 'opacity-0', 'pointer-events-none');
           }, 2500);
         });
       });

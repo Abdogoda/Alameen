@@ -1203,9 +1203,9 @@
           if (toast && toastMessage) {
             const isEn = document.documentElement.lang === 'en';
             toastMessage.textContent = isEn ? 'Your review has been submitted successfully!' : 'تم نشر تقييمك بنجاح! شكراً لمشاركتك.';
-            toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+            toast.classList.remove('-translate-y-20', 'translate-y-20', 'opacity-0', 'pointer-events-none');
             setTimeout(() => {
-              toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+              toast.classList.add('-translate-y-20', 'opacity-0', 'pointer-events-none');
             }, 3500);
           }
         });

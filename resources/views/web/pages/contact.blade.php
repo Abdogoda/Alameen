@@ -293,7 +293,7 @@
           setTimeout(() => {
             if (toastMessage && toast) {
               toastMessage.textContent = isEn ? 'Your message has been received! We will contact you shortly.' : 'تم استلام رسالتك بنجاح! سيتواصل معك فريق الدعم قريباً.';
-              toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+              toast.classList.remove('-translate-y-20', 'translate-y-20', 'opacity-0', 'pointer-events-none');
             }
             
             contactForm.reset();
@@ -302,7 +302,7 @@
             }
             setTimeout(() => {
               if (toast) {
-                toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+                toast.classList.add('-translate-y-20', 'opacity-0', 'pointer-events-none');
               }
             }, 3500);
           }, 450);

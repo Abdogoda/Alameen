@@ -26,8 +26,13 @@
                     <span>{{ __('بانتظار الموافقة') }} ({{ $counts['pending'] ?? 0 }})</span>
                 </span>
             </a>
-            <a href="{{ route('admin.students.index', ['status' => 'suspended', 'search' => $search]) }}" class="px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 {{ $status === 'suspended' ? 'bg-[#012383] text-white dark:bg-blue-600' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-[#EAF1FB] dark:hover:bg-slate-700 dark:hover:text-white' }}">
-                {{ __('ملغي الصلاحية') }} ({{ $counts['suspended'] ?? 0 }})
+            <a href="{{ route('admin.students.index', ['status' => 'suspended', 'search' => $search]) }}" class="px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 {{ $status === 'suspended' ? 'bg-rose-600 text-white' : 'bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-400 hover:bg-rose-100 border border-rose-200/80 dark:border-rose-800/80' }}">
+                <span class="inline-flex items-center gap-1.5">
+                    @if(($counts['suspended'] ?? 0) > 0)
+                        <span class="size-2 rounded-full bg-rose-500"></span>
+                    @endif
+                    <span>{{ __('ملغي الصلاحية') }} ({{ $counts['suspended'] ?? 0 }})</span>
+                </span>
             </a>
         </div>
 

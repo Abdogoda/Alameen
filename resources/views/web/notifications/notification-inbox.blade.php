@@ -1,4 +1,20 @@
-<div class="flex flex-col gap-6 w-full text-start">
+<div class="flex flex-col gap-6 w-full text-start"
+     x-data="{
+         deleteModalOpen: false,
+         notificationToDelete: null,
+         promptDelete(id) {
+             this.notificationToDelete = id;
+             this.deleteModalOpen = true;
+         },
+         confirmDelete() {
+             if (this.notificationToDelete) {
+                 $wire.delete(this.notificationToDelete);
+             }
+             this.deleteModalOpen = false;
+             this.notificationToDelete = null;
+         }
+     }"
+>
 
     <!-- ============================================== -->
     <!-- 1. BREADCRUMBS & PAGE HEADER                   -->
@@ -297,8 +313,7 @@
 
                     <button
                         type="button"
-                        wire:click="delete('{{ $notification->id }}')"
-                        wire:confirm="{{ __('هل أنت متأكد من رغبتك في حذف هذا الإشعار؟') }}"
+                        @click="promptDelete('{{ $notification->id }}')"
                         class="p-2 text-xs rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 dark:hover:text-rose-400 border border-transparent hover:border-rose-200 dark:hover:border-rose-900 transition cursor-pointer"
                         title="{{ __('حذف الإشعار') }}"
                     >
@@ -353,5 +368,53 @@
             {{ $notifications->links() }}
         </div>
     @endif
+
+    {{-- Confirmation Modal for deleting notification --}}
+    <div 
+        x-show="deleteModalOpen" 
+        x-cloak
+        class="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-4 bg-slate-950/60 backdrop-blur-xs select-none"
+        role="dialog"
+        aria-modal="true"
+        @keydown.escape.window="deleteModalOpen = false"
+        @click.self="deleteModalOpen = false"
+    >
+        <div 
+            class="bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full p-6 sm:p-7 flex flex-col gap-5 shadow-2xl border border-[#DEE8F7] dark:border-slate-800 text-center"
+            @click.stop
+        >
+            <div class="mx-auto size-14 rounded-2xl bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-900 text-rose-600 dark:text-rose-400 flex items-center justify-center shadow-xs">
+                <svg class="size-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                </svg>
+            </div>
+
+            <div class="flex flex-col gap-2">
+                <h3 class="font-['Baloo_Bhaijaan_2'] font-bold text-xl text-slate-900 dark:text-white leading-tight">
+                    {{ __('حذف الإشعار') }}
+                </h3>
+                <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
+                    {{ __('هل أنت متأكد من رغبتك في حذف هذا الإشعار؟') }}
+                </p>
+            </div>
+
+            <div class="flex items-center gap-3 pt-2">
+                <button 
+                    type="button" 
+                    @click="confirmDelete()" 
+                    class="flex-1 h-11 px-5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer"
+                >
+                    {{ __('نعم، احذف الإشعار') }}
+                </button>
+                <button 
+                    type="button" 
+                    @click="deleteModalOpen = false" 
+                    class="flex-1 h-11 px-5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs transition-all flex items-center justify-center cursor-pointer border border-slate-200 dark:border-slate-700"
+                >
+                    {{ __('إلغاء الأمر') }}
+                </button>
+            </div>
+        </div>
+    </div>
 
 </div>

@@ -537,12 +537,12 @@
                 x-show="showToast"
                 x-cloak
                 x-transition:enter="transition ease-out duration-300"
-                x-transition:enter-start="opacity-0 transform translate-y-3"
+                x-transition:enter-start="opacity-0 transform -translate-y-3"
                 x-transition:enter-end="opacity-100 transform translate-y-0"
                 x-transition:leave="transition ease-in duration-200"
                 x-transition:leave-start="opacity-100 transform translate-y-0"
-                x-transition:leave-end="opacity-0 transform translate-y-3"
-                class="fixed bottom-6 start-6 z-50 bg-[#012383] text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3 border border-blue-400/30"
+                x-transition:leave-end="opacity-0 transform -translate-y-3"
+                class="fixed top-6 end-6 z-50 bg-[#012383] text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3 border border-blue-400/30"
             >
                 <span class="size-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
                     <svg class="size-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

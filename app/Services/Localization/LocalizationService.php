@@ -99,8 +99,20 @@ class LocalizationService
      */
     public function detectLocale(Request $request): string
     {
-        // API Requests: Strictly determined by Accept-Language header
-        if ($request->is('api/*') || $request->expectsJson()) {
+        // 1. Explicit query parameter (e.g. ?lang=ar or ?locale=ar)
+        $queryLocale = $request->query('lang') ?? $request->query('locale');
+        if (is_string($queryLocale) && $this->isSupported($queryLocale)) {
+            return strtolower($queryLocale);
+        }
+
+        // 2. Custom header (X-Locale or X-Language)
+        $headerLocale = $request->header('X-Locale') ?? $request->header('X-Language');
+        if (is_string($headerLocale) && $this->isSupported($headerLocale)) {
+            return strtolower($headerLocale);
+        }
+
+        // 3. Pure API requests (strictly under api/* without session)
+        if ($request->is('api/*')) {
             $acceptLanguage = $request->header('Accept-Language');
 
             if (is_string($acceptLanguage) && ! empty($acceptLanguage)) {
@@ -111,7 +123,6 @@ class LocalizationService
                 }
             }
 
-            // Fallback to authenticated user's saved preference
             /** @var mixed $user */
             $user = $request->user('admin') ?? $request->user();
             if ($user !== null && ! empty($user->locale) && $this->isSupported($user->locale)) {
@@ -121,27 +132,15 @@ class LocalizationService
             return (string) config('localization.default', 'ar');
         }
 
-        // Web Requests:
-        // 1. Explicit query parameter (e.g. ?lang=ar or ?locale=ar)
-        $queryLocale = $request->query('lang') ?? $request->query('locale');
-        if (is_string($queryLocale) && $this->isSupported($queryLocale)) {
-            return strtolower($queryLocale);
-        }
-
-        // 2. Custom header
-        $headerLocale = $request->header('X-Locale') ?? $request->header('X-Language');
-        if (is_string($headerLocale) && $this->isSupported($headerLocale)) {
-            return strtolower($headerLocale);
-        }
-
-        // 3. Authenticated user preference
+        // Web Requests (including AJAX/Fetch requests to web auth routes):
+        // 4. Authenticated user preference
         /** @var mixed $user */
         $user = $request->user('admin') ?? $request->user();
         if ($user !== null && ! empty($user->locale) && $this->isSupported($user->locale)) {
             return strtolower($user->locale);
         }
 
-        // 4. Session
+        // 5. Session
         if ($request->hasSession()) {
             $sessionLocale = $request->session()->get((string) config('localization.session_key', 'locale'));
             if (is_string($sessionLocale) && $this->isSupported($sessionLocale)) {
@@ -149,13 +148,22 @@ class LocalizationService
             }
         }
 
-        // 5. Cookie
+        // 6. Cookie
         $cookieLocale = $request->cookie((string) config('localization.cookie_name', 'locale'));
         if (is_string($cookieLocale) && $this->isSupported($cookieLocale)) {
             return strtolower($cookieLocale);
         }
 
-        // 6. Default configured locale (Primary default: Arabic)
+        // 7. Accept-Language header
+        $acceptLanguage = $request->header('Accept-Language');
+        if (is_string($acceptLanguage) && ! empty($acceptLanguage)) {
+            $preferred = $request->getPreferredLanguage(array_keys($this->getSupportedLocales()));
+            if (is_string($preferred) && $this->isSupported($preferred)) {
+                return strtolower($preferred);
+            }
+        }
+
+        // 8. Default configured locale (Primary default: Arabic)
         return (string) config('localization.default', 'ar');
     }
 }

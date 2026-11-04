@@ -36,7 +36,7 @@
         <!-- Toast Notification Element -->
         <div
             id="toast"
-            class="fixed bottom-6 start-6 z-50 bg-[#012383] text-white px-5 py-3.5 rounded-2xl shadow-2xl flex items-center gap-3 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none"
+            class="fixed top-6 end-6 z-[9999] bg-[#012383] text-white px-5 py-3.5 rounded-2xl shadow-2xl flex items-center gap-3 transform -translate-y-20 opacity-0 transition-all duration-300 pointer-events-none"
         >
             <svg class="size-5 text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />

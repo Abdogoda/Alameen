@@ -148,12 +148,16 @@ async function postTokenToBackend(idToken, targetRole, buttonElement, originalCo
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
         || document.querySelector('input[name="_token"]')?.value;
 
+    const pageLocale = (document.documentElement.lang || 'ar').toLowerCase().startsWith('en') ? 'en' : 'ar';
+
     const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
             'X-CSRF-TOKEN': csrfToken || '',
+            'X-Locale': pageLocale,
+            'Accept-Language': pageLocale === 'ar' ? 'ar,en;q=0.9' : 'en,ar;q=0.9',
         },
         body: JSON.stringify({
             id_token: idToken,
@@ -176,7 +180,32 @@ async function postTokenToBackend(idToken, targetRole, buttonElement, originalCo
         window.location.href = data.redirect || (targetRole === 'admin' ? '/admin/dashboard' : '/dashboard');
     } else {
         const isEn = (document.documentElement.lang || 'ar').toLowerCase().startsWith('en');
-        const errorMessage = data.message || (isEn ? 'Sign in failed. Please try again.' : 'فشل تسجيل الدخول. يرجى المحاولة مرة أخرى.');
+        let errorMessage = data.message || (isEn ? 'Sign in failed. Please try again.' : 'فشل تسجيل الدخول. يرجى المحاولة مرة أخرى.');
+
+        // Comprehensive translation mapping for auth alerts
+        const errorTranslationsAr = {
+            'Your account is temporarily suspended, please review the platform administration.': 'حسابك موقوف مؤقتاً، يرجى مراجعة إدارة المنصة.',
+            'Your account is under review and pending approval from the platform administration. Please wait until the account is approved to be able to log in.': 'حسابك قيد المراجعة وبانتظار موافقة إدارة المنصة. يرجى الانتظار حتى يتم اعتماد الحساب لتتمكن من تسجيل الدخول.',
+            'This account has been suspended. Please contact the platform administration.': 'تم إيقاف هذا الحساب. يرجى التواصل مع إدارة المنصة.',
+            'Invalid or expired credentials. Please try again.': 'بيانات الاعتماد غير صالحة أو انتهت مدتها. يرجى المحاولة مرة أخرى.',
+            'Sign in failed. Please try again.': 'فشل تسجيل الدخول. يرجى المحاولة مرة أخرى.',
+            'These credentials do not match our records.': 'بيانات الاعتماد هذه لا تتطابق مع سجلاتنا.',
+            'The selected email is invalid.': 'البريد الإلكتروني المدخل غير صالح.',
+        };
+
+        const errorTranslationsEn = {
+            'حسابك موقوف مؤقتاً، يرجى مراجعة إدارة المنصة.': 'Your account is temporarily suspended, please review the platform administration.',
+            'حسابك قيد المراجعة وبانتظار موافقة إدارة المنصة. يرجى الانتظار حتى يتم اعتماد الحساب لتتمكن من تسجيل الدخول.': 'Your account is under review and pending approval from the platform administration. Please wait until the account is approved to be able to log in.',
+            'تم إيقاف هذا الحساب. يرجى التواصل مع إدارة المنصة.': 'This account has been suspended. Please contact the platform administration.',
+            'فشل تسجيل الدخول. يرجى المحاولة مرة أخرى.': 'Sign in failed. Please try again.',
+        };
+
+        if (!isEn && errorTranslationsAr[errorMessage]) {
+            errorMessage = errorTranslationsAr[errorMessage];
+        } else if (isEn && errorTranslationsEn[errorMessage]) {
+            errorMessage = errorTranslationsEn[errorMessage];
+        }
+
         showAuthAlert(errorMessage, 'error');
         resetButton(buttonElement, originalContent);
     }
@@ -245,10 +274,10 @@ function showAuthAlert(message, type = 'error') {
 
     const isEn = (document.documentElement.lang || 'ar').toLowerCase().startsWith('en');
     const isError = type === 'error';
-    alertBox.className = `fixed bottom-5 end-5 z-50 max-w-md p-4 rounded-2xl shadow-xl transition-all duration-300 font-['Cairo'] flex items-start gap-3 text-sm ${
+    alertBox.className = `fixed top-6 inset-x-4 sm:inset-x-auto sm:end-8 z-[99999] max-w-md p-4 rounded-2xl shadow-2xl transition-all duration-300 font-['Cairo'] flex items-start gap-3 text-sm border backdrop-blur-md ${
         isError
-            ? 'bg-rose-50 border border-rose-200 text-rose-800 dark:bg-rose-950 dark:border-rose-900 dark:text-rose-200'
-            : 'bg-blue-50 border border-blue-200 text-blue-800 dark:bg-blue-950 dark:border-blue-900 dark:text-blue-200'
+            ? 'bg-rose-50/95 border-rose-200 text-rose-900 dark:bg-rose-950/95 dark:border-rose-900 dark:text-rose-100 shadow-rose-500/10'
+            : 'bg-blue-50/95 border-blue-200 text-blue-900 dark:bg-blue-950/95 dark:border-blue-900 dark:text-blue-100 shadow-blue-500/10'
     }`;
 
     alertBox.innerHTML = `

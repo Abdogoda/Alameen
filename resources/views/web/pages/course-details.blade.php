@@ -1,4 +1,4 @@
-<x-layouts::app :title="$course->title . ' - ' . __('تفاصيل الدورة والمنهج')">
+<x-layouts::app :title="$course->title . ' - ' . __('تفاصيل الدورة والمنهج')" :description="$course->description" :course="$course">
         <!-- Page Content -->
         <div class="flex flex-col gap-6 w-full text-start">
           

@@ -1,5 +1,12 @@
 @props([
     'title' => null,
+    'description' => null,
+    'keywords' => null,
+    'image' => null,
+    'type' => null,
+    'canonical' => null,
+    'robots' => null,
+    'course' => null,
     'active' => 'home',
     'modals' => null,
     'scripts' => null,
@@ -7,7 +14,16 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}" class="scroll-smooth">
     <head>
-        @include('partials.head')
+        @include('partials.head', [
+            'title' => $title ?? null,
+            'description' => $description ?? null,
+            'keywords' => $keywords ?? null,
+            'image' => $image ?? null,
+            'type' => $type ?? null,
+            'canonical' => $canonical ?? null,
+            'robots' => $robots ?? null,
+            'course' => $course ?? null,
+        ])
     </head>
     <body class="bg-[#FAFCFF] dark:bg-slate-950 min-h-screen text-[#334155] dark:text-slate-100 font-body antialiased selection:bg-[#EAF1FB] selection:text-[#0B2A8F] w-full max-w-full relative transition-colors">
         {!! app(\App\Services\Seo\SeoService::class)->getCustomBodyScripts() !!}

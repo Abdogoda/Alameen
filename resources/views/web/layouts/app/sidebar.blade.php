@@ -1,5 +1,8 @@
 @props([
     'title' => null,
+    'description' => null,
+    'course' => null,
+    'robots' => null,
     'modals' => null,
     'scripts' => null,
 ])
@@ -9,8 +12,12 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}" class="alameen-dashboard-layout">
     <head>
-        @include('partials.head')
-        <title>{{ filled($title ?? null) ? $title . ' | ' . ($siteName ?? __(config('app.name', 'منصة الأمين'))) : ($siteName ?? __(config('app.name', 'منصة الأمين'))) }}</title>
+        @include('partials.head', [
+            'title' => $title ?? null,
+            'description' => $description ?? null,
+            'course' => $course ?? null,
+            'robots' => $robots ?? null,
+        ])
     </head>
     <body
         class="bg-[#F8FAFC] text-[#334155] min-h-screen flex flex-col font-['Cairo'] antialiased selection:bg-[#EAF1FB] selection:text-[#0B2A8F] w-full max-w-full relative alameen-dashboard-layout"

@@ -242,11 +242,6 @@
                         @endif
                     </form>
                 </div>
-                                {{ __('إعادة التنشيط') }}
-                            </button>
-                        @endif
-                    </form>
-                </div>
             </div>
             @empty
             <div class="text-center py-12 text-slate-400 text-xs">

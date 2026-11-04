@@ -1,7 +1,13 @@
+@props([
+    'title' => null,
+])
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
     <head>
-        @include('partials.head')
+        @include('partials.head', [
+            'title' => $title ?? null,
+            'robots' => 'noindex, nofollow, noarchive',
+        ])
     </head>
     <body class="min-h-screen bg-white antialiased dark:bg-linear-to-b dark:from-neutral-950 dark:to-neutral-900">
         <!-- Top-Level Pre-Rendered Themed Loader -->

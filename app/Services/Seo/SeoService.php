@@ -26,7 +26,7 @@ class SeoService
 
         return match ($routeName) {
             'home', 'web.welcome' => 'home',
-            'courses.index', 'courses' => 'courses',
+            'courses.index', 'courses', 'courses.show' => 'courses',
             'reviews.index', 'reviews' => 'reviews',
             'contact' => 'contact',
             'audit.report', 'audit' => 'audit',

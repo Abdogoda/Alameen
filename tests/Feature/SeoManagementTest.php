@@ -134,4 +134,36 @@ class SeoManagementTest extends TestCase
         $publicCourses->assertOk();
         $publicCourses->assertSee('دليل المسارات الأكاديمية للتخاطب - مركز الأمين', false);
     }
+
+    public function test_all_public_marketing_pages_render_seo_meta_tags(): void
+    {
+        $pages = [
+            '/',
+            '/courses',
+            '/reviews',
+            '/contact',
+            '/audit-report',
+        ];
+
+        foreach ($pages as $url) {
+            $response = $this->get($url);
+            $response->assertOk();
+            $response->assertSee('<meta name="title"', false);
+            $response->assertSee('<meta name="description"', false);
+            $response->assertSee('<meta name="keywords"', false);
+            $response->assertSee('<link rel="canonical"', false);
+            $response->assertSee('<meta property="og:title"', false);
+            $response->assertSee('<meta property="og:image"', false);
+            $response->assertSee('<meta name="twitter:card"', false);
+            $response->assertSee('index, follow', false);
+        }
+    }
+
+    public function test_private_auth_pages_enforce_noindex_robots(): void
+    {
+        $response = $this->get('/login');
+        $response->assertOk();
+        $response->assertSee('noindex', false);
+        $response->assertSee('nofollow', false);
+    }
 }

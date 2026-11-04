@@ -79,50 +79,7 @@
     <form method="POST" action="{{ route('admin.settings.update') }}#seo" enctype="multipart/form-data" class="flex flex-col gap-6">
         @csrf
 
-        {{-- Section 1: Live SERP Google Search Preview --}}
-        <div class="bg-gradient-to-l from-[#FAFCFF] to-white dark:from-slate-900 dark:to-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-3xl p-5 sm:p-7 shadow-xs">
-            <div class="border-b border-[#DEE8F7] dark:border-slate-800 pb-4 mb-5 flex items-center justify-between">
-                <div>
-                    <h3 class="font-['Baloo_Bhaijaan_2'] font-bold text-lg text-[#012383] dark:text-blue-400 flex items-center gap-2">
-                        <span>👁️</span>
-                        <span>{{ __('معاينة حية لشكل الموقع في نتائج بحث Google (SERP Preview)') }}</span>
-                    </h3>
-                    <p class="text-xs text-slate-500 dark:text-slate-400">
-                        {{ __('هكذا يظهر موقع مركز الأمين في محرك بحث جوجل للزوار عند البحث عن دورات التخاطب') }}
-                    </p>
-                </div>
-                <span class="text-xs font-bold px-3 py-1 bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 rounded-full border border-blue-200 dark:border-blue-800">Google SERP Live</span>
-            </div>
-
-            {{-- Google Search Result Simulation Card --}}
-            <div class="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 max-w-3xl shadow-sm text-start" dir="rtl">
-                <div class="flex items-center gap-3 mb-1.5">
-                    <div class="size-7 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center p-1 shrink-0">
-                        <img src="{{ platform_logo() }}" alt="favicon" class="size-full object-contain" />
-                    </div>
-                    <div class="flex flex-col">
-                        <span class="text-xs font-semibold text-slate-800 dark:text-slate-200 leading-tight">{{ platform_name() }}</span>
-                        <span class="text-[11px] text-slate-500 dark:text-slate-400 font-mono leading-tight" dir="ltr">{{ url('/') }} › <span class="text-slate-400">speech-therapy</span></span>
-                    </div>
-                </div>
-                <h4 class="text-lg sm:text-xl font-medium text-[#1a0dab] dark:text-[#8ab4f8] hover:underline cursor-pointer leading-snug line-clamp-1" x-text="titleAr || '{{ platform_name() }}'"></h4>
-                <p class="text-xs sm:text-sm text-[#4d5156] dark:text-[#bdc1c6] mt-1.5 leading-relaxed line-clamp-2" x-text="descAr || '{{ platform_tagline() }}'"></p>
-                
-                {{-- Rich Sitelinks Simulation --}}
-                <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 grid grid-cols-2 gap-3 text-xs">
-                    <div>
-                        <span class="font-medium text-[#1a0dab] dark:text-[#8ab4f8] hover:underline cursor-pointer">{{ __('كورس التخاطب الشامل مع هنا المكاوي') }}</span>
-                        <p class="text-[11px] text-slate-400 line-clamp-1">{{ __('فيديوهات عملية سريرية وشهادات موثقة') }}</p>
-                    </div>
-                    <div>
-                        <span class="font-medium text-[#1a0dab] dark:text-[#8ab4f8] hover:underline cursor-pointer">{{ __('التحقق من الشهادات والاعتمادات') }}</span>
-                        <p class="text-[11px] text-slate-400 line-clamp-1">{{ __('فحص فوري للاعتمادات بالرمز المرجعي وQR') }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        {{-- Section 2: Global Metadata & Site Identity --}}
+        {{-- Section 1: Global Metadata & Site Identity --}}
         <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-3xl p-5 sm:p-7 shadow-xs flex flex-col gap-5">
             <div class="border-b border-[#DEE8F7] dark:border-slate-800 pb-4">
                 <h3 class="font-['Baloo_Bhaijaan_2'] font-bold text-lg sm:text-xl text-[#012383] dark:text-blue-400 flex items-center gap-2">

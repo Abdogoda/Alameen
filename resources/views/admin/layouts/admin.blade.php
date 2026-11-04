@@ -8,9 +8,12 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}" class="alameen-dashboard-layout">
     <head>
-        @include('partials.head')
+        @include('partials.head', [
+            'title' => $title ?? null,
+            'description' => $description ?? null,
+            'robots' => 'noindex, nofollow, noarchive',
+        ])
         <link rel="stylesheet" href="/assets/css/admin.css" />
-        <title>{{ filled($title ?? null) ? $title.' - '.($siteName ?? config('app.name', 'منصة الأمين')) : ($siteName ?? config('app.name', 'منصة الأمين')) }}</title>
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body
@@ -44,6 +47,7 @@
 
         @php
             $adminUser = auth('admin')->user();
+            $pendingStudentsCount = isset($pendingStudentsCount) ? (int)$pendingStudentsCount : (isset($counts['pending']) ? (int)$counts['pending'] : (\Illuminate\Support\Facades\Schema::hasTable('users') ? \App\Models\User::where('status', 'pending')->count() : 0));
             $pendingReceiptsCount = isset($pendingReceiptsCount) ? (int)$pendingReceiptsCount : (\Illuminate\Support\Facades\Schema::hasTable('payment_receipts') ? \App\Models\PaymentReceipt::where('status', 'pending')->count() : 0);
             $pendingTasksCount = isset($pendingTasksCount) ? (int)$pendingTasksCount : (\Illuminate\Support\Facades\Schema::hasTable('task_submissions') ? \App\Models\TaskSubmission::where('status', 'pending')->count() : 0);
             $openSupportTicketsCount = isset($openSupportTicketsCount) ? (int)$openSupportTicketsCount : (\Illuminate\Support\Facades\Schema::hasTable('support_tickets') ? \App\Models\SupportTicket::whereIn('status', ['open', 'waiting_admin'])->count() : 0);
@@ -127,10 +131,20 @@
                             href="{{ route('admin.students.index') }}"
                             @click="if (window.innerWidth < 1024) mobileSidebarOpen = false"
                             class="sidebar-nav-link flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-sm transition-colors {{ request()->routeIs('admin.students.*') ? 'bg-[#012383] text-white font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-[#EAF1FB]/60 dark:hover:bg-slate-800 hover:text-[#012383] dark:hover:text-white' }}"
-                            :title="!desktopSidebarOpen && window.innerWidth >= 1024 ? '{{ __('شؤون الطلاب') }}' : ''"
+                            :title="!desktopSidebarOpen && window.innerWidth >= 1024 ? ('{{ __('شؤون الطلاب') }}' + ({{ ($pendingStudentsCount ?? 0) }} > 0 ? ' ({{ $pendingStudentsCount }})' : '')) : ''"
                         >
-                            <svg class="size-5 shrink-0 {{ request()->routeIs('admin.students.*') ? 'text-white' : 'text-slate-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                            <div class="relative shrink-0 flex items-center justify-center">
+                                <svg class="size-5 shrink-0 {{ request()->routeIs('admin.students.*') ? 'text-white' : 'text-slate-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                                @if(($pendingStudentsCount ?? 0) > 0)
+                                    <span x-show="!desktopSidebarOpen" x-cloak class="absolute -top-1 -end-1 size-2 rounded-full bg-amber-500 ring-2 ring-white dark:ring-slate-900 animate-pulse"></span>
+                                @endif
+                            </div>
                             <span class="flex-1 text-start sidebar-label">{{ __('شؤون الطلاب') }}</span>
+                            @if(($pendingStudentsCount ?? 0) > 0)
+                                <span class="sidebar-label min-w-5 h-5 px-1.5 flex items-center justify-center text-[11px] font-black rounded-full animate-pulse shrink-0 transition-colors {{ request()->routeIs('admin.students.*') ? 'bg-[#FEF3C7] shadow-xs text-amber-900' : 'bg-amber-100 text-amber-900 dark:bg-amber-950/60 dark:text-amber-300 dark:border dark:border-amber-800' }}">
+                                    {{ $pendingStudentsCount }}
+                                </span>
+                            @endif
                         </a>
 
                         <!-- تصحيح المهام والتاسكات -->

@@ -367,9 +367,328 @@
             0%, 100% { opacity: 1; transform: scale(1); }
             50% { opacity: 0.85; transform: scale(0.98); }
         }
+
+        /* ------------------------------------------------------------- */
+        /* Self-Contained Resilient Styling (Zero Dependency Guarantee)   */
+        /* ------------------------------------------------------------- */
+        .err-header {
+            width: 100%;
+            position: relative;
+            z-index: 20;
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--alameen-border);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            background: rgba(255, 255, 255, 0.7);
+        }
+
+        html.dark .err-header {
+            background: rgba(11, 17, 32, 0.7);
+        }
+
+        .err-main {
+            width: 100%;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 48px 16px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .err-card {
+            width: 100%;
+            max-width: 760px;
+            border-radius: 28px;
+            padding: 44px 36px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 640px) {
+            .err-card {
+                padding: 28px 20px;
+            }
+        }
+
+        .err-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 18px;
+            border-radius: 9999px;
+            font-size: 13px;
+            font-weight: 700;
+            background: #EAF1FB;
+            color: #012383;
+            border: 1px solid #DEE8F7;
+            margin-bottom: 24px;
+        }
+
+        html.dark .err-badge {
+            background: rgba(30, 41, 59, 0.9);
+            color: #93C5FD;
+            border-color: #334155;
+        }
+
+        .err-code {
+            font-family: 'Inter', system-ui, sans-serif;
+            font-size: 72px;
+            font-weight: 900;
+            line-height: 1;
+            letter-spacing: -0.03em;
+            margin-bottom: 14px;
+            background: linear-gradient(135deg, #012383 0%, #3B82F6 50%, #10B77F 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        html.dark .err-code {
+            background: linear-gradient(135deg, #60A5FA 0%, #93C5FD 50%, #34D399 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        @media (max-width: 640px) {
+            .err-code {
+                font-size: 52px;
+            }
+        }
+
+        .err-title-ar {
+            font-family: 'Baloo Bhaijaan 2', 'Cairo', sans-serif;
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--alameen-navy);
+            margin-bottom: 8px;
+            line-height: 1.35;
+        }
+
+        html.dark .err-title-ar {
+            color: #ffffff;
+        }
+
+        @media (max-width: 640px) {
+            .err-title-ar {
+                font-size: 22px;
+            }
+        }
+
+        .err-title-en {
+            font-family: 'Inter', system-ui, sans-serif;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--alameen-muted);
+            margin-bottom: 20px;
+        }
+
+        .err-desc {
+            max-width: 620px;
+            margin: 0 auto 28px auto;
+            font-size: 14px;
+            line-height: 1.8;
+            color: var(--alameen-text);
+        }
+
+        .err-desc p:last-child {
+            margin-top: 8px;
+            font-size: 13px;
+            color: var(--alameen-muted);
+        }
+
+        .err-system-msg {
+            max-width: 520px;
+            margin: 0 auto 24px auto;
+            padding: 12px 18px;
+            border-radius: 14px;
+            background: #FEF3C7;
+            border: 1px solid #FDE68A;
+            color: #92400E;
+            font-size: 13px;
+            font-weight: 500;
+            line-height: 1.5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        html.dark .err-system-msg {
+            background: rgba(120, 53, 15, 0.25);
+            border-color: rgba(180, 83, 9, 0.4);
+            color: #FDE68A;
+        }
+
+        .err-actions {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin: 28px 0;
+            width: 100%;
+        }
+
+        .err-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-radius: 14px;
+            font-size: 14px;
+            font-weight: 700;
+            font-family: 'Cairo', sans-serif;
+            text-decoration: none !important;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            border: 1px solid transparent;
+            min-height: 46px;
+        }
+
+        .err-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .err-btn:active {
+            transform: translateY(0);
+        }
+
+        .err-btn svg {
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+        }
+
+        .err-btn-primary {
+            background: linear-gradient(135deg, #012383 0%, #0B2A8F 100%);
+            color: #ffffff !important;
+            box-shadow: 0 6px 18px -2px rgba(1, 35, 131, 0.35);
+        }
+
+        .err-btn-primary:hover {
+            background: linear-gradient(135deg, #0B2A8F 0%, #012383 100%);
+            box-shadow: 0 10px 24px -2px rgba(1, 35, 131, 0.45);
+        }
+
+        .err-btn-whatsapp {
+            background: #10B77F;
+            color: #ffffff !important;
+            box-shadow: 0 6px 18px -2px rgba(16, 183, 127, 0.35);
+        }
+
+        .err-btn-whatsapp:hover {
+            background: #0E9F6E;
+            box-shadow: 0 10px 24px -2px rgba(16, 183, 127, 0.45);
+        }
+
+        .err-btn-secondary {
+            background: #ffffff;
+            color: #012383 !important;
+            border: 1px solid #DEE8F7;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+        }
+
+        html.dark .err-btn-secondary {
+            background: #1E293B;
+            color: #93C5FD !important;
+            border-color: #334155;
+        }
+
+        .err-btn-secondary:hover {
+            background: #F8FAFC;
+            border-color: #CBD5E1;
+        }
+
+        html.dark .err-btn-secondary:hover {
+            background: #334155;
+            border-color: #475569;
+        }
+
+        .err-shortcuts {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            padding-top: 22px;
+            margin-top: 12px;
+            border-top: 1px solid var(--alameen-border);
+            font-size: 13px;
+            color: var(--alameen-muted);
+        }
+
+        .err-shortcuts a {
+            color: var(--alameen-muted);
+            text-decoration: none;
+            transition: color 0.15s ease;
+            font-weight: 500;
+        }
+
+        .err-shortcuts a:hover {
+            color: #012383;
+        }
+
+        html.dark .err-shortcuts a:hover {
+            color: #60A5FA;
+        }
+
+        .err-timer-box {
+            margin-top: 20px;
+            padding-top: 14px;
+            border-top: 1px dashed var(--alameen-border);
+            font-size: 12px;
+            color: var(--alameen-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .err-footer {
+            width: 100%;
+            position: relative;
+            z-index: 20;
+            padding: 20px 24px;
+            border-top: 1px solid var(--alameen-border);
+            text-align: center;
+            font-size: 12px;
+            color: var(--alameen-muted);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            background: rgba(255, 255, 255, 0.7);
+        }
+
+        html.dark .err-footer {
+            background: rgba(11, 17, 32, 0.7);
+        }
+
+        .err-footer-inner {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        @media (max-width: 640px) {
+            .err-footer-inner {
+                flex-direction: column;
+            }
+        }
     </style>
 
-    <!-- Load compiled Vite styles if built -->
+    <!-- Precompiled Platform CSS & Vite Assets Fallback -->
+    <link rel="stylesheet" href="/assets/css/admin.css">
     @if(file_exists(public_path('build/manifest.json')))
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     @endif
@@ -384,49 +703,46 @@
     </div>
 
     <!-- Header Bar -->
-    <header class="w-full relative z-20 px-4 sm:px-8 py-4 sm:py-5 flex items-center justify-between border-b border-slate-200/60 dark:border-slate-800/80 backdrop-blur-md bg-white/40 dark:bg-slate-950/40">
+    <header class="err-header">
         <!-- Logo & Platform Identity -->
-        <a href="/" class="flex items-center gap-3 group text-decoration-none transition-transform hover:scale-[1.01]" title="{{ $siteName }}">
-            <div class="size-9 sm:size-11 shrink-0 relative flex items-center justify-center rounded-xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-700/80 p-1.5 shadow-sm">
-                <img src="{{ $logoUrl }}" alt="{{ $siteName }}" class="size-full object-contain logo-theme-light" />
-                <img src="{{ $logoWhiteUrl }}" alt="{{ $siteName }}" class="size-full object-contain logo-theme-dark hidden" />
+        <a href="/" class="flex items-center gap-3 group text-decoration-none transition-transform hover:scale-[1.01]" style="display: flex; align-items: center; gap: 12px; text-decoration: none;" title="{{ $siteName }}">
+            <div style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 12px; background: #ffffff; border: 1px solid rgba(226, 232, 240, 0.8); padding: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);" class="dark:bg-slate-900">
+                <img src="{{ $logoUrl }}" alt="{{ $siteName }}" class="size-full object-contain logo-theme-light" style="width: 100%; height: 100%; object-fit: contain;" />
+                <img src="{{ $logoWhiteUrl }}" alt="{{ $siteName }}" class="size-full object-contain logo-theme-dark hidden" style="width: 100%; height: 100%; object-fit: contain;" />
             </div>
-            <div class="flex flex-col">
-                <span class="font-brand font-bold text-lg sm:text-xl text-[#012383] dark:text-white leading-tight">
+            <div style="display: flex; flex-direction: column; text-align: start;">
+                <span class="font-brand font-bold text-lg text-[#012383] dark:text-white" style="font-weight: 700; font-size: 18px; color: #012383;">
                     {{ $siteName }}
                 </span>
-                <span class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 font-medium hidden sm:inline-block">
+                <span style="font-size: 11px; color: #64748B; font-weight: 500;">
                     منصة تدريب وتأهيل التخاطب
                 </span>
             </div>
         </a>
 
         <!-- Controls: System Status Badge & Dark Mode Toggle -->
-        <div class="flex items-center gap-2.5 sm:gap-3">
+        <div style="display: flex; align-items: center; gap: 10px;">
             <!-- Platform Status Pill -->
-            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-800/60 shadow-xs">
-                <span class="relative flex size-2">
-                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                    <span class="relative inline-flex rounded-full size-2 bg-emerald-500"></span>
-                </span>
-                <span class="hidden sm:inline">نظام الحماية والمراقبة نشط</span>
-                <span class="sm:hidden font-en">Active</span>
+            <div class="err-badge" style="margin-bottom: 0; padding: 4px 12px; font-size: 11px;">
+                <span class="dot"></span>
+                <span>نظام الحماية والمراقبة نشط</span>
             </div>
 
             <!-- Dark / Light Theme Toggle -->
             <button
                 type="button"
                 id="theme-toggle-btn"
-                class="size-9 sm:size-10 flex items-center justify-center rounded-xl bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 shadow-sm hover:border-[#012383] dark:hover:border-slate-500 transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#012383]/20"
+                style="width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; border-radius: 10px; background: #ffffff; border: 1px solid #E2E8F0; cursor: pointer; color: #334155;"
+                class="dark:bg-slate-800 dark:border-slate-700"
                 title="تبديل المظهر / Toggle theme"
                 onclick="toggleErrorPageTheme()"
             >
                 <!-- Sun Icon (shown in dark mode) -->
-                <svg id="sun-icon" class="size-4 sm:size-5 hidden dark:block text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg id="sun-icon" class="size-4 hidden dark:block text-amber-400" style="width: 18px; height: 18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
                 </svg>
                 <!-- Moon Icon (shown in light mode) -->
-                <svg id="moon-icon" class="size-4 sm:size-5 block dark:hidden text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg id="moon-icon" class="size-4 block dark:hidden text-slate-700" style="width: 18px; height: 18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
                 </svg>
             </button>
@@ -434,20 +750,20 @@
     </header>
 
     <!-- Main Content Container -->
-    <main class="w-full flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-8 sm:py-12 relative z-10">
-        <div class="w-full max-w-3xl glass-card rounded-3xl p-6 sm:p-10 lg:p-12 text-center relative overflow-hidden transition-all">
+    <main class="err-main">
+        <div class="err-card glass-card">
             
             <!-- Top Subtle Glow Line -->
-            <div class="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-transparent via-[#012383] dark:via-blue-500 to-transparent opacity-80"></div>
+            <div style="position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, transparent, #012383, #10B77F, transparent);"></div>
 
             <!-- Themed Status Pill -->
-            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs sm:text-sm font-bold bg-[#EAF1FB] dark:bg-slate-800/90 text-[#012383] dark:text-blue-300 border border-[#DEE8F7] dark:border-slate-700 shadow-xs mb-6 sm:mb-8">
-                <span class="size-2 rounded-full bg-[#10B77F] animate-pulse"></span>
+            <div class="err-badge">
+                <span class="dot"></span>
                 <span>{{ $badgeText }}</span>
             </div>
 
             <!-- Error Artwork / Illustration -->
-            <div class="flex items-center justify-center mb-6 sm:mb-8 animate-float">
+            <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 24px;" class="animate-float">
                 @hasSection('illustration')
                     @yield('illustration')
                 @else
@@ -535,24 +851,24 @@
             </div>
 
             <!-- Status Code Headline -->
-            <div class="font-en text-5xl sm:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#012383] via-[#3B82F6] to-[#10B77F] dark:from-blue-400 dark:via-sky-300 dark:to-emerald-400 tracking-tight leading-none mb-3">
+            <div class="err-code font-en">
                 {{ $errorCode }}
             </div>
 
             <!-- Arabic Main Title -->
-            <h1 class="font-brand text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#012383] dark:text-white mb-2 leading-snug">
+            <h1 class="err-title-ar font-brand">
                 {{ $titleAr }}
             </h1>
 
             <!-- English Subtitle -->
-            <h2 class="font-en text-sm sm:text-base font-semibold text-slate-500 dark:text-slate-400 mb-4 sm:mb-6">
+            <h2 class="err-title-en font-en">
                 {{ $titleEn }}
             </h2>
 
             <!-- Explanation Text -->
-            <div class="max-w-xl mx-auto space-y-2 mb-8 sm:mb-10 text-slate-600 dark:text-slate-300 text-sm sm:text-base leading-relaxed">
+            <div class="err-desc">
                 <p>{{ $descAr }}</p>
-                <p class="font-en text-xs sm:text-sm text-slate-500 dark:text-slate-400">{{ $descEn }}</p>
+                <p class="font-en">{{ $descEn }}</p>
             </div>
 
             @php
@@ -566,13 +882,14 @@
             @endphp
 
             @if(!empty($customExceptionMessage))
-                <div class="max-w-lg mx-auto mb-8 p-3.5 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 text-amber-800 dark:text-amber-200 text-xs sm:text-sm font-medium">
-                    <span class="font-bold">ملاحظة من النظام:</span> {{ $customExceptionMessage }}
+                <div class="err-system-msg">
+                    <span style="font-weight: 700;">ملاحظة من النظام:</span>
+                    <span>{{ $customExceptionMessage }}</span>
                 </div>
             @endif
 
             <!-- Action Buttons Area -->
-            <div class="flex flex-wrap items-center justify-center gap-3 sm:gap-4 mb-8 sm:mb-10">
+            <div class="err-actions">
                 @hasSection('actions')
                     @yield('actions')
                 @else
@@ -581,9 +898,9 @@
                         <button
                             type="button"
                             onclick="window.location.reload()"
-                            class="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-gradient-to-r from-[#012383] to-[#0B2A8F] hover:from-[#0B2A8F] hover:to-[#012383] text-white font-bold text-sm sm:text-base shadow-lg shadow-[#012383]/20 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
+                            class="err-btn err-btn-primary"
                         >
-                            <svg class="size-4 sm:size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                             </svg>
                             <span>إعادة المحاولة الآن</span>
@@ -593,9 +910,9 @@
                             href="{{ $whatsAppUrl }}"
                             target="_blank"
                             rel="noopener noreferrer"
-                            class="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-[#10B77F] hover:bg-[#0E9F6E] text-white font-bold text-sm sm:text-base shadow-lg shadow-emerald-500/20 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all"
+                            class="err-btn err-btn-whatsapp"
                         >
-                            <svg class="size-4 sm:size-5" fill="currentColor" viewBox="0 0 24 24">
+                            <svg fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86.173.086.275.072.376-.043.101-.116.433-.506.549-.68.116-.173.231-.145.39-.086s1.011.477 1.184.564.289.13.332.203c.043.071.043.419-.101.824z" />
                             </svg>
                             <span>تواصل عبر واتساب</span>
@@ -603,16 +920,16 @@
 
                         <a
                             href="/"
-                            class="inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-2xl bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700/80 text-[#012383] dark:text-blue-300 font-bold text-sm sm:text-base border border-slate-200 dark:border-slate-700 shadow-sm hover:scale-[1.02] active:scale-[0.98] transition-all"
+                            class="err-btn err-btn-secondary"
                         >
                             <span>الصفحة الرئيسية</span>
                         </a>
                     @elseif($errorCode === '401')
                         <a
                             href="/login"
-                            class="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-gradient-to-r from-[#012383] to-[#0B2A8F] hover:from-[#0B2A8F] hover:to-[#012383] text-white font-bold text-sm sm:text-base shadow-lg shadow-[#012383]/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
+                            class="err-btn err-btn-primary"
                         >
-                            <svg class="size-4 sm:size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
                             </svg>
                             <span>تسجيل الدخول</span>
@@ -620,7 +937,7 @@
 
                         <a
                             href="/"
-                            class="inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-2xl bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold text-sm sm:text-base border border-slate-200 dark:border-slate-700 shadow-sm hover:scale-[1.02] transition-all"
+                            class="err-btn err-btn-secondary"
                         >
                             <span>الرئيسية</span>
                         </a>
@@ -628,9 +945,9 @@
                         <button
                             type="button"
                             onclick="window.location.reload()"
-                            class="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-gradient-to-r from-[#012383] to-[#0B2A8F] text-white font-bold text-sm sm:text-base shadow-lg shadow-[#012383]/20 hover:scale-[1.02] transition-all cursor-pointer"
+                            class="err-btn err-btn-primary"
                         >
-                            <svg class="size-4 sm:size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                             </svg>
                             <span>تحديث الصفحة والمتابعة</span>
@@ -639,9 +956,9 @@
                         <!-- Universal Default Buttons -->
                         <a
                             href="/"
-                            class="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-gradient-to-r from-[#012383] to-[#0B2A8F] hover:from-[#0B2A8F] hover:to-[#012383] text-white font-bold text-sm sm:text-base shadow-lg shadow-[#012383]/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
+                            class="err-btn err-btn-primary"
                         >
-                            <svg class="size-4 sm:size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                             </svg>
                             <span>العودة للرئيسية</span>
@@ -650,9 +967,9 @@
                         <button
                             type="button"
                             onclick="if (window.history.length > 1) { window.history.back(); } else { window.location.href = '/'; }"
-                            class="inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-2xl bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700/80 text-slate-700 dark:text-slate-200 font-bold text-sm sm:text-base border border-slate-200 dark:border-slate-700 shadow-sm hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
+                            class="err-btn err-btn-secondary"
                         >
-                            <svg class="size-4 sm:size-5 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                             </svg>
                             <span>الرجوع للخلف</span>
@@ -660,7 +977,7 @@
 
                         <a
                             href="/courses"
-                            class="inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-2xl bg-[#EAF1FB] dark:bg-slate-800/80 hover:bg-[#DEE8F7] text-[#012383] dark:text-blue-300 font-bold text-sm sm:text-base border border-[#DEE8F7] dark:border-slate-700 transition-all hover:scale-[1.02]"
+                            class="err-btn err-btn-secondary"
                         >
                             <span>تصفح الدورات</span>
                         </a>
@@ -669,21 +986,21 @@
             </div>
 
             <!-- Helpful Navigation Shortcuts Bar -->
-            <div class="pt-6 border-t border-slate-200/80 dark:border-slate-800/80 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-                <a href="/" class="hover:text-[#012383] dark:hover:text-blue-400 transition-colors">الرئيسية</a>
-                <span class="text-slate-300 dark:text-slate-700">•</span>
-                <a href="/courses" class="hover:text-[#012383] dark:hover:text-blue-400 transition-colors">الدورات التدريبية</a>
-                <span class="text-slate-300 dark:text-slate-700">•</span>
-                <a href="/contact" class="hover:text-[#012383] dark:hover:text-blue-400 transition-colors">تواصل معنا</a>
-                <span class="text-slate-300 dark:text-slate-700">•</span>
-                <a href="/admin/login" class="hover:text-[#012383] dark:hover:text-blue-400 transition-colors">لوحة الإدارة</a>
+            <div class="err-shortcuts">
+                <a href="/">الرئيسية</a>
+                <span style="opacity: 0.5;">•</span>
+                <a href="/courses">الدورات التدريبية</a>
+                <span style="opacity: 0.5;">•</span>
+                <a href="/contact">تواصل معنا</a>
+                <span style="opacity: 0.5;">•</span>
+                <a href="/admin/login">لوحة الإدارة</a>
             </div>
 
             @if($errorCode === '503')
                 <!-- Live Maintenance Auto-Refresh Timer -->
-                <div class="mt-6 pt-4 border-t border-dashed border-slate-200/80 dark:border-slate-800/80 text-xs text-slate-400 dark:text-slate-500 flex items-center justify-center gap-2" id="auto-refresh-box">
-                    <span class="size-2 rounded-full bg-emerald-500 animate-ping"></span>
-                    <span>إعادة فحص تلقائي بعد <strong id="refresh-seconds" class="font-en font-bold text-slate-700 dark:text-slate-200">30</strong> ثانية...</span>
+                <div class="err-timer-box" id="auto-refresh-box">
+                    <span style="width: 8px; height: 8px; border-radius: 50%; background: #10B77F; display: inline-block;"></span>
+                    <span>إعادة فحص تلقائي بعد <strong id="refresh-seconds" style="font-weight: 700; color: #012383;" class="dark:text-blue-300">30</strong> ثانية...</span>
                 </div>
             @endif
 
@@ -691,8 +1008,18 @@
     </main>
 
     <!-- Master Footer -->
-    <footer class="w-full relative z-20 px-4 sm:px-8 py-5 border-t border-slate-200/60 dark:border-slate-800/80 text-center text-xs text-slate-500 dark:text-slate-400 backdrop-blur-md bg-white/40 dark:bg-slate-950/40">
-        <div class="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+    <footer class="err-footer">
+        <div class="err-footer-inner">
+            <p>
+                © {{ date('Y') }} <span style="font-weight: 600;">{{ $siteName }}</span>. جميع الحقوق محفوظة.
+            </p>
+            <div style="display: flex; align-items: center; justify-content: center; gap: 12px; font-size: 11px;">
+                <span>هاتف: <a href="tel:{{ $contactPhone }}" style="color: inherit; text-decoration: none; font-family: Inter, sans-serif; direction: ltr; display: inline-block;">{{ $contactPhone }}</a></span>
+                <span style="opacity: 0.5;">•</span>
+                <span>دعم: <a href="mailto:{{ $contactEmail }}" style="color: inherit; text-decoration: none; font-family: Inter, sans-serif;">{{ $contactEmail }}</a></span>
+            </div>
+        </div>
+    </footer>
             <p>
                 © {{ date('Y') }} <span class="font-semibold text-slate-700 dark:text-slate-200">{{ $siteName }}</span>. جميع الحقوق محفوظة.
             </p>

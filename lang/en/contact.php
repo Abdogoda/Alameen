@@ -22,7 +22,7 @@ return [
     'channelWhatsAppBtn' => 'Open WhatsApp Chat',
 
     // Inquiry Form
-    'formHeading' => 'Send Us a Direct Message',
+    'formHeading' => 'To Contact Technical Support, Send Us a Direct Message',
     'formSubheading' => 'Fill in your details and our dedicated support team will respond promptly.',
     'topicLabel' => 'Inquiry Subject',
     'topicGeneral' => 'General Platform Inquiry',

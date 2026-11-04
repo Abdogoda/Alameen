@@ -153,3 +153,19 @@ jobs:
             php artisan up || true
 
             echo "🚀 Deployment to Hostinger completed successfully!"
+
+      - name: Ensure Site is Online (Fallback)
+        if: always()
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.HOSTINGER_HOST || '45.84.206.254' }}
+          port: ${{ secrets.HOSTINGER_PORT || 65002 }}
+          username: ${{ secrets.HOSTINGER_USER || 'u134129778' }}
+          key: ${{ secrets.HOSTINGER_SSH_KEY }}
+          password: ${{ secrets.HOSTINGER_SSH_PASSWORD }}
+          script: |
+            APP_DIR="${{ secrets.HOSTINGER_APP_PATH || 'domains/alameen-center.online/public_html' }}"
+            cd ~/$APP_DIR || cd $APP_DIR
+            if [ -f artisan ]; then
+              php artisan up || true
+            fi

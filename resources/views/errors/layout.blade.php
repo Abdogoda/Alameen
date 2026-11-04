@@ -32,6 +32,13 @@
         if (empty($errorCode) || !is_numeric($errorCode)) {
             $errorCode = '500';
         }
+    @endphp
+
+    @if($errorCode === '503')
+        <meta http-equiv="refresh" content="30">
+    @endif
+
+    @php
 
         // Default dictionaries per error code
         $defaults = [
@@ -1065,16 +1072,36 @@
         (function() {
             var seconds = 30;
             var countdownEl = document.getElementById('refresh-seconds');
+            var boxEl = document.getElementById('auto-refresh-box');
+
+            function triggerAutoRefresh() {
+                if (boxEl) {
+                    boxEl.innerHTML = '<span class="radar-pulse"></span><span>{{ __("جارٍ فحص الاتصال وتحديث الصفحة...") }}</span>';
+                }
+                try {
+                    window.location.reload();
+                } catch (e) {
+                    window.location.href = window.location.href;
+                }
+                // Fallback attempt in case reload was suppressed
+                setTimeout(function() {
+                    window.location.href = window.location.href;
+                }, 1200);
+            }
+
             if (countdownEl) {
                 var interval = setInterval(function() {
                     seconds--;
                     if (seconds <= 0) {
                         clearInterval(interval);
-                        window.location.reload();
+                        countdownEl.textContent = '0';
+                        triggerAutoRefresh();
                     } else {
                         countdownEl.textContent = seconds;
                     }
                 }, 1000);
+            } else {
+                setTimeout(triggerAutoRefresh, 30000);
             }
         })();
         @endif

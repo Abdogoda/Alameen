@@ -11,6 +11,7 @@ echo "--------------------------------------------------------"
 if [ -f artisan ]; then
     echo "🔒 Enabling maintenance mode..."
     php artisan down --retry=60 || true
+    trap '[ -f artisan ] && php artisan up || true' EXIT
 fi
 
 # 2. Clean up default hostinger file if present

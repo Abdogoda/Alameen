@@ -262,10 +262,6 @@
             nextVideoUrl: null,
             gridShiftX: 0,
             gridShiftY: 0,
-            badgeX: 60,
-            badgeY: 60,
-            badgeVx: 0.18,
-            badgeVy: 0.14,
             colSpacing: 290,
             rowSpacing: 120,
 
@@ -806,44 +802,6 @@
                         }
                     }
 
-                    this.ctx.restore();
-
-                    // 3. Dynamic drifting forensic watermark badge (high-contrast floating pill)
-                    this.badgeX += this.badgeVx * speedFactor;
-                    this.badgeY += this.badgeVy * speedFactor;
-
-                    const badgeW = 270;
-                    const badgeH = 46;
-
-                    if (this.badgeX <= 15 || this.badgeX + badgeW >= this.canvas.width - 15) {
-                        this.badgeVx = -this.badgeVx;
-                    }
-                    if (this.badgeY <= 15 || this.badgeY + badgeH >= this.canvas.height - 15) {
-                        this.badgeVy = -this.badgeVy;
-                    }
-
-                    this.ctx.save();
-                    // Draw semi-transparent dark rounded pill background
-                    this.ctx.globalAlpha = 0.45;
-                    this.ctx.fillStyle = '#0f172a';
-                    this.ctx.beginPath();
-                    if (typeof this.ctx.roundRect === 'function') {
-                        this.ctx.roundRect(this.badgeX, this.badgeY, badgeW, badgeH, 10);
-                    } else {
-                        this.ctx.rect(this.badgeX, this.badgeY, badgeW, badgeH);
-                    }
-                    this.ctx.fill();
-
-                    // Draw pill forensic text
-                    this.ctx.globalAlpha = 0.90;
-                    this.ctx.font = '800 12px "Cairo", system-ui, sans-serif';
-                    this.ctx.fillStyle = '#FFFFFF';
-                    this.ctx.shadowColor = '#000000';
-                    this.ctx.shadowBlur = 4;
-                    this.ctx.fillText(`🔒 ${this.student.name} • ${this.student.phone}`, this.badgeX + 12, this.badgeY + 18);
-                    this.ctx.font = '600 10px monospace';
-                    this.ctx.fillStyle = '#E2E8F0';
-                    this.ctx.fillText(`ID: ${this.student.id} • IP: ${this.student.ip}`, this.badgeX + 12, this.badgeY + 34);
                     this.ctx.restore();
 
                     this.animId = requestAnimationFrame(render);

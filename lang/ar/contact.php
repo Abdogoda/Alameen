@@ -22,7 +22,7 @@ return [
     'channelWhatsAppBtn' => 'فتح محادثة واتساب',
 
     // Inquiry Form
-    'formHeading' => 'أرسل لنا رسالة مباشرة',
+    'formHeading' => 'للتواصل مع الدعم الفني أرسل لنا رسالة مباشرة',
     'formSubheading' => 'املأ البيانات وسيقوم فريق الدعم بالتواصل معك في أقرب وقت.',
     'topicLabel' => 'موضوع الاستفسار',
     'topicGeneral' => 'استفسار عام عن المنصة',

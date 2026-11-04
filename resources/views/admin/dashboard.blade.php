@@ -42,7 +42,7 @@
                         {{ __('مرحباً بك، :name', ['name' => $adminName]) }} 👋
                     </h1>
                     <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-2xl leading-relaxed">
-                        {{ __('لوحة التحكم المركزية لإدارة البرنامج السريري، مراجعة إيصالات التحويل البنكي، واعتماد التكليفات والشهادات.') }}
+                        {{ __('لوحة التحكم المركزية لإدارة البرنامج التدريبي، مراجعة إيصالات التحويل البنكي، واعتماد التكليفات والشهادات.') }}
                     </p>
                 </div>
             </div>
@@ -123,7 +123,7 @@
                         @if($pendingTasks > 0)
                             <span class="text-xs text-indigo-700 dark:text-indigo-400 font-bold flex items-center gap-1.5">
                                 <span class="size-2 rounded-full bg-indigo-500 animate-pulse"></span>
-                                {{ __('تسجيلات سريرية قيد التدقيق') }}
+                                {{ __('تسجيلات تدريبية قيد التدقيق') }}
                             </span>
                         @else
                             <span class="text-xs text-slate-400 dark:text-slate-500">{{ __('تم تصحيح كافة التكليفات') }}</span>
@@ -315,7 +315,7 @@
                                         @if($pendingTasks > 0)
                                             <span class="text-indigo-600 dark:text-indigo-400 font-bold">{{ $pendingTasks }} {{ __('تكليف بانتظار التقييم') }}</span>
                                         @else
-                                            {{ __('تقييم تسجيلات الطلاب السريرية') }}
+                                            {{ __('تقييم تسجيلات الطلاب التدريبية') }}
                                         @endif
                                     </span>
                                 </div>

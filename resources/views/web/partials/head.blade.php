@@ -46,6 +46,19 @@
     })();
 </script>
 <style>
+    /* Strict early concealment for Alpine components and mobile drawers on initial paint/refresh */
+    [x-cloak] {
+        display: none !important;
+    }
+    .marketing-sidebar-drawer[style*="display: none"],
+    .marketing-sidebar-drawer.hidden,
+    .marketing-drawer-overlay[style*="display: none"],
+    .marketing-drawer-overlay.hidden {
+        display: none !important;
+        opacity: 0 !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+    }
     html.dark, html.dark body {
         background-color: #0B1120 !important;
         color-scheme: dark;

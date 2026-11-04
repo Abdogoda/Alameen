@@ -21,9 +21,25 @@
         2 => '/assets/images/alameen-images/2.mp4',
         3 => '/assets/images/alameen-images/8.jpeg',
     ];
+    $legacyHeroDefaults = [
+        0 => '/assets/images/alameen-images/6.jpeg',
+        1 => '/assets/images/alameen-images/1.jpeg',
+        2 => '/assets/images/alameen-images/2.jpeg',
+        3 => '/assets/images/alameen-images/3.jpeg',
+    ];
     $heroImages = [];
     for ($i = 0; $i < 4; $i++) {
-        $heroImages[$i] = !empty($heroMeta['images'][$i]) ? $heroMeta['images'][$i] : $defaultHeroImages[$i];
+        $val = $heroMeta['images'][$i] ?? null;
+        // Automatically upgrade legacy seeder defaults or non-video slots 1 and 2 to 7.jpeg, 1.mp4, 2.mp4, 8.jpeg
+        if (
+            empty($val) || 
+            $val === ($legacyHeroDefaults[$i] ?? '') ||
+            ($i === 1 && !str_ends_with(strtolower($val), '.mp4') && !str_ends_with(strtolower($val), '.webm')) ||
+            ($i === 2 && !str_ends_with(strtolower($val), '.mp4') && !str_ends_with(strtolower($val), '.webm'))
+        ) {
+            $val = $defaultHeroImages[$i];
+        }
+        $heroImages[$i] = $val;
     }
 
     $defaultFeedbackImages = [
@@ -39,7 +55,21 @@
     ];
     $feedbackImages = [];
     for ($i = 0; $i < 9; $i++) {
-        $feedbackImages[$i] = !empty($feedbackMeta['images'][$i]) ? $feedbackMeta['images'][$i] : $defaultFeedbackImages[$i];
+        $val = $feedbackMeta['images'][$i] ?? null;
+        if (empty($val)) {
+            $val = $defaultFeedbackImages[$i];
+        }
+        // Guarantee Dr. Hana on the diagonal (slots 0, 4, 8) and feedback on others
+        if ($i === 0 && (empty($val) || !str_contains($val, '6.jpeg'))) {
+            $val = '/assets/images/alameen-images/6.jpeg';
+        }
+        if ($i === 4 && (empty($val) || $val === '/assets/images/alameen-images/6.jpeg' || $val === '/assets/images/alameen-images/4.jpeg' || !str_contains($val, '9.jpeg'))) {
+            $val = '/assets/images/alameen-images/9.jpeg';
+        }
+        if ($i === 8 && (empty($val) || $val === '/assets/images/alameen-images/4.jpeg' || $val === '/assets/images/alameen-images/6.jpeg' || !str_contains($val, '12.jpeg'))) {
+            $val = '/assets/images/alameen-images/12.jpeg';
+        }
+        $feedbackImages[$i] = $val;
     }
 @endphp
 <!-- SECTION 1: #home (HERO SLIDER SHOWCASE)                                   -->
@@ -170,7 +200,7 @@
                   </div>
                 </div>
 
-                <!-- 4. Image 8 (Dr. Hana clinical presentation) -->
+                <!-- 4. Image 8 (Dr. Hana practical presentation) -->
                 <div class="bg-[#203C60] overflow-hidden rounded-tl-[16px] rounded-bl-[16px] sm:rounded-tl-[20px] sm:rounded-bl-[20px] rounded-tr-[50%] rounded-br-[50%] aspect-square w-full relative shadow-sm hover:scale-[1.02] transition-transform group">
                   <img
                     src="{{ $heroImages[3] ?? '/assets/images/alameen-images/8.jpeg' }}"

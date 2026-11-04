@@ -647,15 +647,18 @@ html.dark .logo-theme-light,
 .dark .logo-theme-light {
     display: none !important;
 }
+
 html.dark .logo-theme-dark,
 [data-theme="dark"] .logo-theme-dark,
 .dark .logo-theme-dark {
     display: block !important;
 }
+
 html:not(.dark) .logo-theme-light,
 [data-theme="light"] .logo-theme-light {
     display: block !important;
 }
+
 html:not(.dark) .logo-theme-dark,
 [data-theme="light"] .logo-theme-dark {
     display: none !important;
@@ -890,13 +893,24 @@ body.overflow-hidden {
         max-height: 100vh !important;
         max-height: 100dvh !important;
         z-index: 100 !important;
-        display: flex !important;
         flex-direction: column !important;
         justify-content: space-between !important;
         box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.45) !important;
         overscroll-behavior: contain !important;
         touch-action: pan-y;
         will-change: transform;
+    }
+
+    .marketing-sidebar-drawer[style*="display: none"],
+    .marketing-sidebar-drawer.hidden,
+    [x-cloak].marketing-sidebar-drawer,
+    .marketing-drawer-overlay[style*="display: none"],
+    .marketing-drawer-overlay.hidden,
+    [x-cloak].marketing-drawer-overlay {
+        display: none !important;
+        opacity: 0 !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
     }
 
     .marketing-drawer-overlay {

@@ -148,65 +148,66 @@
 
     </div>
 
-    <!-- Mobile Navigation Drawer (Sidebar) & Backdrop (Teleported directly to Body to avoid stacking/clipping) -->
-    <template x-teleport="body">
-        <div class="marketing-drawer-container">
-            <!-- 1. Backdrop Overlay -->
-            <div
-                x-show="mobileNavOpen"
-                x-cloak
-                x-transition:enter="transition-opacity ease-linear duration-300"
-                x-transition:enter-start="opacity-0"
-                x-transition:enter-end="opacity-100"
-                x-transition:leave="transition-opacity ease-linear duration-200"
-                x-transition:leave-start="opacity-100"
-                x-transition:leave-end="opacity-0"
-                @click="mobileNavOpen = false"
-                @touchmove.prevent
-                class="marketing-drawer-overlay fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-[90] lg:hidden touch-manipulation"
-                style="display: none;"
-            ></div>
+    <!-- Mobile Navigation Drawer (Sidebar) & Backdrop (Unified Direct Component) -->
+    <div class="marketing-drawer-container">
+        <!-- 1. Backdrop Overlay -->
+        <div
+            id="mobile-nav-overlay"
+            x-show="mobileNavOpen"
+            x-cloak
+            x-transition:enter="transition-opacity ease-linear duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition-opacity ease-linear duration-200"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+            @click="mobileNavOpen = false"
+            @touchmove.prevent
+            class="marketing-drawer-overlay fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-[90] lg:hidden touch-manipulation"
+            style="display: none;"
+        ></div>
 
-            <!-- 2. Slide-Over Sidebar Drawer -->
-            <div
-                id="mobile-nav-menu"
-                x-show="mobileNavOpen"
-                x-cloak
-                x-transition:enter="transition ease-out duration-300 transform"
-                x-transition:enter-start="ltr:-translate-x-full rtl:translate-x-full"
-                x-transition:enter-end="translate-x-0"
-                x-transition:leave="transition ease-in duration-200 transform"
-                x-transition:leave-start="translate-x-0"
-                x-transition:leave-end="ltr:-translate-x-full rtl:translate-x-full"
-                class="marketing-sidebar-drawer fixed inset-y-0 start-0 z-[100] w-[310px] sm:w-[350px] max-w-[85vw] h-screen h-[100dvh] max-h-screen max-h-[100dvh] bg-[#FAFCFF] dark:bg-slate-900 border-e border-[#D7E3F5] dark:border-slate-800 shadow-2xl flex flex-col justify-between p-5 overflow-hidden lg:hidden select-none"
-                style="display: none;"
-            >
-                <div class="flex flex-col flex-1 min-h-0">
-                    <!-- Sidebar Header: Brand + Close Button -->
-                    <div class="flex items-center justify-between pb-4 border-b border-[#D7E3F5] dark:border-slate-800 shrink-0">
-                        <a href="{{ route('home') }}" @click="mobileNavOpen = false" class="flex items-center gap-2.5 cursor-pointer min-w-0">
-                            <div class="size-8 rounded-xl bg-[#EAF1FB] dark:bg-slate-800 flex items-center justify-center p-1 shrink-0 border border-[#DEE8F7] dark:border-slate-700 shadow-xs">
-                                <img src="{{ $siteLogo }}" alt="{{ $siteName }}" class="size-full object-contain pointer-events-none dark:hidden logo-theme-light" />
-                                <img src="{{ $siteLogoWhite ?? '/assets/images/logo-white.png' }}" alt="{{ $siteName }}" class="size-full object-contain pointer-events-none hidden dark:block logo-theme-dark" />
-                            </div>
-                            <div class="flex flex-col min-w-0">
-                                <span class="font-['Baloo_Bhaijaan_2'] font-bold text-base leading-tight text-[#012383] dark:text-white truncate">
-                                    {{ __($siteName) }}
-                                </span>
-                                <span class="text-[10px] font-semibold text-[#0B2A8F] dark:text-blue-300 truncate">
-                                    {{ __('منصة التخاطب والتدريب') }}
-                                </span>
-                            </div>
-                        </a>
-                        <button
-                            type="button"
-                            @click="mobileNavOpen = false"
-                            class="size-8 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-500 hover:text-slate-900 dark:hover:text-white flex items-center justify-center transition-colors cursor-pointer shrink-0"
-                            aria-label="{{ __('إغلاق القائمة') }}"
-                        >
-                            <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                        </button>
-                    </div>
+        <!-- 2. Slide-Over Sidebar Drawer -->
+        <div
+            id="mobile-nav-menu"
+            x-show="mobileNavOpen"
+            x-cloak
+            x-transition:enter="transition ease-out duration-300 transform"
+            x-transition:enter-start="ltr:-translate-x-full rtl:translate-x-full"
+            x-transition:enter-end="translate-x-0"
+            x-transition:leave="transition ease-in duration-200 transform"
+            x-transition:leave-start="translate-x-0"
+            x-transition:leave-end="ltr:-translate-x-full rtl:translate-x-full"
+            class="marketing-sidebar-drawer fixed inset-y-0 start-0 z-[100] w-[310px] sm:w-[350px] max-w-[85vw] h-screen h-[100dvh] max-h-screen max-h-[100dvh] bg-[#FAFCFF] dark:bg-slate-900 border-e border-[#D7E3F5] dark:border-slate-800 shadow-2xl flex flex-col justify-between p-5 overflow-hidden lg:hidden select-none"
+            style="display: none;"
+        >
+            <div class="flex flex-col flex-1 min-h-0">
+                <!-- Sidebar Header: Brand + Close Button -->
+                <div class="flex items-center justify-between pb-4 border-b border-[#D7E3F5] dark:border-slate-800 shrink-0">
+                    <a href="{{ route('home') }}" @click="mobileNavOpen = false" class="flex items-center gap-2.5 cursor-pointer min-w-0">
+                        <div class="size-8 rounded-xl bg-[#EAF1FB] dark:bg-slate-800 flex items-center justify-center p-1 shrink-0 border border-[#DEE8F7] dark:border-slate-700 shadow-xs">
+                            <img src="{{ $siteLogo }}" alt="{{ $siteName }}" class="size-full object-contain pointer-events-none dark:hidden logo-theme-light" />
+                            <img src="{{ $siteLogoWhite ?? '/assets/images/logo-white.png' }}" alt="{{ $siteName }}" class="size-full object-contain pointer-events-none hidden dark:block logo-theme-dark" />
+                        </div>
+                        <div class="flex flex-col min-w-0">
+                            <span class="font-['Baloo_Bhaijaan_2'] font-bold text-base leading-tight text-[#012383] dark:text-white truncate">
+                                {{ __($siteName) }}
+                            </span>
+                            <span class="text-[10px] font-semibold text-[#0B2A8F] dark:text-blue-300 truncate">
+                                {{ __('منصة التخاطب والتدريب') }}
+                            </span>
+                        </div>
+                    </a>
+                    <button
+                        type="button"
+                        id="close-mobile-nav-btn"
+                        @click="mobileNavOpen = false"
+                        class="size-8 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-500 hover:text-slate-900 dark:hover:text-white flex items-center justify-center transition-colors cursor-pointer shrink-0"
+                        aria-label="{{ __('إغلاق القائمة') }}"
+                    >
+                        <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                </div>
 
                     <!-- Authenticated User Card if Logged In -->
                     @if (auth()->check())
@@ -363,6 +364,99 @@
                 </div>
             </div>
         </div>
-    </template>
+    </div>
 
+    <!-- Fallback & Instant DOM Controller for Mobile Menu Drawer (Guarantees Zero Flash & Smooth Closing) -->
+    <script>
+        (function() {
+            function bindMobileMenu() {
+                var toggleBtn = document.getElementById('mobile-menu-toggle');
+                var closeBtn = document.getElementById('close-mobile-nav-btn');
+                var menu = document.getElementById('mobile-nav-menu');
+                var overlay = document.getElementById('mobile-nav-overlay');
+
+                function closeMenu() {
+                    if (menu) {
+                        menu.style.display = 'none';
+                        menu.classList.add('hidden');
+                    }
+                    if (overlay) {
+                        overlay.style.display = 'none';
+                        overlay.classList.add('hidden');
+                    }
+                    document.body.classList.remove('overflow-hidden');
+                }
+
+                function openMenu() {
+                    if (menu) {
+                        menu.style.display = 'flex';
+                        menu.classList.remove('hidden');
+                    }
+                    if (overlay) {
+                        overlay.style.display = 'block';
+                        overlay.classList.remove('hidden');
+                    }
+                    document.body.classList.add('overflow-hidden');
+                }
+
+                // Strictly ensure menu is closed on fresh page boot
+                closeMenu();
+
+                if (toggleBtn && !toggleBtn.__hasMobileMenuBinding) {
+                    toggleBtn.__hasMobileMenuBinding = true;
+                    toggleBtn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        var isCurrentlyOpen = menu && menu.style.display !== 'none' && !menu.classList.contains('hidden');
+                        if (isCurrentlyOpen) {
+                            closeMenu();
+                        } else {
+                            openMenu();
+                        }
+                    });
+                }
+
+                if (closeBtn && !closeBtn.__hasMobileMenuBinding) {
+                    closeBtn.__hasMobileMenuBinding = true;
+                    closeBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        closeMenu();
+                    });
+                }
+
+                if (overlay && !overlay.__hasMobileMenuBinding) {
+                    overlay.__hasMobileMenuBinding = true;
+                    overlay.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        closeMenu();
+                    });
+                }
+
+                window.addEventListener('resize', function() {
+                    if (window.innerWidth >= 1024) {
+                        closeMenu();
+                    }
+                });
+
+                window.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape') {
+                        closeMenu();
+                    }
+                });
+
+                document.querySelectorAll('.mobile-nav-link').forEach(function(link) {
+                    link.addEventListener('click', function() {
+                        closeMenu();
+                    });
+                });
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', bindMobileMenu);
+            } else {
+                bindMobileMenu();
+            }
+            document.addEventListener('livewire:navigated', bindMobileMenu);
+        })();
+    </script>
 </header>

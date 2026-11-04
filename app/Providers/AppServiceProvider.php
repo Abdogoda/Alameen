@@ -119,6 +119,46 @@ class AppServiceProvider extends ServiceProvider
                 View::share('currencySymbol', $currencySymbol);
                 View::share('currencyName', $currencyName);
                 View::share('cmsSettings', $settingsService);
+
+                // Auto-sync dynamic media defaults for Hero and Slide 2 if legacy values are present
+                if (Schema::hasTable('content_blocks')) {
+                    $heroBlock = \App\Models\ContentBlock::where('section_key', 'hero')->first();
+                    if ($heroBlock) {
+                        $meta = $heroBlock->metadata ?? [];
+                        $imgs = $meta['images'] ?? [];
+                        if (empty($imgs) || (isset($imgs[0]) && $imgs[0] === '/assets/images/alameen-images/6.jpeg')) {
+                            $meta['images'] = [
+                                0 => '/assets/images/alameen-images/7.jpeg',
+                                1 => '/assets/images/alameen-images/1.mp4',
+                                2 => '/assets/images/alameen-images/2.mp4',
+                                3 => '/assets/images/alameen-images/8.jpeg',
+                            ];
+                            $heroBlock->metadata = $meta;
+                            $heroBlock->save();
+                        }
+                    }
+
+                    $feedbackBlock = \App\Models\ContentBlock::where('section_key', 'feedback')->first();
+                    if ($feedbackBlock) {
+                        $meta = $feedbackBlock->metadata ?? [];
+                        $imgs = $meta['images'] ?? [];
+                        if (empty($imgs) || !isset($imgs[4]) || $imgs[4] !== '/assets/images/alameen-images/9.jpeg') {
+                            $meta['images'] = [
+                                0 => '/assets/images/alameen-images/6.jpeg',
+                                1 => '/assets/images/alameen-images/1.jpeg',
+                                2 => '/assets/images/alameen-images/2.jpeg',
+                                3 => '/assets/images/alameen-images/3.jpeg',
+                                4 => '/assets/images/alameen-images/9.jpeg',
+                                5 => '/assets/images/alameen-images/4.jpeg',
+                                6 => '/assets/images/alameen-images/5.jpeg',
+                                7 => '/assets/images/alameen-images/certificate.png',
+                                8 => '/assets/images/alameen-images/12.jpeg',
+                            ];
+                            $feedbackBlock->metadata = $meta;
+                            $feedbackBlock->save();
+                        }
+                    }
+                }
             }
         } catch (\Throwable) {
             // Gracefully ignore during installation or CLI migrations

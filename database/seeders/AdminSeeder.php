@@ -35,14 +35,14 @@ class AdminSeeder extends Seeder
         );
 
         $supervisorRole = Role::query()->updateOrCreate(
-            ['slug' => 'clinical_supervisor'],
+            ['slug' => 'supervisor'],
             [
-                'name' => 'المشرف السريري والأكاديمي',
-                'name_ar' => 'المشرف السريري والأكاديمي',
-                'name_en' => 'Clinical & Academic Supervisor',
-                'description' => 'إدارة وتعديل الكورسات والمحاضرات، تقييم تسجيلات الطلاب السريرية، واعتماد الشهادات',
-                'description_ar' => 'إدارة وتعديل الكورسات والمحاضرات، تقييم تسجيلات الطلاب السريرية، واعتماد الشهادات',
-                'description_en' => 'Curriculum management, student clinical recording evaluations, and certificate accreditation',
+                'name' => 'المشرف التدريبي والأكاديمي',
+                'name_ar' => 'المشرف التدريبي والأكاديمي',
+                'name_en' => 'Training & Academic Supervisor',
+                'description' => 'إدارة وتعديل الكورسات والمحاضرات، تقييم تسجيلات ومهام الطلاب، واعتماد الشهادات',
+                'description_ar' => 'إدارة وتعديل الكورسات والمحاضرات، تقييم تسجيلات ومهام الطلاب، واعتماد الشهادات',
+                'description_en' => 'Curriculum management, student practical recording evaluations, and certificate accreditation',
                 'permissions' => AdminRole::CLINICAL_SUPERVISOR->defaultPermissions(),
                 'is_system' => false,
             ]
@@ -51,12 +51,12 @@ class AdminSeeder extends Seeder
         $instructorRole = Role::query()->updateOrCreate(
             ['slug' => 'instructor'],
             [
-                'name' => 'محاضر ومدرب سريري',
-                'name_ar' => 'محاضر ومدرب سريري',
-                'name_en' => 'Clinical Instructor & Trainer',
-                'description' => 'استعراض المناهج وتقييم مهام الطلاب الإكلينيكية',
-                'description_ar' => 'استعراض المناهج وتقييم مهام الطلاب الإكلينيكية',
-                'description_en' => 'Curriculum reviewing and clinical voice task grading for enrolled trainees',
+                'name' => 'محاضر ومدرب معتمد',
+                'name_ar' => 'محاضر ومدرب معتمد',
+                'name_en' => 'Certified Instructor & Trainer',
+                'description' => 'استعراض المناهج وتقييم مهام الطلاب التدريبية والتطبيقية',
+                'description_ar' => 'استعراض المناهج وتقييم مهام الطلاب التدريبية والتطبيقية',
+                'description_en' => 'Curriculum reviewing and practical voice task grading for enrolled trainees',
                 'permissions' => AdminRole::INSTRUCTOR->defaultPermissions(),
                 'is_system' => false,
             ]
@@ -94,62 +94,26 @@ class AdminSeeder extends Seeder
         // 2. Seed Administrators linked to their dynamic roles
         // ---------------------------------------------------------
 
-        // Platform Owner / Super Administrator (Abdo Goda)
+        // 1. Dr. Hana El-Mekawy - Platform Owner & General Manager
+        Admin::query()->updateOrCreate(
+            ['email' => 'hm2991479@gmail.com'],
+            [
+                'name' => 'د. هنا المكاوي',
+                'password' => Hash::make('password'),
+                'role_id' => $superAdminRole->id,
+                'permissions' => ['*'],
+                'locale' => 'ar',
+            ]
+        );
+
+        // 2. Abdo Goda - System Administrator with All Permissions
         Admin::query()->updateOrCreate(
             ['email' => 'abdogoda0a@gmail.com'],
             [
                 'name' => 'Abdo Goda',
                 'password' => Hash::make('password'),
                 'role_id' => $superAdminRole->id,
-                'permissions' => null,
-                'locale' => 'ar',
-            ]
-        );
-
-        // Clinical & Academic Supervisor
-        Admin::query()->updateOrCreate(
-            ['email' => 'supervisor@alameen.edu.sa'],
-            [
-                'name' => 'د. سارة خليل (مشرف إكلينيكي)',
-                'password' => Hash::make('password'),
-                'role_id' => $supervisorRole->id,
-                'permissions' => null,
-                'locale' => 'ar',
-            ]
-        );
-
-        // Clinical Instructor & Lecturer
-        Admin::query()->updateOrCreate(
-            ['email' => 'instructor@alameen.edu.sa'],
-            [
-                'name' => 'د. حازم القاضي (محاضر تخاطب)',
-                'password' => Hash::make('password'),
-                'role_id' => $instructorRole->id,
-                'permissions' => null,
-                'locale' => 'ar',
-            ]
-        );
-
-        // Finance & Payment Receipts Auditor
-        Admin::query()->updateOrCreate(
-            ['email' => 'finance@alameen.edu.sa'],
-            [
-                'name' => 'أ. كريم فهمي (مسؤول مالي)',
-                'password' => Hash::make('password'),
-                'role_id' => $financeRole->id,
-                'permissions' => null,
-                'locale' => 'ar',
-            ]
-        );
-
-        // Support & Notification Coordinator
-        Admin::query()->updateOrCreate(
-            ['email' => 'support@alameen.edu.sa'],
-            [
-                'name' => 'أ. مروة العبد (دعم وإشعارات)',
-                'password' => Hash::make('password'),
-                'role_id' => $supportRole->id,
-                'permissions' => null,
+                'permissions' => ['*'],
                 'locale' => 'ar',
             ]
         );

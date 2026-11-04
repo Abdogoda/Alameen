@@ -304,7 +304,7 @@ class SettingsService
 
         $val = $this->get($normalizedKey, $default);
 
-        return $val === '1' || $val === 'true' || $val === true;
+        return $val === '1' || $val === 'true';
     }
 
     /**

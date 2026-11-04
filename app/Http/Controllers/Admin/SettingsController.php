@@ -344,7 +344,7 @@ class SettingsController extends Controller
                 if ($sectionKey === 'reviews') {
                     $items = $metadata['items'] ?? [];
                     foreach ($files as $idx => $file) {
-                        if ($file && $file->isValid()) {
+                        if ($file->isValid()) {
                             $path = $file->store('cms/reviews', 'public');
                             if (is_string($path)) {
                                 $items[(int) $idx]['image'] = Storage::url($path);
@@ -356,7 +356,7 @@ class SettingsController extends Controller
                     $images = $metadata['images'] ?? [];
                     $folder = $sectionKey === 'hero' ? 'cms/hero' : 'cms/feedback';
                     foreach ($files as $idx => $file) {
-                        if ($file && $file->isValid()) {
+                        if ($file->isValid()) {
                             $path = $file->store($folder, 'public');
                             if (is_string($path)) {
                                 $images[(int) $idx] = Storage::url($path);

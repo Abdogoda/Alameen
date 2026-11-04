@@ -3,6 +3,9 @@
     'modals' => null,
     'scripts' => null,
 ])
+@php
+    $cmsSettings = app(\App\Services\Cms\SettingsService::class);
+@endphp
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}" class="alameen-dashboard-layout">
     <head>

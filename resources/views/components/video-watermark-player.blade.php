@@ -25,10 +25,9 @@
 <script>
     (function() {
         try {
-            var lock = localStorage.getItem('alameen_video_locked_until') || sessionStorage.getItem('alameen_video_locked_until');
-            if (lock && parseInt(lock, 10) > Date.now()) {
-                document.documentElement.classList.add('alameen-video-locked-mode');
-            }
+            localStorage.removeItem('alameen_video_locked_until');
+            sessionStorage.removeItem('alameen_video_locked_until');
+            document.documentElement.classList.remove('alameen-video-locked-mode');
         } catch(e) {}
     })();
 </script>
@@ -56,16 +55,6 @@
             pointer-events: none !important;
         }
         .alameen-blackout-active {
-            visibility: hidden !important;
-            opacity: 0 !important;
-            filter: brightness(0) !important;
-            pointer-events: none !important;
-        }
-        /* Instant lockout style applied before DOM paints */
-        .alameen-video-locked-mode #alameen-mux-player,
-        .alameen-video-locked-mode video,
-        .alameen-video-locked-mode iframe {
-            display: none !important;
             visibility: hidden !important;
             opacity: 0 !important;
             filter: brightness(0) !important;
@@ -192,12 +181,7 @@
             <svg class="size-4 animate-spin shrink-0 text-rose-400" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
             <span>{{ __('حظر أمني نشط: يرجى إيقاف برنامج أو أداة تسجيل الشاشة تماماً.') }}</span>
         </div>
-        <template x-if="remainingLockSeconds > 0">
-            <div class="mt-2 text-slate-400 font-mono text-[11px] font-bold">
-                <span>{{ __('إعادة الفحص الأمني بعد:') }} </span>
-                <span class="text-rose-400" x-text="formatCountdown(remainingLockSeconds)"></span>
-            </div>
-        </template>
+
     </div>
 
     {{-- Lesson Completed Success Banner Overlay --}}
@@ -234,17 +218,6 @@
 
 <script>
     function videoWatermarkPlayer(student, videoId) {
-        const isPersistentlyLocked = () => {
-            try {
-                const lockUntil = parseInt(localStorage.getItem('alameen_video_locked_until') || sessionStorage.getItem('alameen_video_locked_until') || '0', 10);
-                return lockUntil > Date.now();
-            } catch (e) {
-                return false;
-            }
-        };
-
-        const initiallyLocked = isPersistentlyLocked();
-
         return {
             student: student,
             videoId: videoId,
@@ -252,11 +225,9 @@
             ctx: null,
             animId: null,
             tokenRefreshTimer: null,
-            countdownTimer: null,
-            remainingLockSeconds: 0,
-            shieldActive: initiallyLocked,
-            shieldTitle: initiallyLocked ? '{{ __('تم حظر عرض المحتوى لأسباب أمنية') }}' : '',
-            shieldMessage: initiallyLocked ? '{{ __('تم رصد محاولة تسجيل أو تصوير الشاشة. تم إيقاف المشغل وحظر العرض لحماية المحتوى.') }}' : '',
+            shieldActive: false,
+            shieldTitle: '',
+            shieldMessage: '',
             completionBannerActive: false,
             completionMessage: '',
             nextVideoUrl: null,
@@ -273,24 +244,6 @@
                         this.resize();
                         window.addEventListener('resize', () => this.resize());
                         this.startLoop();
-                    }
-
-                    // Check if already persistently locked from earlier recording attempt or page refresh
-                    if (isPersistentlyLocked()) {
-                        this.instantBlackout(
-                            '{{ __('تم حظر عرض المحتوى لأسباب أمنية') }}',
-                            '{{ __('تم رصد محاولة تسجيل أو تصوير الشاشة. تم إيقاف المشغل وحظر العرض لحماية المحتوى.') }}'
-                        );
-                        return;
-                    }
-
-                    // Check if window is loaded in background or lacks focus
-                    if (document.hidden || (typeof document.hasFocus === 'function' && !document.hasFocus())) {
-                        this.instantBlackout(
-                            '{{ __('تم إيقاف العرض وحظر التسجيل') }}',
-                            '{{ __('نافذة المحاضرة غير نشطة أو تم تشغيل تطبيق آخر فوقها.') }}'
-                        );
-                        return;
                     }
 
                     this.setupAntiScreenRecording();
@@ -318,23 +271,8 @@
                     || this.$el.querySelector('iframe');
             },
 
-            formatCountdown(sec) {
-                if (sec <= 0) return '0:00';
-                const m = Math.floor(sec / 60);
-                const s = sec % 60;
-                return `${m}:${s < 10 ? '0' : ''}${s}`;
-            },
-
             instantBlackout(title, message, incidentType = 'screen_recording_attempt') {
-                // 1. Persist lockout in localStorage & sessionStorage (persists across refresh & new tabs)
-                try {
-                    const lockUntil = Date.now() + (15 * 60 * 1000); // 15 minutes lockout
-                    localStorage.setItem('alameen_video_locked_until', lockUntil.toString());
-                    sessionStorage.setItem('alameen_video_locked_until', lockUntil.toString());
-                    document.documentElement.classList.add('alameen-video-locked-mode');
-                } catch (e) {}
-
-                // 2. Immediately pause, mute, and blank out player DOM element
+                // 1. Immediately pause, mute, and blank out player DOM element
                 const player = this.getPlayerElement();
                 if (player) {
                     try {
@@ -348,7 +286,7 @@
                     player.style.setProperty('filter', 'brightness(0)', 'important');
                 }
 
-                // 3. Immediately fill watermark canvas with solid pitch black
+                // 2. Immediately fill watermark canvas with solid pitch black
                 if (this.ctx && this.canvas) {
                     this.ctx.save();
                     this.ctx.fillStyle = '#000000';
@@ -356,12 +294,12 @@
                     this.ctx.restore();
                 }
 
-                // 4. Trigger solid black shield overlay immediately with zero delay
+                // 3. Trigger solid black shield overlay immediately with zero delay
                 this.shieldTitle = title;
                 this.shieldMessage = message;
                 this.shieldActive = true;
 
-                // 5. Deactivate student account immediately, alert admins with full metadata, and reload to force logout
+                // 4. Deactivate student account immediately, alert admins with full metadata, and reload to force logout
                 this.reportViolationAndReload(incidentType);
             },
 
@@ -398,33 +336,6 @@
                 });
             },
 
-            startLockCountdown() {
-                if (this.countdownTimer) clearInterval(this.countdownTimer);
-
-                const update = () => {
-                    try {
-                        const lockUntil = parseInt(localStorage.getItem('alameen_video_locked_until') || '0', 10);
-                        const diff = lockUntil - Date.now();
-                        if (diff > 0) {
-                            this.remainingLockSeconds = Math.ceil(diff / 1000);
-                        } else {
-                            this.remainingLockSeconds = 0;
-                            clearInterval(this.countdownTimer);
-                            this.countdownTimer = null;
-                            // Only auto-unlock if the student is actively on the page and focused
-                            if (document.hasFocus() && !document.hidden) {
-                                this.unlockPlayer();
-                            }
-                        }
-                    } catch (e) {
-                        this.remainingLockSeconds = 0;
-                    }
-                };
-
-                update();
-                this.countdownTimer = setInterval(update, 1000);
-            },
-
             unlockPlayer() {
                 try {
                     localStorage.removeItem('alameen_video_locked_until');
@@ -446,64 +357,7 @@
             },
 
             setupAntiScreenRecording() {
-                // 1. Edge Touch Interception (Mobile Screen Recorder Pull-down)
-                // When user touches the top edge to pull notification drawer / quick settings:
-                const handleTouchEdge = (e) => {
-                    if (e.touches && e.touches[0]) {
-                        const y = e.touches[0].clientY;
-                        if (y <= 65 || y >= (window.innerHeight - 45)) {
-                            this.instantBlackout(
-                                '{{ __('تم إيقاف العرض وحظر الحساب') }}',
-                                '{{ __('تم رصد محاولة تسجيل الشاشة. تم إيقاف الحساب وتسجيل الخروج فوراً.') }}',
-                                'mobile_edge_swipe'
-                            );
-                        }
-                    }
-                };
-                window.addEventListener('touchstart', handleTouchEdge, { capture: true, passive: true });
-                window.addEventListener('touchmove', handleTouchEdge, { capture: true, passive: true });
-
-                // 2. Window Blur & Visibility Change (Instant Zero-Latency Blanking)
-                document.addEventListener('visibilitychange', () => {
-                    if (document.hidden || document.visibilityState !== 'visible') {
-                        this.instantBlackout(
-                            '{{ __('تم إيقاف العرض وحظر الحساب') }}',
-                            '{{ __('تم رصد مغادرة نافذة المحاضرة أو تشغيل نافذة/تطبيق آخر فوق المشغل.') }}',
-                            'visibility_hidden'
-                        );
-                    }
-                }, true);
-
-                window.addEventListener('blur', () => {
-                    this.instantBlackout(
-                        '{{ __('تم إيقاف العرض وحظر الحساب') }}',
-                        '{{ __('تم رصد مغادرة نافذة المحاضرة أو فقدان تركيز الصفحة.') }}',
-                        'window_blur'
-                    );
-                }, true);
-
-                window.addEventListener('pagehide', () => {
-                    this.instantBlackout(
-                        '{{ __('تم إيقاف العرض وحظر الحساب') }}',
-                        '{{ __('تم الانتقال خارج الصفحة.') }}',
-                        'page_hide'
-                    );
-                }, true);
-
-                // 3. Continuous Focus & Visibility Integrity Check (Every 250ms)
-                setInterval(() => {
-                    if (document.hidden || (typeof document.hasFocus === 'function' && !document.hasFocus())) {
-                        if (!this.shieldActive) {
-                            this.instantBlackout(
-                                '{{ __('تم إيقاف العرض وحظر الحساب') }}',
-                                '{{ __('تم رصد نافذة منبثقة أو فقدان تركيز الصفحة.') }}',
-                                'focus_loss_polling'
-                            );
-                        }
-                    }
-                }, 250);
-
-                // 4. Intercept Screen Capture API (getDisplayMedia)
+                // 1. Intercept Screen Capture API (getDisplayMedia)
                 if (navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia) {
                     navigator.mediaDevices.getDisplayMedia = () => {
                         this.instantBlackout(
@@ -515,7 +369,7 @@
                     };
                 }
 
-                // 5. Screenshot Keys & Shortcuts Interception
+                // 2. Screenshot Keys & Shortcuts Interception
                 const blockScreenshot = (e) => {
                     if (e.key === 'PrintScreen' || e.code === 'PrintScreen' || e.keyCode === 44) {
                         e.preventDefault();
@@ -563,7 +417,7 @@
                     }
                 }, true);
 
-                // 6. Disable PiP and Cast
+                // 3. Disable PiP and Cast
                 const playerEl = this.getPlayerElement();
                 if (playerEl && 'disablePictureInPicture' in playerEl) {
                     playerEl.disablePictureInPicture = true;

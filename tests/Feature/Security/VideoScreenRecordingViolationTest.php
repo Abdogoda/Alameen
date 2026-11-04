@@ -107,4 +107,36 @@ class VideoScreenRecordingViolationTest extends TestCase
 
         $response->assertUnauthorized();
     }
+
+    public function test_suspended_student_can_be_reactivated_by_admin_and_access_platform_normally(): void
+    {
+        $admin = Admin::create([
+            'name' => 'Super Admin',
+            'email' => 'admin2@alameen-center.online',
+            'password' => Hash::make('password'),
+        ]);
+
+        $student = User::factory()->create([
+            'name' => 'فاطمة محمود',
+            'phone' => '01099999999',
+            'email' => 'fatma@example.com',
+            'status' => 'suspended',
+        ]);
+
+        $this->assertTrue($student->isSuspended());
+
+        // Admin reactivates the student
+        $this->actingAs($admin, 'admin');
+        $toggleResponse = $this->post(route('admin.students.toggle', $student));
+        $toggleResponse->assertRedirect();
+
+        $student->refresh();
+        $this->assertSame('active', $student->status);
+        $this->assertTrue($student->isActive());
+
+        // Student can now log in and access dashboard without suspension
+        $studentResponse = $this->actingAs($student, 'web')->get(route('dashboard'));
+        $studentResponse->assertOk();
+        $this->assertTrue(Auth::guard('web')->check());
+    }
 }

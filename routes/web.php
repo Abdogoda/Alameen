@@ -48,13 +48,7 @@ Route::middleware('guest')->group(function () {
 // -------------------------------------------------------------
 Route::view('/', 'web.welcome')->name('home');
 Route::get('courses', [StudentCourseController::class, 'index'])->name('courses.index');
-Route::get('course-details', function () {
-    if (! auth()->check()) {
-        return redirect()->guest(route('login'));
-    }
-
-    return view('web.pages.course-details');
-})->name('courses.show');
+Route::get('course-details/{course?}', [StudentCourseController::class, 'show'])->name('courses.show');
 Route::view('reviews', 'web.pages.reviews')->name('reviews.index');
 Route::view('contact', 'web.pages.contact')->name('contact');
 Route::view('audit-report', 'web.pages.audit-report')->name('audit.report');

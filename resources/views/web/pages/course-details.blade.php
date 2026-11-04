@@ -1,12 +1,16 @@
-<x-layouts::app :title="__('تفاصيل الدورة والمنهج')">
-        <!-- Page Content (Node 1155:17916) -->
-        <div class="flex flex-col gap-6 w-full text-start" data-node-id="1155:17916">
+<x-layouts::app :title="$course->title . ' - ' . __('تفاصيل الدورة والمنهج')">
+        <!-- Page Content -->
+        <div class="flex flex-col gap-6 w-full text-start">
           
-          <!-- Page Introduction (Node 1155:17917) -->
-          <div class="flex flex-col gap-[4px] items-start text-start w-full" data-node-id="1155:17917">
-            <p class="font-['Cairo'] font-semibold text-[12px] leading-[1.8] text-[#0B2A8F] dark:text-blue-400 text-start w-full" data-i18n="courses.breadcrumb" data-node-id="1155:17918">{{ __('courses.breadcrumb') }}</p>
-            <h1 class="font-['Baloo_Bhaijaan_2'] font-bold text-[28px] sm:text-[32px] leading-[1.3] text-[#012383] dark:text-white text-start w-full" data-i18n="courses.courseTitle" data-node-id="1155:17919">{{ __('courses.courseTitle') }}</h1>
-            <p class="font-['Cairo'] font-medium text-[13px] sm:text-[14px] leading-[1.7] text-[#475569] dark:text-slate-400 text-start w-full" data-i18n="courses.courseSubtitle" data-node-id="1155:17920">{{ __('courses.courseSubtitle') }}</p>
+          <!-- Page Introduction -->
+          <div class="flex flex-col gap-[4px] items-start text-start w-full">
+            <p class="font-['Cairo'] font-semibold text-[12px] leading-[1.8] text-[#0B2A8F] dark:text-blue-400 text-start w-full">
+              <a href="{{ route('courses.index') }}" class="hover:underline">{{ __('courses.breadcrumb') }}</a>
+              <span> / </span>
+              <span class="text-slate-500 dark:text-slate-400">{{ $course->title }}</span>
+            </p>
+            <h1 class="font-['Baloo_Bhaijaan_2'] font-bold text-[28px] sm:text-[32px] leading-[1.3] text-[#012383] dark:text-white text-start w-full">{{ $course->title }}</h1>
+            <p class="font-['Cairo'] font-medium text-[13px] sm:text-[14px] leading-[1.7] text-[#475569] dark:text-slate-400 text-start w-full">{{ $course->description }}</p>
           </div>
 
           @if(session('success'))
@@ -23,34 +27,32 @@
             </div>
           @endif
 
-          <!-- Course Progress Overview Card (Node 1155:17921) -->
-          <div class="bg-gradient-to-l from-[#EAF1FB] via-[#F4F8FD] to-white dark:from-slate-900 dark:via-slate-900 dark:to-slate-950 border border-[#DEE8F7] dark:border-slate-800 rounded-[20px] p-6 flex flex-col items-start w-full shadow-xs" data-node-id="1155:17921">
-            <div class="flex flex-col sm:flex-row gap-5 items-start sm:items-center w-full justify-between" data-node-id="1155:17922">
+          <!-- Course Progress Overview Card -->
+          <div class="bg-gradient-to-l from-[#EAF1FB] via-[#F4F8FD] to-white dark:from-slate-900 dark:via-slate-900 dark:to-slate-950 border border-[#DEE8F7] dark:border-slate-800 rounded-[20px] p-6 flex flex-col items-start w-full shadow-xs">
+            <div class="flex flex-col sm:flex-row gap-5 items-start sm:items-center w-full justify-between">
               
-              <!-- Right in RTL: Course Viewing Progress (Node 1155:17938) -->
-              <div class="flex flex-1 flex-col gap-[8px] items-start min-w-0 w-full" data-node-id="1155:17938">
-                <div class="flex items-center justify-between font-['Cairo'] font-bold text-[#012383] dark:text-white text-start w-full" data-node-id="1155:17939">
-                  <span class="text-[15px]" data-i18n="courses.progressLabel" data-node-id="1155:17941">{{ __('courses.progressLabel') }}</span>
-                  <span class="text-[22px] sm:text-[24px] text-[#0B2A8F] dark:text-blue-400" data-i18n="courses.progressPercent" data-node-id="1155:17940">{{ __('courses.progressPercent') }}</span>
+              <!-- Right in RTL: Course Viewing Progress -->
+              <div class="flex flex-1 flex-col gap-[8px] items-start min-w-0 w-full">
+                <div class="flex items-center justify-between font-['Cairo'] font-bold text-[#012383] dark:text-white text-start w-full">
+                  <span class="text-[15px]">{{ __('courses.progressLabel') }}</span>
+                  <span class="text-[22px] sm:text-[24px] text-[#0B2A8F] dark:text-blue-400 font-mono">{{ round($courseProgressPercentage) }}%</span>
                 </div>
-                <div class="bg-[#DEE8F7] dark:bg-slate-700 h-[8px] rounded-full w-full relative overflow-hidden" data-node-id="1155:17942">
-                  <div class="bg-gradient-to-r from-[#0B2A8F] to-[#012383] dark:from-blue-500 dark:to-indigo-600 h-full rounded-full w-[42%]" data-node-id="1155:17943"></div>
+                <div class="bg-[#DEE8F7] dark:bg-slate-700 h-[8px] rounded-full w-full relative overflow-hidden">
+                  <div class="bg-gradient-to-r from-[#0B2A8F] to-[#012383] dark:from-blue-500 dark:to-indigo-600 h-full rounded-full transition-all duration-500" style="width: {{ min(100, max(0, round($courseProgressPercentage))) }}%"></div>
                 </div>
-                <p class="font-['Cairo'] font-medium text-[12px] sm:text-[13px] text-[#475569] dark:text-slate-400 text-start w-full" data-i18n="courses.progressMeta" data-node-id="1155:17944">{{ __('courses.progressMeta') }}</p>
+                <p class="font-['Cairo'] font-medium text-[12px] sm:text-[13px] text-[#475569] dark:text-slate-400 text-start w-full">
+                  @if(app()->getLocale() === 'en')
+                    {{ $watchedMinutes }} of {{ $totalDurationMinutes }} minutes • {{ $completedVideosCount }} of {{ $totalVideosCount }} videos completed • {{ $totalLevelsCount }} levels
+                  @else
+                    {{ $watchedMinutes }} من {{ $totalDurationMinutes }} دقيقة • {{ $completedVideosCount }} من {{ $totalVideosCount }} فيديوهات مكتملة • {{ $totalLevelsCount }} مستويات
+                  @endif
+                </p>
               </div>
-
-@php
-    $currentCourse = \App\Models\Course::first();
-    $studentUser = auth()->user();
-    $hasActiveAccess = $studentUser && $currentCourse ? app(\App\Services\Course\CourseEnrollmentService::class)->hasActiveAccess($studentUser, $currentCourse) : false;
-    $pendingReceipt = $studentUser && $currentCourse ? \App\Models\PaymentReceipt::where('user_id', $studentUser->id)->where('course_id', $currentCourse->id)->where('status', 'pending')->latest()->first() : null;
-    $cmsSettings = app(\App\Services\Cms\SettingsService::class);
-@endphp
 
               <!-- Left in RTL: CTA Button -->
               @if($hasActiveAccess)
                 <a
-                  href="{{ route('lessons.show') }}"
+                  href="{{ $resumeVideo ? route('lessons.show', [$course->slug, $resumeVideo->slug]) : route('lessons.show', $course->slug) }}"
                   class="bg-[#012383] hover:bg-[#0B2A8F] rounded-xl h-[46px] px-6 flex items-center justify-center text-white font-['Cairo'] font-bold text-[14px] shadow-sm hover:shadow transition-all shrink-0 w-full sm:w-auto"
                 >
                   {{ __('استئناف مشاهدة المحاضرات') }}
@@ -82,548 +84,352 @@
             </div>
           </div>
 
-          <!-- Curriculum and Learning Companion Grid (Node 1155:17945) -->
-          <div class="flex flex-col lg:flex-row gap-[24px] items-start w-full" data-node-id="1155:17945">
+          <!-- Curriculum and Learning Companion Grid -->
+          <div class="flex flex-col lg:flex-row gap-[24px] items-start w-full">
             
-            <!-- Right in RTL: Complete Curriculum Column (Node 1155:18000) -->
-            <div class="flex-1 min-w-0 flex flex-col gap-[18px] w-full" data-node-id="1155:18000">
+            <!-- Right in RTL: Complete Curriculum Column -->
+            <div class="flex-1 min-w-0 flex flex-col gap-[18px] w-full">
               
-              <!-- Section Heading (Node 1155:18001) -->
-              <div class="flex items-center justify-between text-start w-full" data-node-id="1155:18001">
-                <h2 class="font-['Baloo_Bhaijaan_2'] font-bold text-[19px] sm:text-[20px] leading-[1.4] text-[#012383] dark:text-white" data-i18n="courses.curriculumTitle" data-node-id="1155:18003">{{ __('courses.curriculumTitle') }}</h2>
-                <p class="font-['Cairo'] font-medium text-[12px] sm:text-[13px] text-[#475569] dark:text-slate-300 bg-white dark:bg-slate-800 border border-[#DEE8F7] dark:border-slate-700 px-3 py-0.5 rounded-full whitespace-nowrap" data-i18n="courses.curriculumMeta" data-node-id="1155:18002">{{ __('courses.curriculumMeta') }}</p>
+              <!-- Section Heading -->
+              <div class="flex items-center justify-between text-start w-full">
+                <h2 class="font-['Baloo_Bhaijaan_2'] font-bold text-[19px] sm:text-[20px] leading-[1.4] text-[#012383] dark:text-white">{{ __('courses.curriculumTitle') }}</h2>
+                <p class="font-['Cairo'] font-medium text-[12px] sm:text-[13px] text-[#475569] dark:text-slate-300 bg-white dark:bg-slate-800 border border-[#DEE8F7] dark:border-slate-700 px-3 py-0.5 rounded-full whitespace-nowrap">
+                  @if(app()->getLocale() === 'en')
+                    {{ $totalVideosCount }} videos • {{ $totalTasksCount }} tasks
+                  @else
+                    {{ $totalVideosCount }} فيديو • {{ $totalTasksCount }} مهمة
+                  @endif
+                </p>
               </div>
-              <p class="font-['Cairo'] font-medium text-[12px] leading-[1.8] text-[#475569] dark:text-slate-400 text-start w-full" data-i18n="courses.curriculumDesc" data-node-id="1155:18004">{{ __('courses.curriculumDesc') }}</p>
+              <p class="font-['Cairo'] font-medium text-[12px] leading-[1.8] text-[#475569] dark:text-slate-400 text-start w-full">{{ __('courses.curriculumDesc') }}</p>
 
-              <!-- Level 1 (Node 1155:18005 - 100% Completed) -->
-              <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-2xl overflow-hidden w-full shadow-xs" data-node-id="1155:18005">
-                <div class="bg-[#FAFCFF] dark:bg-slate-800/60 p-[20px] flex flex-col gap-[10px] w-full" data-node-id="1155:18006">
-                  <div class="flex gap-[12px] items-center w-full" data-node-id="1155:18007">
-                    <div class="flex-1 flex flex-col gap-[2px] items-start text-start" data-node-id="1155:18010">
-                      <h4 class="font-['Cairo'] font-bold text-[18px] leading-[1.8] text-[#012383] dark:text-white" data-i18n="courses.level1Title" data-node-id="1155:18011">{{ __('courses.level1Title') }}</h4>
-                      <p class="font-['Cairo'] font-medium text-[12px] leading-[1.8] text-[#475569] dark:text-slate-400" data-i18n="courses.level1Meta" data-node-id="1155:18012">{{ __('courses.level1Meta') }}</p>
+              <!-- Dynamic Levels Loop -->
+              @forelse($levels as $levelIndex => $level)
+                @php
+                  $levelVideos = $level->publishedVideos;
+                  $levelVideosCount = $levelVideos->count();
+                  $levelDurationSeconds = (int) $levelVideos->sum('duration_seconds');
+                  $levelMinutes = (int) round($levelDurationSeconds / 60);
+                  $levelTasksCount = $levelVideos->filter(fn($v) => $v->clinicalTask !== null)->count();
+                  $levelCompletedCount = $levelVideos->filter(fn($v) => in_array($v->id, $completedVideoIds, true))->count();
+                  $levelProgressPct = $levelVideosCount > 0 ? round(($levelCompletedCount / $levelVideosCount) * 100) : 0;
+                  $levelAccessible = in_array($level->id, $accessibleLevelIds, true);
+                @endphp
+                <div class="level-card bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-2xl overflow-hidden w-full shadow-xs">
+                  <div class="bg-[#FAFCFF] dark:bg-slate-800/60 p-[20px] flex flex-col gap-[10px] w-full cursor-pointer select-none" onclick="const body = this.nextElementSibling; const chevron = this.querySelector('.level-chevron'); body.classList.toggle('hidden'); chevron.classList.toggle('rotate-180');">
+                    <div class="flex gap-[12px] items-center w-full">
+                      <div class="flex-1 flex flex-col gap-[2px] items-start text-start">
+                        <div class="flex items-center gap-2">
+                          <h4 class="font-['Cairo'] font-bold text-[18px] leading-[1.8] text-[#012383] dark:text-white">{{ $level->title }}</h4>
+                          @if(! $levelAccessible && ! $hasActiveAccess)
+                            <span class="text-xs px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-500 font-medium">🔒 {{ __('مقفل') }}</span>
+                          @endif
+                        </div>
+                        <p class="font-['Cairo'] font-medium text-[12px] leading-[1.8] text-[#475569] dark:text-slate-400">
+                          @if(app()->getLocale() === 'en')
+                            {{ $levelVideosCount }} videos • {{ $levelMinutes }} min • {{ $levelTasksCount }} tasks
+                          @else
+                            {{ $levelVideosCount }} فيديوهات • {{ $levelMinutes }} دقيقة • {{ $levelTasksCount }} مهام
+                          @endif
+                        </p>
+                      </div>
+                      <span class="font-['Cairo'] font-bold text-[13px] leading-[1.8] text-[#0B2A8F] dark:text-blue-400 whitespace-nowrap">{{ $levelProgressPct }}%</span>
+                      <div class="level-chevron size-[18px] shrink-0 relative transition-transform duration-200">
+                        <img src="/assets/images/icon-chevron-up.svg" alt="" class="size-full dark:invert" />
+                      </div>
                     </div>
-                    <span class="font-['Cairo'] font-bold text-[13px] leading-[1.8] text-[#0B2A8F] dark:text-blue-400 whitespace-nowrap" data-i18n="courses.level1Percent" data-node-id="1155:18009">{{ __('courses.level1Percent') }}</span>
-                    <div class="size-[18px] shrink-0 relative cursor-pointer" data-node-id="1155:19374">
-                      <img src="/assets/images/icon-chevron-up.svg" alt="" class="size-full dark:invert" />
-                    </div>
-                  </div>
-                  <div class="bg-[#DEE8F7] dark:bg-slate-700 h-[7px] rounded-full w-full relative overflow-hidden" data-node-id="1155:18013">
-                    <div class="bg-[#0B2A8F] dark:bg-blue-500 h-[7px] rounded-full w-full" data-node-id="1155:18014"></div>
-                  </div>
-                </div>
-
-                <!-- Lesson 1 (Node 1155:18015) -->
-                <div class="border-t border-[#DEE8F7] dark:border-slate-800 flex gap-[16px] items-center px-[16px] py-[13px] w-full hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors" data-node-id="1155:18015">
-                  <div class="size-[30px] rounded-full bg-[#EEF7F3] dark:bg-emerald-950/60 flex items-center justify-center shrink-0" data-node-id="1155:18026">
-                    <img src="/assets/images/icon-check-green.svg" alt="" class="size-[16px]" />
-                  </div>
-                  <div class="flex-1 flex flex-col gap-[2px] items-start text-start" data-node-id="1155:18023">
-                    <h5 class="font-['Cairo'] font-semibold text-[14px] text-[#012383] dark:text-white" data-i18n="courses.l1Title">{{ __('courses.l1Title') }}</h5>
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569] dark:text-slate-400" data-i18n="courses.duration20min">{{ __('courses.duration20min') }}</p>
-                  </div>
-                  <div class="w-[140px] flex flex-col gap-[5px] items-start" data-node-id="1155:18019">
-                    <p class="font-['Cairo'] font-semibold text-[12px] text-[#216350] dark:text-emerald-400" data-i18n="courses.lessonCompleted">{{ __('courses.lessonCompleted') }}</p>
                     <div class="bg-[#DEE8F7] dark:bg-slate-700 h-[7px] rounded-full w-full relative overflow-hidden">
-                      <div class="bg-[#0B2A8F] dark:bg-blue-500 h-[7px] rounded-full w-full"></div>
+                      <div class="bg-[#0B2A8F] dark:bg-blue-500 h-[7px] rounded-full transition-all duration-500" style="width: {{ $levelProgressPct }}%"></div>
                     </div>
                   </div>
-                  <div class="w-[143px] flex flex-col gap-[2px] items-end text-end" data-node-id="1155:18016">
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569] dark:text-slate-400" data-i18n="courses.taskL1">{{ __('courses.taskL1') }}</p>
-                    <p class="font-['Cairo'] font-medium text-[12px] text-[#475569] dark:text-slate-400" data-i18n="courses.taskGraded">{{ __('courses.taskGraded') }}</p>
+
+                  <div class="level-body">
+                    @forelse($levelVideos as $vIndex => $video)
+                      @php
+                        $isCompleted = in_array($video->id, $completedVideoIds, true);
+                        $vProg = $userProgressMap->get($video->id);
+                        $vPct = $isCompleted ? 100 : ($vProg ? round($vProg->completion_percentage) : 0);
+                        $isInProgress = ! $isCompleted && $vProg && $vProg->watched_seconds > 0;
+                        $canAccess = $hasActiveAccess ? in_array($video->id, $accessibleVideoIds, true) : (bool) $video->is_free_preview;
+                        $durationMin = max(1, (int) round($video->duration_seconds / 60));
+                      @endphp
+                      <div class="border-t border-[#DEE8F7] dark:border-slate-800 flex flex-col sm:flex-row gap-3 sm:gap-[16px] items-start sm:items-center px-[16px] py-[13px] w-full hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
+                        
+                        <div class="flex items-center gap-3 flex-1 min-w-0 w-full sm:w-auto">
+                          <!-- Status Icon -->
+                          @if($isCompleted)
+                            <div class="size-[30px] rounded-full bg-[#EEF7F3] dark:bg-emerald-950/60 flex items-center justify-center shrink-0">
+                              <img src="/assets/images/icon-check-green.svg" alt="" class="size-[16px]" />
+                            </div>
+                          @elseif($isInProgress)
+                            <div class="size-[30px] rounded-full bg-blue-50 dark:bg-blue-950/60 text-[#012383] dark:text-blue-400 flex items-center justify-center shrink-0 text-xs font-bold">
+                              ▶
+                            </div>
+                          @elseif($canAccess)
+                            <div class="size-[30px] rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center shrink-0 text-xs font-bold font-['Cairo']">
+                              {{ $vIndex + 1 }}
+                            </div>
+                          @else
+                            <div class="size-[30px] rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 flex items-center justify-center shrink-0">
+                              <svg class="size-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                            </div>
+                          @endif
+
+                          <!-- Video Info -->
+                          <div class="flex-1 flex flex-col gap-[2px] items-start text-start min-w-0">
+                            @if($canAccess)
+                              <a href="{{ route('lessons.show', [$course->slug, $video->slug]) }}" class="hover:underline font-['Cairo'] font-semibold text-[14px] text-[#012383] dark:text-white truncate max-w-full">
+                                {{ $video->title }}
+                              </a>
+                            @else
+                              <span class="font-['Cairo'] font-semibold text-[14px] text-slate-600 dark:text-slate-400 truncate max-w-full">
+                                {{ $video->title }}
+                              </span>
+                            @endif
+                            <div class="flex items-center gap-2">
+                              <span class="font-['Cairo'] font-medium text-[11px] text-[#475569] dark:text-slate-400">
+                                @if(app()->getLocale() === 'en')
+                                  {{ $durationMin }} min
+                                @else
+                                  {{ $durationMin }} دقيقة
+                                @endif
+                              </span>
+                              @if($video->is_free_preview)
+                                <span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 font-bold">{{ __('معاينة مجانية') }}</span>
+                              @endif
+                            </div>
+                          </div>
+                        </div>
+
+                        <!-- Progress Bar & Percentage -->
+                        <div class="w-full sm:w-[140px] flex flex-col gap-[5px] items-start shrink-0">
+                          <p class="font-['Cairo'] font-semibold text-[12px] {{ $isCompleted ? 'text-[#216350] dark:text-emerald-400' : ($isInProgress ? 'text-[#0B2A8F] dark:text-blue-400' : 'text-slate-500 dark:text-slate-400') }}">
+                            @if($isCompleted)
+                              {{ __('مكتمل • 100%') }}
+                            @elseif($isInProgress)
+                              {{ __('قيد المشاهدة') }} • {{ $vPct }}%
+                            @else
+                              {{ __('لم يبدأ • 0%') }}
+                            @endif
+                          </p>
+                          <div class="bg-[#DEE8F7] dark:bg-slate-700 h-[7px] rounded-full w-full relative overflow-hidden">
+                            <div class="bg-[#0B2A8F] dark:bg-blue-500 h-[7px] rounded-full transition-all duration-300" style="width: {{ $vPct }}%"></div>
+                          </div>
+                        </div>
+
+                        <!-- Associated Task Column -->
+                        <div class="w-full sm:w-[150px] flex flex-col gap-[2px] items-start sm:items-end text-start sm:text-end shrink-0">
+                          @if($video->clinicalTask)
+                            @php
+                              $submission = $userSubmissions->get($video->clinicalTask->id);
+                            @endphp
+                            <p class="font-['Cairo'] font-medium text-[11px] text-[#475569] dark:text-slate-400 truncate max-w-full" title="{{ $video->clinicalTask->title }}">
+                              {{ $video->clinicalTask->title }}
+                            </p>
+                            @if($submission && $submission->status === 'graded')
+                              <span class="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
+                                ✓ {{ __('تم التقييم') }} ({{ $submission->score }}/{{ $video->clinicalTask->max_score }})
+                              </span>
+                            @elseif($submission && $submission->status === 'pending')
+                              <span class="text-[11px] font-bold text-amber-600 dark:text-amber-400">{{ __('قيد المراجعة') }}</span>
+                            @elseif($isCompleted)
+                              @if($hasActiveAccess && $cmsSettings->isPageEnabled('tasks'))
+                                <a href="{{ route('assignments.index', $video->clinicalTask->id) }}" class="text-[11px] font-bold text-[#0B2A8F] dark:text-blue-400 hover:underline">
+                                  {{ __('متاح للتسليم') }} ←
+                                </a>
+                              @else
+                                <span class="text-[11px] font-medium text-slate-400">{{ __('متاح للتسليم') }}</span>
+                              @endif
+                            @else
+                              <span class="text-[11px] font-medium text-slate-400 dark:text-slate-500">{{ __('بعد إكمال الفيديو') }}</span>
+                            @endif
+                          @else
+                            <p class="font-['Cairo'] font-medium text-[11px] text-slate-400 dark:text-slate-500">{{ __('لا توجد مهمة') }}</p>
+                          @endif
+                        </div>
+
+                      </div>
+                    @empty
+                      <div class="p-4 text-center text-xs text-slate-500 font-medium">
+                        {{ __('لا توجد فيديوهات منشورة في هذا المستوى حالياً.') }}
+                      </div>
+                    @endforelse
                   </div>
                 </div>
+              @empty
+                <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-2xl p-8 text-center text-slate-500">
+                  {{ __('لا توجد مستويات منشورة في هذه الدورة حتى الآن.') }}
+                </div>
+              @endforelse
 
-                <!-- Lesson 2 (Node 1155:18028) -->
-                <div class="border-t border-[#DEE8F7] dark:border-slate-800 flex gap-[16px] items-center px-[16px] py-[13px] w-full hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors" data-node-id="1155:18028">
-                  <div class="size-[30px] rounded-full bg-[#EEF7F3] dark:bg-emerald-950/60 flex items-center justify-center shrink-0" data-node-id="1155:18039">
-                    <img src="/assets/images/icon-check-green.svg" alt="" class="size-[16px]" />
-                  </div>
-                  <div class="flex-1 flex flex-col gap-[2px] items-start text-start" data-node-id="1155:18036">
-                    <h5 class="font-['Cairo'] font-semibold text-[14px] text-[#012383] dark:text-white" data-i18n="courses.l2Title">{{ __('courses.l2Title') }}</h5>
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569] dark:text-slate-400" data-i18n="courses.duration20min">{{ __('courses.duration20min') }}</p>
-                  </div>
-                  <div class="w-[140px] flex flex-col gap-[5px] items-start" data-node-id="1155:18032">
-                    <p class="font-['Cairo'] font-semibold text-[12px] text-[#216350] dark:text-emerald-400" data-i18n="courses.lessonCompleted">{{ __('courses.lessonCompleted') }}</p>
-                    <div class="bg-[#DEE8F7] dark:bg-slate-700 h-[7px] rounded-full w-full relative overflow-hidden">
-                      <div class="bg-[#0B2A8F] dark:bg-blue-500 h-[7px] rounded-full w-full"></div>
+              <!-- Standalone Videos (If any) -->
+              @if($standaloneVideos->isNotEmpty())
+                <div class="level-card bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-2xl overflow-hidden w-full shadow-xs">
+                  <div class="bg-[#FAFCFF] dark:bg-slate-800/60 p-[20px] flex flex-col gap-[10px] w-full cursor-pointer select-none" onclick="const body = this.nextElementSibling; const chevron = this.querySelector('.level-chevron'); body.classList.toggle('hidden'); chevron.classList.toggle('rotate-180');">
+                    <div class="flex gap-[12px] items-center w-full">
+                      <div class="flex-1 flex flex-col gap-[2px] items-start text-start">
+                        <h4 class="font-['Cairo'] font-bold text-[18px] leading-[1.8] text-[#012383] dark:text-white">{{ __('المحاضرات العامة والإضافية') }}</h4>
+                        <p class="font-['Cairo'] font-medium text-[12px] leading-[1.8] text-[#475569] dark:text-slate-400">{{ $standaloneVideos->count() }} {{ __('فيديوهات') }}</p>
+                      </div>
+                      <div class="level-chevron size-[18px] shrink-0 relative transition-transform duration-200">
+                        <img src="/assets/images/icon-chevron-up.svg" alt="" class="size-full dark:invert" />
+                      </div>
                     </div>
                   </div>
-                  <div class="w-[143px] flex flex-col gap-[2px] items-end text-end" data-node-id="1155:18029">
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569] dark:text-slate-400" data-i18n="courses.taskL2">{{ __('courses.taskL2') }}</p>
-                    <p class="font-['Cairo'] font-medium text-[12px] text-[#475569] dark:text-slate-400" data-i18n="courses.taskGraded">{{ __('courses.taskGraded') }}</p>
+                  <div class="level-body">
+                    @foreach($standaloneVideos as $vIndex => $video)
+                      @php
+                        $isCompleted = in_array($video->id, $completedVideoIds, true);
+                        $vProg = $userProgressMap->get($video->id);
+                        $vPct = $isCompleted ? 100 : ($vProg ? round($vProg->completion_percentage) : 0);
+                        $isInProgress = ! $isCompleted && $vProg && $vProg->watched_seconds > 0;
+                        $canAccess = $hasActiveAccess ? in_array($video->id, $accessibleVideoIds, true) : (bool) $video->is_free_preview;
+                        $durationMin = max(1, (int) round($video->duration_seconds / 60));
+                      @endphp
+                      <div class="border-t border-[#DEE8F7] dark:border-slate-800 flex flex-col sm:flex-row gap-3 sm:gap-[16px] items-start sm:items-center px-[16px] py-[13px] w-full hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
+                        <div class="flex items-center gap-3 flex-1 min-w-0 w-full sm:w-auto">
+                          @if($isCompleted)
+                            <div class="size-[30px] rounded-full bg-[#EEF7F3] dark:bg-emerald-950/60 flex items-center justify-center shrink-0">
+                              <img src="/assets/images/icon-check-green.svg" alt="" class="size-[16px]" />
+                            </div>
+                          @elseif($isInProgress)
+                            <div class="size-[30px] rounded-full bg-blue-50 dark:bg-blue-950/60 text-[#012383] dark:text-blue-400 flex items-center justify-center shrink-0 text-xs font-bold">
+                              ▶
+                            </div>
+                          @else
+                            <div class="size-[30px] rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center shrink-0 text-xs font-bold font-['Cairo']">
+                              {{ $vIndex + 1 }}
+                            </div>
+                          @endif
+                          <div class="flex-1 flex flex-col gap-[2px] items-start text-start min-w-0">
+                            @if($canAccess)
+                              <a href="{{ route('lessons.show', [$course->slug, $video->slug]) }}" class="hover:underline font-['Cairo'] font-semibold text-[14px] text-[#012383] dark:text-white truncate max-w-full">
+                                {{ $video->title }}
+                              </a>
+                            @else
+                              <span class="font-['Cairo'] font-semibold text-[14px] text-slate-600 dark:text-slate-400 truncate max-w-full">
+                                {{ $video->title }}
+                              </span>
+                            @endif
+                            <span class="font-['Cairo'] font-medium text-[11px] text-[#475569] dark:text-slate-400">{{ $durationMin }} {{ __('دقيقة') }}</span>
+                          </div>
+                        </div>
+                        <div class="w-full sm:w-[140px] flex flex-col gap-[5px] items-start shrink-0">
+                          <p class="font-['Cairo'] font-semibold text-[12px] {{ $isCompleted ? 'text-[#216350] dark:text-emerald-400' : ($isInProgress ? 'text-[#0B2A8F] dark:text-blue-400' : 'text-slate-500 dark:text-slate-400') }}">
+                            {{ $isCompleted ? __('مكتمل • 100%') : ($isInProgress ? __('قيد المشاهدة') . ' • ' . $vPct . '%' : __('لم يبدأ • 0%')) }}
+                          </p>
+                          <div class="bg-[#DEE8F7] dark:bg-slate-700 h-[7px] rounded-full w-full relative overflow-hidden">
+                            <div class="bg-[#0B2A8F] dark:bg-blue-500 h-[7px] rounded-full" style="width: {{ $vPct }}%"></div>
+                          </div>
+                        </div>
+                      </div>
+                    @endforeach
                   </div>
                 </div>
-
-                <!-- Lesson 3 (Node 1155:18041) -->
-                <div class="border-t border-[#DEE8F7] dark:border-slate-800 flex gap-[16px] items-center px-[16px] py-[13px] w-full hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors" data-node-id="1155:18041">
-                  <div class="size-[30px] rounded-full bg-[#EEF7F3] dark:bg-emerald-950/60 flex items-center justify-center shrink-0" data-node-id="1155:18052">
-                    <img src="/assets/images/icon-check-green.svg" alt="" class="size-[16px]" />
-                  </div>
-                  <div class="flex-1 flex flex-col gap-[2px] items-start text-start" data-node-id="1155:18049">
-                    <h5 class="font-['Cairo'] font-semibold text-[14px] text-[#012383] dark:text-white" data-i18n="courses.l3Title">{{ __('courses.l3Title') }}</h5>
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569] dark:text-slate-400" data-i18n="courses.duration20min">{{ __('courses.duration20min') }}</p>
-                  </div>
-                  <div class="w-[140px] flex flex-col gap-[5px] items-start" data-node-id="1155:18045">
-                    <p class="font-['Cairo'] font-semibold text-[12px] text-[#216350] dark:text-emerald-400" data-i18n="courses.lessonCompleted">{{ __('courses.lessonCompleted') }}</p>
-                    <div class="bg-[#DEE8F7] dark:bg-slate-700 h-[7px] rounded-full w-full relative overflow-hidden">
-                      <div class="bg-[#0B2A8F] dark:bg-blue-500 h-[7px] rounded-full w-full"></div>
-                    </div>
-                  </div>
-                  <div class="w-[143px] flex flex-col gap-[2px] items-end text-end" data-node-id="1155:18042">
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569] dark:text-slate-400" data-i18n="courses.taskL3">{{ __('courses.taskL3') }}</p>
-                    <p class="font-['Cairo'] font-medium text-[12px] text-[#475569] dark:text-slate-400" data-i18n="courses.taskGraded">{{ __('courses.taskGraded') }}</p>
-                  </div>
-                </div>
-
-                <!-- Lesson 4 (Node 1155:18054) -->
-                <div class="border-t border-[#DEE8F7] dark:border-slate-800 flex gap-[16px] items-center px-[16px] py-[13px] w-full hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors" data-node-id="1155:18054">
-                  <div class="size-[30px] rounded-full bg-[#EEF7F3] dark:bg-emerald-950/60 flex items-center justify-center shrink-0" data-node-id="1155:18065">
-                    <img src="/assets/images/icon-check-green.svg" alt="" class="size-[16px]" />
-                  </div>
-                  <div class="flex-1 flex flex-col gap-[2px] items-start text-start" data-node-id="1155:18062">
-                    <h5 class="font-['Cairo'] font-semibold text-[14px] text-[#012383] dark:text-white" data-i18n="courses.l4Title">{{ __('courses.l4Title') }}</h5>
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569] dark:text-slate-400" data-i18n="courses.duration20min">{{ __('courses.duration20min') }}</p>
-                  </div>
-                  <div class="w-[140px] flex flex-col gap-[5px] items-start" data-node-id="1155:18058">
-                    <p class="font-['Cairo'] font-semibold text-[12px] text-[#216350] dark:text-emerald-400" data-i18n="courses.lessonCompleted">{{ __('courses.lessonCompleted') }}</p>
-                    <div class="bg-[#DEE8F7] dark:bg-slate-700 h-[7px] rounded-full w-full relative overflow-hidden">
-                      <div class="bg-[#0B2A8F] dark:bg-blue-500 h-[7px] rounded-full w-full"></div>
-                    </div>
-                  </div>
-                  <div class="w-[143px] flex flex-col gap-[2px] items-end text-end" data-node-id="1155:18055">
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569] dark:text-slate-400" data-i18n="courses.taskL4">{{ __('courses.taskL4') }}</p>
-                    <p class="font-['Cairo'] font-medium text-[12px] text-[#475569] dark:text-slate-400" data-i18n="courses.taskGraded">{{ __('courses.taskGraded') }}</p>
-                  </div>
-                </div>
-
-                <!-- Lesson 5 (Node 1155:18067) -->
-                <div class="border-t border-[#DEE8F7] dark:border-slate-800 flex gap-[16px] items-center px-[16px] py-[13px] w-full hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors" data-node-id="1155:18067">
-                  <div class="size-[30px] rounded-full bg-[#EEF7F3] dark:bg-emerald-950/60 flex items-center justify-center shrink-0" data-node-id="1155:18078">
-                    <img src="/assets/images/icon-check-green.svg" alt="" class="size-[16px]" />
-                  </div>
-                  <div class="flex-1 flex flex-col gap-[2px] items-start text-start" data-node-id="1155:18075">
-                    <h5 class="font-['Cairo'] font-semibold text-[14px] text-[#012383] dark:text-white" data-i18n="courses.l5Title">{{ __('courses.l5Title') }}</h5>
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569] dark:text-slate-400" data-i18n="courses.duration20min">{{ __('courses.duration20min') }}</p>
-                  </div>
-                  <div class="w-[140px] flex flex-col gap-[5px] items-start" data-node-id="1155:18071">
-                    <p class="font-['Cairo'] font-semibold text-[12px] text-[#216350] dark:text-emerald-400" data-i18n="courses.lessonCompleted">{{ __('courses.lessonCompleted') }}</p>
-                    <div class="bg-[#DEE8F7] dark:bg-slate-700 h-[7px] rounded-full w-full relative overflow-hidden">
-                      <div class="bg-[#0B2A8F] dark:bg-blue-500 h-[7px] rounded-full w-full"></div>
-                    </div>
-                  </div>
-                  <div class="w-[143px] flex flex-col gap-[2px] items-end text-end" data-node-id="1155:18068">
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569] dark:text-slate-400" data-i18n="courses.taskL5">{{ __('courses.taskL5') }}</p>
-                    <p class="font-['Cairo'] font-medium text-[12px] text-[#475569] dark:text-slate-400" data-i18n="courses.taskGraded">{{ __('courses.taskGraded') }}</p>
-                  </div>
-                </div>
-
-              </div>
-
-              <!-- Level 2 (Node 1155:18080 - 68% In Progress - Current Level) -->
-              <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-2xl overflow-hidden w-full shadow-xs" data-node-id="1155:18080">
-                <div class="bg-[#FAFCFF] dark:bg-slate-800/60 p-[20px] flex flex-col gap-[10px] w-full" data-node-id="1155:18081">
-                  <div class="flex gap-[12px] items-center w-full" data-node-id="1155:18082">
-                    <div class="flex-1 flex flex-col gap-[2px] items-start text-start" data-node-id="1155:18085">
-                      <h4 class="font-['Cairo'] font-bold text-[18px] leading-[1.8] text-[#012383] dark:text-white" data-i18n="courses.level2Title" data-node-id="1155:18086">{{ __('courses.level2Title') }}</h4>
-                      <p class="font-['Cairo'] font-medium text-[12px] leading-[1.8] text-[#475569] dark:text-slate-400" data-i18n="courses.level2Meta" data-node-id="1155:18087">{{ __('courses.level2Meta') }}</p>
-                    </div>
-                    <span class="font-['Cairo'] font-bold text-[13px] leading-[1.8] text-[#0B2A8F] dark:text-blue-400 whitespace-nowrap" data-i18n="courses.level2Percent" data-node-id="1155:18084">{{ __('courses.level2Percent') }}</span>
-                    <div class="size-[18px] shrink-0 relative cursor-pointer" data-node-id="1155:19392">
-                      <img src="/assets/images/icon-chevron-up.svg" alt="" class="size-full dark:invert" />
-                    </div>
-                  </div>
-                  <div class="bg-[#DEE8F7] dark:bg-slate-700 h-[7px] rounded-full w-full relative overflow-hidden" data-node-id="1155:18088">
-                    <div class="bg-[#0B2A8F] dark:bg-blue-500 h-[7px] rounded-full w-[68%]" data-node-id="1155:18089"></div>
-                  </div>
-                </div>
-
-                <!-- Lesson 6 (Node 1155:18090) -->
-                <div class="border-t border-[#DEE8F7] dark:border-slate-800 flex gap-[16px] items-center px-[16px] py-[13px] w-full hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors" data-node-id="1155:18090">
-                  <div class="size-[30px] rounded-full bg-[#EEF7F3] dark:bg-emerald-950/60 flex items-center justify-center shrink-0" data-node-id="1155:18101">
-                    <img src="/assets/images/icon-check-green.svg" alt="" class="size-[16px]" />
-                  </div>
-                  <div class="flex-1 flex flex-col gap-[2px] items-start text-start" data-node-id="1155:18098">
-                    <h5 class="font-['Cairo'] font-semibold text-[14px] text-[#012383] dark:text-white" data-i18n="courses.l6Title">{{ __('courses.l6Title') }}</h5>
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569] dark:text-slate-400" data-i18n="courses.duration20min">{{ __('courses.duration20min') }}</p>
-                  </div>
-                  <div class="w-[140px] flex flex-col gap-[5px] items-start" data-node-id="1155:18094">
-                    <p class="font-['Cairo'] font-semibold text-[12px] text-[#216350] dark:text-emerald-400" data-i18n="courses.lessonCompleted">{{ __('courses.lessonCompleted') }}</p>
-                    <div class="bg-[#DEE8F7] dark:bg-slate-700 h-[7px] rounded-full w-full relative overflow-hidden">
-                      <div class="bg-[#0B2A8F] dark:bg-blue-500 h-[7px] rounded-full w-full"></div>
-                    </div>
-                  </div>
-                  <div class="w-[143px] flex flex-col gap-[2px] items-end text-end" data-node-id="1155:18091">
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569] dark:text-slate-400" data-i18n="courses.taskL6">{{ __('courses.taskL6') }}</p>
-                    <p class="font-['Cairo'] font-medium text-[12px] text-[#475569] dark:text-slate-400" data-i18n="courses.taskGraded">{{ __('courses.taskGraded') }}</p>
-                  </div>
-                </div>
-
-                <!-- Lesson 7 (Node 1155:18103) -->
-                <div class="border-t border-[#DEE8F7] dark:border-slate-800 flex gap-[16px] items-center px-[16px] py-[13px] w-full hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors" data-node-id="1155:18103">
-                  <div class="size-[30px] rounded-full bg-[#EEF7F3] dark:bg-emerald-950/60 flex items-center justify-center shrink-0" data-node-id="1155:18114">
-                    <img src="/assets/images/icon-check-green.svg" alt="" class="size-[16px]" />
-                  </div>
-                  <div class="flex-1 flex flex-col gap-[2px] items-start text-start" data-node-id="1155:18111">
-                    <h5 class="font-['Cairo'] font-semibold text-[14px] text-[#012383] dark:text-white" data-i18n="courses.l7Title">{{ __('courses.l7Title') }}</h5>
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569] dark:text-slate-400" data-i18n="courses.duration20min">{{ __('courses.duration20min') }}</p>
-                  </div>
-                  <div class="w-[140px] flex flex-col gap-[5px] items-start" data-node-id="1155:18107">
-                    <p class="font-['Cairo'] font-semibold text-[12px] text-[#216350] dark:text-emerald-400" data-i18n="courses.lessonCompleted">{{ __('courses.lessonCompleted') }}</p>
-                    <div class="bg-[#DEE8F7] dark:bg-slate-700 h-[7px] rounded-full w-full relative overflow-hidden">
-                      <div class="bg-[#0B2A8F] dark:bg-blue-500 h-[7px] rounded-full w-full"></div>
-                    </div>
-                  </div>
-                  <div class="w-[143px] flex flex-col gap-[2px] items-end text-end" data-node-id="1155:18104">
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569] dark:text-slate-400" data-i18n="courses.taskL7">{{ __('courses.taskL7') }}</p>
-                    <p class="font-['Cairo'] font-medium text-[12px] text-[#475569] dark:text-slate-400" data-i18n="courses.taskPending">{{ __('courses.taskPending') }}</p>
-                  </div>
-                </div>
-
-                <!-- Lesson 8 (Node 1155:18116) -->
-                <div class="border-t border-[#DEE8F7] dark:border-slate-800 flex gap-[16px] items-center px-[16px] py-[13px] w-full hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors" data-node-id="1155:18116">
-                  <div class="size-[30px] rounded-full bg-[#EEF7F3] dark:bg-emerald-950/60 flex items-center justify-center shrink-0" data-node-id="1155:18127">
-                    <img src="/assets/images/icon-check-green.svg" alt="" class="size-[16px]" />
-                  </div>
-                  <div class="flex-1 flex flex-col gap-[2px] items-start text-start" data-node-id="1155:18124">
-                    <h5 class="font-['Cairo'] font-semibold text-[14px] text-[#012383] dark:text-white" data-i18n="courses.l8Title">{{ __('courses.l8Title') }}</h5>
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569] dark:text-slate-400" data-i18n="courses.duration20min">{{ __('courses.duration20min') }}</p>
-                  </div>
-                  <div class="w-[140px] flex flex-col gap-[5px] items-start" data-node-id="1155:18120">
-                    <p class="font-['Cairo'] font-semibold text-[12px] text-[#216350] dark:text-emerald-400" data-i18n="courses.lessonCompleted">{{ __('courses.lessonCompleted') }}</p>
-                    <div class="bg-[#DEE8F7] dark:bg-slate-700 h-[7px] rounded-full w-full relative overflow-hidden">
-                      <div class="bg-[#0B2A8F] dark:bg-blue-500 h-[7px] rounded-full w-full"></div>
-                    </div>
-                  </div>
-                  <div class="w-[143px] flex flex-col gap-[2px] items-end text-end" data-node-id="1155:18117">
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569] dark:text-slate-400" data-i18n="courses.taskL8">{{ __('courses.taskL8') }}</p>
-                    <p class="font-['Cairo'] font-bold text-[12px] text-[#0B2A8F] dark:text-blue-400" data-i18n="courses.taskNotSubmitted">{{ __('courses.taskNotSubmitted') }}</p>
-                  </div>
-                </div>
-
-                <!-- Lesson 9 - ACTIVE (Node 1155:18129) -->
-                <a
-                  href="{{ route('lessons.show') }}"
-                  class="bg-[#EAF1FB] dark:bg-blue-950/40 border-t border-[#DEE8F7] dark:border-slate-800 flex gap-[16px] items-center px-[16px] py-[13px] w-full block hover:bg-[#DEE8F7]/70 dark:hover:bg-blue-900/40 transition-colors"
-                  data-node-id="1155:18129"
-                >
-                  <div class="size-[30px] rounded-full bg-[#FAFCFF] dark:bg-slate-800 border border-[#DEE8F7] dark:border-slate-700 flex items-center justify-center shrink-0 font-['Cairo'] font-bold text-[12px] text-[#0B2A8F] dark:text-blue-300" data-node-id="1155:18140">
-                    ٩
-                  </div>
-                  <div class="flex-1 flex flex-col gap-[2px] items-start text-start" data-node-id="1155:18137">
-                    <h5 class="font-['Cairo'] font-bold text-[14px] text-[#012383] dark:text-blue-200" data-i18n="courses.l9Title" data-node-id="1155:18138">{{ __('courses.l9Title') }}</h5>
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569] dark:text-slate-400" data-i18n="courses.l9Meta" data-node-id="1155:18139">{{ __('courses.l9Meta') }}</p>
-                  </div>
-                  <div class="w-[140px] flex flex-col gap-[5px] items-start" data-node-id="1155:18133">
-                    <p class="font-['Cairo'] font-semibold text-[12px] text-[#0B2A8F] dark:text-blue-400" data-i18n="courses.lessonInProgress">{{ __('courses.lessonInProgress') }}</p>
-                    <div class="bg-[#DEE8F7] dark:bg-slate-700 h-[7px] rounded-full w-full relative overflow-hidden" data-node-id="1155:18135">
-                      <div class="bg-[#0B2A8F] dark:bg-blue-500 h-[7px] rounded-full w-[40%]" data-node-id="1155:18136"></div>
-                    </div>
-                  </div>
-                  <div class="w-[143px] flex flex-col gap-[2px] items-end text-end" data-node-id="1155:18130">
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569] dark:text-slate-400" data-i18n="courses.taskL9">{{ __('courses.taskL9') }}</p>
-                    <p class="font-['Cairo'] font-medium text-[12px] text-[#475569] dark:text-slate-400" data-i18n="courses.taskAfterVideo">{{ __('courses.taskAfterVideo') }}</p>
-                  </div>
-                </a>
-
-                <!-- Lesson 10 (Node 1155:18142) -->
-                <div class="border-t border-[#DEE8F7] dark:border-slate-800 flex gap-[16px] items-center px-[16px] py-[13px] w-full hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors" data-node-id="1155:18142">
-                  <div class="size-[30px] rounded-full bg-[#FAFCFF] dark:bg-slate-800 border border-[#DEE8F7] dark:border-slate-700 flex items-center justify-center shrink-0 font-['Cairo'] font-bold text-[12px] text-[#0B2A8F] dark:text-slate-400" data-node-id="1155:18152">
-                    ١٠
-                  </div>
-                  <div class="flex-1 flex flex-col gap-[2px] items-start text-start" data-node-id="1155:18149">
-                    <h5 class="font-['Cairo'] font-semibold text-[14px] text-[#012383] dark:text-white" data-i18n="courses.l10Title">{{ __('courses.l10Title') }}</h5>
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569] dark:text-slate-400" data-i18n="courses.duration20min">{{ __('courses.duration20min') }}</p>
-                  </div>
-                  <div class="w-[140px] flex flex-col gap-[5px] items-start" data-node-id="1155:18146">
-                    <p class="font-['Cairo'] font-semibold text-[12px] text-[#0B2A8F] dark:text-blue-400" data-i18n="courses.lessonNotStarted">{{ __('courses.lessonNotStarted') }}</p>
-                    <div class="bg-[#DEE8F7] dark:bg-slate-700 h-[7px] rounded-full w-full relative overflow-hidden" data-node-id="1155:18148"></div>
-                  </div>
-                  <div class="w-[143px] flex flex-col gap-[2px] items-end text-end" data-node-id="1155:18143">
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569] dark:text-slate-400" data-i18n="courses.taskL10">{{ __('courses.taskL10') }}</p>
-                    <p class="font-['Cairo'] font-medium text-[12px] text-[#475569] dark:text-slate-400" data-i18n="courses.taskAfterVideo">{{ __('courses.taskAfterVideo') }}</p>
-                  </div>
-                </div>
-
-              </div>
-
-              <!-- Level 3 (Node 1155:18154 - 0% Language Skills Development) -->
-              <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-[16px] overflow-hidden w-full" data-node-id="1155:18154">
-                <div class="bg-[#FAFCFF] dark:bg-slate-800/60 p-[20px] flex flex-col gap-[10px] w-full" data-node-id="1155:18155">
-                  <div class="flex gap-[12px] items-center w-full" data-node-id="1155:18156">
-                    <div class="flex-1 flex flex-col gap-[2px] items-start text-start" data-node-id="1155:18159">
-                      <h4 class="font-['Cairo'] font-bold text-[18px] leading-[1.8] text-[#012383] dark:text-white" data-i18n="courses.level3Title" data-node-id="1155:18160">{{ __('courses.level3Title') }}</h4>
-                      <p class="font-['Cairo'] font-medium text-[12px] leading-[1.8] text-[#475569] dark:text-slate-400" data-i18n="courses.level3Meta" data-node-id="1155:18161">{{ __('courses.level3Meta') }}</p>
-                    </div>
-                    <span class="font-['Cairo'] font-bold text-[13px] leading-[1.8] text-[#0B2A8F] dark:text-blue-400 whitespace-nowrap" data-i18n="courses.level3Percent" data-node-id="1155:18158">{{ __('courses.level3Percent') }}</span>
-                    <div class="size-[18px] shrink-0 relative cursor-pointer" data-node-id="1155:19404">
-                      <img src="/assets/images/icon-chevron-up.svg" alt="" class="size-full dark:invert" />
-                    </div>
-                  </div>
-                  <div class="bg-[#DEE8F7] dark:bg-slate-700 h-[7px] rounded-full w-full relative overflow-hidden" data-node-id="1155:18162"></div>
-                </div>
-
-                <!-- Lessons 11 to 15 -->
-                <!-- Lesson 11 -->
-                <div class="border-t border-[#DEE8F7] dark:border-slate-800 flex gap-[16px] items-center px-[16px] py-[13px] w-full hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
-                  <div class="size-[30px] rounded-full bg-[#FAFCFF] dark:bg-slate-800 border border-[#DEE8F7] dark:border-slate-700 flex items-center justify-center shrink-0 font-['Cairo'] font-bold text-[12px] text-[#0B2A8F] dark:text-slate-400">
-                    ١١
-                  </div>
-                  <div class="flex-1 flex flex-col gap-[2px] items-start text-start">
-                    <h5 class="font-['Cairo'] font-semibold text-[14px] text-[#012383] dark:text-white" data-i18n="courses.l11Title">{{ __('courses.l11Title') }}</h5>
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569] dark:text-slate-400" data-i18n="courses.duration20min">{{ __('courses.duration20min') }}</p>
-                  </div>
-                  <div class="w-[140px] flex flex-col gap-[5px] items-start">
-                    <p class="font-['Cairo'] font-semibold text-[12px] text-[#0B2A8F] dark:text-blue-400" data-i18n="courses.lessonNotStarted">{{ __('courses.lessonNotStarted') }}</p>
-                    <div class="bg-[#DEE8F7] dark:bg-slate-700 h-[7px] rounded-full w-full"></div>
-                  </div>
-                  <div class="w-[143px] flex flex-col gap-[2px] items-end text-end">
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569] dark:text-slate-400" data-i18n="courses.taskL11">{{ __('courses.taskL11') }}</p>
-                    <p class="font-['Cairo'] font-medium text-[12px] text-[#475569] dark:text-slate-400" data-i18n="courses.taskAfterVideo">{{ __('courses.taskAfterVideo') }}</p>
-                  </div>
-                </div>
-
-                <!-- Lesson 12 -->
-                <div class="border-t border-[#DEE8F7] dark:border-slate-800 flex gap-[16px] items-center px-[16px] py-[13px] w-full hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
-                  <div class="size-[30px] rounded-full bg-[#FAFCFF] dark:bg-slate-800 border border-[#DEE8F7] dark:border-slate-700 flex items-center justify-center shrink-0 font-['Cairo'] font-bold text-[12px] text-[#0B2A8F] dark:text-slate-400">
-                    ١٢
-                  </div>
-                  <div class="flex-1 flex flex-col gap-[2px] items-start text-start">
-                    <h5 class="font-['Cairo'] font-semibold text-[14px] text-[#012383] dark:text-white" data-i18n="courses.l12Title">{{ __('courses.l12Title') }}</h5>
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569] dark:text-slate-400" data-i18n="courses.duration20min">{{ __('courses.duration20min') }}</p>
-                  </div>
-                  <div class="w-[140px] flex flex-col gap-[5px] items-start">
-                    <p class="font-['Cairo'] font-semibold text-[12px] text-[#0B2A8F] dark:text-blue-400" data-i18n="courses.lessonNotStarted">{{ __('courses.lessonNotStarted') }}</p>
-                    <div class="bg-[#DEE8F7] dark:bg-slate-700 h-[7px] rounded-full w-full"></div>
-                  </div>
-                  <div class="w-[143px] flex flex-col gap-[2px] items-end text-end">
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569] dark:text-slate-400" data-i18n="courses.taskL12">{{ __('courses.taskL12') }}</p>
-                    <p class="font-['Cairo'] font-medium text-[12px] text-[#475569] dark:text-slate-400" data-i18n="courses.taskAfterVideo">{{ __('courses.taskAfterVideo') }}</p>
-                  </div>
-                </div>
-
-                <!-- Lesson 13 -->
-                <div class="border-t border-[#DEE8F7] dark:border-slate-800 flex gap-[16px] items-center px-[16px] py-[13px] w-full hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
-                  <div class="size-[30px] rounded-full bg-[#FAFCFF] dark:bg-slate-800 border border-[#DEE8F7] dark:border-slate-700 flex items-center justify-center shrink-0 font-['Cairo'] font-bold text-[12px] text-[#0B2A8F] dark:text-slate-400">
-                    ١٣
-                  </div>
-                  <div class="flex-1 flex flex-col gap-[2px] items-start text-start">
-                    <h5 class="font-['Cairo'] font-semibold text-[14px] text-[#012383] dark:text-white" data-i18n="courses.l13Title">{{ __('courses.l13Title') }}</h5>
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569] dark:text-slate-400" data-i18n="courses.duration20min">{{ __('courses.duration20min') }}</p>
-                  </div>
-                  <div class="w-[140px] flex flex-col gap-[5px] items-start">
-                    <p class="font-['Cairo'] font-semibold text-[12px] text-[#0B2A8F] dark:text-blue-400" data-i18n="courses.lessonNotStarted">{{ __('courses.lessonNotStarted') }}</p>
-                    <div class="bg-[#DEE8F7] dark:bg-slate-700 h-[7px] rounded-full w-full"></div>
-                  </div>
-                  <div class="w-[143px] flex flex-col gap-[2px] items-end text-end">
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569] dark:text-slate-400" data-i18n="courses.taskL13">{{ __('courses.taskL13') }}</p>
-                    <p class="font-['Cairo'] font-medium text-[12px] text-[#475569] dark:text-slate-400" data-i18n="courses.taskAfterVideo">{{ __('courses.taskAfterVideo') }}</p>
-                  </div>
-                </div>
-
-                <!-- Lesson 14 -->
-                <div class="border-t border-[#DEE8F7] dark:border-slate-800 flex gap-[16px] items-center px-[16px] py-[13px] w-full hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
-                  <div class="size-[30px] rounded-full bg-[#FAFCFF] dark:bg-slate-800 border border-[#DEE8F7] dark:border-slate-700 flex items-center justify-center shrink-0 font-['Cairo'] font-bold text-[12px] text-[#0B2A8F] dark:text-slate-400">
-                    ١٤
-                  </div>
-                  <div class="flex-1 flex flex-col gap-[2px] items-start text-start">
-                    <h5 class="font-['Cairo'] font-semibold text-[14px] text-[#012383] dark:text-white" data-i18n="courses.l14Title">{{ __('courses.l14Title') }}</h5>
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569] dark:text-slate-400" data-i18n="courses.duration20min">{{ __('courses.duration20min') }}</p>
-                  </div>
-                  <div class="w-[140px] flex flex-col gap-[5px] items-start">
-                    <p class="font-['Cairo'] font-semibold text-[12px] text-[#0B2A8F] dark:text-blue-400" data-i18n="courses.lessonNotStarted">{{ __('courses.lessonNotStarted') }}</p>
-                    <div class="bg-[#DEE8F7] dark:bg-slate-700 h-[7px] rounded-full w-full"></div>
-                  </div>
-                  <div class="w-[143px] flex flex-col gap-[2px] items-end text-end">
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569] dark:text-slate-400" data-i18n="courses.taskL14">{{ __('courses.taskL14') }}</p>
-                    <p class="font-['Cairo'] font-medium text-[12px] text-[#475569] dark:text-slate-400" data-i18n="courses.taskAfterVideo">{{ __('courses.taskAfterVideo') }}</p>
-                  </div>
-                </div>
-
-                <!-- Lesson 15 -->
-                <div class="border-t border-[#DEE8F7] dark:border-slate-800 flex gap-[16px] items-center px-[16px] py-[13px] w-full hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
-                  <div class="size-[30px] rounded-full bg-[#FAFCFF] dark:bg-slate-800 border border-[#DEE8F7] dark:border-slate-700 flex items-center justify-center shrink-0 font-['Cairo'] font-bold text-[12px] text-[#0B2A8F] dark:text-slate-400">
-                    ١٥
-                  </div>
-                  <div class="flex-1 flex flex-col gap-[2px] items-start text-start">
-                    <h5 class="font-['Cairo'] font-semibold text-[14px] text-[#012383] dark:text-white" data-i18n="courses.l15Title">{{ __('courses.l15Title') }}</h5>
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569] dark:text-slate-400" data-i18n="courses.duration20min">{{ __('courses.duration20min') }}</p>
-                  </div>
-                  <div class="w-[140px] flex flex-col gap-[5px] items-start">
-                    <p class="font-['Cairo'] font-semibold text-[12px] text-[#0B2A8F] dark:text-blue-400" data-i18n="courses.lessonNotStarted">{{ __('courses.lessonNotStarted') }}</p>
-                    <div class="bg-[#DEE8F7] dark:bg-slate-700 h-[7px] rounded-full w-full"></div>
-                  </div>
-                  <div class="w-[143px] flex flex-col gap-[2px] items-end text-end">
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569] dark:text-slate-400" data-i18n="courses.taskL15">{{ __('courses.taskL15') }}</p>
-                    <p class="font-['Cairo'] font-medium text-[12px] text-[#475569] dark:text-slate-400" data-i18n="courses.taskAfterVideo">{{ __('courses.taskAfterVideo') }}</p>
-                  </div>
-                </div>
-
-              </div>
-
-              <!-- Level 4 (Node 1155:18207 - 0% Application & Practice) -->
-              <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-[16px] overflow-hidden w-full" data-node-id="1155:18207">
-                <div class="bg-[#FAFCFF] dark:bg-slate-800/60 p-[20px] flex flex-col gap-[10px] w-full">
-                  <div class="flex gap-[12px] items-center w-full">
-                    <div class="flex-1 flex flex-col gap-[2px] items-start text-start">
-                      <h4 class="font-['Cairo'] font-bold text-[18px] leading-[1.8] text-[#012383] dark:text-white" data-i18n="courses.level4Title">{{ __('courses.level4Title') }}</h4>
-                      <p class="font-['Cairo'] font-medium text-[12px] leading-[1.8] text-[#475569] dark:text-slate-400" data-i18n="courses.level4Meta">{{ __('courses.level4Meta') }}</p>
-                    </div>
-                    <span class="font-['Cairo'] font-bold text-[13px] leading-[1.8] text-[#0B2A8F] dark:text-blue-400 whitespace-nowrap" data-i18n="courses.level4Percent">{{ __('courses.level4Percent') }}</span>
-                    <div class="size-[18px] shrink-0 relative cursor-pointer">
-                      <img src="/assets/images/icon-chevron-up.svg" alt="" class="size-full dark:invert" />
-                    </div>
-                  </div>
-                  <div class="bg-[#DEE8F7] dark:bg-slate-700 h-[7px] rounded-full w-full relative overflow-hidden"></div>
-                </div>
-
-                <!-- Lessons 16 to 20 -->
-                <!-- Lesson 16 -->
-                <div class="border-t border-[#DEE8F7] dark:border-slate-800 flex gap-[16px] items-center px-[16px] py-[13px] w-full hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
-                  <div class="size-[30px] rounded-full bg-[#FAFCFF] dark:bg-slate-800 border border-[#DEE8F7] dark:border-slate-700 flex items-center justify-center shrink-0 font-['Cairo'] font-bold text-[12px] text-[#0B2A8F] dark:text-slate-400">
-                    ١٦
-                  </div>
-                  <div class="flex-1 flex flex-col gap-[2px] items-start text-start">
-                    <h5 class="font-['Cairo'] font-semibold text-[14px] text-[#012383] dark:text-white" data-i18n="courses.l16Title">{{ __('courses.l16Title') }}</h5>
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569] dark:text-slate-400" data-i18n="courses.duration20min">{{ __('courses.duration20min') }}</p>
-                  </div>
-                  <div class="w-[140px] flex flex-col gap-[5px] items-start">
-                    <p class="font-['Cairo'] font-semibold text-[12px] text-[#0B2A8F] dark:text-blue-400" data-i18n="courses.lessonNotStarted">{{ __('courses.lessonNotStarted') }}</p>
-                    <div class="bg-[#DEE8F7] dark:bg-slate-700 h-[7px] rounded-full w-full"></div>
-                  </div>
-                  <div class="w-[143px] flex flex-col gap-[2px] items-end text-end">
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569] dark:text-slate-400" data-i18n="courses.taskL16">{{ __('courses.taskL16') }}</p>
-                    <p class="font-['Cairo'] font-medium text-[12px] text-[#475569] dark:text-slate-400" data-i18n="courses.taskAfterVideo">{{ __('courses.taskAfterVideo') }}</p>
-                  </div>
-                </div>
-
-                <!-- Lesson 17 -->
-                <div class="border-t border-[#DEE8F7] dark:border-slate-800 flex gap-[16px] items-center px-[16px] py-[13px] w-full hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
-                  <div class="size-[30px] rounded-full bg-[#FAFCFF] dark:bg-slate-800 border border-[#DEE8F7] dark:border-slate-700 flex items-center justify-center shrink-0 font-['Cairo'] font-bold text-[12px] text-[#0B2A8F] dark:text-slate-400">
-                    ١٧
-                  </div>
-                  <div class="flex-1 flex flex-col gap-[2px] items-start text-start">
-                    <h5 class="font-['Cairo'] font-semibold text-[14px] text-[#012383] dark:text-white" data-i18n="courses.l17Title">{{ __('courses.l17Title') }}</h5>
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569] dark:text-slate-400" data-i18n="courses.duration20min">{{ __('courses.duration20min') }}</p>
-                  </div>
-                  <div class="w-[140px] flex flex-col gap-[5px] items-start">
-                    <p class="font-['Cairo'] font-semibold text-[12px] text-[#0B2A8F] dark:text-blue-400" data-i18n="courses.lessonNotStarted">{{ __('courses.lessonNotStarted') }}</p>
-                    <div class="bg-[#DEE8F7] dark:bg-slate-700 h-[7px] rounded-full w-full"></div>
-                  </div>
-                  <div class="w-[143px] flex flex-col gap-[2px] items-end text-end">
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569] dark:text-slate-400" data-i18n="courses.taskL17">{{ __('courses.taskL17') }}</p>
-                    <p class="font-['Cairo'] font-medium text-[12px] text-[#475569] dark:text-slate-400" data-i18n="courses.taskAfterVideo">{{ __('courses.taskAfterVideo') }}</p>
-                  </div>
-                </div>
-
-                <!-- Lesson 18 -->
-                <div class="border-t border-[#DEE8F7] dark:border-slate-800 flex gap-[16px] items-center px-[16px] py-[13px] w-full hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
-                  <div class="size-[30px] rounded-full bg-[#FAFCFF] dark:bg-slate-800 border border-[#DEE8F7] dark:border-slate-700 flex items-center justify-center shrink-0 font-['Cairo'] font-bold text-[12px] text-[#0B2A8F] dark:text-slate-400">
-                    ١٨
-                  </div>
-                  <div class="flex-1 flex flex-col gap-[2px] items-start text-start">
-                    <h5 class="font-['Cairo'] font-semibold text-[14px] text-[#012383] dark:text-white" data-i18n="courses.l18Title">{{ __('courses.l18Title') }}</h5>
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569] dark:text-slate-400" data-i18n="courses.duration20min">{{ __('courses.duration20min') }}</p>
-                  </div>
-                  <div class="w-[140px] flex flex-col gap-[5px] items-start">
-                    <p class="font-['Cairo'] font-semibold text-[12px] text-[#0B2A8F] dark:text-blue-400" data-i18n="courses.lessonNotStarted">{{ __('courses.lessonNotStarted') }}</p>
-                    <div class="bg-[#DEE8F7] dark:bg-slate-700 h-[7px] rounded-full w-full"></div>
-                  </div>
-                  <div class="w-[143px] flex flex-col gap-[2px] items-end text-end">
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569] dark:text-slate-400" data-i18n="courses.taskL18">{{ __('courses.taskL18') }}</p>
-                    <p class="font-['Cairo'] font-medium text-[12px] text-[#475569] dark:text-slate-400" data-i18n="courses.taskAfterVideo">{{ __('courses.taskAfterVideo') }}</p>
-                  </div>
-                </div>
-
-                <!-- Lesson 19 -->
-                <div class="border-t border-[#DEE8F7] dark:border-slate-800 flex gap-[16px] items-center px-[16px] py-[13px] w-full hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
-                  <div class="size-[30px] rounded-full bg-[#FAFCFF] dark:bg-slate-800 border border-[#DEE8F7] dark:border-slate-700 flex items-center justify-center shrink-0 font-['Cairo'] font-bold text-[12px] text-[#0B2A8F] dark:text-slate-400">
-                    ١٩
-                  </div>
-                  <div class="flex-1 flex flex-col gap-[2px] items-start text-start">
-                    <h5 class="font-['Cairo'] font-semibold text-[14px] text-[#012383] dark:text-white" data-i18n="courses.l19Title">{{ __('courses.l19Title') }}</h5>
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569] dark:text-slate-400" data-i18n="courses.duration20min">{{ __('courses.duration20min') }}</p>
-                  </div>
-                  <div class="w-[140px] flex flex-col gap-[5px] items-start">
-                    <p class="font-['Cairo'] font-semibold text-[12px] text-[#0B2A8F] dark:text-blue-400" data-i18n="courses.lessonNotStarted">{{ __('courses.lessonNotStarted') }}</p>
-                    <div class="bg-[#DEE8F7] dark:bg-slate-700 h-[7px] rounded-full w-full"></div>
-                  </div>
-                  <div class="w-[143px] flex flex-col gap-[2px] items-end text-end">
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569] dark:text-slate-400" data-i18n="courses.taskL19">{{ __('courses.taskL19') }}</p>
-                    <p class="font-['Cairo'] font-medium text-[12px] text-[#475569] dark:text-slate-400" data-i18n="courses.taskAfterVideo">{{ __('courses.taskAfterVideo') }}</p>
-                  </div>
-                </div>
-
-                <!-- Lesson 20 -->
-                <div class="border-t border-[#DEE8F7] dark:border-slate-800 flex gap-[16px] items-center px-[16px] py-[13px] w-full hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
-                  <div class="size-[30px] rounded-full bg-[#FAFCFF] dark:bg-slate-800 border border-[#DEE8F7] dark:border-slate-700 flex items-center justify-center shrink-0 font-['Cairo'] font-bold text-[12px] text-[#0B2A8F] dark:text-slate-400">
-                    ٢٠
-                  </div>
-                  <div class="flex-1 flex flex-col gap-[2px] items-start text-start">
-                    <h5 class="font-['Cairo'] font-semibold text-[14px] text-[#012383] dark:text-white" data-i18n="courses.l20Title">{{ __('courses.l20Title') }}</h5>
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569] dark:text-slate-400" data-i18n="courses.duration20min">{{ __('courses.duration20min') }}</p>
-                  </div>
-                  <div class="w-[140px] flex flex-col gap-[5px] items-start">
-                    <p class="font-['Cairo'] font-semibold text-[12px] text-[#0B2A8F] dark:text-blue-400" data-i18n="courses.lessonNotStarted">{{ __('courses.lessonNotStarted') }}</p>
-                    <div class="bg-[#DEE8F7] dark:bg-slate-700 h-[7px] rounded-full w-full"></div>
-                  </div>
-                  <div class="w-[143px] flex flex-col gap-[2px] items-end text-end">
-                    <p class="font-['Cairo'] font-medium text-[11px] text-[#475569] dark:text-slate-400" data-i18n="courses.taskL20">{{ __('courses.taskL20') }}</p>
-                    <p class="font-['Cairo'] font-medium text-[12px] text-[#475569] dark:text-slate-400" data-i18n="courses.taskAfterVideo">{{ __('courses.taskAfterVideo') }}</p>
-                  </div>
-                </div>
-
-              </div>
+              @endif
 
             </div>
 
-            <!-- Left in RTL: Course Companion Widgets (w: 270px - Node 1155:17946) -->
-            <div class="w-full lg:w-[280px] flex flex-col gap-[20px] shrink-0" data-node-id="1155:17946">
+            <!-- Left in RTL: Course Companion Widgets -->
+            <div class="w-full lg:w-[280px] flex flex-col gap-[20px] shrink-0">
               
-              <!-- Widget 1: Current Place Card (Node 1155:17947) -->
-              <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-2xl p-6 flex flex-col gap-4 w-full shadow-xs" data-node-id="1155:17947">
-                <div class="bg-blue-50 dark:bg-slate-800 rounded-full px-3 py-1 w-fit" data-node-id="1155:17948">
-                  <p class="font-['Cairo'] font-bold text-xs leading-none text-[#0B2A8F] dark:text-blue-300" data-i18n="courses.companionBadge" data-node-id="1155:17949">{{ __('courses.companionBadge') }}</p>
+              <!-- Widget 1: Current Place Card -->
+              @if($resumeVideo)
+                @php
+                  $pausedSec = $resumeProgress?->watched_seconds ?? 0;
+                  $totalSec = max(1, $resumeVideo->duration_seconds);
+                  $pausedFormatted = sprintf('%02d:%02d', floor($pausedSec / 60), $pausedSec % 60);
+                  $totalFormatted = sprintf('%02d:%02d', floor($totalSec / 60), $totalSec % 60);
+                @endphp
+                <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-2xl p-6 flex flex-col gap-4 w-full shadow-xs">
+                  <div class="bg-blue-50 dark:bg-slate-800 rounded-full px-3 py-1 w-fit">
+                    <p class="font-['Cairo'] font-bold text-xs leading-none text-[#0B2A8F] dark:text-blue-300">{{ __('courses.companionBadge') }}</p>
+                  </div>
+                  <h3 class="font-['Baloo_Bhaijaan_2'] font-bold text-xl leading-snug text-[#012383] dark:text-white text-start">{{ $resumeVideo->title }}</h3>
+                  <p class="font-['Cairo'] font-semibold text-xs leading-relaxed text-[#0B2A8F] dark:text-blue-400 text-start">{{ $resumeVideo->level?->title ?? __('المنهج الدراسي') }}</p>
+                  @if($pausedSec > 0)
+                    <p class="font-['Cairo'] font-medium text-xs leading-relaxed text-[#475569] dark:text-slate-300 text-start">
+                      {{ __('توقفت عند :paused من :total، ويمكنك المتابعة من الموضع نفسه.', ['paused' => $pausedFormatted, 'total' => $totalFormatted]) }}
+                    </p>
+                    <a
+                      href="{{ route('lessons.show', [$course->slug, $resumeVideo->slug]) }}"
+                      class="bg-[#012383] hover:bg-[#0B2A8F] rounded-xl h-11 w-full flex items-center justify-center px-4 text-white font-['Cairo'] font-bold text-xs shadow-sm hover:shadow transition-colors"
+                    >{{ __('استئناف من :time', ['time' => $pausedFormatted]) }}</a>
+                  @else
+                    <p class="font-['Cairo'] font-medium text-xs leading-relaxed text-[#475569] dark:text-slate-300 text-start">
+                      {{ __('ابدأ دراستك للدرس وتابع خطتك التعليمية خطوة بخطوة.') }}
+                    </p>
+                    <a
+                      href="{{ route('lessons.show', [$course->slug, $resumeVideo->slug]) }}"
+                      class="bg-[#012383] hover:bg-[#0B2A8F] rounded-xl h-11 w-full flex items-center justify-center px-4 text-white font-['Cairo'] font-bold text-xs shadow-sm hover:shadow transition-colors"
+                    >{{ __('بدء المشاهدة الآن') }}</a>
+                  @endif
                 </div>
-                <h3 class="font-['Baloo_Bhaijaan_2'] font-bold text-xl leading-snug text-[#012383] dark:text-white text-start" data-i18n="courses.companionTitle" data-node-id="1155:17950">{{ __('courses.companionTitle') }}</h3>
-                <p class="font-['Cairo'] font-semibold text-xs leading-relaxed text-[#0B2A8F] dark:text-blue-400 text-start" data-i18n="courses.companionLevel" data-node-id="1155:17951">{{ __('courses.companionLevel') }}</p>
-                <p class="font-['Cairo'] font-medium text-xs leading-relaxed text-[#475569] dark:text-slate-300 text-start" data-i18n="courses.companionDesc" data-node-id="1155:17952">{{ __('courses.companionDesc') }}</p>
-                <a
-                  href="{{ route('lessons.show') }}"
-                  class="bg-[#012383] hover:bg-[#0B2A8F] rounded-xl h-11 w-full flex items-center justify-center px-4 text-white font-['Cairo'] font-bold text-xs shadow-sm hover:shadow transition-colors"
-                  data-i18n="courses.companionResumeBtn"
-                  data-node-id="1155:17953"
-                >{{ __('courses.companionResumeBtn') }}</a>
-              </div>
+              @endif
 
+              <!-- Widget 2: Tasks Overview -->
               @if($cmsSettings->isPageEnabled('tasks'))
-              <!-- Widget 2: Course Tasks Overview (Node 1155:17968) -->
-              <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-2xl p-6 flex flex-col gap-4 w-full shadow-xs" data-node-id="1155:17968">
-                <h3 class="font-['Baloo_Bhaijaan_2'] font-bold text-xl leading-snug text-[#012383] dark:text-white text-start" data-i18n="courses.tasksOverviewTitle" data-node-id="1155:17970">{{ __('courses.tasksOverviewTitle') }}</h3>
+              <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-2xl p-6 flex flex-col gap-4 w-full shadow-xs">
+                <h3 class="font-['Baloo_Bhaijaan_2'] font-bold text-xl leading-snug text-[#012383] dark:text-white text-start">{{ __('courses.tasksOverviewTitle') }}</h3>
                 <div class="flex flex-col gap-2 text-xs text-[#475569] dark:text-slate-300 font-medium">
-                  <p data-i18n="courses.tasksMeta1" data-node-id="1155:17971">{{ __('courses.tasksMeta1') }}</p>
-                  <p data-i18n="courses.tasksMeta2" data-node-id="1155:17972">{{ __('courses.tasksMeta2') }}</p>
-                  <p data-i18n="courses.tasksMeta3" data-node-id="1155:17973">{{ __('courses.tasksMeta3') }}</p>
-                  <p data-i18n="courses.tasksMeta4" data-node-id="1155:17974">{{ __('courses.tasksMeta4') }}</p>
-                  <p data-i18n="courses.tasksMeta5" data-node-id="1155:17975">{{ __('courses.tasksMeta5') }}</p>
+                  <p>
+                    @if(app()->getLocale() === 'en')
+                      {{ $totalTasksCount }} tasks; one per video
+                    @else
+                      {{ $totalTasksCount }} مهمة؛ مهمة لكل فيديو
+                    @endif
+                  </p>
+                  <p class="text-emerald-700 dark:text-emerald-400 font-bold">
+                    @if(app()->getLocale() === 'en')
+                      {{ $gradedTasksCount }} graded
+                    @else
+                      {{ $gradedTasksCount }} مُقيّمة
+                    @endif
+                  </p>
+                  <p class="text-amber-700 dark:text-amber-400 font-bold">
+                    @if(app()->getLocale() === 'en')
+                      {{ $pendingTasksCount }} awaiting review
+                    @else
+                      {{ $pendingTasksCount }} بانتظار المراجعة
+                    @endif
+                  </p>
+                  <p>
+                    @if(app()->getLocale() === 'en')
+                      {{ $availableTasksCount }} available and not submitted
+                    @else
+                      {{ $availableTasksCount }} متاحة ولم تُسلّم
+                    @endif
+                  </p>
+                  <p class="text-slate-400 dark:text-slate-500">
+                    @if(app()->getLocale() === 'en')
+                      {{ $lockedTasksCount }} available after completing videos
+                    @else
+                      {{ $lockedTasksCount }} متاحة بعد إكمال الفيديوهات
+                    @endif
+                  </p>
                 </div>
-                <a
-                  href="{{ route('assignments.index') }}"
-                  class="bg-white dark:bg-slate-800 border border-[#DEE8F7] dark:border-slate-700 rounded-xl h-11 w-full flex items-center justify-center px-4 text-[#012383] dark:text-blue-300 font-['Cairo'] font-bold text-xs hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors shadow-xs"
-                  data-i18n="courses.openTask8Btn"
-                  data-node-id="1155:17976"
-                >{{ __('courses.openTask8Btn') }}</a>
+                @if($nextAvailableTask)
+                  <a
+                    href="{{ route('assignments.index', $nextAvailableTask->id) }}"
+                    class="border border-[#012383] dark:border-blue-400 hover:bg-[#012383] hover:text-white text-[#012383] dark:text-blue-300 rounded-xl h-10 w-full flex items-center justify-center px-3 font-['Cairo'] font-bold text-xs transition-colors truncate"
+                  >{{ __('فتح مهمة') }}: {{ $nextAvailableTask->title }}</a>
+                @else
+                  <a
+                    href="{{ route('assignments.index') }}"
+                    class="border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-xl h-10 w-full flex items-center justify-center px-3 font-['Cairo'] font-bold text-xs transition-colors"
+                  >{{ __('عرض المهام') }}</a>
+                @endif
               </div>
               @endif
 
-              <!-- Widget 3: Info Callout Note (Node 1155:17991) -->
-              <div class="bg-blue-50/80 dark:bg-slate-800/60 border border-blue-200/60 dark:border-slate-700/60 rounded-2xl p-4 flex gap-3.5 items-start w-full shadow-xs" data-node-id="1155:17991">
+              <!-- Widget 3: Pedagogical note -->
+              <div class="bg-blue-50/80 dark:bg-slate-800/60 border border-blue-200/60 dark:border-slate-700/60 rounded-2xl p-4 flex gap-3.5 items-start w-full shadow-xs">
                 <div class="size-8 rounded-xl bg-blue-100 dark:bg-blue-900/50 text-[#012383] dark:text-blue-300 flex items-center justify-center shrink-0">
                   <svg class="size-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 </div>
-                <div class="flex-1 flex flex-col gap-1 items-start text-start" data-node-id="3118:154">
-                  <p class="font-['Cairo'] font-bold text-xs leading-relaxed text-[#012383] dark:text-blue-300 text-start" data-i18n="courses.noteTitle" data-node-id="1155:17993">{{ __('courses.noteTitle') }}</p>
-                  <p class="font-['Cairo'] font-medium text-xs leading-relaxed text-[#475569] dark:text-slate-300 text-start" data-i18n="courses.noteDesc" data-node-id="1155:17994">{{ __('courses.noteDesc') }}</p>
+                <div class="flex-1 flex flex-col gap-1 items-start text-start">
+                  <p class="font-['Cairo'] font-bold text-xs leading-relaxed text-[#012383] dark:text-blue-300 text-start">{{ __('courses.noteTitle') }}</p>
+                  <p class="font-['Cairo'] font-medium text-xs leading-relaxed text-[#475569] dark:text-slate-300 text-start">{{ __('courses.noteDesc') }}</p>
                 </div>
               </div>
 
@@ -700,6 +506,3 @@
     </x-slot:modals>
 
 </x-layouts::app>
-
-
-

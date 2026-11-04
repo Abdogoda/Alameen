@@ -11,6 +11,7 @@ use App\Models\Certificate;
 use App\Models\ClinicalTask;
 use App\Models\Course;
 use App\Models\Level;
+use App\Models\PaymentReceipt;
 use App\Models\TaskSubmission;
 use App\Models\User;
 use App\Models\Video;
@@ -303,6 +304,180 @@ class StudentCourseController extends Controller
     }
 
     /**
+     * Display detailed curriculum, real progress overview, and tasks for a course.
+     */
+    public function show(Request $request, Course|string|null $course = null): View|RedirectResponse
+    {
+        if (! auth()->check()) {
+            return redirect()->guest(route('login'));
+        }
+
+        /** @var User $user */
+        $user = $request->user();
+
+        $courseParam = $course ?? $request->query('course');
+
+        if (is_string($courseParam)) {
+            $course = Course::query()->where('slug', $courseParam)->orWhere('id', $courseParam)->first();
+        } elseif ($courseParam instanceof Course) {
+            $course = $courseParam;
+        }
+
+        if (! $course) {
+            $course = Course::query()->where('is_published', true)->orderBy('sort_order')->first() ?? Course::first();
+        }
+
+        if (! $course) {
+            abort(404, __('لا توجد دورات تدريبية متاحة حالياً.'));
+        }
+
+        $this->ensureCurriculumSeeded($course);
+
+        $hasActiveAccess = $this->enrollmentService->hasActiveAccess($user, $course);
+        $pendingReceipt = PaymentReceipt::query()
+            ->where('user_id', $user->id)
+            ->where('course_id', $course->id)
+            ->where('status', 'pending')
+            ->latest()
+            ->first();
+
+        // 1. Overall Progress
+        $courseProgressPercentage = $this->progressService->getCourseProgressPercentage($user, $course);
+
+        // 2. Levels with Published Videos and Tasks
+        $levels = $course->publishedLevels()
+            ->with([
+                'publishedVideos' => fn ($q) => $q->with('clinicalTask')->orderBy('sort_order')->orderBy('id'),
+            ])
+            ->orderBy('sort_order')
+            ->orderBy('id')
+            ->get();
+
+        $standaloneVideos = Video::query()
+            ->published()
+            ->where('course_id', $course->id)
+            ->whereNull('level_id')
+            ->with('clinicalTask')
+            ->orderBy('sort_order')
+            ->orderBy('id')
+            ->get();
+
+        $allCurriculumVideos = $this->progressService->getCurriculumVideos($course);
+        $curriculumStatus = $this->progressService->getCurriculumStatus($user, $course);
+
+        $userProgressMap = VideoProgress::query()
+            ->where('user_id', $user->id)
+            ->whereIn('video_id', $allCurriculumVideos->pluck('id'))
+            ->get()
+            ->keyBy('video_id');
+
+        $totalVideosCount = $allCurriculumVideos->count();
+        $totalDurationSeconds = (int) $allCurriculumVideos->sum('duration_seconds');
+        $totalDurationMinutes = (int) round($totalDurationSeconds / 60);
+
+        $watchedSeconds = (int) $userProgressMap->sum('watched_seconds');
+        $watchedMinutes = (int) round($watchedSeconds / 60);
+
+        $completedVideoIds = $curriculumStatus['completed_video_ids'];
+        $completedVideosCount = count($completedVideoIds);
+        $accessibleVideoIds = $curriculumStatus['accessible_video_ids'];
+        $accessibleLevelIds = $curriculumStatus['accessible_level_ids'];
+        $totalLevelsCount = $levels->count();
+
+        // 3. Current / Resume Lesson (Companion Widget)
+        $lastWatchedProgress = VideoProgress::query()
+            ->where('user_id', $user->id)
+            ->whereIn('video_id', $allCurriculumVideos->pluck('id'))
+            ->orderByDesc('last_watched_at')
+            ->first();
+
+        $resumeVideo = null;
+        $resumeProgress = null;
+
+        if ($lastWatchedProgress && ! $lastWatchedProgress->is_completed) {
+            $resumeVideo = $allCurriculumVideos->firstWhere('id', $lastWatchedProgress->video_id);
+            $resumeProgress = $lastWatchedProgress;
+        }
+
+        if (! $resumeVideo) {
+            $currentVideoId = $curriculumStatus['current_video_id'] ?? null;
+            if ($currentVideoId) {
+                $resumeVideo = $allCurriculumVideos->firstWhere('id', $currentVideoId);
+                $resumeProgress = $resumeVideo ? $userProgressMap->get($resumeVideo->id) : null;
+            }
+        }
+
+        if (! $resumeVideo) {
+            $resumeVideo = $allCurriculumVideos->first();
+            $resumeProgress = $resumeVideo ? $userProgressMap->get($resumeVideo->id) : null;
+        }
+
+        // 4. Tasks Statistics & Next Available Task
+        $allTasks = ClinicalTask::query()
+            ->where('course_id', $course->id)
+            ->with('video')
+            ->get();
+
+        $totalTasksCount = $allTasks->count();
+        $userSubmissions = TaskSubmission::query()
+            ->where('user_id', $user->id)
+            ->whereIn('task_id', $allTasks->pluck('id'))
+            ->get()
+            ->keyBy('task_id');
+
+        $gradedTasksCount = $userSubmissions->where('status', 'graded')->count();
+        $pendingTasksCount = $userSubmissions->where('status', 'pending')->count();
+        $availableTasksCount = 0;
+        $lockedTasksCount = 0;
+        $nextAvailableTask = null;
+
+        foreach ($allTasks as $task) {
+            if ($userSubmissions->has($task->id)) {
+                continue;
+            }
+            $videoDone = $task->video_id && in_array($task->video_id, $completedVideoIds, true);
+            if ($videoDone) {
+                $availableTasksCount++;
+                if (! $nextAvailableTask) {
+                    $nextAvailableTask = $task;
+                }
+            } else {
+                $lockedTasksCount++;
+            }
+        }
+
+        return view('web.pages.course-details', [
+            'course' => $course,
+            'currentCourse' => $course,
+            'hasActiveAccess' => $hasActiveAccess,
+            'pendingReceipt' => $pendingReceipt,
+            'courseProgressPercentage' => $courseProgressPercentage,
+            'levels' => $levels,
+            'standaloneVideos' => $standaloneVideos,
+            'allCurriculumVideos' => $allCurriculumVideos,
+            'userProgressMap' => $userProgressMap,
+            'userSubmissions' => $userSubmissions,
+            'completedVideoIds' => $completedVideoIds,
+            'accessibleVideoIds' => $accessibleVideoIds,
+            'accessibleLevelIds' => $accessibleLevelIds,
+            'totalVideosCount' => $totalVideosCount,
+            'totalDurationMinutes' => $totalDurationMinutes,
+            'watchedMinutes' => $watchedMinutes,
+            'completedVideosCount' => $completedVideosCount,
+            'totalLevelsCount' => $totalLevelsCount,
+            'resumeVideo' => $resumeVideo,
+            'resumeProgress' => $resumeProgress,
+            'totalTasksCount' => $totalTasksCount,
+            'gradedTasksCount' => $gradedTasksCount,
+            'pendingTasksCount' => $pendingTasksCount,
+            'availableTasksCount' => $availableTasksCount,
+            'lockedTasksCount' => $lockedTasksCount,
+            'nextAvailableTask' => $nextAvailableTask,
+            'cmsSettings' => app(SettingsService::class),
+        ]);
+    }
+
+    /**
      * View lesson with Sequential Video Locking and Dynamic Watermark Player.
      */
     public function lesson(Request $request, Course|string|null $course = null, Video|string|null $video = null): View|RedirectResponse|JsonResponse
@@ -581,7 +756,7 @@ class StudentCourseController extends Controller
      */
     protected function ensureCurriculumSeeded(Course $course): void
     {
-        if ($course->videos()->count() >= 20) {
+        if ($course->videos()->count() >= 20 || ($course->videos()->count() > 0 && $course->slug !== 'speech-therapy-diploma')) {
             return;
         }
 

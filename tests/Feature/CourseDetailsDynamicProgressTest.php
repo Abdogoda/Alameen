@@ -18,8 +18,11 @@ class CourseDetailsDynamicProgressTest extends TestCase
     use RefreshDatabase;
 
     protected Course $course;
+
     protected Level $level1;
+
     protected Video $video1;
+
     protected Video $video2;
 
     protected function setUp(): void

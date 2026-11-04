@@ -108,11 +108,11 @@
                 'color' => '#EF4444',
             ],
             '503' => [
-                'badge' => 'تحت الصيانة والتحديث | Under Maintenance',
-                'title_ar' => 'المنصة تخضع للصيانة والتحسينات الدورية',
-                'title_en' => 'Service Unavailable & Maintenance',
-                'desc_ar' => 'نعمل حالياً على تحديث خدمات منصة مركز الأمين لتقديم أفضل تجربة تدريبية وسريرية لكم. سنعود للعمل قريباً جداً!',
-                'desc_en' => 'We are currently performing routine maintenance and updates to improve your experience. We will be back online shortly!',
+                'badge' => 'أعمال صيانة وترقية مجدولة',
+                'title_ar' => 'المنصة تخضع للصيانة والتطوير الدوري',
+                'title_en' => 'Platform Under Scheduled Maintenance',
+                'desc_ar' => 'نعمل حالياً على تحديث منظومة مركز الأمين وتطوير البنية التحتية لتقديم أفضل تجربة تدريبية وسريرية. سنعود للعمل بكامل طاقتنا في أقرب وقت!',
+                'desc_en' => 'We are currently upgrading our platform infrastructure to deliver the best learning and clinical experience. We will be back online very soon!',
                 'color' => '#10B77F',
             ],
             '504' => [
@@ -192,28 +192,28 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;600;700;800&family=Cairo:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@600;700;800&family=Cairo:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <!-- Fallback & Standalone Styling (Never Breaks Even Under Zero Assets / DB Failure) -->
+    <!-- Standalone Self-Contained Resilient Styling (Never breaks under any condition) -->
     <style>
         :root {
             --alameen-navy: #012383;
             --alameen-navy-light: #0B2A8F;
             --alameen-accent: #10B77F;
             --alameen-gold: #F59E0B;
-            --alameen-bg: #FAFCFF;
-            --alameen-text: #1E293B;
+            --alameen-bg: #F8FAFC;
+            --alameen-text: #0F172A;
             --alameen-muted: #64748B;
-            --alameen-border: #E2E8F0;
-            --alameen-card: rgba(255, 255, 255, 0.92);
+            --alameen-border: rgba(226, 232, 240, 0.85);
+            --alameen-card: #FFFFFF;
         }
 
         html.dark {
             --alameen-bg: #0B1120;
             --alameen-text: #F8FAFC;
             --alameen-muted: #94A3B8;
-            --alameen-border: rgba(255, 255, 255, 0.1);
-            --alameen-card: rgba(15, 23, 42, 0.92);
+            --alameen-border: rgba(255, 255, 255, 0.08);
+            --alameen-card: #0F172A;
         }
 
         * {
@@ -229,8 +229,10 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            justify-content: space-between;
             overflow-x: hidden;
             transition: background-color 0.25s ease, color 0.25s ease;
+            position: relative;
         }
 
         .font-brand {
@@ -253,74 +255,61 @@
         .orb {
             position: absolute;
             border-radius: 50%;
-            filter: blur(90px);
-            opacity: 0.25;
+            filter: blur(100px);
+            opacity: 0.18;
             will-change: transform;
-            animation: orbFloat 14s ease-in-out infinite alternate;
+            animation: orbFloat 16s ease-in-out infinite alternate;
         }
 
         html.dark .orb {
-            opacity: 0.18;
+            opacity: 0.14;
         }
 
         .orb-1 {
-            width: 500px;
-            height: 500px;
+            width: 550px;
+            height: 550px;
             background: radial-gradient(circle, #012383 0%, rgba(1, 35, 131, 0) 70%);
-            top: -150px;
-            right: -100px;
+            top: -160px;
+            right: -120px;
         }
 
         .orb-2 {
-            width: 450px;
-            height: 450px;
+            width: 500px;
+            height: 500px;
             background: radial-gradient(circle, #10B77F 0%, rgba(16, 183, 127, 0) 70%);
-            bottom: -100px;
-            left: -100px;
-            animation-duration: 18s;
+            bottom: -120px;
+            left: -120px;
+            animation-duration: 20s;
             animation-direction: alternate-reverse;
         }
 
         .orb-3 {
-            width: 350px;
-            height: 350px;
+            width: 400px;
+            height: 400px;
             background: radial-gradient(circle, #3B82F6 0%, rgba(59, 130, 246, 0) 70%);
-            top: 40%;
-            left: 20%;
-            animation-duration: 22s;
+            top: 35%;
+            left: 25%;
+            animation-duration: 24s;
         }
 
         @keyframes orbFloat {
             0% { transform: translate(0, 0) scale(1); }
-            50% { transform: translate(30px, 40px) scale(1.05); }
-            100% { transform: translate(-20px, 20px) scale(0.95); }
+            50% { transform: translate(30px, 35px) scale(1.04); }
+            100% { transform: translate(-25px, 20px) scale(0.96); }
         }
 
-        /* Ambient subtle grid pattern */
+        /* Subtle crisp grid pattern */
         .bg-grid {
-            background-size: 40px 40px;
+            background-size: 36px 36px;
             background-image: 
-                linear-gradient(to right, rgba(1, 35, 131, 0.04) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(1, 35, 131, 0.04) 1px, transparent 1px);
+                linear-gradient(to right, rgba(1, 35, 131, 0.035) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(1, 35, 131, 0.035) 1px, transparent 1px);
         }
 
         html.dark .bg-grid {
             background-image: 
-                linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-        }
-
-        /* Glassmorphism Card */
-        .glass-card {
-            background: var(--alameen-card);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--alameen-border);
-            box-shadow: 0 25px 60px -15px rgba(1, 35, 131, 0.12), 0 0 0 1px rgba(1, 35, 131, 0.04);
-        }
-
-        html.dark .glass-card {
-            box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.08);
+                linear-gradient(to right, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
         }
 
         /* Zero flash logo toggling */
@@ -329,105 +318,94 @@
         html:not(.dark) .logo-theme-light { display: block !important; }
         html:not(.dark) .logo-theme-dark { display: none !important; }
 
-        /* Gentle pulse animations */
-        @keyframes floatUpDown {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-8px); }
-        }
-
-        .animate-float {
-            animation: floatUpDown 5s ease-in-out infinite;
-        }
-
-        @keyframes gearSpin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        @keyframes gearSpinReverse {
-            0% { transform: rotate(360deg); }
-            100% { transform: rotate(0deg); }
-        }
-
-        .spin-slow {
-            animation: gearSpin 20s linear infinite;
-            transform-origin: center;
-        }
-
-        .spin-reverse-slow {
-            animation: gearSpinReverse 16s linear infinite;
-            transform-origin: center;
-        }
-
-        .pulse-subtle {
-            animation: pulseSoft 2.5s ease-in-out infinite;
-        }
-
-        @keyframes pulseSoft {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.85; transform: scale(0.98); }
-        }
-
-        /* ------------------------------------------------------------- */
-        /* Self-Contained Resilient Styling (Zero Dependency Guarantee)   */
-        /* ------------------------------------------------------------- */
+        /* Header Navbar */
         .err-header {
             width: 100%;
             position: relative;
             z-index: 20;
-            padding: 16px 24px;
+            padding: 16px 32px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             border-bottom: 1px solid var(--alameen-border);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            background: rgba(255, 255, 255, 0.75);
         }
 
         html.dark .err-header {
-            background: rgba(11, 17, 32, 0.7);
+            background: rgba(11, 17, 32, 0.75);
         }
 
+        @media (max-width: 640px) {
+            .err-header {
+                padding: 14px 18px;
+            }
+        }
+
+        /* Main Section & Card */
         .err-main {
             width: 100%;
             flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 48px 16px;
+            padding: 40px 20px;
             position: relative;
             z-index: 10;
         }
 
         .err-card {
             width: 100%;
-            max-width: 760px;
+            max-width: 660px;
+            background: var(--alameen-card);
+            border: 1px solid var(--alameen-border);
             border-radius: 28px;
-            padding: 44px 36px;
+            padding: 44px 38px 36px 38px;
             text-align: center;
             position: relative;
-            overflow: hidden;
-            margin: 0 auto;
+            box-shadow: 
+                0 20px 45px -12px rgba(1, 35, 131, 0.08),
+                0 0 0 1px rgba(1, 35, 131, 0.02);
+            transition: all 0.25s ease;
+        }
+
+        html.dark .err-card {
+            box-shadow: 
+                0 24px 50px -12px rgba(0, 0, 0, 0.55),
+                0 0 0 1px rgba(255, 255, 255, 0.06);
         }
 
         @media (max-width: 640px) {
             .err-card {
-                padding: 28px 20px;
+                padding: 32px 20px 28px 20px;
+                border-radius: 22px;
             }
         }
 
+        /* Top decorative accent pill line */
+        .err-card-line {
+            position: absolute;
+            top: 0;
+            left: 10%;
+            right: 10%;
+            height: 3px;
+            border-radius: 0 0 8px 8px;
+            background: linear-gradient(90deg, transparent, #012383, #10B77F, transparent);
+        }
+
+        /* Badges */
         .err-badge {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 6px 18px;
+            padding: 6px 16px;
             border-radius: 9999px;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 700;
             background: #EAF1FB;
             color: #012383;
-            border: 1px solid #DEE8F7;
+            border: 1px solid #D5E3F7;
             margin-bottom: 24px;
         }
 
@@ -437,101 +415,164 @@
             border-color: #334155;
         }
 
-        .err-code {
+        .err-badge .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #10B77F;
+            display: inline-block;
+            box-shadow: 0 0 0 2px rgba(16, 183, 127, 0.2);
+            animation: pulseDot 2s infinite;
+        }
+
+        @keyframes pulseDot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.85); }
+        }
+
+        /* Illustration Artwork Container */
+        .err-illustration-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px auto;
+            position: relative;
+            width: 140px;
+            height: 140px;
+        }
+
+        @keyframes gearRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes gearRotateReverse {
+            from { transform: rotate(360deg); }
+            to { transform: rotate(0deg); }
+        }
+
+        .anim-spin-cw {
+            animation: gearRotate 22s linear infinite;
+            transform-origin: center;
+        }
+
+        .anim-spin-ccw {
+            animation: gearRotateReverse 18s linear infinite;
+            transform-origin: center;
+        }
+
+        /* Error Code Number */
+        .err-code-number {
             font-family: 'Inter', system-ui, sans-serif;
-            font-size: 72px;
+            font-size: 58px;
             font-weight: 900;
             line-height: 1;
             letter-spacing: -0.03em;
-            margin-bottom: 14px;
-            background: linear-gradient(135deg, #012383 0%, #3B82F6 50%, #10B77F 100%);
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #012383 0%, #2563EB 50%, #10B77F 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        html.dark .err-code {
+        html.dark .err-code-number {
             background: linear-gradient(135deg, #60A5FA 0%, #93C5FD 50%, #34D399 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        @media (max-width: 640px) {
-            .err-code {
-                font-size: 52px;
-            }
-        }
-
-        .err-title-ar {
+        /* Arabic Main Title */
+        .err-heading-ar {
             font-family: 'Baloo Bhaijaan 2', 'Cairo', sans-serif;
-            font-size: 28px;
+            font-size: 25px;
             font-weight: 800;
             color: var(--alameen-navy);
-            margin-bottom: 8px;
             line-height: 1.35;
+            margin-bottom: 6px;
         }
 
-        html.dark .err-title-ar {
-            color: #ffffff;
+        html.dark .err-heading-ar {
+            color: #FFFFFF;
         }
 
         @media (max-width: 640px) {
-            .err-title-ar {
-                font-size: 22px;
+            .err-heading-ar {
+                font-size: 21px;
             }
         }
 
-        .err-title-en {
+        /* English Subtitle */
+        .err-heading-en {
             font-family: 'Inter', system-ui, sans-serif;
-            font-size: 15px;
+            font-size: 13.5px;
             font-weight: 600;
             color: var(--alameen-muted);
-            margin-bottom: 20px;
+            letter-spacing: 0.01em;
+            margin-bottom: 18px;
         }
 
-        .err-desc {
-            max-width: 620px;
-            margin: 0 auto 28px auto;
+        /* Descriptions */
+        .err-body-text {
+            max-width: 540px;
+            margin: 0 auto 26px auto;
+        }
+
+        .err-desc-ar {
             font-size: 14px;
             line-height: 1.8;
-            color: var(--alameen-text);
+            color: #334155;
+            font-weight: 500;
         }
 
-        .err-desc p:last-child {
-            margin-top: 8px;
-            font-size: 13px;
-            color: var(--alameen-muted);
+        html.dark .err-desc-ar {
+            color: #CBD5E1;
         }
 
-        .err-system-msg {
-            max-width: 520px;
-            margin: 0 auto 24px auto;
-            padding: 12px 18px;
-            border-radius: 14px;
+        .err-desc-en {
+            font-family: 'Inter', system-ui, sans-serif;
+            font-size: 12.5px;
+            line-height: 1.65;
+            color: #64748B;
+            margin-top: 6px;
+            direction: ltr;
+            text-align: center;
+        }
+
+        html.dark .err-desc-en {
+            color: #94A3B8;
+        }
+
+        /* System Info Alert */
+        .err-alert-banner {
+            max-width: 480px;
+            margin: 0 auto 20px auto;
+            padding: 9px 16px;
+            border-radius: 12px;
             background: #FEF3C7;
             border: 1px solid #FDE68A;
             color: #92400E;
-            font-size: 13px;
-            font-weight: 500;
+            font-size: 12px;
+            font-weight: 600;
             line-height: 1.5;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
+            gap: 8px;
         }
 
-        html.dark .err-system-msg {
+        html.dark .err-alert-banner {
             background: rgba(120, 53, 15, 0.25);
             border-color: rgba(180, 83, 9, 0.4);
             color: #FDE68A;
         }
 
-        .err-actions {
+        /* Action Buttons Area */
+        .err-actions-row {
             display: flex;
             flex-wrap: wrap;
             align-items: center;
             justify-content: center;
             gap: 12px;
-            margin: 28px 0;
+            margin: 26px 0 20px 0;
             width: 100%;
         }
 
@@ -540,17 +581,17 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
-            padding: 12px 24px;
+            padding: 11px 22px;
             border-radius: 14px;
-            font-size: 14px;
+            font-size: 13.5px;
             font-weight: 700;
             font-family: 'Cairo', sans-serif;
             text-decoration: none !important;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
             white-space: nowrap;
             border: 1px solid transparent;
-            min-height: 46px;
+            min-height: 44px;
         }
 
         .err-btn:hover {
@@ -562,38 +603,38 @@
         }
 
         .err-btn svg {
-            width: 18px;
-            height: 18px;
+            width: 17px;
+            height: 17px;
             flex-shrink: 0;
         }
 
         .err-btn-primary {
             background: linear-gradient(135deg, #012383 0%, #0B2A8F 100%);
-            color: #ffffff !important;
-            box-shadow: 0 6px 18px -2px rgba(1, 35, 131, 0.35);
+            color: #FFFFFF !important;
+            box-shadow: 0 4px 14px -1px rgba(1, 35, 131, 0.32);
         }
 
         .err-btn-primary:hover {
             background: linear-gradient(135deg, #0B2A8F 0%, #012383 100%);
-            box-shadow: 0 10px 24px -2px rgba(1, 35, 131, 0.45);
+            box-shadow: 0 8px 20px -2px rgba(1, 35, 131, 0.42);
         }
 
         .err-btn-whatsapp {
             background: #10B77F;
-            color: #ffffff !important;
-            box-shadow: 0 6px 18px -2px rgba(16, 183, 127, 0.35);
+            color: #FFFFFF !important;
+            box-shadow: 0 4px 14px -1px rgba(16, 183, 127, 0.32);
         }
 
         .err-btn-whatsapp:hover {
             background: #0E9F6E;
-            box-shadow: 0 10px 24px -2px rgba(16, 183, 127, 0.45);
+            box-shadow: 0 8px 20px -2px rgba(16, 183, 127, 0.42);
         }
 
         .err-btn-secondary {
-            background: #ffffff;
+            background: #FFFFFF;
             color: #012383 !important;
-            border: 1px solid #DEE8F7;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+            border: 1px solid #D5E3F7;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
         }
 
         html.dark .err-btn-secondary {
@@ -612,88 +653,114 @@
             border-color: #475569;
         }
 
-        .err-shortcuts {
+        /* Navigation Shortcuts */
+        .err-nav-shortcuts {
             display: flex;
             flex-wrap: wrap;
             align-items: center;
             justify-content: center;
-            gap: 16px;
-            padding-top: 22px;
-            margin-top: 12px;
+            gap: 14px;
+            padding-top: 18px;
+            margin-top: 8px;
             border-top: 1px solid var(--alameen-border);
-            font-size: 13px;
+            font-size: 12.5px;
             color: var(--alameen-muted);
         }
 
-        .err-shortcuts a {
+        .err-nav-shortcuts a {
             color: var(--alameen-muted);
             text-decoration: none;
             transition: color 0.15s ease;
-            font-weight: 500;
+            font-weight: 600;
         }
 
-        .err-shortcuts a:hover {
+        .err-nav-shortcuts a:hover {
             color: #012383;
         }
 
-        html.dark .err-shortcuts a:hover {
+        html.dark .err-nav-shortcuts a:hover {
             color: #60A5FA;
         }
 
-        .err-timer-box {
-            margin-top: 20px;
-            padding-top: 14px;
-            border-top: 1px dashed var(--alameen-border);
-            font-size: 12px;
-            color: var(--alameen-muted);
-            display: flex;
+        /* Timer Badge */
+        .err-countdown-pill {
+            display: inline-flex;
             align-items: center;
-            justify-content: center;
-            gap: 8px;
+            gap: 7px;
+            margin-top: 16px;
+            padding: 5px 14px;
+            border-radius: 9999px;
+            background: #F1F5F9;
+            border: 1px solid #E2E8F0;
+            font-size: 11.5px;
+            color: #475569;
+            font-weight: 600;
         }
 
+        html.dark .err-countdown-pill {
+            background: #1E293B;
+            border-color: #334155;
+            color: #94A3B8;
+        }
+
+        .err-countdown-pill .radar-pulse {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #10B77F;
+            position: relative;
+        }
+
+        .err-countdown-pill .radar-pulse::after {
+            content: '';
+            position: absolute;
+            inset: -3px;
+            border-radius: 50%;
+            border: 1.5px solid #10B77F;
+            animation: pulseDot 1.5s infinite;
+        }
+
+        /* Footer */
         .err-footer {
             width: 100%;
             position: relative;
             z-index: 20;
-            padding: 20px 24px;
+            padding: 16px 32px;
             border-top: 1px solid var(--alameen-border);
-            text-align: center;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            background: rgba(255, 255, 255, 0.75);
             font-size: 12px;
             color: var(--alameen-muted);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            background: rgba(255, 255, 255, 0.7);
         }
 
         html.dark .err-footer {
-            background: rgba(11, 17, 32, 0.7);
+            background: rgba(11, 17, 32, 0.75);
         }
 
-        .err-footer-inner {
-            max-width: 900px;
+        .err-footer-content {
+            max-width: 960px;
             margin: 0 auto;
             display: flex;
-            flex-direction: row;
             align-items: center;
             justify-content: space-between;
-            gap: 12px;
+            gap: 16px;
+            flex-wrap: wrap;
         }
 
         @media (max-width: 640px) {
-            .err-footer-inner {
+            .err-footer-content {
                 flex-direction: column;
+                text-align: center;
+                gap: 8px;
             }
         }
     </style>
 
-    <!-- Precompiled Platform CSS & Vite Assets Fallback -->
+    <!-- Optional precompiled platform CSS fallback -->
     <link rel="stylesheet" href="/assets/css/admin.css">
-    @if(file_exists(public_path('build/manifest.json')))
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    @endif
 </head>
-<body class="relative flex flex-col justify-between min-h-screen bg-grid selection:bg-[#012383] selection:text-white">
+<body class="bg-grid">
 
     <!-- Ambient Mesh Background -->
     <div class="ambient-mesh">
@@ -704,26 +771,25 @@
 
     <!-- Header Bar -->
     <header class="err-header">
-        <!-- Logo & Platform Identity -->
-        <a href="/" class="flex items-center gap-3 group text-decoration-none transition-transform hover:scale-[1.01]" style="display: flex; align-items: center; gap: 12px; text-decoration: none;" title="{{ $siteName }}">
-            <div style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 12px; background: #ffffff; border: 1px solid rgba(226, 232, 240, 0.8); padding: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);" class="dark:bg-slate-900">
-                <img src="{{ $logoUrl }}" alt="{{ $siteName }}" class="size-full object-contain logo-theme-light" style="width: 100%; height: 100%; object-fit: contain;" />
-                <img src="{{ $logoWhiteUrl }}" alt="{{ $siteName }}" class="size-full object-contain logo-theme-dark hidden" style="width: 100%; height: 100%; object-fit: contain;" />
+        <!-- Logo & Center Identity -->
+        <a href="/" style="display: flex; align-items: center; gap: 12px; text-decoration: none;" title="{{ $siteName }}">
+            <div style="width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; border-radius: 12px; background: #FFFFFF; border: 1px solid rgba(226, 232, 240, 0.85); padding: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);" class="dark:bg-slate-900 dark:border-slate-800">
+                <img src="{{ $logoUrl }}" alt="{{ $siteName }}" class="logo-theme-light" style="width: 100%; height: 100%; object-fit: contain;" />
+                <img src="{{ $logoWhiteUrl }}" alt="{{ $siteName }}" class="logo-theme-dark hidden" style="width: 100%; height: 100%; object-fit: contain;" />
             </div>
             <div style="display: flex; flex-direction: column; text-align: start;">
-                <span class="font-brand font-bold text-lg text-[#012383] dark:text-white" style="font-weight: 700; font-size: 18px; color: #012383;">
+                <span class="font-brand" style="font-weight: 800; font-size: 17px; color: #012383; line-height: 1.2;" class="dark:text-white">
                     {{ $siteName }}
                 </span>
-                <span style="font-size: 11px; color: #64748B; font-weight: 500;">
+                <span style="font-size: 11px; color: #64748B; font-weight: 600;">
                     منصة تدريب وتأهيل التخاطب
                 </span>
             </div>
         </a>
 
-        <!-- Controls: System Status Badge & Dark Mode Toggle -->
-        <div style="display: flex; align-items: center; gap: 10px;">
-            <!-- Platform Status Pill -->
-            <div class="err-badge" style="margin-bottom: 0; padding: 4px 12px; font-size: 11px;">
+        <!-- Controls: Status Pill & Theme Toggle -->
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <div class="err-badge" style="margin-bottom: 0; padding: 5px 12px; font-size: 11.5px;">
                 <span class="dot"></span>
                 <span>نظام الحماية والمراقبة نشط</span>
             </div>
@@ -732,29 +798,29 @@
             <button
                 type="button"
                 id="theme-toggle-btn"
-                style="width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; border-radius: 10px; background: #ffffff; border: 1px solid #E2E8F0; cursor: pointer; color: #334155;"
-                class="dark:bg-slate-800 dark:border-slate-700"
+                style="width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; border-radius: 11px; background: #FFFFFF; border: 1px solid #E2E8F0; cursor: pointer; color: #334155; transition: all 0.2s;"
+                class="dark:bg-slate-800 dark:border-slate-700 dark:text-slate-200"
                 title="تبديل المظهر / Toggle theme"
                 onclick="toggleErrorPageTheme()"
             >
-                <!-- Sun Icon (shown in dark mode) -->
-                <svg id="sun-icon" class="size-4 hidden dark:block text-amber-400" style="width: 18px; height: 18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <!-- Sun Icon (dark mode) -->
+                <svg id="sun-icon" style="width: 18px; height: 18px; display: none;" class="dark:block text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
                 </svg>
-                <!-- Moon Icon (shown in light mode) -->
-                <svg id="moon-icon" class="size-4 block dark:hidden text-slate-700" style="width: 18px; height: 18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <!-- Moon Icon (light mode) -->
+                <svg id="moon-icon" style="width: 18px; height: 18px; display: block;" class="dark:hidden text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
                 </svg>
             </button>
         </div>
     </header>
 
-    <!-- Main Content Container -->
+    <!-- Main Content Area -->
     <main class="err-main">
-        <div class="err-card glass-card">
+        <div class="err-card">
             
-            <!-- Top Subtle Glow Line -->
-            <div style="position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, transparent, #012383, #10B77F, transparent);"></div>
+            <!-- Top Gradient Line -->
+            <div class="err-card-line"></div>
 
             <!-- Themed Status Pill -->
             <div class="err-badge">
@@ -763,85 +829,40 @@
             </div>
 
             <!-- Error Artwork / Illustration -->
-            <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 24px;" class="animate-float">
+            <div class="err-illustration-box">
                 @hasSection('illustration')
                     @yield('illustration')
                 @else
                     @if($errorCode === '503')
-                        <!-- Bespoke 503 Maintenance Beacon SVG -->
-                        <div class="relative size-36 sm:size-44 flex items-center justify-center">
-                            <!-- Outer pulsing waves -->
-                            <div class="absolute inset-0 rounded-full border-2 border-emerald-500/20 animate-ping" style="animation-duration: 3s;"></div>
-                            <div class="absolute inset-3 rounded-full border border-blue-500/30"></div>
-                            <!-- Central gear ring -->
-                            <svg class="size-32 sm:size-40 spin-slow text-[#012383] dark:text-blue-500 opacity-90" viewBox="0 0 100 100" fill="none">
-                                <circle cx="50" cy="50" r="42" stroke="currentColor" stroke-width="3" stroke-dasharray="6 6" />
-                            </svg>
-                            <!-- Secondary counter-rotating gear -->
-                            <svg class="size-24 sm:size-28 spin-reverse-slow text-[#10B77F] dark:text-emerald-400 opacity-80 absolute" viewBox="0 0 100 100" fill="none">
-                                <circle cx="50" cy="50" r="32" stroke="currentColor" stroke-width="4" stroke-dasharray="8 8" />
-                            </svg>
-                            <!-- Center Icon Badge -->
-                            <div class="relative size-16 sm:size-20 rounded-2xl bg-gradient-to-br from-[#012383] to-[#0B2A8F] text-white shadow-xl flex items-center justify-center border border-white/20">
-                                <svg class="size-8 sm:size-10 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <!-- Bespoke High-Tech 503 Maintenance Beacon -->
+                        <div style="position: relative; width: 130px; height: 130px; display: flex; align-items: center; justify-content: center;">
+                            <!-- Outer pulsing soft radar ring -->
+                            <div style="position: absolute; inset: 0; border-radius: 50%; border: 2px dashed rgba(16, 183, 127, 0.4);" class="anim-spin-cw"></div>
+                            <!-- Middle rotating tech gear ring -->
+                            <div style="position: absolute; inset: 10px; border-radius: 50%; border: 2px dashed rgba(1, 35, 131, 0.35);" class="anim-spin-ccw"></div>
+                            <!-- Center High-Gloss Shield Badge -->
+                            <div style="position: relative; width: 68px; height: 68px; border-radius: 20px; background: linear-gradient(135deg, #012383 0%, #0B2A8F 100%); display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 24px -4px rgba(1, 35, 131, 0.45); border: 1.5px solid rgba(255, 255, 255, 0.25);">
+                                <svg style="width: 32px; height: 32px; color: #10B77F;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                 </svg>
                             </div>
                         </div>
                     @elseif($errorCode === '404')
-                        <!-- Bespoke 404 Lost Compass SVG -->
-                        <div class="relative size-36 sm:size-44 flex items-center justify-center">
-                            <div class="absolute inset-0 rounded-full bg-blue-500/10 dark:bg-blue-500/5 animate-ping" style="animation-duration: 4s;"></div>
-                            <svg class="size-32 sm:size-40 text-[#012383] dark:text-blue-400" viewBox="0 0 120 120" fill="none">
-                                <circle cx="60" cy="60" r="50" stroke="currentColor" stroke-width="3" stroke-dasharray="4 6" opacity="0.6" />
-                                <circle cx="60" cy="60" r="38" stroke="currentColor" stroke-width="1.5" opacity="0.3" />
-                                <path d="M60 22 L65 55 L98 60 L65 65 L60 98 L55 65 L22 60 L55 55 Z" fill="url(#compass-grad)" />
-                                <circle cx="60" cy="60" r="6" fill="#10B77F" />
-                                <defs>
-                                    <linearGradient id="compass-grad" x1="22" y1="22" x2="98" y2="98" gradientUnits="userSpaceOnUse">
-                                        <stop stop-color="#012383" />
-                                        <stop offset="0.5" stop-color="#3B82F6" />
-                                        <stop offset="1" stop-color="#10B77F" />
-                                    </linearGradient>
-                                </defs>
-                            </svg>
-                            <span class="absolute -bottom-2 px-3 py-1 rounded-full text-xs font-black font-en bg-[#012383] text-white shadow-md">
-                                404
-                            </span>
-                        </div>
-                    @elseif($errorCode === '403')
-                        <!-- Bespoke 403 Security Shield SVG -->
-                        <div class="relative size-36 sm:size-44 flex items-center justify-center">
-                            <div class="relative size-28 sm:size-32 rounded-3xl bg-gradient-to-br from-rose-500/20 to-red-600/10 dark:from-rose-500/15 dark:to-red-600/5 border border-rose-500/30 flex items-center justify-center shadow-lg">
-                                <svg class="size-16 sm:size-20 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                                </svg>
-                            </div>
-                        </div>
-                    @elseif($errorCode === '419')
-                        <!-- Bespoke 419 Session Clock SVG -->
-                        <div class="relative size-36 sm:size-44 flex items-center justify-center">
-                            <div class="relative size-28 sm:size-32 rounded-3xl bg-gradient-to-br from-amber-500/20 to-orange-500/10 border border-amber-500/30 flex items-center justify-center shadow-lg">
-                                <svg class="size-16 sm:size-20 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                            </div>
-                        </div>
-                    @elseif($errorCode === '429')
-                        <!-- Bespoke 429 Speedometer SVG -->
-                        <div class="relative size-36 sm:size-44 flex items-center justify-center">
-                            <div class="relative size-28 sm:size-32 rounded-3xl bg-gradient-to-br from-amber-500/20 to-yellow-500/10 border border-amber-500/30 flex items-center justify-center shadow-lg">
-                                <svg class="size-16 sm:size-20 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        <!-- 404 Lost Compass -->
+                        <div style="position: relative; width: 130px; height: 130px; display: flex; align-items: center; justify-content: center;">
+                            <div style="position: absolute; inset: 0; border-radius: 50%; border: 2px dashed rgba(59, 130, 246, 0.35);" class="anim-spin-cw"></div>
+                            <div style="position: relative; width: 68px; height: 68px; border-radius: 20px; background: linear-gradient(135deg, #012383 0%, #1D4ED8 100%); display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 24px -4px rgba(1, 35, 131, 0.45); border: 1.5px solid rgba(255, 255, 255, 0.25);">
+                                <svg style="width: 32px; height: 32px; color: #93C5FD;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
                                 </svg>
                             </div>
                         </div>
                     @else
-                        <!-- Bespoke 500 Server Glitch Shield SVG -->
-                        <div class="relative size-36 sm:size-44 flex items-center justify-center">
-                            <div class="relative size-28 sm:size-32 rounded-3xl bg-gradient-to-br from-red-500/20 to-[#012383]/20 border border-red-500/30 flex items-center justify-center shadow-lg">
-                                <svg class="size-16 sm:size-20 text-rose-500 dark:text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <!-- Universal Security / Alert Shield -->
+                        <div style="position: relative; width: 130px; height: 130px; display: flex; align-items: center; justify-content: center;">
+                            <div style="position: relative; width: 68px; height: 68px; border-radius: 20px; background: linear-gradient(135deg, #DC2626 0%, #012383 100%); display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 24px -4px rgba(220, 38, 38, 0.4); border: 1.5px solid rgba(255, 255, 255, 0.25);">
+                                <svg style="width: 32px; height: 32px; color: #FFFFFF;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                                 </svg>
                             </div>
@@ -850,46 +871,50 @@
                 @endif
             </div>
 
-            <!-- Status Code Headline -->
-            <div class="err-code font-en">
+            <!-- Error Code Headline -->
+            <div class="err-code-number">
                 {{ $errorCode }}
             </div>
 
             <!-- Arabic Main Title -->
-            <h1 class="err-title-ar font-brand">
+            <h1 class="err-heading-ar">
                 {{ $titleAr }}
             </h1>
 
             <!-- English Subtitle -->
-            <h2 class="err-title-en font-en">
+            <h2 class="err-heading-en">
                 {{ $titleEn }}
             </h2>
 
-            <!-- Explanation Text -->
-            <div class="err-desc">
-                <p>{{ $descAr }}</p>
-                <p class="font-en">{{ $descEn }}</p>
+            <!-- Descriptions -->
+            <div class="err-body-text">
+                <p class="err-desc-ar">{{ $descAr }}</p>
+                <p class="err-desc-en">{{ $descEn }}</p>
             </div>
 
             @php
                 $customExceptionMessage = null;
                 if (isset($exception) && is_object($exception) && method_exists($exception, 'getMessage')) {
-                    $msg = trim($exception->getMessage());
-                    if (!empty($msg) && !str_starts_with($msg, 'SQLSTATE') && !str_contains($msg, 'password') && strlen($msg) < 200) {
-                        $customExceptionMessage = $msg;
+                    $raw = trim($exception->getMessage());
+                    // Suppress generic HTTP status repeats like "Service Unavailable"
+                    $genericTexts = ['Service Unavailable', 'Internal Server Error', 'Not Found', 'Forbidden', 'Unauthorized', ''];
+                    if (!empty($raw) && !in_array($raw, $genericTexts, true) && !str_starts_with($raw, 'SQLSTATE') && !str_contains($raw, 'password') && strlen($raw) < 180) {
+                        $customExceptionMessage = $raw;
                     }
                 }
             @endphp
 
             @if(!empty($customExceptionMessage))
-                <div class="err-system-msg">
-                    <span style="font-weight: 700;">ملاحظة من النظام:</span>
-                    <span>{{ $customExceptionMessage }}</span>
+                <div class="err-alert-banner">
+                    <svg style="width: 16px; height: 16px; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span><strong>ملاحظة من الخادم:</strong> {{ $customExceptionMessage }}</span>
                 </div>
             @endif
 
             <!-- Action Buttons Area -->
-            <div class="err-actions">
+            <div class="err-actions-row">
                 @hasSection('actions')
                     @yield('actions')
                 @else
@@ -941,19 +966,8 @@
                         >
                             <span>الرئيسية</span>
                         </a>
-                    @elseif($errorCode === '419')
-                        <button
-                            type="button"
-                            onclick="window.location.reload()"
-                            class="err-btn err-btn-primary"
-                        >
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                            </svg>
-                            <span>تحديث الصفحة والمتابعة</span>
-                        </button>
                     @else
-                        <!-- Universal Default Buttons -->
+                        <!-- Universal Buttons -->
                         <a
                             href="/"
                             class="err-btn err-btn-primary"
@@ -969,7 +983,7 @@
                             onclick="if (window.history.length > 1) { window.history.back(); } else { window.location.href = '/'; }"
                             class="err-btn err-btn-secondary"
                         >
-                            <svg class="rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="transform: scaleX(-1);">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                             </svg>
                             <span>الرجوع للخلف</span>
@@ -986,47 +1000,37 @@
             </div>
 
             <!-- Helpful Navigation Shortcuts Bar -->
-            <div class="err-shortcuts">
+            <div class="err-nav-shortcuts">
                 <a href="/">الرئيسية</a>
-                <span style="opacity: 0.5;">•</span>
+                <span style="opacity: 0.4;">•</span>
                 <a href="/courses">الدورات التدريبية</a>
-                <span style="opacity: 0.5;">•</span>
+                <span style="opacity: 0.4;">•</span>
                 <a href="/contact">تواصل معنا</a>
-                <span style="opacity: 0.5;">•</span>
+                <span style="opacity: 0.4;">•</span>
                 <a href="/admin/login">لوحة الإدارة</a>
             </div>
 
             @if($errorCode === '503')
                 <!-- Live Maintenance Auto-Refresh Timer -->
-                <div class="err-timer-box" id="auto-refresh-box">
-                    <span style="width: 8px; height: 8px; border-radius: 50%; background: #10B77F; display: inline-block;"></span>
-                    <span>إعادة فحص تلقائي بعد <strong id="refresh-seconds" style="font-weight: 700; color: #012383;" class="dark:text-blue-300">30</strong> ثانية...</span>
+                <div class="err-countdown-pill" id="auto-refresh-box">
+                    <span class="radar-pulse"></span>
+                    <span>إعادة فحص الاتصال تلقائياً خلال <strong id="refresh-seconds" style="color: #012383;" class="dark:text-blue-300">30</strong> ثانية...</span>
                 </div>
             @endif
 
         </div>
     </main>
 
-    <!-- Master Footer -->
+    <!-- Master Footer (Clean, Single, Perfectly Aligned) -->
     <footer class="err-footer">
-        <div class="err-footer-inner">
+        <div class="err-footer-content">
             <p>
-                © {{ date('Y') }} <span style="font-weight: 600;">{{ $siteName }}</span>. جميع الحقوق محفوظة.
+                © {{ date('Y') }} <span style="font-weight: 700; color: #012383;" class="dark:text-blue-300">{{ $siteName }}</span>. جميع الحقوق محفوظة.
             </p>
-            <div style="display: flex; align-items: center; justify-content: center; gap: 12px; font-size: 11px;">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 14px; font-size: 11.5px;">
                 <span>هاتف: <a href="tel:{{ $contactPhone }}" style="color: inherit; text-decoration: none; font-family: Inter, sans-serif; direction: ltr; display: inline-block;">{{ $contactPhone }}</a></span>
-                <span style="opacity: 0.5;">•</span>
+                <span style="opacity: 0.4;">•</span>
                 <span>دعم: <a href="mailto:{{ $contactEmail }}" style="color: inherit; text-decoration: none; font-family: Inter, sans-serif;">{{ $contactEmail }}</a></span>
-            </div>
-        </div>
-    </footer>
-            <p>
-                © {{ date('Y') }} <span class="font-semibold text-slate-700 dark:text-slate-200">{{ $siteName }}</span>. جميع الحقوق محفوظة.
-            </p>
-            <div class="flex items-center gap-4 text-xs">
-                <span>هاتف: <a href="tel:{{ $contactPhone }}" class="hover:underline font-en dir-ltr inline-block">{{ $contactPhone }}</a></span>
-                <span>•</span>
-                <span>دعم: <a href="mailto:{{ $contactEmail }}" class="hover:underline font-en">{{ $contactEmail }}</a></span>
             </div>
         </div>
     </footer>

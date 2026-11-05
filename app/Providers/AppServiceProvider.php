@@ -403,4 +403,28 @@ class AppServiceProvider extends ServiceProvider
             return Limit::perMinute(60)->by($key);
         });
     }
+
+    /**
+     * Configure theme, brand colors, and templates for system email notifications.
+     */
+    protected function configureMailTheming(): void
+    {
+        \Illuminate\Auth\Notifications\VerifyEmail::toMailUsing(function ($notifiable, string $verificationUrl) {
+            $locale = $notifiable instanceof User && ! empty($notifiable->locale)
+                ? (string) $notifiable->locale
+                : app()->getLocale();
+
+            $subject = $locale === 'ar'
+                ? 'تأكيد البريد الإلكتروني - ' . platform_name('منصة الأمين')
+                : 'Verify Email Address - ' . platform_name('Alameen Platform');
+
+            return (new \Illuminate\Notifications\Messages\MailMessage)
+                ->subject($subject)
+                ->view('emails.auth.verify_email', [
+                    'user' => $notifiable,
+                    'url' => $verificationUrl,
+                    'locale' => $locale,
+                ]);
+        });
+    }
 }

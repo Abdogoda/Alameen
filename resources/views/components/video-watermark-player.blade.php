@@ -35,11 +35,26 @@
 <div 
     x-data="videoWatermarkPlayer(@js($studentData), {{ $videoId ? (int) $videoId : 'null' }})" 
     x-init="initPlayer()"
-    class="relative w-full overflow-hidden rounded-2xl bg-black shadow-2xl border border-slate-800 select-none group"
-    style="aspect-ratio: {{ $aspectRatio }}; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-touch-callout: none;"
+    class="w-full flex flex-col gap-4 select-none"
+    style="-webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-touch-callout: none;"
     oncontextmenu="return false;"
     ondragstart="return false;"
 >
+    {{-- Full-Page Ambient Security Watermark Canvas (Covers entire viewport on video pages in all modes) --}}
+    <canvas 
+        x-ref="pageWatermarkCanvas"
+        id="alameen-page-watermark-canvas"
+        class="fixed inset-0 pointer-events-none"
+        style="position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 40; pointer-events: none; opacity: 1;"
+    ></canvas>
+
+    {{-- Video Frame Container --}}
+    <div 
+        id="alameen-video-frame"
+        x-ref="videoFrameContainer"
+        class="relative w-full overflow-hidden rounded-2xl bg-black shadow-2xl border border-slate-800 group"
+        style="aspect-ratio: {{ $aspectRatio }};"
+    >
     <style>
         @media print {
             body, #alameen-mux-player, video, iframe, canvas, .video-player-container {
@@ -59,6 +74,44 @@
             opacity: 0 !important;
             filter: brightness(0) !important;
             pointer-events: none !important;
+        }
+
+        /* Fullscreen styles for video container & canvas */
+        #alameen-video-frame:fullscreen,
+        #alameen-video-frame:-webkit-full-screen {
+            width: 100vw !important;
+            height: 100vh !important;
+            max-width: 100vw !important;
+            max-height: 100vh !important;
+            aspect-ratio: auto !important;
+            border-radius: 0 !important;
+            border: none !important;
+            background: #000000 !important;
+        }
+
+        #alameen-video-frame:fullscreen mux-player,
+        #alameen-video-frame:-webkit-full-screen mux-player,
+        #alameen-video-frame:fullscreen video,
+        #alameen-video-frame:-webkit-full-screen video,
+        #alameen-video-frame:fullscreen iframe,
+        #alameen-video-frame:-webkit-full-screen iframe {
+            width: 100% !important;
+            height: 100% !important;
+            max-width: 100% !important;
+            max-height: 100% !important;
+        }
+
+        #alameen-video-frame:fullscreen canvas,
+        #alameen-video-frame:-webkit-full-screen canvas {
+            position: absolute !important;
+            inset: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            z-index: 2147483647 !important;
+            pointer-events: none !important;
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
         }
     </style>
 
@@ -83,6 +136,9 @@
             controls 
             autoplay="false"
             preload="auto"
+            playsinline
+            webkit-playsinline
+            fullscreen-element="alameen-video-frame"
             disable-picture-in-picture="true"
             disablepictureinpicture="true"
             controlslist="nodownload noplaybackrate"
@@ -148,6 +204,8 @@
             disablePictureInPicture="true"
             oncontextmenu="return false;"
             preload="metadata"
+            playsinline
+            webkit-playsinline
             class="w-full h-full object-contain absolute inset-0 z-10"
         ></video>
 
@@ -157,9 +215,10 @@
         </div>
     @endif
 
-    {{-- Full-Frame Dynamic Moving Watermark Overlay (Strictly Opacity 1 Covering All Video Frame) --}}
+    {{-- Fullscreen / In-Player Video Watermark Canvas --}}
     <canvas 
         x-ref="watermarkCanvas" 
+        id="alameen-video-watermark-canvas"
         class="absolute inset-0 w-full h-full pointer-events-none z-30"
         style="opacity: 1;"
     ></canvas>
@@ -216,32 +275,38 @@
 
     </div>
 
-    {{-- Lesson Completed Success Banner Overlay --}}
+    {{-- End of Video Frame Container --}}
+    </div>
+
+    {{-- UNDER THE VIDEO: Lesson Completed Success Banner --}}
     <div 
         x-show="completionBannerActive" 
+        x-cloak
         x-transition:enter="transition ease-out duration-300"
-        x-transition:enter-start="opacity-0 translate-y-4"
+        x-transition:enter-start="opacity-0 -translate-y-2"
         x-transition:enter-end="opacity-100 translate-y-0"
-        class="absolute inset-x-3 bottom-3 z-40 p-4 rounded-2xl bg-slate-900/95 backdrop-blur-md border border-emerald-500/50 text-white shadow-2xl flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3"
+        class="w-full p-4 sm:p-5 rounded-2xl bg-white dark:bg-slate-900 border border-emerald-500/40 dark:border-emerald-500/50 text-slate-800 dark:text-white shadow-xs flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4"
         style="display: none;"
     >
-        <div class="flex items-center gap-3 min-w-0">
-            <div class="size-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 border border-emerald-500/40">
-                <svg class="size-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <div class="flex items-center gap-3.5 min-w-0">
+            <div class="size-11 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 border border-emerald-200 dark:border-emerald-800">
+                <svg class="size-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
             </div>
-            <div class="min-w-0">
-                <h4 class="font-['Cairo'] font-bold text-xs sm:text-sm text-emerald-300 truncate">{{ __('أحسنت! تم إكمال هذا الدرس بنجاح وتم فتح المحاضرة التالية.') }}</h4>
-                <p class="font-['Cairo'] text-[11px] text-slate-300 mt-0.5 truncate" x-text="completionMessage"></p>
+            <div class="min-w-0 text-start">
+                <h4 class="font-['Cairo'] font-bold text-xs sm:text-sm text-emerald-700 dark:text-emerald-300 truncate">
+                    {{ __('أحسنت! تم إكمال هذا الدرس بنجاح وتم فتح المحاضرة التالية.') }}
+                </h4>
+                <p class="font-['Cairo'] text-xs text-slate-600 dark:text-slate-300 mt-0.5 truncate" x-text="completionMessage"></p>
             </div>
         </div>
         <div class="flex items-center gap-2 shrink-0">
             <template x-if="nextVideoUrl">
                 <a 
                     :href="nextVideoUrl" 
-                    class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-['Cairo'] font-bold text-xs shadow-md transition-all flex items-center justify-center gap-1.5 w-full sm:w-auto"
+                    class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-['Cairo'] font-bold text-xs sm:text-sm shadow-sm hover:shadow transition-all flex items-center justify-center gap-2 w-full sm:w-auto"
                 >
                     <span>{{ __('الانتقال للمحاضرة التالية') }}</span>
-                    <svg class="size-3.5 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                    <svg class="size-4 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                 </a>
             </template>
         </div>
@@ -253,8 +318,10 @@
         return {
             student: student,
             videoId: videoId,
-            canvas: null,
-            ctx: null,
+            videoCanvas: null,
+            videoCtx: null,
+            pageCanvas: null,
+            pageCtx: null,
             animId: null,
             tokenRefreshTimer: null,
             shieldActive: false,
@@ -268,23 +335,42 @@
             gridShiftY: 0,
             colSpacing: 290,
             rowSpacing: 120,
-            // Dynamic Floating Forensic Capsule Tracker (Bounces continuously across all quadrants)
-            badgeX: 30,
-            badgeY: 40,
-            badgeVx: 0.8,
-            badgeVy: 0.55,
-            badgeW: 240,
-            badgeH: 26,
+            isFullscreen: false,
 
             initPlayer() {
                 this.$nextTick(() => {
-                    this.canvas = this.$refs.watermarkCanvas;
-                    if (this.canvas) {
-                        this.ctx = this.canvas.getContext('2d');
-                        this.resize();
-                        window.addEventListener('resize', () => this.resize());
-                        this.startLoop();
+                    this.videoCanvas = this.$refs.watermarkCanvas;
+                    if (this.videoCanvas) {
+                        this.videoCtx = this.videoCanvas.getContext('2d');
                     }
+
+                    this.pageCanvas = this.$refs.pageWatermarkCanvas || document.getElementById('alameen-page-watermark-canvas');
+                    if (this.pageCanvas) {
+                        this.pageCtx = this.pageCanvas.getContext('2d');
+                    }
+
+                    this.resize();
+                    window.addEventListener('resize', () => this.resize());
+
+                    // Listen to all browser fullscreen events
+                    const onFsChange = () => {
+                        this.isFullscreen = Boolean(
+                            document.fullscreenElement || 
+                            document.webkitFullscreenElement || 
+                            document.mozFullScreenElement || 
+                            document.msFullscreenElement
+                        );
+                        this.resize();
+                        setTimeout(() => this.resize(), 60);
+                        setTimeout(() => this.resize(), 160);
+                    };
+
+                    ['fullscreenchange', 'webkitfullscreenchange', 'mozfullscreenchange', 'MSFullscreenChange'].forEach(ev => {
+                        document.addEventListener(ev, onFsChange);
+                    });
+
+                    this.setupFullscreenBinding();
+                    this.startLoop();
 
                     this.setupTabVisibilityProtection();
                     this.setupAntiScreenRecording();
@@ -299,11 +385,61 @@
                 });
             },
 
+            setupFullscreenBinding() {
+                const container = document.getElementById('alameen-video-frame');
+                const playerEl = this.getPlayerElement();
+
+                if (!container || !playerEl) return;
+
+                if (playerEl.tagName && playerEl.tagName.toLowerCase() === 'mux-player') {
+                    playerEl.setAttribute('fullscreen-element', 'alameen-video-frame');
+                }
+
+                const origRequestFs = playerEl.requestFullscreen || playerEl.webkitRequestFullscreen;
+                const requestContainerFs = (options) => {
+                    if (container.requestFullscreen) {
+                        return container.requestFullscreen(options);
+                    } else if (container.webkitRequestFullscreen) {
+                        return container.webkitRequestFullscreen(options);
+                    }
+                    if (origRequestFs) return origRequestFs.call(playerEl, options);
+                };
+
+                playerEl.requestFullscreen = requestContainerFs;
+                if ('webkitRequestFullscreen' in playerEl) {
+                    playerEl.webkitRequestFullscreen = requestContainerFs;
+                }
+
+                if (typeof HTMLVideoElement !== 'undefined' && playerEl instanceof HTMLVideoElement) {
+                    playerEl.setAttribute('playsinline', '');
+                    playerEl.setAttribute('webkit-playsinline', '');
+                    playerEl.addEventListener('webkitbeginfullscreen', () => {
+                        this.isFullscreen = true;
+                        this.resize();
+                    });
+                    playerEl.addEventListener('webkitendfullscreen', () => {
+                        this.isFullscreen = false;
+                        this.resize();
+                    });
+                }
+            },
+
             resize() {
-                if (!this.canvas) return;
-                const rect = this.canvas.parentElement.getBoundingClientRect();
-                this.canvas.width = rect.width;
-                this.canvas.height = rect.height;
+                // 1. Page canvas covers full viewport
+                if (this.pageCanvas) {
+                    this.pageCanvas.width = window.innerWidth || document.documentElement.clientWidth;
+                    this.pageCanvas.height = window.innerHeight || document.documentElement.clientHeight;
+                }
+
+                // 2. Video canvas covers the video container or fullscreen dimensions
+                if (this.videoCanvas) {
+                    const container = this.videoCanvas.parentElement || document.getElementById('alameen-video-frame');
+                    if (container) {
+                        const rect = container.getBoundingClientRect();
+                        this.videoCanvas.width = (rect.width > 0 ? rect.width : window.innerWidth);
+                        this.videoCanvas.height = (rect.height > 0 ? rect.height : window.innerHeight);
+                    }
+                }
             },
 
             getPlayerElement() {
@@ -358,11 +494,17 @@
                 }
 
                 // 2. Immediately fill watermark canvas with solid pitch black
-                if (this.ctx && this.canvas) {
-                    this.ctx.save();
-                    this.ctx.fillStyle = '#000000';
-                    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-                    this.ctx.restore();
+                if (this.videoCtx && this.videoCanvas) {
+                    this.videoCtx.save();
+                    this.videoCtx.fillStyle = '#000000';
+                    this.videoCtx.fillRect(0, 0, this.videoCanvas.width, this.videoCanvas.height);
+                    this.videoCtx.restore();
+                }
+                if (this.pageCtx && this.pageCanvas) {
+                    this.pageCtx.save();
+                    this.pageCtx.fillStyle = '#000000';
+                    this.pageCtx.fillRect(0, 0, this.pageCanvas.width, this.pageCanvas.height);
+                    this.pageCtx.restore();
                 }
 
                 // 3. Trigger solid black shield overlay immediately with zero delay
@@ -523,21 +665,26 @@
             },
 
             setupCanvasIntegrity() {
-                if (!this.canvas) return;
-                try {
-                    const observer = new MutationObserver(() => {
-                        if (!this.canvas) return;
-                        const style = window.getComputedStyle(this.canvas);
-                        if (style.display === 'none' || style.visibility === 'hidden' || parseFloat(style.opacity || '1') < 0.5) {
-                            this.canvas.style.setProperty('display', 'block', 'important');
-                            this.canvas.style.setProperty('visibility', 'visible', 'important');
-                            this.canvas.style.setProperty('opacity', '1', 'important');
-                            const player = this.getPlayerElement();
-                            if (player && typeof player.pause === 'function') player.pause();
-                        }
-                    });
-                    observer.observe(this.canvas, { attributes: true, attributeFilter: ['style', 'class'] });
-                } catch (e) {}
+                const monitorCanvas = (el) => {
+                    if (!el) return;
+                    try {
+                        const observer = new MutationObserver(() => {
+                            if (!el) return;
+                            const style = window.getComputedStyle(el);
+                            if (style.display === 'none' || style.visibility === 'hidden' || parseFloat(style.opacity || '1') < 0.5) {
+                                el.style.setProperty('display', 'block', 'important');
+                                el.style.setProperty('visibility', 'visible', 'important');
+                                el.style.setProperty('opacity', '1', 'important');
+                                const player = this.getPlayerElement();
+                                if (player && typeof player.pause === 'function') player.pause();
+                            }
+                        });
+                        observer.observe(el, { attributes: true, attributeFilter: ['style', 'class'] });
+                    } catch (e) {}
+                };
+
+                monitorCanvas(this.videoCanvas);
+                monitorCanvas(this.pageCanvas);
             },
 
             nullifyClipboardAndAlert() {
@@ -707,23 +854,51 @@
             startLoop() {
                 let lastTime = 0;
 
-                const drawRoundedRect = (ctx, x, y, w, h, r) => {
-                    ctx.beginPath();
-                    ctx.moveTo(x + r, y);
-                    ctx.arcTo(x + w, y, x + w, y + h, r);
-                    ctx.arcTo(x + w, y + h, x, y + h, r);
-                    ctx.arcTo(x, y + h, x, y, r);
-                    ctx.arcTo(x, y, x + w, y, r);
-                    ctx.closePath();
+                const drawWatermarkGrid = (ctx, w, h, line1, line2, offsetX, offsetY) => {
+                    if (!ctx || w <= 0 || h <= 0) return;
+
+                    ctx.clearRect(0, 0, w, h);
+                    ctx.save();
+                    ctx.globalAlpha = 0.08;
+                    ctx.font = '600 12px "Noto Sans Arabic", "Cairo", Inter, system-ui, sans-serif';
+
+                    // Angled watermark across the entire frame (-22 degrees)
+                    const angle = -22 * Math.PI / 180;
+                    ctx.rotate(angle);
+
+                    // Cover full diagonal boundaries with generous margins
+                    const diag = Math.sqrt(w * w + h * h);
+                    const startX = -diag;
+                    const endX = diag * 2;
+                    const startY = -diag;
+                    const endY = diag * 2;
+
+                    for (let x = startX + offsetX; x < endX; x += this.colSpacing) {
+                        for (let y = startY + offsetY; y < endY; y += this.rowSpacing) {
+                            ctx.fillStyle = '#FFFFFF';
+                            ctx.shadowColor = 'rgba(0, 0, 0, 0.4)';
+                            ctx.shadowBlur = 2;
+                            ctx.fillText(line1, x, y);
+                            ctx.font = '500 10px monospace';
+                            ctx.fillText(line2, x, y + 14);
+                            ctx.font = '600 12px "Noto Sans Arabic", "Cairo", Inter, system-ui, sans-serif';
+                        }
+                    }
+
+                    ctx.restore();
                 };
 
                 const render = (time) => {
-                    if (!this.ctx || !this.canvas) return;
-
                     // If shield is active, enforce solid pitch black every single frame
                     if (this.shieldActive) {
-                        this.ctx.fillStyle = '#000000';
-                        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+                        if (this.videoCtx && this.videoCanvas) {
+                            this.videoCtx.fillStyle = '#000000';
+                            this.videoCtx.fillRect(0, 0, this.videoCanvas.width, this.videoCanvas.height);
+                        }
+                        if (this.pageCtx && this.pageCanvas) {
+                            this.pageCtx.fillStyle = '#000000';
+                            this.pageCtx.fillRect(0, 0, this.pageCanvas.width, this.pageCanvas.height);
+                        }
                         this.animId = requestAnimationFrame(render);
                         return;
                     }
@@ -735,8 +910,6 @@
                     // Factor normalized to 60 FPS baseline (elapsed * 60)
                     const speedFactor = elapsed * 60;
 
-                    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
                     // Formatted live timestamp
                     const now = new Date();
                     const dateStr = now.toLocaleDateString('{{ app()->getLocale() === 'en' ? 'en-US' : 'ar-EG' }}');
@@ -745,102 +918,33 @@
                     const line1 = `${this.student.name} • ${this.student.phone}`;
                     const line2 = `ID: ${this.student.id} • IP: ${this.student.ip} • ${dateStr} ${timeStr}`;
 
-                    // ==============================================================
-                    // LAYER 1: Full-Frame Security Matrix (Angled background grid)
-                    // ==============================================================
                     this.gridShiftX += 0.10 * speedFactor;
                     this.gridShiftY += 0.06 * speedFactor;
 
                     const offsetX = this.gridShiftX % this.colSpacing;
                     const offsetY = this.gridShiftY % this.rowSpacing;
 
-                    this.ctx.save();
-                    this.ctx.globalAlpha = 0.16;
-                    this.ctx.font = '700 12.5px "Noto Sans Arabic", "Cairo", Inter, system-ui, sans-serif';
+                    const isFs = Boolean(
+                        document.fullscreenElement || 
+                        document.webkitFullscreenElement || 
+                        document.mozFullScreenElement || 
+                        document.msFullscreenElement ||
+                        this.isFullscreen
+                    );
 
-                    // Angled watermark across the entire frame (-22 degrees)
-                    const angle = -22 * Math.PI / 180;
-                    this.ctx.rotate(angle);
-
-                    // Cover full diagonal boundaries with generous margins
-                    const diag = Math.sqrt(this.canvas.width * this.canvas.width + this.canvas.height * this.canvas.height);
-                    const startX = -diag;
-                    const endX = diag * 2;
-                    const startY = -diag;
-                    const endY = diag * 2;
-
-                    for (let x = startX + offsetX; x < endX; x += this.colSpacing) {
-                        for (let y = startY + offsetY; y < endY; y += this.rowSpacing) {
-                            this.ctx.fillStyle = '#FFFFFF';
-                            this.ctx.shadowColor = 'rgba(0, 0, 0, 0.85)';
-                            this.ctx.shadowBlur = 4;
-                            this.ctx.fillText(line1, x, y);
-                            this.ctx.font = '500 10.5px monospace';
-                            this.ctx.fillText(line2, x, y + 15);
-                            this.ctx.font = '700 12.5px "Noto Sans Arabic", "Cairo", Inter, system-ui, sans-serif';
-                        }
+                    // 1. Draw Page Watermark (covers the entire page in normal mode)
+                    if (this.pageCtx && this.pageCanvas) {
+                        drawWatermarkGrid(this.pageCtx, this.pageCanvas.width, this.pageCanvas.height, line1, line2, offsetX, offsetY);
                     }
 
-                    this.ctx.restore();
-
-                    // ==============================================================
-                    // LAYER 2: Dynamic Bouncing Forensic Capsule (Un-croppable tracker)
-                    // ==============================================================
-                    if (this.canvas.width > 280 && this.canvas.height > 100) {
-                        const pillW = Math.min(260, this.canvas.width - 40);
-                        const pillH = 26;
-
-                        // Position update
-                        this.badgeX += this.badgeVx * speedFactor;
-                        this.badgeY += this.badgeVy * speedFactor;
-
-                        // Bounce off edges with margins
-                        if (this.badgeX <= 12) {
-                            this.badgeX = 12;
-                            this.badgeVx = Math.abs(this.badgeVx);
-                        } else if (this.badgeX + pillW >= this.canvas.width - 12) {
-                            this.badgeX = this.canvas.width - pillW - 12;
-                            this.badgeVx = -Math.abs(this.badgeVx);
-                        }
-
-                        if (this.badgeY <= 12) {
-                            this.badgeY = 12;
-                            this.badgeVy = Math.abs(this.badgeVy);
-                        } else if (this.badgeY + pillH >= this.canvas.height - 12) {
-                            this.badgeY = this.canvas.height - pillH - 12;
-                            this.badgeVy = -Math.abs(this.badgeVy);
-                        }
-
-                        this.ctx.save();
-                        // Translucent dark pill capsule
-                        this.ctx.globalAlpha = 0.40;
-                        this.ctx.fillStyle = '#0F172A';
-                        this.ctx.shadowColor = 'rgba(0,0,0,0.5)';
-                        this.ctx.shadowBlur = 6;
-                        this.ctx.beginPath();
-                        const r = 7;
-                        if (typeof this.ctx.roundRect === 'function') {
-                            this.ctx.roundRect(this.badgeX, this.badgeY, pillW, pillH, r);
+                    // 2. Draw Video Watermark (covers fullscreen video, or in-player if page watermark absent)
+                    if (this.videoCtx && this.videoCanvas) {
+                        if (isFs || !this.pageCanvas) {
+                            drawWatermarkGrid(this.videoCtx, this.videoCanvas.width, this.videoCanvas.height, line1, line2, offsetX, offsetY);
                         } else {
-                            drawRoundedRect(this.ctx, this.badgeX, this.badgeY, pillW, pillH, r);
+                            // In normal mode, pageCanvas already covers the video cleanly
+                            this.videoCtx.clearRect(0, 0, this.videoCanvas.width, this.videoCanvas.height);
                         }
-                        this.ctx.fill();
-
-                        // Border
-                        this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
-                        this.ctx.lineWidth = 1;
-                        this.ctx.stroke();
-
-                        // Text inside pill (High contrast white with shadow)
-                        this.ctx.globalAlpha = 0.85;
-                        this.ctx.fillStyle = '#FFFFFF';
-                        this.ctx.shadowColor = '#000000';
-                        this.ctx.shadowBlur = 3;
-                        this.ctx.font = '700 11px "Cairo", Inter, sans-serif';
-                        this.ctx.textAlign = 'center';
-                        this.ctx.textBaseline = 'middle';
-                        this.ctx.fillText(line1, this.badgeX + (pillW / 2), this.badgeY + (pillH / 2));
-                        this.ctx.restore();
                     }
 
                     this.animId = requestAnimationFrame(render);

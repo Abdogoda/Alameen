@@ -37,22 +37,6 @@
             
             <!-- Video and Lesson Information Column -->
             <div class="flex flex-1 flex-col gap-5 items-start min-w-0 w-full order-1 lg:order-2 rtl:lg:order-2 ltr:lg:order-1">
-              
-                @if($currentProgress && $currentProgress->watched_seconds > 0)
-                    @php
-                        $pausedSec = $currentProgress->watched_seconds;
-                        $pausedFormatted = sprintf('%02d:%02d', floor($pausedSec / 60), $pausedSec % 60);
-                    @endphp
-                    <!-- Returning Learner State Banner -->
-                    <div class="bg-blue-50/80 dark:bg-slate-800/80 border border-blue-200/60 dark:border-slate-700/80 rounded-2xl p-4 flex gap-3 items-center w-full shrink-0 shadow-xs">
-                        <div class="size-8 rounded-xl bg-blue-100 dark:bg-blue-900/50 text-[#012383] dark:text-blue-300 flex items-center justify-center shrink-0">
-                            <svg class="size-4.5 text-[#012383] dark:text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
-                        </div>
-                        <p class="flex-1 font-['Cairo'] font-semibold text-xs sm:text-sm leading-relaxed text-[#012383] dark:text-blue-200 text-start">
-                            {{ __('أهلاً بعودتك بعد تسجيل الدخول. موضعك السابق محفوظ عند :pos.', ['pos' => $pausedFormatted]) }}
-                        </p>
-                    </div>
-                @endif
 
                 @if(!$canAccess)
                     <!-- Sequential Lock Card (Beautifully harmonious in Light & Dark Mode) -->

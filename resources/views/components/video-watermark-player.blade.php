@@ -64,7 +64,7 @@
         x-ref="pageWatermarkCanvas"
         id="alameen-page-watermark-canvas"
         class="fixed inset-0 pointer-events-none"
-        style="position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 40; pointer-events: none; opacity: 1;"
+        style="position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 99999; pointer-events: none !important; opacity: 1;"
     ></canvas>
 
     {{-- Video Frame Container --}}
@@ -356,6 +356,8 @@
             rowSpacing: 130,
             isFullscreen: false,
 
+            dpr: 1,
+
             initPlayer() {
                 this.$nextTick(() => {
                     this.videoCanvas = this.$refs.watermarkCanvas;
@@ -444,10 +446,17 @@
             },
 
             resize() {
+                const dpr = Math.max(1, Math.min(window.devicePixelRatio || 1, 3));
+                this.dpr = dpr;
+
                 // 1. Page canvas covers full viewport
                 if (this.pageCanvas) {
-                    this.pageCanvas.width = window.innerWidth || document.documentElement.clientWidth;
-                    this.pageCanvas.height = window.innerHeight || document.documentElement.clientHeight;
+                    const width = window.innerWidth || document.documentElement.clientWidth;
+                    const height = window.innerHeight || document.documentElement.clientHeight;
+                    this.pageCanvas.width = Math.round(width * dpr);
+                    this.pageCanvas.height = Math.round(height * dpr);
+                    this.pageCanvas.style.width = width + 'px';
+                    this.pageCanvas.style.height = height + 'px';
                 }
 
                 // 2. Video canvas covers the video container or fullscreen dimensions
@@ -455,8 +464,12 @@
                     const container = this.videoCanvas.parentElement || document.getElementById('alameen-video-frame');
                     if (container) {
                         const rect = container.getBoundingClientRect();
-                        this.videoCanvas.width = (rect.width > 0 ? rect.width : window.innerWidth);
-                        this.videoCanvas.height = (rect.height > 0 ? rect.height : window.innerHeight);
+                        const width = (rect.width > 0 ? rect.width : window.innerWidth);
+                        const height = (rect.height > 0 ? rect.height : window.innerHeight);
+                        this.videoCanvas.width = Math.round(width * dpr);
+                        this.videoCanvas.height = Math.round(height * dpr);
+                        this.videoCanvas.style.width = width + 'px';
+                        this.videoCanvas.style.height = height + 'px';
                     }
                 }
             },
@@ -879,35 +892,54 @@
                     ctx.clearRect(0, 0, w, h);
                     if (!lines || lines.length === 0) return;
 
+                    const dpr = this.dpr || 1;
+                    const logicalW = w / dpr;
+                    const logicalH = h / dpr;
+
                     ctx.save();
-                    // Increased overlay opacity for enhanced deterrence while maintaining video readability
-                    ctx.globalAlpha = 0.18;
+                    // High-DPI crisp vector scale to eliminate blurriness completely
+                    ctx.scale(dpr, dpr);
+
+                    // 40% opacity as requested
+                    ctx.globalAlpha = 0.40;
 
                     // Angled watermark across the entire frame (-22 degrees)
                     const angle = -22 * Math.PI / 180;
                     ctx.rotate(angle);
 
                     // Cover full diagonal boundaries with generous margins
-                    const diag = Math.sqrt(w * w + h * h);
+                    const diag = Math.sqrt(logicalW * logicalW + logicalH * logicalH);
                     const startX = -diag;
                     const endX = diag * 2;
                     const startY = -diag;
                     const endY = diag * 2;
 
+                    // Adaptive contrast: Crisp dark text with subtle white halo on light page, crisp white on dark video
+                    const isVideoCtx = (ctx === this.videoCtx);
+                    const isDark = isVideoCtx || document.documentElement.classList.contains('dark');
+                    const textColor = isDark ? '#FFFFFF' : '#0F172A';
+                    const shadowColor = isDark ? 'rgba(0, 0, 0, 0.90)' : 'rgba(255, 255, 255, 0.95)';
+
+                    ctx.textAlign = 'left';
+                    ctx.textBaseline = 'middle';
+
                     for (let x = startX + offsetX; x < endX; x += this.colSpacing) {
                         for (let y = startY + offsetY; y < endY; y += this.rowSpacing) {
-                            ctx.fillStyle = '#FFFFFF';
-                            ctx.shadowColor = 'rgba(0, 0, 0, 0.45)';
-                            ctx.shadowBlur = 2;
+                            ctx.fillStyle = textColor;
+                            ctx.shadowColor = shadowColor;
+                            ctx.shadowBlur = 1.5;
+
+                            const rx = Math.round(x);
+                            const ry = Math.round(y);
 
                             if (lines.length === 1) {
-                                ctx.font = '600 12px "Noto Sans Arabic", "Cairo", Inter, system-ui, sans-serif';
-                                ctx.fillText(lines[0], x, y);
+                                ctx.font = '700 13px "Noto Sans Arabic", "Cairo", Inter, system-ui, sans-serif';
+                                ctx.fillText(lines[0], rx, ry);
                             } else {
-                                ctx.font = '600 12px "Noto Sans Arabic", "Cairo", Inter, system-ui, sans-serif';
-                                ctx.fillText(lines[0], x, y);
-                                ctx.font = '500 11px Inter, Roboto, monospace, sans-serif';
-                                ctx.fillText(lines[1], x, y + 16);
+                                ctx.font = '700 13px "Noto Sans Arabic", "Cairo", Inter, system-ui, sans-serif';
+                                ctx.fillText(lines[0], rx, ry);
+                                ctx.font = '600 12px Inter, Roboto, monospace, sans-serif';
+                                ctx.fillText(lines[1], rx, ry + 18);
                             }
                         }
                     }

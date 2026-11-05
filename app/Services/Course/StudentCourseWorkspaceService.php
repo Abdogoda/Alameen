@@ -20,7 +20,9 @@ use App\Services\Video\BunnyStreamService;
 use App\Services\Video\MuxTokenService;
 use App\Services\Video\VideoProgressService;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
@@ -83,7 +85,7 @@ class StudentCourseWorkspaceService
         }
 
         if (! $course && $user instanceof User) {
-            $course = $user->courses()->wherePivot('status', 'active')->first();
+            $course = $this->getStudentEnrolledCourses($user)->first();
         }
 
         if (! $course) {
@@ -91,6 +93,49 @@ class StudentCourseWorkspaceService
         }
 
         return $course;
+    }
+
+    /**
+     * Get all courses accessible to a student (explicitly enrolled + published auto-enrolled courses).
+     *
+     * @return Collection<int, Course>
+     */
+    public function getStudentEnrolledCourses(User $user): Collection
+    {
+        /** @var Collection<int, Course> $enrolledCourses */
+        $enrolledCourses = $user->courses()
+            ->with(['publishedVideos'])
+            ->get();
+
+        if ($user->isSuspended()) {
+            return $enrolledCourses;
+        }
+
+        $enrolledCourseIds = $enrolledCourses->pluck('id')->all();
+
+        $autoCourses = Course::query()
+            ->where('is_published', true)
+            ->where('auto_enroll_students', true)
+            ->whereNotIn('id', $enrolledCourseIds)
+            ->with(['publishedVideos'])
+            ->orderBy('sort_order')
+            ->get();
+
+        foreach ($autoCourses as $autoCourse) {
+            $pivot = new Pivot([
+                'user_id' => $user->id,
+                'course_id' => $autoCourse->id,
+                'status' => 'active',
+                'access_starts_at' => $user->created_at ?? Carbon::now(),
+                'access_expires_at' => null,
+                'granted_by' => null,
+            ]);
+            $pivot->status = 'active';
+            $pivot->access_expires_at = null;
+            $autoCourse->setRelation('pivot', $pivot);
+        }
+
+        return $enrolledCourses->concat($autoCourses);
     }
 
     /**
@@ -104,9 +149,7 @@ class StudentCourseWorkspaceService
             $this->ensureCurriculumSeeded($defaultCourse);
         }
 
-        $enrolledCourses = $user ? $user->courses()
-            ->with(['publishedVideos'])
-            ->get() : collect();
+        $enrolledCourses = $user ? $this->getStudentEnrolledCourses($user) : collect();
 
         $allPublishedCourses = Course::query()
             ->where('is_published', true)
@@ -232,9 +275,7 @@ class StudentCourseWorkspaceService
     {
         $allCourses = $this->getPublicCatalog();
 
-        $enrolledCourses = $user->courses()
-            ->with(['publishedVideos'])
-            ->get();
+        $enrolledCourses = $this->getStudentEnrolledCourses($user);
 
         $certificates = $user->certificates()->get()->keyBy('course_id');
 

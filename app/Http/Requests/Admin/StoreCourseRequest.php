@@ -36,6 +36,7 @@ class StoreCourseRequest extends FormRequest
             'mux_asset_id' => ['nullable', 'string', 'max:255'],
             'promo_video_file' => ['nullable', 'file', 'mimetypes:video/mp4,video/quicktime,video/webm,video/x-matroska', 'max:512000'],
             'is_published' => ['nullable', 'boolean'],
+            'auto_enroll_students' => ['nullable', 'boolean'],
         ];
     }
 }

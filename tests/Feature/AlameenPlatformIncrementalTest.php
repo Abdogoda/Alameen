@@ -309,7 +309,16 @@ class AlameenPlatformIncrementalTest extends TestCase
         $watermark = $bunnyService->getWatermarkPayload($user, '192.168.1.100');
         $this->assertEquals('د. أحمد السعدني', $watermark['name']);
         $this->assertEquals('01012349999', $watermark['phone']);
+        $this->assertEquals($user->email, $watermark['email']);
+        $this->assertEquals($user->id, $watermark['id']);
         $this->assertEquals('192.168.1.100', $watermark['ip']);
+
+        // Verify that missing fields do not return fallback or static data
+        $userWithoutPhone = User::factory()->create([
+            'phone' => null,
+        ]);
+        $watermarkMissing = $bunnyService->getWatermarkPayload($userWithoutPhone);
+        $this->assertNull($watermarkMissing['phone']);
     }
 
     /**

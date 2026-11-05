@@ -79,7 +79,7 @@
                         :playback-token="$playbackToken ?? ''"
                         :storyboard-token="$storyboardToken ?? ''"
                         :thumbnail-token="$thumbnailToken ?? ''"
-                        :student="auth()->user()" 
+                        :student="$watermarkPayload ?? auth()->user()" 
                     />
                 @endif
 

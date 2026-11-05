@@ -29,6 +29,7 @@ use Illuminate\Support\Str;
  * @property string|null $mux_playback_id
  * @property string|null $mux_asset_id
  * @property bool $is_published
+ * @property bool $auto_enroll_students
  * @property int $sort_order
  * @property Pivot|null $pivot
  * @property Carbon|null $created_at
@@ -49,6 +50,7 @@ use Illuminate\Support\Str;
     'mux_playback_id',
     'mux_asset_id',
     'is_published',
+    'auto_enroll_students',
     'sort_order',
     'certificate_template',
     'certificate_custom_bg',
@@ -66,6 +68,7 @@ class Course extends Model
             'original_price' => 'decimal:2',
             'access_duration_days' => 'integer',
             'is_published' => 'boolean',
+            'auto_enroll_students' => 'boolean',
             'sort_order' => 'integer',
         ];
     }

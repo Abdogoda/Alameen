@@ -72,20 +72,24 @@ class BunnyStreamService
      * Prepare student watermark payload for the dynamic canvas overlay.
      *
      * @return array{
-     *     name: string,
-     *     phone: string,
-     *     user_id: int,
-     *     ip: string,
+     *     name: ?string,
+     *     email: ?string,
+     *     phone: ?string,
+     *     id: ?int,
+     *     user_id: ?int,
+     *     ip: ?string,
      *     timestamp: string
      * }
      */
     public function getWatermarkPayload(User $user, ?string $clientIp = null): array
     {
         return [
-            'name' => $user->name,
-            'phone' => $user->phone ?? __('غير مسجل'),
-            'user_id' => $user->id,
-            'ip' => $clientIp ?? request()->ip() ?? '127.0.0.1',
+            'name' => $user->name ?: null,
+            'email' => $user->email ?: null,
+            'phone' => $user->phone ?: null,
+            'id' => $user->id ?: null,
+            'user_id' => $user->id ?: null,
+            'ip' => $clientIp ?: request()->ip(),
             'timestamp' => now()->format('Y-m-d H:i:s'),
         ];
     }

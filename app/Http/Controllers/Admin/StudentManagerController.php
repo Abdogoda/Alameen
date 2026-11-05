@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\DeleteStudentRequest;
 use App\Http\Requests\Admin\EnrollStudentCourseRequest;
 use App\Http\Requests\Admin\IssueStudentCertificateRequest;
 use App\Http\Requests\Admin\UpdateStudentEnrollmentRequest;
@@ -331,11 +332,34 @@ class StudentManagerController extends Controller
     }
 
     /**
-     * Delete student account permanently.
+     * Delete student account permanently after verifying admin password.
      */
-    public function destroy(User $user): RedirectResponse
+    public function destroy(DeleteStudentRequest $request, User $user): RedirectResponse
     {
+        $request->validated();
         $name = $user->name;
+
+        // Revoke student Sanctum API tokens if existing
+        try {
+            if (method_exists($user, 'tokens')) {
+                $user->tokens()->delete();
+            }
+        } catch (\Throwable) {
+            // Ignore if tokens table is not applicable
+        }
+
+        // Delete student avatar file if stored locally
+        if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
+            Storage::disk('public')->delete($user->avatar);
+        }
+
+        // Delete any manual certificate files uploaded for this student
+        foreach ($user->certificates as $certificate) {
+            if ($certificate->file_path && Storage::disk('public')->exists($certificate->file_path)) {
+                Storage::disk('public')->delete($certificate->file_path);
+            }
+        }
+
         $user->delete();
 
         return redirect()->route('admin.students.index')->with('success', __('تم حذف حساب الطالب (:name) وجميع بياناته بنجاح.', ['name' => $name]));

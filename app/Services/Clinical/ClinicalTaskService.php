@@ -82,12 +82,13 @@ class ClinicalTaskService
      */
     public function getStudentGradesOverview(User $user, ?int $courseId = null): array
     {
-        $enrolledCoursesQuery = $user->courses()->wherePivot('status', 'active');
+        $accessibleCourses = $user->getAccessibleCourses();
         if ($courseId) {
-            $enrolledCoursesQuery->where('courses.id', $courseId);
+            $enrolledCourses = $accessibleCourses->where('id', $courseId);
+        } else {
+            $enrolledCourses = $accessibleCourses;
         }
 
-        $enrolledCourses = $enrolledCoursesQuery->get();
         if ($enrolledCourses->isEmpty()) {
             $fallbackCourse = $courseId ? Course::find($courseId) : Course::where('is_published', true)->orderBy('sort_order')->first();
             $enrolledCourses = $fallbackCourse ? collect([$fallbackCourse]) : collect();

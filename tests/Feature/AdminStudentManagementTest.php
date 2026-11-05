@@ -278,4 +278,76 @@ class AdminStudentManagementTest extends TestCase
         $certResponse->assertOk();
         $certResponse->assertSee($course->title_ar);
     }
+
+    public function test_delete_student_modal_triggers_rendered_on_index_and_show_pages(): void
+    {
+        $student = User::factory()->create([
+            'name' => 'طالب للاختبار الحذف',
+            'email' => 'to-delete@example.com',
+        ]);
+
+        // Index page should show delete button and delete modal
+        $indexResponse = $this->actingAs($this->admin, 'admin')
+            ->get(route('admin.students.index'));
+        $indexResponse->assertOk();
+        $indexResponse->assertSee('modal-delete-student');
+        $indexResponse->assertSee('openDeleteStudentModal');
+        $indexResponse->assertSee('كلمة مرور المشرف لتأكيد الحذف');
+
+        // Show page should also show delete button and delete modal
+        $showResponse = $this->actingAs($this->admin, 'admin')
+            ->get(route('admin.students.show', $student));
+        $showResponse->assertOk();
+        $showResponse->assertSee('modal-delete-student');
+        $showResponse->assertSee('حذف حساب الطالب نهائياً');
+        $showResponse->assertSee('كلمة مرور المشرف لتأكيد الحذف');
+    }
+
+    public function test_admin_cannot_delete_student_without_admin_password(): void
+    {
+        $student = User::factory()->create();
+
+        $response = $this->actingAs($this->admin, 'admin')
+            ->delete(route('admin.students.destroy', $student), [
+                'admin_password' => '',
+            ]);
+
+        $response->assertSessionHasErrors('admin_password');
+        $this->assertDatabaseHas('users', ['id' => $student->id]);
+    }
+
+    public function test_admin_cannot_delete_student_with_invalid_admin_password(): void
+    {
+        $this->admin->password = Hash::make('real_admin_password');
+        $this->admin->save();
+
+        $student = User::factory()->create();
+
+        $response = $this->actingAs($this->admin, 'admin')
+            ->delete(route('admin.students.destroy', $student), [
+                'admin_password' => 'wrong_password_xyz',
+            ]);
+
+        $response->assertSessionHasErrors('admin_password');
+        $this->assertDatabaseHas('users', ['id' => $student->id]);
+    }
+
+    public function test_admin_can_delete_student_with_valid_admin_password(): void
+    {
+        $this->admin->password = Hash::make('super_secure_admin_pass');
+        $this->admin->save();
+
+        $student = User::factory()->create([
+            'name' => 'محمد سمير الحذفي',
+        ]);
+
+        $response = $this->actingAs($this->admin, 'admin')
+            ->delete(route('admin.students.destroy', $student), [
+                'admin_password' => 'super_secure_admin_pass',
+            ]);
+
+        $response->assertRedirect(route('admin.students.index'));
+        $response->assertSessionHas('success');
+        $this->assertDatabaseMissing('users', ['id' => $student->id]);
+    }
 }

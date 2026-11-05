@@ -92,6 +92,7 @@ class CourseController extends Controller
             : (! empty($validated['title_en']) ? Str::slug($validated['title_en']) : 'course-'.strtolower(Str::random(8)));
 
         $validated['is_published'] = $request->boolean('is_published', true);
+        $validated['auto_enroll_students'] = $request->boolean('auto_enroll_students', false);
 
         // Handle thumbnail upload
         if ($request->hasFile('thumbnail_file')) {
@@ -143,6 +144,7 @@ class CourseController extends Controller
 
         $validated['slug'] = Str::slug($validated['slug']);
         $validated['is_published'] = $request->boolean('is_published', true);
+        $validated['auto_enroll_students'] = $request->boolean('auto_enroll_students', false);
 
         // Handle thumbnail upload
         if ($request->hasFile('thumbnail_file')) {
@@ -208,6 +210,21 @@ class CourseController extends Controller
     }
 
     /**
+     * Toggle auto-enroll status for all students.
+     */
+    public function toggleAutoEnroll(Course $course): RedirectResponse
+    {
+        $course->auto_enroll_students = ! $course->auto_enroll_students;
+        $course->save();
+
+        $message = $course->auto_enroll_students
+            ? __('تم تفعيل إتاحة الكورس تلقائياً لجميع الطلاب بنجاح.')
+            : __('تم إلغاء الإتاحة التلقائية؛ أصبح الكورس يتطلب اشتراكاً ورفع إيصال للدخول.');
+
+        return back()->with('success', $message);
+    }
+
+    /**
      * Delete a course and all associated MUX assets.
      */
     public function destroy(Course $course): RedirectResponse
@@ -239,6 +256,7 @@ class CourseController extends Controller
         $validated['course_id'] = $course->id;
         $validated['sort_order'] = $validated['sort_order'] ?? (($course->levels()->max('sort_order') ?? 0) + 1);
         $validated['is_published'] = $request->boolean('is_published', true);
+        $validated['auto_enroll_students'] = $request->boolean('auto_enroll_students', false);
 
         $course->levels()->create($validated);
 

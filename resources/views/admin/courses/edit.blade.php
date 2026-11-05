@@ -48,17 +48,27 @@
 
         {{-- Card 1: Main Course Metadata --}}
         <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-2xl sm:rounded-3xl p-5 sm:p-7 shadow-xs space-y-5">
-            <div class="border-b border-[#DEE8F7]/80 dark:border-slate-800 pb-3 flex items-center justify-between">
+            <div class="border-b border-[#DEE8F7]/80 dark:border-slate-800 pb-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
                     <h3 class="font-bold text-base sm:text-lg text-[#012383] dark:text-white">{{ __('البيانات الأساسية للكورس') }}</h3>
-                    <p class="text-xs text-slate-400">{{ __('العناوين، الاسم المعرّف (Slug)، ونبذة المنهج') }}</p>
+                    <p class="text-xs text-slate-400">{{ __('العناوين، الاسم المعرّف (Slug)، وخيارات الإتاحة للطلاب') }}</p>
                 </div>
-                <div class="flex items-center gap-2">
-                    <label class="text-xs font-bold text-slate-600 dark:text-slate-300">{{ __('حالة النشر:') }}</label>
-                    <select name="is_published" class="h-9 px-3 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-bold bg-slate-50 dark:bg-slate-800 text-[#012383] dark:text-white outline-none">
-                        <option value="1" {{ $course->is_published ? 'selected' : '' }}>{{ __('منشور ونشط للطلاب') }}</option>
-                        <option value="0" {{ ! $course->is_published ? 'selected' : '' }}>{{ __('مسودة غير منشورة') }}</option>
-                    </select>
+                <div class="flex flex-wrap items-center gap-3">
+                    <div class="flex items-center gap-2">
+                        <label class="text-xs font-bold text-slate-600 dark:text-slate-300">{{ __('حالة النشر:') }}</label>
+                        <select name="is_published" class="h-9 px-3 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-bold bg-slate-50 dark:bg-slate-800 text-[#012383] dark:text-white outline-none">
+                            <option value="1" {{ $course->is_published ? 'selected' : '' }}>{{ __('منشور ونشط للطلاب') }}</option>
+                            <option value="0" {{ ! $course->is_published ? 'selected' : '' }}>{{ __('مسودة غير منشورة') }}</option>
+                        </select>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <label class="text-xs font-bold text-slate-600 dark:text-slate-300">{{ __('الإتاحة التلقائية للطلاب:') }}</label>
+                        <select name="auto_enroll_students" class="h-9 px-3 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-bold {{ $course->auto_enroll_students ? 'bg-blue-50 dark:bg-blue-950/60 text-[#012383] dark:text-blue-300 border-blue-300' : 'bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200' }} outline-none">
+                            <option value="1" {{ old('auto_enroll_students', $course->auto_enroll_students) ? 'selected' : '' }}>{{ __('مفعّل تلقائياً لجميع الطلاب') }}</option>
+                            <option value="0" {{ ! old('auto_enroll_students', $course->auto_enroll_students) ? 'selected' : '' }}>{{ __('غير مفعّل (يتطلب اشتراك وإيصال)') }}</option>
+                        </select>
+                    </div>
                 </div>
             </div>
 
@@ -143,6 +153,26 @@
                         value="{{ old('access_duration_days', $course->access_duration_days) }}" 
                         class="w-full h-11 px-4 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-sm font-bold text-slate-700 dark:text-slate-200 outline-none focus:border-[#0B2A8F] bg-slate-50/50 dark:bg-slate-800/50" 
                     />
+                </div>
+            </div>
+
+            {{-- Auto Enroll Info Banner --}}
+            <div class="p-4 rounded-2xl {{ $course->auto_enroll_students ? 'bg-blue-50/70 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900/50' : 'bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700' }} flex items-start gap-3">
+                <div class="size-9 rounded-xl {{ $course->auto_enroll_students ? 'bg-blue-100 dark:bg-blue-900/50 text-[#012383] dark:text-blue-300' : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-400' }} flex items-center justify-center shrink-0">
+                    <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+                <div class="space-y-1">
+                    <div class="flex items-center gap-2">
+                        <h4 class="text-xs font-bold {{ $course->auto_enroll_students ? 'text-[#012383] dark:text-blue-300' : 'text-slate-700 dark:text-slate-300' }}">
+                            {{ $course->auto_enroll_students ? __('هذا الكورس متاح ومفعّل تلقائياً لجميع الطلاب المعتمدين') : __('هذا الكورس يتطلب اشتراكاً من الطالب ورفع إيصال سداد واعتماده') }}
+                        </h4>
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold {{ $course->auto_enroll_students ? 'bg-blue-200/70 text-[#012383] dark:bg-blue-900 dark:text-blue-200' : 'bg-slate-200 text-slate-600 dark:bg-slate-700 dark:text-slate-300' }}">
+                            {{ $course->auto_enroll_students ? __('وصول تلقائي مفتوح') : __('سداد مسبق') }}
+                        </span>
+                    </div>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+                        {{ __('عند تفعيل خيار الإتاحة التلقائية (من أعلى الصفحة أو من قائمة الكورسات)، يظهر الكورس فوراً في مكتبة دورات أي طالب يتم تفعيل حسابه، ويتاح له فتح المحاضرات والمهام التدريبية مباشرة بدون رفع إيصال دفع.') }}
+                    </p>
                 </div>
             </div>
         </div>

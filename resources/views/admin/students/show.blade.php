@@ -91,6 +91,17 @@
                     </button>
                 @endif
             </form>
+
+            {{-- Delete Student Trigger --}}
+            <button 
+                type="button" 
+                onclick="openDeleteStudentModal('{{ $user->id }}', @js($user->name), @js($user->email), '{{ route('admin.students.destroy', $user) }}')" 
+                class="h-9 sm:h-10 px-3.5 sm:px-4 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 dark:bg-rose-950/40 dark:text-rose-300 dark:border-rose-800 dark:hover:bg-rose-900/60 font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer whitespace-nowrap"
+                title="{{ __('حذف حساب الطالب نهائياً مع تأكيد كلمة مرور المشرف') }}"
+            >
+                <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                <span>{{ __('حذف الحساب') }}</span>
+            </button>
         </div>
     </x-slot:actions>
 
@@ -997,6 +1008,32 @@
                 </div>
             @endif
         </div>
+
+        {{-- Danger Zone: Permanent Account Deletion --}}
+        <div class="rounded-3xl border border-rose-200 dark:border-rose-950/80 bg-rose-50/50 dark:bg-rose-950/20 p-5 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div class="flex items-start gap-3.5">
+                <div class="size-11 rounded-2xl bg-rose-100 dark:bg-rose-900/40 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0 shadow-xs border border-rose-200 dark:border-rose-900">
+                    <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                </div>
+                <div class="flex flex-col text-start">
+                    <h3 class="font-bold text-base text-rose-900 dark:text-rose-300">
+                        {{ __('منطقة الخطر: حذف حساب الطالب نهائياً') }}
+                    </h3>
+                    <p class="text-xs text-rose-700/80 dark:text-rose-400/80 mt-0.5 max-w-2xl leading-relaxed">
+                        {{ __('سيؤدي حذف الحساب إلى إزالة جميع بيانات الطالب بما في ذلك التسجيلات والشهادات والمهام نهائياً وبشكل لا يمكن التراجع عنه. يتطلب تأكيد العملية إدخال كلمة مرور المشرف.') }}
+                    </p>
+                </div>
+            </div>
+
+            <button
+                type="button"
+                onclick="openDeleteStudentModal('{{ $user->id }}', @js($user->name), @js($user->email), '{{ route('admin.students.destroy', $user) }}')"
+                class="h-11 px-5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-xs transition-colors shrink-0 flex items-center gap-2 cursor-pointer"
+            >
+                <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                <span>{{ __('حذف الحساب نهائياً') }}</span>
+            </button>
+        </div>
     </div>
 
     {{-- MODALS CONTAINER --}}
@@ -1348,6 +1385,9 @@
                 </div>
             </div>
         </div>
+
+        {{-- 9. DELETE STUDENT MODAL (CONFIRMATION WITH ADMIN PASSWORD) --}}
+        <x-admin::delete-student-modal :user="$user" />
     </x-slot:modals>
 
     <script>

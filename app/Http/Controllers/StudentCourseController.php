@@ -140,7 +140,7 @@ class StudentCourseController extends Controller
             $course = Course::query()->where('slug', $course)->orWhere('id', $course)->firstOrFail();
         }
 
-        $course = $course ?? $user->courses()->wherePivot('status', 'active')->first() ?? Course::firstOrFail();
+        $course = $course ?? $this->workspaceService->getStudentEnrolledCourses($user)->first() ?? Course::firstOrFail();
 
         $videoModel = $this->workspaceService->resolveLessonVideo($user, $course, $video);
 

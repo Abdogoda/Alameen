@@ -106,6 +106,18 @@
                                     </span>
                                 @endif
                                 <span class="text-xs text-slate-400">•</span>
+                                @if($course->auto_enroll_students)
+                                    <span class="px-2.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/40 text-[#012383] dark:text-blue-300 text-xs font-bold font-['Cairo'] flex items-center gap-1 border border-blue-200/60 dark:border-blue-900/40">
+                                        <svg class="size-3.5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                                        <span>{{ __('متاح تلقائياً للطلاب') }}</span>
+                                    </span>
+                                @else
+                                    <span class="px-2.5 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 text-xs font-bold font-['Cairo'] flex items-center gap-1 border border-amber-200/60 dark:border-amber-900/40">
+                                        <svg class="size-3 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                                        <span>{{ __('يتطلب اشتراك وإيصال') }}</span>
+                                    </span>
+                                @endif
+                                <span class="text-xs text-slate-400">•</span>
                                 <span class="text-xs text-slate-500 dark:text-slate-400 font-semibold">{{ __('صلاحية :days يوم', ['days' => $course->access_duration_days]) }}</span>
                             </div>
 
@@ -169,6 +181,23 @@
                                 <svg class="size-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
                                 <span>{{ __('تعديل بيانات الكورس') }}</span>
                             </a>
+
+                            <form action="{{ route('admin.courses.toggle-auto-enroll', $course) }}" method="POST" class="w-full sm:w-auto">
+                                @csrf
+                                <button 
+                                    type="submit" 
+                                    class="w-full sm:w-auto h-9.5 px-3 rounded-xl border text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap {{ $course->auto_enroll_students ? 'bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800' : 'bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/40 text-[#012383] dark:text-blue-300 border-blue-200 dark:border-blue-800' }}"
+                                    title="{{ $course->auto_enroll_students ? __('انقر لإلغاء الإتاحة التلقائية واشتراط الإيصال') : __('انقر للإتاحة التلقائية لجميع الطلاب بدون إيصال') }}"
+                                >
+                                    @if($course->auto_enroll_students)
+                                        <svg class="size-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                                        <span>{{ __('إلغاء الإتاحة التلقائية') }}</span>
+                                    @else
+                                        <svg class="size-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                        <span>{{ __('إتاحة لجميع الطلاب') }}</span>
+                                    @endif
+                                </button>
+                            </form>
                         </div>
 
                         {{-- Quick Delete Course --}}
@@ -283,6 +312,25 @@
                     <div>
                         <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">{{ __('صورة غلاف الكورس:') }}</label>
                         <input type="file" name="thumbnail_file" accept="image/*" class="w-full text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-[#EAF1FB] file:text-[#012383] hover:file:bg-[#DEE8F7] cursor-pointer" />
+                    </div>
+
+                    {{-- Auto-Enroll Setting --}}
+                    <div class="p-3.5 rounded-2xl bg-blue-50/70 dark:bg-slate-800/80 border border-blue-200/80 dark:border-blue-900/50 flex items-start gap-3">
+                        <input 
+                            type="checkbox" 
+                            name="auto_enroll_students" 
+                            id="create_auto_enroll_students" 
+                            value="1" 
+                            class="size-4.5 mt-0.5 rounded text-[#012383] focus:ring-[#0B2A8F] cursor-pointer" 
+                        />
+                        <label for="create_auto_enroll_students" class="text-xs cursor-pointer select-none">
+                            <span class="font-extrabold text-[#012383] dark:text-blue-300 block mb-0.5">
+                                {{ __('إتاحة الكورس تلقائياً لجميع الطلاب فور تفعيل حساباتهم') }}
+                            </span>
+                            <span class="text-slate-500 dark:text-slate-400 leading-relaxed block text-[11px]">
+                                {{ __('عند التفعيل، سيظهر هذا الكورس ويتاح كاملاً لجميع الطلاب دون الحاجة لطلب اشتراك يدوي أو رفع إيصال دفع واعتماده.') }}
+                            </span>
+                        </label>
                     </div>
 
                     <div class="flex flex-col-reverse sm:flex-row items-center justify-end gap-2 pt-2 border-t border-[#DEE8F7] dark:border-slate-800">

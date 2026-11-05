@@ -45,7 +45,7 @@ class SupportTicketController extends Controller
     {
         /** @var User $user */
         $user = $request->user();
-        $enrolledCourses = $user->courses()->get();
+        $enrolledCourses = $user->getAccessibleCourses();
 
         return view('web.support.create', compact('enrolledCourses'));
     }

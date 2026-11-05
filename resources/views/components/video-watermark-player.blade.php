@@ -9,11 +9,30 @@
 ])
 
 @php
+    $currentUser = $student ?? auth()->user();
+
+    $extractField = function($u, array $keys) {
+        if (is_array($u)) {
+            foreach ($keys as $k) {
+                if (isset($u[$k]) && $u[$k] !== '' && $u[$k] !== null) {
+                    return (string) $u[$k];
+                }
+            }
+        } elseif (is_object($u)) {
+            foreach ($keys as $k) {
+                if (isset($u->{$k}) && $u->{$k} !== '' && $u->{$k} !== null) {
+                    return (string) $u->{$k};
+                }
+            }
+        }
+        return null;
+    };
+
     $studentData = [
-        'name' => $student?->name ?? auth()->user()?->name ?? __('طالب الأمين'),
-        'phone' => $student?->phone ?? auth()->user()?->phone ?? '01000000000',
-        'id' => $student?->id ?? auth()->id() ?? 'STD-001',
-        'ip' => request()->ip() ?? '127.0.0.1',
+        'name' => $extractField($currentUser, ['name']),
+        'email' => $extractField($currentUser, ['email']),
+        'phone' => $extractField($currentUser, ['phone']),
+        'id' => $extractField($currentUser, ['id', 'user_id']),
     ];
 
     $muxPlaybackId = $video?->mux_playback_id;
@@ -333,8 +352,8 @@
             nextVideoUrl: null,
             gridShiftX: 0,
             gridShiftY: 0,
-            colSpacing: 290,
-            rowSpacing: 120,
+            colSpacing: 340,
+            rowSpacing: 130,
             isFullscreen: false,
 
             initPlayer() {
@@ -854,13 +873,15 @@
             startLoop() {
                 let lastTime = 0;
 
-                const drawWatermarkGrid = (ctx, w, h, line1, line2, offsetX, offsetY) => {
+                const drawWatermarkGrid = (ctx, w, h, lines, offsetX, offsetY) => {
                     if (!ctx || w <= 0 || h <= 0) return;
 
                     ctx.clearRect(0, 0, w, h);
+                    if (!lines || lines.length === 0) return;
+
                     ctx.save();
-                    ctx.globalAlpha = 0.08;
-                    ctx.font = '600 12px "Noto Sans Arabic", "Cairo", Inter, system-ui, sans-serif';
+                    // Increased overlay opacity for enhanced deterrence while maintaining video readability
+                    ctx.globalAlpha = 0.18;
 
                     // Angled watermark across the entire frame (-22 degrees)
                     const angle = -22 * Math.PI / 180;
@@ -876,12 +897,18 @@
                     for (let x = startX + offsetX; x < endX; x += this.colSpacing) {
                         for (let y = startY + offsetY; y < endY; y += this.rowSpacing) {
                             ctx.fillStyle = '#FFFFFF';
-                            ctx.shadowColor = 'rgba(0, 0, 0, 0.4)';
+                            ctx.shadowColor = 'rgba(0, 0, 0, 0.45)';
                             ctx.shadowBlur = 2;
-                            ctx.fillText(line1, x, y);
-                            ctx.font = '500 10px monospace';
-                            ctx.fillText(line2, x, y + 14);
-                            ctx.font = '600 12px "Noto Sans Arabic", "Cairo", Inter, system-ui, sans-serif';
+
+                            if (lines.length === 1) {
+                                ctx.font = '600 12px "Noto Sans Arabic", "Cairo", Inter, system-ui, sans-serif';
+                                ctx.fillText(lines[0], x, y);
+                            } else {
+                                ctx.font = '600 12px "Noto Sans Arabic", "Cairo", Inter, system-ui, sans-serif';
+                                ctx.fillText(lines[0], x, y);
+                                ctx.font = '500 11px Inter, Roboto, monospace, sans-serif';
+                                ctx.fillText(lines[1], x, y + 16);
+                            }
                         }
                     }
 
@@ -910,13 +937,36 @@
                     // Factor normalized to 60 FPS baseline (elapsed * 60)
                     const speedFactor = elapsed * 60;
 
-                    // Formatted live timestamp
-                    const now = new Date();
-                    const dateStr = now.toLocaleDateString('{{ app()->getLocale() === 'en' ? 'en-US' : 'ar-EG' }}');
-                    const timeStr = now.toLocaleTimeString('{{ app()->getLocale() === 'en' ? 'en-US' : 'ar-EG' }}');
+                    // Build user info: name, email, phone, id (strictly omit missing fields without fallbacks)
+                    const name = (this.student?.name && String(this.student.name).trim()) ? String(this.student.name).trim() : null;
+                    const email = (this.student?.email && String(this.student.email).trim()) ? String(this.student.email).trim() : null;
+                    const phone = (this.student?.phone && String(this.student.phone).trim()) ? String(this.student.phone).trim() : null;
+                    const id = (this.student?.id !== undefined && this.student?.id !== null && String(this.student.id).trim() !== '') 
+                        ? `ID: ${String(this.student.id).trim()}` 
+                        : null;
 
-                    const line1 = `${this.student.name} • ${this.student.phone}`;
-                    const line2 = `ID: ${this.student.id} • IP: ${this.student.ip} • ${dateStr} ${timeStr}`;
+                    const line1Parts = [];
+                    if (name) line1Parts.push(name);
+                    if (phone) line1Parts.push(phone);
+
+                    const line2Parts = [];
+                    if (email) line2Parts.push(email);
+                    if (id) line2Parts.push(id);
+
+                    const lines = [];
+                    if (line1Parts.length > 0 && line2Parts.length > 0) {
+                        lines.push(line1Parts.join(' • '));
+                        lines.push(line2Parts.join(' • '));
+                    } else if (line1Parts.length > 0) {
+                        lines.push(line1Parts.join(' • '));
+                    } else if (line2Parts.length > 0) {
+                        if (line2Parts.length === 2 && !name && !phone) {
+                            lines.push(line2Parts[0]);
+                            lines.push(line2Parts[1]);
+                        } else {
+                            lines.push(line2Parts.join(' • '));
+                        }
+                    }
 
                     this.gridShiftX += 0.10 * speedFactor;
                     this.gridShiftY += 0.06 * speedFactor;
@@ -934,13 +984,13 @@
 
                     // 1. Draw Page Watermark (covers the entire page in normal mode)
                     if (this.pageCtx && this.pageCanvas) {
-                        drawWatermarkGrid(this.pageCtx, this.pageCanvas.width, this.pageCanvas.height, line1, line2, offsetX, offsetY);
+                        drawWatermarkGrid(this.pageCtx, this.pageCanvas.width, this.pageCanvas.height, lines, offsetX, offsetY);
                     }
 
                     // 2. Draw Video Watermark (covers fullscreen video, or in-player if page watermark absent)
                     if (this.videoCtx && this.videoCanvas) {
                         if (isFs || !this.pageCanvas) {
-                            drawWatermarkGrid(this.videoCtx, this.videoCanvas.width, this.videoCanvas.height, line1, line2, offsetX, offsetY);
+                            drawWatermarkGrid(this.videoCtx, this.videoCanvas.width, this.videoCanvas.height, lines, offsetX, offsetY);
                         } else {
                             // In normal mode, pageCanvas already covers the video cleanly
                             this.videoCtx.clearRect(0, 0, this.videoCanvas.width, this.videoCanvas.height);

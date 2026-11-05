@@ -62,6 +62,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::put('courses/{course}', [CourseController::class, 'update'])->name('courses.update');
         Route::delete('courses/{course}', [CourseController::class, 'destroy'])->name('courses.destroy');
         Route::post('courses/{course}/price', [CourseController::class, 'updatePrice'])->name('courses.price.update');
+        Route::post('courses/{course}/toggle-auto-enroll', [CourseController::class, 'toggleAutoEnroll'])->name('courses.toggle-auto-enroll');
 
         // Course Promo Video Chunked & Direct Upload
         Route::post('courses/{course}/promo/upload-chunk', [CourseController::class, 'uploadPromoChunk'])->name('courses.promo.chunk.upload');

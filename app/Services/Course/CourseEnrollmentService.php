@@ -69,6 +69,11 @@ class CourseEnrollmentService
             return false;
         }
 
+        // Auto-enrolled courses are universally accessible to all active students
+        if ($course->auto_enroll_students && $course->is_published && $user->isActive()) {
+            return true;
+        }
+
         $subscription = DB::table('course_user')
             ->where('user_id', $user->id)
             ->where('course_id', $course->id)
@@ -96,12 +101,20 @@ class CourseEnrollmentService
             ->first();
 
         if (! $subscription || ! $subscription->access_expires_at) {
+            if ($course->auto_enroll_students && $course->is_published && $user->isActive()) {
+                return (int) ($course->access_duration_days ?: 365);
+            }
+
             return 0;
         }
 
         $expiresAt = Carbon::parse($subscription->access_expires_at);
 
         if ($expiresAt->isPast()) {
+            if ($course->auto_enroll_students && $course->is_published && $user->isActive()) {
+                return (int) ($course->access_duration_days ?: 365);
+            }
+
             return 0;
         }
 

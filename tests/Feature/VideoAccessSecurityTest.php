@@ -258,6 +258,11 @@ class VideoAccessSecurityTest extends TestCase
         $response->assertSee('nodownload', false);
         // Check that anti-screen recording shield is present
         $response->assertSee('shieldActive', false);
+        // Check user info is present in watermark player data and fallbacks are absent
+        $response->assertSee(e($user->email), false);
+        $response->assertDontSee('STD-001', false);
+        $response->assertDontSee('طالب الأمين', false);
+        $response->assertDontSee('01000000000', false);
         // Ensure no direct download link or raw stream link is presented as a downloadable anchor
         $response->assertDontSee('download="'.$secureVideo->slug.'"', false);
     }

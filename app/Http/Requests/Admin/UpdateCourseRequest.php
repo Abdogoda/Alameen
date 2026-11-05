@@ -42,6 +42,7 @@ class UpdateCourseRequest extends FormRequest
             'mux_asset_id' => ['nullable', 'string', 'max:255'],
             'promo_video_file' => ['nullable', 'file', 'mimetypes:video/mp4,video/quicktime,video/webm,video/x-matroska', 'max:512000'],
             'is_published' => ['nullable', 'boolean'],
+            'auto_enroll_students' => ['nullable', 'boolean'],
             'certificate_template' => ['nullable', 'string', 'in:default,royal_gold,clinical_emerald,modern_navy,custom'],
             'certificate_custom_bg_file' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:10240'],
             'certificate_signatory_name' => ['nullable', 'string', 'max:255'],

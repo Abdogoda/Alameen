@@ -136,6 +136,47 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
     }
 
     /**
+     * Get all courses accessible to this student (explicitly enrolled + published auto-enrolled courses).
+     *
+     * @return \Illuminate\Database\Eloquent\Collection<int, Course>
+     */
+    public function getAccessibleCourses(): \Illuminate\Database\Eloquent\Collection
+    {
+        /** @var \Illuminate\Database\Eloquent\Collection<int, Course> $enrolled */
+        $enrolled = $this->courses()->with(['publishedVideos'])->get();
+
+        if ($this->isSuspended()) {
+            return $enrolled;
+        }
+
+        $enrolledIds = $enrolled->pluck('id')->all();
+
+        $autoCourses = Course::query()
+            ->where('is_published', true)
+            ->where('auto_enroll_students', true)
+            ->whereNotIn('id', $enrolledIds)
+            ->with(['publishedVideos'])
+            ->orderBy('sort_order')
+            ->get();
+
+        foreach ($autoCourses as $autoCourse) {
+            $pivot = new \Illuminate\Database\Eloquent\Relations\Pivot([
+                'user_id' => $this->id,
+                'course_id' => $autoCourse->id,
+                'status' => 'active',
+                'access_starts_at' => $this->created_at ?? Carbon::now(),
+                'access_expires_at' => null,
+                'granted_by' => null,
+            ]);
+            $pivot->status = 'active';
+            $pivot->access_expires_at = null;
+            $autoCourse->setRelation('pivot', $pivot);
+        }
+
+        return $enrolled->concat($autoCourses);
+    }
+
+    /**
      * Video progress records.
      *
      * @return HasMany<VideoProgress, $this>

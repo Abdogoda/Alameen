@@ -355,11 +355,46 @@
             colSpacing: 340,
             rowSpacing: 130,
             isFullscreen: false,
+            watermarkLines: [],
 
             dpr: 1,
 
+            prepareWatermarkLines() {
+                const name = (this.student?.name && String(this.student.name).trim()) ? String(this.student.name).trim() : null;
+                const email = (this.student?.email && String(this.student.email).trim()) ? String(this.student.email).trim() : null;
+                const phone = (this.student?.phone && String(this.student.phone).trim()) ? String(this.student.phone).trim() : null;
+                const id = (this.student?.id !== undefined && this.student?.id !== null && String(this.student.id).trim() !== '') 
+                    ? `ID: ${String(this.student.id).trim()}` 
+                    : null;
+
+                const line1Parts = [];
+                if (name) line1Parts.push(name);
+                if (phone) line1Parts.push(phone);
+
+                const line2Parts = [];
+                if (email) line2Parts.push(email);
+                if (id) line2Parts.push(id);
+
+                const lines = [];
+                if (line1Parts.length > 0 && line2Parts.length > 0) {
+                    lines.push(line1Parts.join(' • '));
+                    lines.push(line2Parts.join(' • '));
+                } else if (line1Parts.length > 0) {
+                    lines.push(line1Parts.join(' • '));
+                } else if (line2Parts.length > 0) {
+                    if (line2Parts.length === 2 && !name && !phone) {
+                        lines.push(line2Parts[0]);
+                        lines.push(line2Parts[1]);
+                    } else {
+                        lines.push(line2Parts.join(' • '));
+                    }
+                }
+                this.watermarkLines = lines;
+            },
+
             initPlayer() {
                 this.$nextTick(() => {
+                    this.prepareWatermarkLines();
                     this.videoCanvas = this.$refs.watermarkCanvas;
                     if (this.videoCanvas) {
                         this.videoCtx = this.videoCanvas.getContext('2d');
@@ -900,8 +935,8 @@
                     // High-DPI crisp vector scale to eliminate blurriness completely
                     ctx.scale(dpr, dpr);
 
-                    // 40% opacity as requested
-                    ctx.globalAlpha = 0.40;
+                    // 15% opacity as requested
+                    ctx.globalAlpha = 0.15;
 
                     // Angled watermark across the entire frame (-22 degrees)
                     const angle = -22 * Math.PI / 180;
@@ -922,24 +957,20 @@
 
                     ctx.textAlign = 'left';
                     ctx.textBaseline = 'middle';
+                    ctx.fillStyle = textColor;
+                    ctx.shadowColor = shadowColor;
+                    ctx.shadowBlur = 1.5;
 
                     for (let x = startX + offsetX; x < endX; x += this.colSpacing) {
                         for (let y = startY + offsetY; y < endY; y += this.rowSpacing) {
-                            ctx.fillStyle = textColor;
-                            ctx.shadowColor = shadowColor;
-                            ctx.shadowBlur = 1.5;
-
-                            const rx = Math.round(x);
-                            const ry = Math.round(y);
-
                             if (lines.length === 1) {
                                 ctx.font = '700 13px "Noto Sans Arabic", "Cairo", Inter, system-ui, sans-serif';
-                                ctx.fillText(lines[0], rx, ry);
+                                ctx.fillText(lines[0], x, y);
                             } else {
                                 ctx.font = '700 13px "Noto Sans Arabic", "Cairo", Inter, system-ui, sans-serif';
-                                ctx.fillText(lines[0], rx, ry);
+                                ctx.fillText(lines[0], x, y);
                                 ctx.font = '600 12px Inter, Roboto, monospace, sans-serif';
-                                ctx.fillText(lines[1], rx, ry + 18);
+                                ctx.fillText(lines[1], x, y + 18);
                             }
                         }
                     }
@@ -969,39 +1000,11 @@
                     // Factor normalized to 60 FPS baseline (elapsed * 60)
                     const speedFactor = elapsed * 60;
 
-                    // Build user info: name, email, phone, id (strictly omit missing fields without fallbacks)
-                    const name = (this.student?.name && String(this.student.name).trim()) ? String(this.student.name).trim() : null;
-                    const email = (this.student?.email && String(this.student.email).trim()) ? String(this.student.email).trim() : null;
-                    const phone = (this.student?.phone && String(this.student.phone).trim()) ? String(this.student.phone).trim() : null;
-                    const id = (this.student?.id !== undefined && this.student?.id !== null && String(this.student.id).trim() !== '') 
-                        ? `ID: ${String(this.student.id).trim()}` 
-                        : null;
+                    const lines = this.watermarkLines || [];
 
-                    const line1Parts = [];
-                    if (name) line1Parts.push(name);
-                    if (phone) line1Parts.push(phone);
-
-                    const line2Parts = [];
-                    if (email) line2Parts.push(email);
-                    if (id) line2Parts.push(id);
-
-                    const lines = [];
-                    if (line1Parts.length > 0 && line2Parts.length > 0) {
-                        lines.push(line1Parts.join(' • '));
-                        lines.push(line2Parts.join(' • '));
-                    } else if (line1Parts.length > 0) {
-                        lines.push(line1Parts.join(' • '));
-                    } else if (line2Parts.length > 0) {
-                        if (line2Parts.length === 2 && !name && !phone) {
-                            lines.push(line2Parts[0]);
-                            lines.push(line2Parts[1]);
-                        } else {
-                            lines.push(line2Parts.join(' • '));
-                        }
-                    }
-
-                    this.gridShiftX += 0.10 * speedFactor;
-                    this.gridShiftY += 0.06 * speedFactor;
+                    // Gentle, seamless sub-pixel continuous float
+                    this.gridShiftX += 0.15 * speedFactor;
+                    this.gridShiftY += 0.08 * speedFactor;
 
                     const offsetX = this.gridShiftX % this.colSpacing;
                     const offsetY = this.gridShiftY % this.rowSpacing;

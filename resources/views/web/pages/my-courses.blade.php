@@ -140,23 +140,24 @@
         <!-- ============================================== -->
         <!-- 3. INTERACTIVE TABS & SEARCH CONTROLS          -->
         <!-- ============================================== -->
-        <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-2xl p-3 sm:p-3.5 shadow-xs flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+        <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-2xl p-3 sm:p-3.5 shadow-xs flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3 overflow-hidden">
             
-            <!-- Tab Buttons -->
-            <div class="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
+            <!-- Tab Buttons Container with Responsive Horizontal Scrolling -->
+            <div class="filter-tabs tabs-scroll-container flex items-center gap-2 overflow-x-auto pb-1.5 lg:pb-0 scrollbar-none w-full lg:w-auto max-w-full">
                 
                 <!-- Tab: All Enrolled -->
                 <button
                     type="button"
-                    @click="activeTab = 'enrolled'"
-                    class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer whitespace-nowrap flex items-center gap-2 shadow-2xs"
+                    role="tab"
+                    @click="activeTab = 'enrolled'; $el.scrollIntoView({ behavior: 'smooth', inline: 'nearest', block: 'nearest' })"
+                    class="filter-tab shrink-0 min-w-max px-3.5 py-2 rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer whitespace-nowrap flex items-center gap-2"
                     :class="activeTab === 'enrolled' 
-                        ? 'bg-[#012383] text-white shadow-xs' 
-                        : 'text-slate-600 hover:text-[#012383] hover:bg-[#EAF1FB]/60 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white'"
+                        ? 'bg-[#012383] text-white shadow-xs font-bold ring-1 ring-[#012383]' 
+                        : 'bg-transparent text-slate-600 hover:text-[#012383] hover:bg-[#EAF1FB]/60 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white font-semibold'"
                 >
                     <span>{{ __('دوراتي المسجّلة') }}</span>
                     <span
-                        class="px-1.5 py-0.5 rounded-full text-[10px] font-extrabold"
+                        class="px-1.5 py-0.5 rounded-full text-[10px] font-extrabold shrink-0"
                         :class="activeTab === 'enrolled' ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'"
                     >
                         {{ $stats['total_enrolled'] }}
@@ -166,16 +167,17 @@
                 <!-- Tab: In Progress -->
                 <button
                     type="button"
-                    @click="activeTab = 'in_progress'"
-                    class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer whitespace-nowrap flex items-center gap-2"
+                    role="tab"
+                    @click="activeTab = 'in_progress'; $el.scrollIntoView({ behavior: 'smooth', inline: 'nearest', block: 'nearest' })"
+                    class="filter-tab shrink-0 min-w-max px-3.5 py-2 rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer whitespace-nowrap flex items-center gap-2"
                     :class="activeTab === 'in_progress' 
-                        ? 'bg-[#012383] text-white shadow-xs' 
-                        : 'text-slate-600 hover:text-[#012383] hover:bg-[#EAF1FB]/60 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white'"
+                        ? 'bg-[#012383] text-white shadow-xs font-bold ring-1 ring-[#012383]' 
+                        : 'bg-transparent text-slate-600 hover:text-[#012383] hover:bg-[#EAF1FB]/60 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white font-semibold'"
                 >
-                    <span class="size-1.5 rounded-full bg-blue-500"></span>
+                    <span class="size-2 rounded-full bg-blue-500 shrink-0"></span>
                     <span>{{ __('قيد التعلّم') }}</span>
                     <span
-                        class="px-1.5 py-0.5 rounded-full text-[10px] font-extrabold"
+                        class="px-1.5 py-0.5 rounded-full text-[10px] font-extrabold shrink-0"
                         :class="activeTab === 'in_progress' ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'"
                     >
                         {{ $stats['in_progress'] }}
@@ -185,16 +187,17 @@
                 <!-- Tab: Completed -->
                 <button
                     type="button"
-                    @click="activeTab = 'completed'"
-                    class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer whitespace-nowrap flex items-center gap-2"
+                    role="tab"
+                    @click="activeTab = 'completed'; $el.scrollIntoView({ behavior: 'smooth', inline: 'nearest', block: 'nearest' })"
+                    class="filter-tab shrink-0 min-w-max px-3.5 py-2 rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer whitespace-nowrap flex items-center gap-2"
                     :class="activeTab === 'completed' 
-                        ? 'bg-[#012383] text-white shadow-xs' 
-                        : 'text-slate-600 hover:text-[#012383] hover:bg-[#EAF1FB]/60 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white'"
+                        ? 'bg-[#012383] text-white shadow-xs font-bold ring-1 ring-[#012383]' 
+                        : 'bg-transparent text-slate-600 hover:text-[#012383] hover:bg-[#EAF1FB]/60 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white font-semibold'"
                 >
-                    <span class="size-1.5 rounded-full bg-emerald-500"></span>
+                    <span class="size-2 rounded-full bg-emerald-500 shrink-0"></span>
                     <span>{{ __('مكتملة') }}</span>
                     <span
-                        class="px-1.5 py-0.5 rounded-full text-[10px] font-extrabold"
+                        class="px-1.5 py-0.5 rounded-full text-[10px] font-extrabold shrink-0"
                         :class="activeTab === 'completed' ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'"
                     >
                         {{ $stats['completed'] }}
@@ -204,16 +207,17 @@
                 <!-- Tab: Catalog / All Available -->
                 <button
                     type="button"
-                    @click="activeTab = 'catalog'"
-                    class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer whitespace-nowrap flex items-center gap-2"
+                    role="tab"
+                    @click="activeTab = 'catalog'; $el.scrollIntoView({ behavior: 'smooth', inline: 'nearest', block: 'nearest' })"
+                    class="filter-tab shrink-0 min-w-max px-3.5 py-2 rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer whitespace-nowrap flex items-center gap-2"
                     :class="activeTab === 'catalog' 
-                        ? 'bg-[#012383] text-white shadow-xs' 
-                        : 'text-slate-600 hover:text-[#012383] hover:bg-[#EAF1FB]/60 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white'"
+                        ? 'bg-[#012383] text-white shadow-xs font-bold ring-1 ring-[#012383]' 
+                        : 'bg-transparent text-slate-600 hover:text-[#012383] hover:bg-[#EAF1FB]/60 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white font-semibold'"
                 >
-                    <svg class="size-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                    <svg class="size-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
                     <span>{{ __('دليل البرامج المتاحة') }}</span>
                     <span
-                        class="px-1.5 py-0.5 rounded-full text-[10px] font-extrabold"
+                        class="px-1.5 py-0.5 rounded-full text-[10px] font-extrabold shrink-0"
                         :class="activeTab === 'catalog' ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'"
                     >
                         {{ $allCourses->count() }}
@@ -223,7 +227,7 @@
             </div>
 
             <!-- Search Bar -->
-            <div class="relative w-full sm:w-64 md:w-72 shrink-0">
+            <div class="relative w-full lg:w-64 xl:w-72 shrink-0">
                 <input
                     type="text"
                     x-model="searchQuery"
@@ -445,6 +449,62 @@
                         </div>
                     @endforeach
                 </div>
+
+                <!-- Empty Tab Filter State: Completed -->
+                @if($stats['completed'] == 0)
+                    <div
+                        x-show="activeTab === 'completed'"
+                        x-cloak
+                        class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-2xl p-8 sm:p-12 text-center flex flex-col items-center justify-center gap-3 shadow-xs"
+                    >
+                        <div class="size-14 rounded-2xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center border border-emerald-100 dark:border-emerald-900">
+                            <svg class="size-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        </div>
+                        <div class="max-w-md flex flex-col gap-1">
+                            <h3 class="font-['Baloo_Bhaijaan_2'] font-bold text-lg text-[#012383] dark:text-white">
+                                {{ __('لا توجد دورات مكتملة حتى الآن') }}
+                            </h3>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">
+                                {{ __('أكمل مشاهدة محاضراتك لتظهر دوراتك المنجزة وشهاداتك المعتمدة هنا.') }}
+                            </p>
+                        </div>
+                        <button
+                            type="button"
+                            @click="activeTab = 'enrolled'"
+                            class="mt-2 h-9 px-4 rounded-xl bg-[#012383] hover:bg-[#0B2A8F] text-white font-bold text-xs flex items-center gap-2 cursor-pointer transition-colors shadow-xs"
+                        >
+                            <span>{{ __('عرض كل الدورات المسجلة') }}</span>
+                        </button>
+                    </div>
+                @endif
+
+                <!-- Empty Tab Filter State: In Progress -->
+                @if($stats['in_progress'] == 0)
+                    <div
+                        x-show="activeTab === 'in_progress'"
+                        x-cloak
+                        class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-2xl p-8 sm:p-12 text-center flex flex-col items-center justify-center gap-3 shadow-xs"
+                    >
+                        <div class="size-14 rounded-2xl bg-blue-50 dark:bg-blue-950/50 text-[#012383] dark:text-blue-400 flex items-center justify-center border border-blue-100 dark:border-blue-900">
+                            <svg class="size-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        </div>
+                        <div class="max-w-md flex flex-col gap-1">
+                            <h3 class="font-['Baloo_Bhaijaan_2'] font-bold text-lg text-[#012383] dark:text-white">
+                                {{ __('لا توجد دورات قيد التعلّم حالياً') }}
+                            </h3>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">
+                                {{ __('ابدأ بمشاهدة الدروس من دوراتك المسجلة لمتابعة تقدمك ونسب إنجازك.') }}
+                            </p>
+                        </div>
+                        <button
+                            type="button"
+                            @click="activeTab = 'enrolled'"
+                            class="mt-2 h-9 px-4 rounded-xl bg-[#012383] hover:bg-[#0B2A8F] text-white font-bold text-xs flex items-center gap-2 cursor-pointer transition-colors shadow-xs"
+                        >
+                            <span>{{ __('عرض كل الدورات المسجلة') }}</span>
+                        </button>
+                    </div>
+                @endif
             @endif
 
         </div>

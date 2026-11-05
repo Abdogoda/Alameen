@@ -65,16 +65,19 @@ class UnifiedNotification extends Notification implements ShouldQueue
             ? $this->resolveLocalized($this->actionText, $locale)
             : $defaultAction;
 
-        $mail = (new MailMessage)
+        return (new MailMessage)
             ->subject($title)
-            ->greeting($title)
-            ->line($body);
-
-        if (! empty($this->actionUrl)) {
-            $mail->action($actionText, $this->actionUrl);
-        }
-
-        return $mail;
+            ->view('emails.notifications.unified', [
+                'user' => $notifiable,
+                'locale' => $locale,
+                'title' => $title,
+                'body' => $body,
+                'type' => $this->type,
+                'actionUrl' => $this->actionUrl,
+                'actionText' => $actionText,
+                'icon' => $this->icon,
+                'data' => $this->data,
+            ]);
     }
 
     /**

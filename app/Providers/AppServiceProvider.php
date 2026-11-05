@@ -59,6 +59,7 @@ class AppServiceProvider extends ServiceProvider
         $this->configureAuthorization();
         $this->configureGlobalSettings();
         $this->configureRateLimiting();
+        $this->configureMailTheming();
     }
 
     /**

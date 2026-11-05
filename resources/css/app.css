@@ -1282,6 +1282,18 @@ a[role="tab"] {
     flex-shrink: 0 !important;
     min-width: max-content !important;
     white-space: nowrap !important;
+    overflow: visible !important;
+}
+
+.filter-tabs,
+.tabs-scroll-container {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
+    scroll-behavior: smooth !important;
+    overscroll-behavior-x: contain !important;
 }
 
 button[class*="bg-[#012383]"]:not(:disabled):hover,

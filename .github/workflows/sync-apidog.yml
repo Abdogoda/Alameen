@@ -1,0 +1,77 @@
+name: Sync OpenAPI to Apidog
+
+on:
+  push:
+    branches:
+      - main
+      - master
+      - develop
+    paths:
+      - 'swagger.json'
+      - 'public/swagger.json'
+      - '.github/workflows/sync-apidog.yml'
+  workflow_dispatch:
+
+jobs:
+  sync-to-apidog:
+    name: Push OpenAPI 3.0.3 Spec to Apidog
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Validate OpenAPI JSON & Push to Apidog
+        env:
+          APIDOG_ACCESS_TOKEN: ${{ secrets.APIDOG_ACCESS_TOKEN }}
+          APIDOG_PROJECT_ID: ${{ secrets.APIDOG_PROJECT_ID }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${APIDOG_ACCESS_TOKEN:-}" ] || [ -z "${APIDOG_PROJECT_ID:-}" ]; then
+            echo "::error::Missing APIDOG_ACCESS_TOKEN or APIDOG_PROJECT_ID in GitHub Repository Secrets."
+            exit 1
+          fi
+
+          SPEC_FILE="public/swagger.json"
+          if [ ! -f "$SPEC_FILE" ]; then
+            SPEC_FILE="swagger.json"
+          fi
+
+          echo "Validating OpenAPI 3.0.3 JSON syntax in ${SPEC_FILE}..."
+          jq empty "$SPEC_FILE"
+
+          echo "Building Apidog import payload..."
+          jq -n --rawfile spec "$SPEC_FILE" '{
+            input: $spec,
+            options: {
+              targetEndpointFolderId: 0,
+              targetSchemaFolderId: 0,
+              endpointOverwriteBehavior: "OVERWRITE_EXISTING",
+              schemaOverwriteBehavior: "OVERWRITE_EXISTING",
+              updateFolderOfChangedEndpoint: true,
+              prependBasePath: false
+            }
+          }' > /tmp/apidog_payload.json
+
+          echo "Syncing OpenAPI specification to Apidog Project ID: ${APIDOG_PROJECT_ID}..."
+          HTTP_RESPONSE=$(curl -sS -w "\n%{http_code}" -X POST \
+            "https://api.apidog.com/v1/projects/${APIDOG_PROJECT_ID}/import-openapi?locale=en-US" \
+            -H "X-Apidog-Api-Version: 2024-03-28" \
+            -H "Authorization: Bearer ${APIDOG_ACCESS_TOKEN}" \
+            -H "Content-Type: application/json" \
+            --data-binary @/tmp/apidog_payload.json)
+
+          HTTP_BODY=$(echo "$HTTP_RESPONSE" | sed '$d')
+          HTTP_STATUS=$(echo "$HTTP_RESPONSE" | tail -n 1)
+
+          echo "Apidog API HTTP Status: ${HTTP_STATUS}"
+          echo "$HTTP_BODY" | jq . || echo "$HTTP_BODY"
+
+          if [ "$HTTP_STATUS" -lt 200 ] || [ "$HTTP_STATUS" -ge 300 ]; then
+            echo "::error::Apidog OpenAPI sync failed with HTTP status ${HTTP_STATUS}."
+            exit 1
+          fi
+
+          echo "Successfully synced OpenAPI 3.0.3 specification to Apidog!"
+

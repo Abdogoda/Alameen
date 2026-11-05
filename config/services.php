@@ -63,4 +63,10 @@ return [
         'security_token_key' => env('BUNNY_SECURITY_TOKEN_KEY', ''),
     ],
 
+    'apidog' => [
+        'project_id' => env('APIDOG_PROJECT_ID'),
+        'access_token' => env('APIDOG_ACCESS_TOKEN'),
+        'overwrite_behavior' => env('APIDOG_OVERWRITE_BEHAVIOR', 'OVERWRITE_EXISTING'),
+    ],
+
 ];

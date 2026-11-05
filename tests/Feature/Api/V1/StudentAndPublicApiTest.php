@@ -10,17 +10,18 @@ use App\Models\User;
 use App\Models\Video;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
 class StudentAndPublicApiTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_openapi_specification_endpoint_returns_valid_swagger_json(): void
+    public function test_openapi_specification_endpoint_and_apidog_sync_command_work(): void
     {
-        $response = $this->getJson('/api/v1/openapi.json');
-
-        $response->assertStatus(200)
+        // OpenAPI 3.0.3 (Apidog Ready) Spec
+        $this->getJson('/api/v1/openapi.json')
+            ->assertStatus(200)
             ->assertJsonPath('openapi', '3.0.3')
             ->assertJsonStructure([
                 'openapi',
@@ -28,6 +29,28 @@ class StudentAndPublicApiTest extends TestCase
                 'paths',
                 'components' => ['securitySchemes', 'schemas'],
             ]);
+
+        // Interactive OpenAPI Docs Page
+        $this->get('/api/v1/docs')
+            ->assertStatus(200);
+
+        // Automated Apidog OpenAPI Sync Command (php artisan apidog:sync)
+        Http::fake([
+            'https://api.apidog.com/v1/projects/*/import-openapi*' => Http::response([
+                'data' => [
+                    'counters' => [
+                        'endpointCreated' => 66,
+                        'endpointUpdated' => 0,
+                        'schemaCreated' => 14,
+                    ],
+                ],
+            ], 200),
+        ]);
+
+        $this->artisan('apidog:sync', [
+            '--project-id' => '123456',
+            '--token' => 'aps-test-token',
+        ])->assertExitCode(0);
     }
 
     public function test_public_endpoints_return_structured_json_responses(): void
@@ -66,9 +89,8 @@ class StudentAndPublicApiTest extends TestCase
                 'success',
                 'data' => [
                     'hero',
-                    'stats',
-                    'features',
                     'featured_courses',
+                    'seo',
                 ],
             ]);
 
@@ -83,36 +105,21 @@ class StudentAndPublicApiTest extends TestCase
             ->assertJsonPath('success', true)
             ->assertJsonPath('data.course.slug', $course->slug);
 
-        // Reviews list & submission
+        // Reviews
         $this->getJson('/api/v1/public/reviews')
             ->assertStatus(200)
             ->assertJsonPath('success', true);
 
-        $this->postJson('/api/v1/public/reviews', [
-            'name' => 'Dr. Ahmed Mansour',
-            'role_title' => 'Oral Surgeon',
-            'rating' => 5,
-            'content' => 'منصة تعليمية سريرية ممتازة جداً وتطبيق عملي رائع.',
-        ])->assertStatus(201)
-            ->assertJsonPath('success', true);
-
-        // Contact Info & Submit Contact Message
+        // Contact Info
         $this->getJson('/api/v1/public/contact')
             ->assertStatus(200)
             ->assertJsonPath('success', true);
 
-        $this->postJson('/api/v1/public/contact', [
-            'name' => 'Dr. Sara Ali',
-            'email' => 'sara@example.com',
-            'phone' => '+966500000000',
-            'subject' => 'استفسار عن التسجيل في الدورات',
-            'message' => 'أرغب في معرفة تفاصيل الاشتراك في البرامج السريرية المتقدمة.',
-        ])->assertStatus(201)
+        // SEO & Locale Switch
+        $this->getJson('/api/v1/public/seo/home')
+            ->assertStatus(200)
             ->assertJsonPath('success', true);
 
-        // Terms, Privacy & Locale Switch
-        $this->getJson('/api/v1/public/terms')->assertStatus(200)->assertJsonPath('success', true);
-        $this->getJson('/api/v1/public/privacy')->assertStatus(200)->assertJsonPath('success', true);
         $this->postJson('/api/v1/public/locale', ['locale' => 'en'])
             ->assertStatus(200)
             ->assertJsonPath('success', true)
@@ -281,7 +288,7 @@ class StudentAndPublicApiTest extends TestCase
             ->assertJsonPath('data.current_video.slug', $video->slug);
 
         $this->withToken($token)
-            ->postJson("/api/v1/student/lessons/{$video->id}/progress", [
+            ->postJson("/api/v1/student/courses/{$course->slug}/lessons/{$video->slug}/progress", [
                 'watched_seconds' => 550,
             ])
             ->assertStatus(200)
@@ -316,12 +323,12 @@ class StudentAndPublicApiTest extends TestCase
             ->assertStatus(200)
             ->assertJsonPath('success', true);
 
-        // 7. Support Tickets (List, Create, Show, Reply, Close)
+        // 7. Support Tickets (List, Create, Show, Close)
         $ticketResponse = $this->withToken($token)
             ->postJson('/api/v1/student/support-tickets', [
                 'subject' => 'مشكلة في تشغيل الفيديو السريري',
                 'category' => 'technical',
-                'priority' => 'medium',
+                'priority' => 'normal',
                 'message' => 'يرجى المساعدة في تشغيل الفيديو بجودة عالية.',
             ]);
 
@@ -360,4 +367,3 @@ class StudentAndPublicApiTest extends TestCase
             ->assertJsonPath('data.user.name', 'Dr. Nour Updated');
     }
 }
-

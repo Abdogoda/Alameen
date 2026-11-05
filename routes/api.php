@@ -25,8 +25,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->name('api.v1.')->group(function () {
 
-    // OpenAPI 3.0.3 Specification Endpoint
+    // OpenAPI 3.0.3 (Apidog / Swagger) Specification & Interactive API Docs
     Route::get('/openapi.json', [PublicController::class, 'openApiSpec'])->name('openapi');
+    Route::get('/docs', [PublicController::class, 'docs'])->name('docs');
 
     /*
     |--------------------------------------------------------------------------

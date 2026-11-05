@@ -210,11 +210,17 @@ class PublicController extends Controller
 
     /**
      * GET /api/v1/openapi.json
-     * Serve the complete OpenAPI 3.0.3 Swagger specification.
+     * Serve the complete OpenAPI 3.0.3 (Apidog / Swagger) specification.
      */
     public function openApiSpec(): JsonResponse
     {
-        $path = public_path('swagger.json');
+        $path = public_path('openapi.json');
+        if (! file_exists($path)) {
+            $path = base_path('openapi.json');
+        }
+        if (! file_exists($path)) {
+            $path = public_path('swagger.json');
+        }
         if (! file_exists($path)) {
             $path = base_path('swagger.json');
         }
@@ -229,5 +235,14 @@ class PublicController extends Controller
         $json = json_decode((string) file_get_contents($path), true);
 
         return response()->json($json);
+    }
+
+    /**
+     * GET /api/v1/docs
+     * Render interactive OpenAPI 3.0.3 documentation explorer.
+     */
+    public function docs(): \Illuminate\Contracts\View\View
+    {
+        return view('api.docs');
     }
 }

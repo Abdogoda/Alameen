@@ -22,50 +22,62 @@
   "tags": [
     {
       "name": "Public & Marketing",
-      "description": "Public platform configuration, landing page content, course catalog, reviews, contact info, SEO metadata, locale switching, and public certificate verification."
+      "description": "Public platform configuration, landing page content, course catalog, reviews, contact info, SEO metadata, locale switching, and public certificate verification.",
+      "x-apidog-folder": "1. Public & Marketing"
     },
     {
       "name": "Authentication & Recovery",
-      "description": "Student registration, email/password login, 2FA login challenge, Firebase & Google OAuth login, WebAuthn Passkey login, and 6-digit OTP password reset."
+      "description": "Student registration, email/password login, 2FA login challenge, Firebase & Google OAuth login, WebAuthn Passkey login, and 6-digit OTP password reset.",
+      "x-apidog-folder": "2. Authentication & Recovery"
     },
     {
       "name": "Student Dashboard",
-      "description": "Aggregated student dashboard metrics, enrolled/pending/available courses, resume playback, upcoming clinical tasks, and earned certificates."
+      "description": "Aggregated student dashboard metrics, enrolled/pending/available courses, resume playback, upcoming clinical tasks, and earned certificates.",
+      "x-apidog-folder": "3. Student Workspace/Dashboard"
     },
     {
       "name": "Student Courses & Receipts",
-      "description": "Student course catalog, curriculum progress, and manual payment receipt submission (Vodafone Cash / InstaPay)."
+      "description": "Student course catalog, curriculum progress, and manual payment receipt submission (Vodafone Cash / InstaPay).",
+      "x-apidog-folder": "3. Student Workspace/Courses & Receipts"
     },
     {
       "name": "Student Lessons & DRM",
-      "description": "Lesson video playback, dynamic watermark metadata, short-lived signed Bunny/HLS tokens, watch progress heartbeats, and anti-piracy violation reporting."
+      "description": "Lesson video playback, dynamic watermark metadata, short-lived signed Bunny/HLS tokens, watch progress heartbeats, and anti-piracy violation reporting.",
+      "x-apidog-folder": "3. Student Workspace/Lessons & DRM"
     },
     {
       "name": "Clinical Assignments & Grades",
-      "description": "Clinical tasks (voice assignments), audio recording submission (multipart or base64), grades overview, and instructor evaluation results."
+      "description": "Clinical tasks (voice assignments), audio recording submission (multipart or base64), grades overview, and instructor evaluation results.",
+      "x-apidog-folder": "3. Student Workspace/Clinical Assignments & Grades"
     },
     {
       "name": "Student Certificates",
-      "description": "Earned course completion certificates, QR codes, verification links, and PDF/image downloads."
+      "description": "Earned course completion certificates, QR codes, verification links, and PDF/image downloads.",
+      "x-apidog-folder": "3. Student Workspace/Certificates"
     },
     {
       "name": "Student Notifications",
-      "description": "Student notification inbox, navbar bell recent notifications, read tracking, and deletion."
+      "description": "Student notification inbox, navbar bell recent notifications, read tracking, and deletion.",
+      "x-apidog-folder": "3. Student Workspace/Notifications"
     },
     {
       "name": "Student Support Tickets",
-      "description": "Technical & clinical support tickets, file attachments, replies, status transitions, and real-time message polling."
+      "description": "Technical & clinical support tickets, file attachments, replies, status transitions, and real-time message polling.",
+      "x-apidog-folder": "3. Student Workspace/Support Tickets"
     },
     {
       "name": "Student Settings & Security",
-      "description": "Student profile management, avatar upload, password update, Two-Factor Authentication (TOTP), and WebAuthn Passkey management."
+      "description": "Student profile management, avatar upload, password update, Two-Factor Authentication (TOTP), and WebAuthn Passkey management.",
+      "x-apidog-folder": "3. Student Workspace/Settings & Security"
     }
   ],
   "paths": {
     "/openapi.json": {
       "get": {
         "tags": ["Public & Marketing"],
-        "summary": "Get OpenAPI 3.0.3 Specification",
+        "x-apidog-folder": "1. Public & Marketing",
+        "x-apidog-status": "released",
+        "summary": "Get OpenAPI 3.0.3 Specification (Apidog / Swagger)",
         "operationId": "getOpenApiSpec",
         "responses": {
           "200": {
@@ -77,6 +89,8 @@
     "/public/bootstrap": {
       "get": {
         "tags": ["Public & Marketing"],
+        "x-apidog-folder": "1. Public & Marketing",
+        "x-apidog-status": "released",
         "summary": "Get platform branding, currencies, feature flags, and supported locales",
         "operationId": "publicBootstrap",
         "parameters": [
@@ -138,6 +152,8 @@
     "/public/home": {
       "get": {
         "tags": ["Public & Marketing"],
+        "x-apidog-folder": "1. Public & Marketing",
+        "x-apidog-status": "released",
         "summary": "Get landing page CMS sections, featured courses, stats, and SEO metadata",
         "operationId": "publicHome",
         "parameters": [
@@ -175,6 +191,8 @@
     "/public/courses": {
       "get": {
         "tags": ["Public & Marketing"],
+        "x-apidog-folder": "1. Public & Marketing",
+        "x-apidog-status": "released",
         "summary": "List all active published courses in the public catalog",
         "operationId": "publicCoursesIndex",
         "parameters": [
@@ -209,6 +227,8 @@
     "/public/courses/{slug}": {
       "get": {
         "tags": ["Public & Marketing"],
+        "x-apidog-folder": "1. Public & Marketing",
+        "x-apidog-status": "released",
         "summary": "Get public course details, curriculum levels, and preview lessons",
         "operationId": "publicCoursesShow",
         "parameters": [
@@ -237,6 +257,8 @@
     "/public/reviews": {
       "get": {
         "tags": ["Public & Marketing"],
+        "x-apidog-folder": "1. Public & Marketing",
+        "x-apidog-status": "released",
         "summary": "Get clinical testimonials, student reviews, and feedback media",
         "operationId": "publicReviews",
         "parameters": [
@@ -263,6 +285,8 @@
     "/public/contact": {
       "get": {
         "tags": ["Public & Marketing"],
+        "x-apidog-folder": "1. Public & Marketing",
+        "x-apidog-status": "released",
         "summary": "Get platform contact information, social links, and support channels",
         "operationId": "publicContact",
         "parameters": [
@@ -289,6 +313,8 @@
     "/public/seo/{pageKey}": {
       "get": {
         "tags": ["Public & Marketing"],
+        "x-apidog-folder": "1. Public & Marketing",
+        "x-apidog-status": "released",
         "summary": "Get localized SEO metadata and OpenGraph tags for a page key",
         "operationId": "publicSeo",
         "parameters": [
@@ -322,6 +348,8 @@
     "/public/certificates/verify/{code}": {
       "get": {
         "tags": ["Public & Marketing"],
+        "x-apidog-folder": "1. Public & Marketing",
+        "x-apidog-status": "released",
         "summary": "Verify a certificate publicly by its unique certificate code",
         "operationId": "publicVerifyCertificate",
         "parameters": [
@@ -364,6 +392,8 @@
     "/public/locale": {
       "post": {
         "tags": ["Public & Marketing"],
+        "x-apidog-folder": "1. Public & Marketing",
+        "x-apidog-status": "released",
         "summary": "Switch active language (ar / en) and sync with authenticated profile if signed in",
         "operationId": "publicSwitchLocale",
         "requestBody": {
@@ -414,6 +444,8 @@
     "/auth/register": {
       "post": {
         "tags": ["Authentication & Recovery"],
+        "x-apidog-folder": "2. Authentication & Recovery",
+        "x-apidog-status": "released",
         "summary": "Register a new student account (created in pending status awaiting admin approval)",
         "operationId": "authRegister",
         "requestBody": {
@@ -468,6 +500,8 @@
     "/auth/login": {
       "post": {
         "tags": ["Authentication & Recovery"],
+        "x-apidog-folder": "2. Authentication & Recovery",
+        "x-apidog-status": "released",
         "summary": "Login with email and password to receive a Sanctum Bearer token (or 2FA challenge)",
         "operationId": "authLogin",
         "requestBody": {
@@ -503,6 +537,8 @@
     "/auth/two-factor-challenge": {
       "post": {
         "tags": ["Authentication & Recovery"],
+        "x-apidog-folder": "2. Authentication & Recovery",
+        "x-apidog-status": "released",
         "summary": "Verify 2FA login challenge using a 6-digit TOTP code or recovery code",
         "operationId": "authTwoFactorChallenge",
         "requestBody": {
@@ -538,6 +574,8 @@
     "/auth/firebase": {
       "post": {
         "tags": ["Authentication & Recovery"],
+        "x-apidog-folder": "2. Authentication & Recovery",
+        "x-apidog-status": "released",
         "summary": "Authenticate or register using a Firebase ID Token",
         "operationId": "authFirebase",
         "requestBody": {
@@ -573,6 +611,8 @@
     "/auth/google/redirect": {
       "get": {
         "tags": ["Authentication & Recovery"],
+        "x-apidog-folder": "2. Authentication & Recovery",
+        "x-apidog-status": "released",
         "summary": "Get Google OAuth 2.0 authorization redirect URL",
         "operationId": "authGoogleRedirect",
         "responses": {
@@ -601,6 +641,8 @@
     "/auth/google/token": {
       "post": {
         "tags": ["Authentication & Recovery"],
+        "x-apidog-folder": "2. Authentication & Recovery",
+        "x-apidog-status": "released",
         "summary": "Authenticate or register using a Google OAuth access token",
         "operationId": "authGoogleToken",
         "requestBody": {
@@ -634,6 +676,8 @@
     "/auth/passkeys/login-options": {
       "post": {
         "tags": ["Authentication & Recovery"],
+        "x-apidog-folder": "2. Authentication & Recovery",
+        "x-apidog-status": "released",
         "summary": "Generate WebAuthn Passkey authentication assertion challenge options",
         "operationId": "authPasskeyLoginOptions",
         "requestBody": {
@@ -676,6 +720,8 @@
     "/auth/passkeys/login": {
       "post": {
         "tags": ["Authentication & Recovery"],
+        "x-apidog-folder": "2. Authentication & Recovery",
+        "x-apidog-status": "released",
         "summary": "Verify WebAuthn Passkey assertion and issue a Sanctum Bearer token",
         "operationId": "authPasskeyLogin",
         "requestBody": {
@@ -710,6 +756,8 @@
     "/auth/forgot-password": {
       "post": {
         "tags": ["Authentication & Recovery"],
+        "x-apidog-folder": "2. Authentication & Recovery",
+        "x-apidog-status": "released",
         "summary": "Send a 6-digit password reset OTP code to the student's email",
         "operationId": "authForgotPassword",
         "requestBody": {
@@ -743,6 +791,8 @@
     "/auth/verify-otp": {
       "post": {
         "tags": ["Authentication & Recovery"],
+        "x-apidog-folder": "2. Authentication & Recovery",
+        "x-apidog-status": "released",
         "summary": "Verify a 6-digit password reset OTP code before resetting password",
         "operationId": "authVerifyOtp",
         "requestBody": {
@@ -783,6 +833,8 @@
     "/auth/reset-password": {
       "post": {
         "tags": ["Authentication & Recovery"],
+        "x-apidog-folder": "2. Authentication & Recovery",
+        "x-apidog-status": "released",
         "summary": "Reset student password using the 6-digit email OTP code",
         "operationId": "authResetPassword",
         "requestBody": {
@@ -819,6 +871,8 @@
     "/auth/me": {
       "get": {
         "tags": ["Authentication & Recovery"],
+        "x-apidog-folder": "2. Authentication & Recovery",
+        "x-apidog-status": "released",
         "summary": "Get currently authenticated student profile",
         "operationId": "authMe",
         "security": [{ "sanctumBearer": [] }],
@@ -850,6 +904,8 @@
     "/auth/email/verification-notification": {
       "post": {
         "tags": ["Authentication & Recovery"],
+        "x-apidog-folder": "2. Authentication & Recovery",
+        "x-apidog-status": "released",
         "summary": "Resend email verification notification link to the student",
         "operationId": "authResendVerification",
         "security": [{ "sanctumBearer": [] }],
@@ -869,6 +925,8 @@
     "/auth/logout": {
       "post": {
         "tags": ["Authentication & Recovery"],
+        "x-apidog-folder": "2. Authentication & Recovery",
+        "x-apidog-status": "released",
         "summary": "Revoke current Sanctum token (or all tokens if all_devices=true)",
         "operationId": "authLogout",
         "security": [{ "sanctumBearer": [] }],
@@ -901,6 +959,8 @@
     "/student/dashboard": {
       "get": {
         "tags": ["Student Dashboard"],
+        "x-apidog-folder": "3. Student Workspace/Dashboard",
+        "x-apidog-status": "released",
         "summary": "Get student dashboard overview (enrolled courses, watch stats, resume lesson, upcoming tasks, certificates)",
         "operationId": "studentDashboard",
         "security": [{ "sanctumBearer": [] }],
@@ -945,6 +1005,8 @@
     "/student/courses": {
       "get": {
         "tags": ["Student Courses & Receipts"],
+        "x-apidog-folder": "3. Student Workspace/Courses & Receipts",
+        "x-apidog-status": "released",
         "summary": "Get student's enrolled, pending, and available courses",
         "operationId": "studentCoursesIndex",
         "security": [{ "sanctumBearer": [] }],
@@ -981,6 +1043,8 @@
     "/student/courses/{slug}": {
       "get": {
         "tags": ["Student Courses & Receipts"],
+        "x-apidog-folder": "3. Student Workspace/Courses & Receipts",
+        "x-apidog-status": "released",
         "summary": "Get full course curriculum, student watch progress, access state, and certificate",
         "operationId": "studentCoursesShow",
         "security": [{ "sanctumBearer": [] }],
@@ -1010,6 +1074,8 @@
     "/student/courses/{slug}/receipt": {
       "post": {
         "tags": ["Student Courses & Receipts"],
+        "x-apidog-folder": "3. Student Workspace/Courses & Receipts",
+        "x-apidog-status": "released",
         "summary": "Submit a manual payment receipt (Vodafone Cash / InstaPay) to enroll in a course",
         "operationId": "studentSubmitReceipt",
         "security": [{ "sanctumBearer": [] }],
@@ -1070,6 +1136,8 @@
     "/student/receipts": {
       "get": {
         "tags": ["Student Courses & Receipts"],
+        "x-apidog-folder": "3. Student Workspace/Courses & Receipts",
+        "x-apidog-status": "released",
         "summary": "List all payment receipts submitted by the authenticated student",
         "operationId": "studentReceiptsIndex",
         "security": [{ "sanctumBearer": [] }],
@@ -1107,6 +1175,8 @@
     "/student/courses/{slug}/lessons/{lesson}": {
       "get": {
         "tags": ["Student Lessons & DRM"],
+        "x-apidog-folder": "3. Student Workspace/Lessons & DRM",
+        "x-apidog-status": "released",
         "summary": "Get lesson video player data, DRM signed URLs, watermark text, curriculum, and clinical tasks",
         "operationId": "studentLessonShow",
         "security": [{ "sanctumBearer": [] }],
@@ -1179,6 +1249,8 @@
     "/student/courses/{slug}/lessons/{lesson}/playback-token": {
       "post": {
         "tags": ["Student Lessons & DRM"],
+        "x-apidog-folder": "3. Student Workspace/Lessons & DRM",
+        "x-apidog-status": "released",
         "summary": "Refresh short-lived signed Bunny Stream / HLS playback URLs for the active lesson",
         "operationId": "studentLessonPlaybackToken",
         "security": [{ "sanctumBearer": [] }],
@@ -1222,6 +1294,8 @@
     "/student/courses/{slug}/lessons/{lesson}/progress": {
       "post": {
         "tags": ["Student Lessons & DRM"],
+        "x-apidog-folder": "3. Student Workspace/Lessons & DRM",
+        "x-apidog-status": "released",
         "summary": "Record video watch progress heartbeat and trigger automatic certificate issuance upon completion",
         "operationId": "studentLessonRecordProgress",
         "security": [{ "sanctumBearer": [] }],
@@ -1281,6 +1355,8 @@
     "/student/security/violation": {
       "post": {
         "tags": ["Student Lessons & DRM"],
+        "x-apidog-folder": "3. Student Workspace/Lessons & DRM",
+        "x-apidog-status": "released",
         "summary": "Report a client-side DRM or anti-piracy security violation",
         "operationId": "studentReportViolation",
         "security": [{ "sanctumBearer": [] }],
@@ -1321,6 +1397,8 @@
     "/student/assignments": {
       "get": {
         "tags": ["Clinical Assignments & Grades"],
+        "x-apidog-folder": "3. Student Workspace/Clinical Assignments & Grades",
+        "x-apidog-status": "released",
         "summary": "List all clinical tasks (voice assignments) for the student's enrolled courses",
         "operationId": "studentAssignmentsIndex",
         "security": [{ "sanctumBearer": [] }],
@@ -1354,6 +1432,8 @@
     "/student/assignments/{task}": {
       "get": {
         "tags": ["Clinical Assignments & Grades"],
+        "x-apidog-folder": "3. Student Workspace/Clinical Assignments & Grades",
+        "x-apidog-status": "released",
         "summary": "Get details of a specific clinical task and the student's latest submission",
         "operationId": "studentAssignmentsShow",
         "security": [{ "sanctumBearer": [] }],
@@ -1395,6 +1475,8 @@
     "/student/assignments/{task}/submit": {
       "post": {
         "tags": ["Clinical Assignments & Grades"],
+        "x-apidog-folder": "3. Student Workspace/Clinical Assignments & Grades",
+        "x-apidog-status": "released",
         "summary": "Submit a voice recording (multipart audio file or base64 audio) for a clinical task",
         "operationId": "studentAssignmentsSubmit",
         "security": [{ "sanctumBearer": [] }],
@@ -1463,6 +1545,8 @@
     "/student/grades": {
       "get": {
         "tags": ["Clinical Assignments & Grades"],
+        "x-apidog-folder": "3. Student Workspace/Clinical Assignments & Grades",
+        "x-apidog-status": "released",
         "summary": "Get student grades overview, average score, and evaluated clinical task submissions",
         "operationId": "studentGradesIndex",
         "security": [{ "sanctumBearer": [] }],
@@ -1502,6 +1586,8 @@
     "/student/submissions/{submission}": {
       "get": {
         "tags": ["Clinical Assignments & Grades"],
+        "x-apidog-folder": "3. Student Workspace/Clinical Assignments & Grades",
+        "x-apidog-status": "released",
         "summary": "Get detailed instructor evaluation and feedback for a specific submission",
         "operationId": "studentSubmissionsShow",
         "security": [{ "sanctumBearer": [] }],
@@ -1541,6 +1627,8 @@
     "/student/certificates": {
       "get": {
         "tags": ["Student Certificates"],
+        "x-apidog-folder": "3. Student Workspace/Certificates",
+        "x-apidog-status": "released",
         "summary": "List all certificates earned by the authenticated student",
         "operationId": "studentCertificatesIndex",
         "security": [{ "sanctumBearer": [] }],
@@ -1570,6 +1658,8 @@
     "/student/certificates/{code}": {
       "get": {
         "tags": ["Student Certificates"],
+        "x-apidog-folder": "3. Student Workspace/Certificates",
+        "x-apidog-status": "released",
         "summary": "Get details, QR SVG, verification link, and file URL for a specific student certificate",
         "operationId": "studentCertificatesShow",
         "security": [{ "sanctumBearer": [] }],
@@ -1609,6 +1699,8 @@
     "/student/notifications": {
       "get": {
         "tags": ["Student Notifications"],
+        "x-apidog-folder": "3. Student Workspace/Notifications",
+        "x-apidog-status": "released",
         "summary": "List paginated student notifications with filter (all, unread, read)",
         "operationId": "studentNotificationsIndex",
         "security": [{ "sanctumBearer": [] }],
@@ -1660,6 +1752,8 @@
     "/student/notifications/recent": {
       "get": {
         "tags": ["Student Notifications"],
+        "x-apidog-folder": "3. Student Workspace/Notifications",
+        "x-apidog-status": "released",
         "summary": "Get recent notifications and unread count for navbar bell dropdown",
         "operationId": "studentNotificationsRecent",
         "security": [{ "sanctumBearer": [] }],
@@ -1698,6 +1792,8 @@
     "/student/notifications/read-all": {
       "post": {
         "tags": ["Student Notifications"],
+        "x-apidog-folder": "3. Student Workspace/Notifications",
+        "x-apidog-status": "released",
         "summary": "Mark all unread notifications as read",
         "operationId": "studentNotificationsReadAll",
         "security": [{ "sanctumBearer": [] }],
@@ -1716,6 +1812,8 @@
     "/student/notifications/{id}/read": {
       "post": {
         "tags": ["Student Notifications"],
+        "x-apidog-folder": "3. Student Workspace/Notifications",
+        "x-apidog-status": "released",
         "summary": "Mark a specific notification as read",
         "operationId": "studentNotificationsRead",
         "security": [{ "sanctumBearer": [] }],
@@ -1742,6 +1840,8 @@
     "/student/notifications/{id}": {
       "delete": {
         "tags": ["Student Notifications"],
+        "x-apidog-folder": "3. Student Workspace/Notifications",
+        "x-apidog-status": "released",
         "summary": "Delete a notification from the student's inbox",
         "operationId": "studentNotificationsDestroy",
         "security": [{ "sanctumBearer": [] }],
@@ -1769,6 +1869,8 @@
     "/student/support-tickets": {
       "get": {
         "tags": ["Student Support Tickets"],
+        "x-apidog-folder": "3. Student Workspace/Support Tickets",
+        "x-apidog-status": "released",
         "summary": "List student support tickets with status counts and filterable pagination",
         "operationId": "studentSupportTicketsIndex",
         "security": [{ "sanctumBearer": [] }],
@@ -1825,6 +1927,8 @@
       },
       "post": {
         "tags": ["Student Support Tickets"],
+        "x-apidog-folder": "3. Student Workspace/Support Tickets",
+        "x-apidog-status": "released",
         "summary": "Create a new support ticket with optional file attachments",
         "operationId": "studentSupportTicketsStore",
         "security": [{ "sanctumBearer": [] }],
@@ -1878,6 +1982,8 @@
     "/student/support-tickets/{ticket}": {
       "get": {
         "tags": ["Student Support Tickets"],
+        "x-apidog-folder": "3. Student Workspace/Support Tickets",
+        "x-apidog-status": "released",
         "summary": "Get full support ticket conversation thread and mark admin replies as read",
         "operationId": "studentSupportTicketsShow",
         "security": [{ "sanctumBearer": [] }],
@@ -1917,6 +2023,8 @@
     "/student/support-tickets/{ticket}/reply": {
       "post": {
         "tags": ["Student Support Tickets"],
+        "x-apidog-folder": "3. Student Workspace/Support Tickets",
+        "x-apidog-status": "released",
         "summary": "Send a student reply message on a support ticket",
         "operationId": "studentSupportTicketsReply",
         "security": [{ "sanctumBearer": [] }],
@@ -1974,6 +2082,8 @@
     "/student/support-tickets/{ticket}/close": {
       "post": {
         "tags": ["Student Support Tickets"],
+        "x-apidog-folder": "3. Student Workspace/Support Tickets",
+        "x-apidog-status": "released",
         "summary": "Close a support ticket by the student",
         "operationId": "studentSupportTicketsClose",
         "security": [{ "sanctumBearer": [] }],
@@ -2000,6 +2110,8 @@
     "/student/support-tickets/{ticket}/reopen": {
       "post": {
         "tags": ["Student Support Tickets"],
+        "x-apidog-folder": "3. Student Workspace/Support Tickets",
+        "x-apidog-status": "released",
         "summary": "Reopen a closed or resolved support ticket",
         "operationId": "studentSupportTicketsReopen",
         "security": [{ "sanctumBearer": [] }],
@@ -2026,6 +2138,8 @@
     "/student/support-tickets/{ticket}/poll": {
       "get": {
         "tags": ["Student Support Tickets"],
+        "x-apidog-folder": "3. Student Workspace/Support Tickets",
+        "x-apidog-status": "released",
         "summary": "Poll for new messages on a support ticket after after_id",
         "operationId": "studentSupportTicketsPoll",
         "security": [{ "sanctumBearer": [] }],
@@ -2073,6 +2187,8 @@
     "/student/settings/profile": {
       "get": {
         "tags": ["Student Settings & Security"],
+        "x-apidog-folder": "3. Student Workspace/Settings & Security",
+        "x-apidog-status": "released",
         "summary": "Get student profile details",
         "operationId": "studentSettingsProfileShow",
         "security": [{ "sanctumBearer": [] }],
@@ -2100,6 +2216,8 @@
       },
       "post": {
         "tags": ["Student Settings & Security"],
+        "x-apidog-folder": "3. Student Workspace/Settings & Security",
+        "x-apidog-status": "released",
         "summary": "Update student profile details, locale, and optional avatar image",
         "operationId": "studentSettingsProfileUpdate",
         "security": [{ "sanctumBearer": [] }],
@@ -2165,6 +2283,8 @@
       },
       "delete": {
         "tags": ["Student Settings & Security"],
+        "x-apidog-folder": "3. Student Workspace/Settings & Security",
+        "x-apidog-status": "released",
         "summary": "Permanently delete student account after verifying current password",
         "operationId": "studentSettingsProfileDelete",
         "security": [{ "sanctumBearer": [] }],
@@ -2198,6 +2318,8 @@
     "/student/settings/password": {
       "put": {
         "tags": ["Student Settings & Security"],
+        "x-apidog-folder": "3. Student Workspace/Settings & Security",
+        "x-apidog-status": "released",
         "summary": "Update student password",
         "operationId": "studentSettingsPasswordUpdate",
         "security": [{ "sanctumBearer": [] }],
@@ -2233,6 +2355,8 @@
     "/student/settings/security": {
       "get": {
         "tags": ["Student Settings & Security"],
+        "x-apidog-folder": "3. Student Workspace/Settings & Security",
+        "x-apidog-status": "released",
         "summary": "Get student security overview (2FA status and registered passkeys)",
         "operationId": "studentSettingsSecurityOverview",
         "security": [{ "sanctumBearer": [] }],
@@ -2263,6 +2387,8 @@
     "/student/settings/two-factor/enable": {
       "post": {
         "tags": ["Student Settings & Security"],
+        "x-apidog-folder": "3. Student Workspace/Settings & Security",
+        "x-apidog-status": "released",
         "summary": "Enable Two-Factor Authentication setup and get QR code SVG & secret key",
         "operationId": "studentSettingsTwoFactorEnable",
         "security": [{ "sanctumBearer": [] }],
@@ -2296,6 +2422,8 @@
     "/student/settings/two-factor/confirm": {
       "post": {
         "tags": ["Student Settings & Security"],
+        "x-apidog-folder": "3. Student Workspace/Settings & Security",
+        "x-apidog-status": "released",
         "summary": "Confirm Two-Factor Authentication setup using a 6-digit TOTP code",
         "operationId": "studentSettingsTwoFactorConfirm",
         "security": [{ "sanctumBearer": [] }],
@@ -2341,6 +2469,8 @@
     "/student/settings/two-factor": {
       "delete": {
         "tags": ["Student Settings & Security"],
+        "x-apidog-folder": "3. Student Workspace/Settings & Security",
+        "x-apidog-status": "released",
         "summary": "Disable Two-Factor Authentication",
         "operationId": "studentSettingsTwoFactorDisable",
         "security": [{ "sanctumBearer": [] }],
@@ -2359,6 +2489,8 @@
     "/student/settings/two-factor/recovery-codes": {
       "get": {
         "tags": ["Student Settings & Security"],
+        "x-apidog-folder": "3. Student Workspace/Settings & Security",
+        "x-apidog-status": "released",
         "summary": "Get current 2FA recovery codes",
         "operationId": "studentSettingsRecoveryCodesGet",
         "security": [{ "sanctumBearer": [] }],
@@ -2386,6 +2518,8 @@
       },
       "post": {
         "tags": ["Student Settings & Security"],
+        "x-apidog-folder": "3. Student Workspace/Settings & Security",
+        "x-apidog-status": "released",
         "summary": "Regenerate new 2FA recovery codes",
         "operationId": "studentSettingsRecoveryCodesRegenerate",
         "security": [{ "sanctumBearer": [] }],
@@ -2416,6 +2550,8 @@
     "/student/settings/passkeys": {
       "get": {
         "tags": ["Student Settings & Security"],
+        "x-apidog-folder": "3. Student Workspace/Settings & Security",
+        "x-apidog-status": "released",
         "summary": "List registered WebAuthn Passkeys for the student",
         "operationId": "studentSettingsPasskeysIndex",
         "security": [{ "sanctumBearer": [] }],
@@ -2443,6 +2579,8 @@
       },
       "post": {
         "tags": ["Student Settings & Security"],
+        "x-apidog-folder": "3. Student Workspace/Settings & Security",
+        "x-apidog-status": "released",
         "summary": "Register and store a new WebAuthn Passkey",
         "operationId": "studentSettingsPasskeysStore",
         "security": [{ "sanctumBearer": [] }],
@@ -2478,6 +2616,8 @@
     "/student/settings/passkeys/options": {
       "post": {
         "tags": ["Student Settings & Security"],
+        "x-apidog-folder": "3. Student Workspace/Settings & Security",
+        "x-apidog-status": "released",
         "summary": "Generate WebAuthn Passkey creation challenge options",
         "operationId": "studentSettingsPasskeysOptions",
         "security": [{ "sanctumBearer": [] }],
@@ -2508,6 +2648,8 @@
     "/student/settings/passkeys/{passkeyId}": {
       "delete": {
         "tags": ["Student Settings & Security"],
+        "x-apidog-folder": "3. Student Workspace/Settings & Security",
+        "x-apidog-status": "released",
         "summary": "Delete a registered WebAuthn Passkey",
         "operationId": "studentSettingsPasskeysDestroy",
         "security": [{ "sanctumBearer": [] }],
@@ -2697,28 +2839,21 @@
           "slug": { "type": "string", "example": "comprehensive-speech-therapy-diploma" },
           "title": { "type": "string", "example": "الدبلوم السريري الشامل في أمراض التخاطب والنطق" },
           "title_ar": { "type": "string" },
-          "title_en": { "type": "string" },
-          "description": { "type": "string" },
-          "thumbnail_url": { "type": "string", "format": "uri" },
-          "instructor_name": { "type": "string", "example": "د. هنا المكاوي" },
-          "instructor_title": { "type": "string" },
-          "instructor_avatar": { "type": "string", "nullable": true },
+          "title_en": { "type": "string", "nullable": true },
+          "description": { "type": "string", "nullable": true },
+          "description_ar": { "type": "string", "nullable": true },
+          "description_en": { "type": "string", "nullable": true },
           "price": { "type": "number", "example": 1500 },
           "original_price": { "type": "number", "nullable": true, "example": 2200 },
-          "has_discount": { "type": "boolean", "example": true },
           "currency_symbol": { "type": "string", "example": "ج.م" },
-          "duration_hours": { "type": "number", "example": 40 },
-          "Sequential_lock": { "type": "boolean", "example": true },
-          "is_active": { "type": "boolean", "example": true },
-          "levels_count": { "type": "integer", "example": 4 },
-          "videos_count": { "type": "integer", "example": 24 },
-          "student_status": {
-            "type": "string",
-            "nullable": true,
-            "enum": ["enrolled", "pending", "available", "expired"],
-            "example": "enrolled"
-          },
-          "student_progress": { "type": "integer", "nullable": true, "example": 75 }
+          "currency_name": { "type": "string", "example": "جنيه مصري" },
+          "access_duration_days": { "type": "integer", "example": 365 },
+          "thumbnail": { "type": "string", "example": "/assets/images/course-topic-basics.png" },
+          "promo_video_source": { "type": "string", "nullable": true, "example": "youtube" },
+          "promo_video_url": { "type": "string", "nullable": true },
+          "videos_count": { "type": "integer", "nullable": true, "example": 24 },
+          "is_published": { "type": "boolean", "example": true },
+          "sort_order": { "type": "integer", "example": 1 }
         }
       },
       "Level": {
@@ -2727,9 +2862,14 @@
           "id": { "type": "integer", "example": 1 },
           "course_id": { "type": "integer", "example": 1 },
           "title": { "type": "string", "example": "المستوى الأول: التقييم والتشخيص الإكلينيكي" },
+          "title_ar": { "type": "string" },
+          "title_en": { "type": "string", "nullable": true },
           "description": { "type": "string", "nullable": true },
+          "description_ar": { "type": "string", "nullable": true },
+          "description_en": { "type": "string", "nullable": true },
           "sort_order": { "type": "integer", "example": 1 },
-          "is_free_preview": { "type": "boolean", "example": false },
+          "is_published": { "type": "boolean", "example": true },
+          "is_accessible": { "type": "boolean", "example": true },
           "videos": {
             "type": "array",
             "items": { "$ref": "#/components/schemas/Video" }
@@ -2742,15 +2882,29 @@
           "id": { "type": "integer", "example": 10 },
           "course_id": { "type": "integer", "example": 1 },
           "level_id": { "type": "integer", "nullable": true, "example": 1 },
+          "slug": { "type": "string", "example": "clinical-interview-basics" },
           "title": { "type": "string", "example": "المحاضرة الأولى: دراسة الحالة والمقابلة الإكلينيكية" },
-          "description": { "type": "string", "nullable": true },
+          "title_ar": { "type": "string" },
+          "title_en": { "type": "string", "nullable": true },
+          "video_source": { "type": "string", "example": "bunny" },
           "duration_seconds": { "type": "integer", "example": 1800 },
-          "duration_formatted": { "type": "string", "example": "30:00" },
+          "duration_minutes": { "type": "number", "example": 30 },
+          "min_completion_percentage": { "type": "integer", "example": 80 },
           "sort_order": { "type": "integer", "example": 1 },
           "is_free_preview": { "type": "boolean", "example": true },
-          "provider": { "type": "string", "example": "bunny" },
-          "status": { "type": "string", "example": "ready" },
-          "thumbnail_url": { "type": "string", "nullable": true }
+          "is_published": { "type": "boolean", "example": true },
+          "is_accessible": { "type": "boolean", "example": true },
+          "is_completed": { "type": "boolean", "example": false },
+          "progress": {
+            "type": "object",
+            "nullable": true,
+            "properties": {
+              "watched_seconds": { "type": "integer", "example": 600 },
+              "completion_percentage": { "type": "number", "example": 33.3 },
+              "is_completed": { "type": "boolean", "example": false },
+              "last_watched_at": { "type": "string", "format": "date-time", "nullable": true }
+            }
+          }
         }
       },
       "CourseDetailsResponse": {
@@ -2762,8 +2916,9 @@
             "properties": {
               "course": { "$ref": "#/components/schemas/CourseSummary" },
               "has_enrolled": { "type": "boolean", "example": true },
-              "access_state": { "type": "object" },
+              "pending_receipt": { "$ref": "#/components/schemas/PaymentReceipt" },
               "completed_video_ids": { "type": "array", "items": { "type": "integer" } },
+              "accessible_video_ids": { "type": "array", "items": { "type": "integer" } },
               "total_videos": { "type": "integer", "example": 24 },
               "completed_count": { "type": "integer", "example": 12 },
               "progress_percent": { "type": "integer", "example": 50 },
@@ -2782,29 +2937,31 @@
           "course_id": { "type": "integer", "example": 1 },
           "video_id": { "type": "integer", "nullable": true, "example": 10 },
           "title": { "type": "string", "example": "تطبيق خطة علاجية صوتية لحالة لدغة الراء" },
+          "title_ar": { "type": "string" },
+          "title_en": { "type": "string", "nullable": true },
           "instructions": { "type": "string" },
-          "clinical_case_summary": { "type": "string", "nullable": true },
-          "max_duration_seconds": { "type": "integer", "example": 180 },
-          "passing_score": { "type": "integer", "example": 70 },
-          "is_required": { "type": "boolean", "example": true }
+          "instructions_ar": { "type": "string", "nullable": true },
+          "instructions_en": { "type": "string", "nullable": true },
+          "max_score": { "type": "integer", "example": 100 }
         }
       },
       "TaskSubmission": {
         "type": "object",
         "properties": {
           "id": { "type": "integer", "example": 42 },
-          "clinical_task_id": { "type": "integer", "example": 5 },
+          "task_id": { "type": "integer", "example": 5 },
           "user_id": { "type": "integer", "example": 15 },
-          "audio_url": { "type": "string", "format": "uri" },
-          "duration_seconds": { "type": "integer", "example": 95 },
-          "duration_formatted": { "type": "string", "example": "01:35" },
+          "audio_recording_path": { "type": "string" },
+          "audio_recording_url": { "type": "string", "format": "uri", "nullable": true },
           "student_notes": { "type": "string", "nullable": true },
-          "status": { "type": "string", "enum": ["pending", "graded", "revision_requested"], "example": "graded" },
-          "score": { "type": "number", "nullable": true, "example": 96 },
-          "passed": { "type": "boolean", "example": true },
-          "instructor_feedback": { "type": "string", "nullable": true },
-          "evaluated_at": { "type": "string", "format": "date-time", "nullable": true },
-          "created_at": { "type": "string", "format": "date-time" }
+          "status": { "type": "string", "enum": ["pending", "evaluated", "rejected"], "example": "evaluated" },
+          "score": { "type": "integer", "nullable": true, "example": 96 },
+          "clinical_feedback": { "type": "string", "nullable": true },
+          "graded_by": { "type": "integer", "nullable": true },
+          "grader_name": { "type": "string", "nullable": true },
+          "graded_at": { "type": "string", "format": "date-time", "nullable": true },
+          "created_at": { "type": "string", "format": "date-time" },
+          "updated_at": { "type": "string", "format": "date-time" }
         }
       },
       "PaymentReceipt": {
@@ -2815,15 +2972,15 @@
           "course_id": { "type": "integer", "example": 1 },
           "payment_method": { "type": "string", "enum": ["vodafone_cash", "instapay"], "example": "instapay" },
           "payment_method_label": { "type": "string", "example": "InstaPay" },
-          "sender_name": { "type": "string", "example": "أحمد محمد" },
-          "sender_account": { "type": "string", "example": "ahmed@instapay" },
-          "amount": { "type": "number", "example": 1500 },
+          "sender_identifier": { "type": "string", "example": "ahmed@instapay" },
           "transaction_reference": { "type": "string", "nullable": true },
-          "receipt_image_url": { "type": "string", "format": "uri" },
+          "amount_paid": { "type": "number", "example": 1500 },
+          "receipt_image_url": { "type": "string", "format": "uri", "nullable": true },
           "status": { "type": "string", "enum": ["pending", "approved", "rejected"], "example": "pending" },
-          "rejection_reason": { "type": "string", "nullable": true },
+          "admin_notes": { "type": "string", "nullable": true },
           "reviewed_at": { "type": "string", "format": "date-time", "nullable": true },
-          "created_at": { "type": "string", "format": "date-time" }
+          "created_at": { "type": "string", "format": "date-time" },
+          "updated_at": { "type": "string", "format": "date-time" }
         }
       },
       "Certificate": {
@@ -2834,28 +2991,31 @@
           "course_id": { "type": "integer", "example": 1 },
           "certificate_code": { "type": "string", "example": "ALAMEEN-2026-8F92A" },
           "verification_url": { "type": "string", "format": "uri" },
-          "qr_code_svg": { "type": "string", "nullable": true },
           "file_url": { "type": "string", "format": "uri", "nullable": true },
           "file_type": { "type": "string", "nullable": true, "example": "pdf" },
-          "completion_percentage": { "type": "integer", "example": 100 },
-          "issued_at": { "type": "string", "format": "date-time" }
+          "signatory_name": { "type": "string", "nullable": true },
+          "signatory_title": { "type": "string", "nullable": true },
+          "issued_at": { "type": "string", "format": "date-time" },
+          "created_at": { "type": "string", "format": "date-time" }
         }
       },
       "Notification": {
         "type": "object",
         "properties": {
-          "id": { "type": "integer", "example": 101 },
+          "id": { "type": "string", "format": "uuid", "example": "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d" },
           "type": { "type": "string", "example": "receipt_approved" },
           "title": { "type": "string", "example": "تم تفعيل اشتراكك في المساق" },
+          "message": { "type": "string" },
           "body": { "type": "string" },
+          "icon": { "type": "string", "example": "bell" },
+          "color": { "type": "string", "example": "primary" },
           "action_url": { "type": "string", "nullable": true },
-          "action_text": { "type": "string", "nullable": true },
-          "icon": { "type": "string" },
-          "data": { "type": "object", "nullable": true },
+          "action_label": { "type": "string", "nullable": true },
+          "meta": { "type": "object", "nullable": true },
           "is_read": { "type": "boolean", "example": false },
           "read_at": { "type": "string", "format": "date-time", "nullable": true },
           "created_at": { "type": "string", "format": "date-time" },
-          "time_formatted": { "type": "string", "example": "منذ 5 دقائق" }
+          "time_ago": { "type": "string", "example": "منذ 5 دقائق" }
         }
       },
       "SupportTicket": {
@@ -2863,6 +3023,8 @@
         "properties": {
           "id": { "type": "integer", "example": 12 },
           "ticket_number": { "type": "string", "example": "TKT-2026-0012" },
+          "user_id": { "type": "integer", "example": 15 },
+          "course_id": { "type": "integer", "nullable": true },
           "subject": { "type": "string", "example": "استفسار حول التكليف السريري" },
           "category": { "type": "string", "example": "clinical" },
           "category_label": { "type": "string", "example": "استفسار سريري / أكاديمي" },
@@ -2870,9 +3032,12 @@
           "priority_label": { "type": "string", "example": "عادية" },
           "status": { "type": "string", "example": "open" },
           "status_label": { "type": "string", "example": "مفتوحة" },
+          "is_open": { "type": "boolean", "example": true },
           "is_closed": { "type": "boolean", "example": false },
-          "unread_count": { "type": "integer", "example": 1 },
-          "last_message_at": { "type": "string", "format": "date-time", "nullable": true },
+          "unread_by_student_count": { "type": "integer", "example": 1 },
+          "last_reply_at": { "type": "string", "format": "date-time", "nullable": true },
+          "last_reply_by": { "type": "string", "nullable": true },
+          "closed_at": { "type": "string", "format": "date-time", "nullable": true },
           "created_at": { "type": "string", "format": "date-time" },
           "messages": {
             "type": "array",
@@ -2884,19 +3049,19 @@
         "type": "object",
         "properties": {
           "id": { "type": "integer", "example": 88 },
-          "support_ticket_id": { "type": "integer", "example": 12 },
-          "type": { "type": "string", "enum": ["student", "admin", "system"], "example": "student" },
-          "is_student": { "type": "boolean", "example": true },
-          "is_admin": { "type": "boolean", "example": false },
-          "is_system": { "type": "boolean", "example": false },
+          "ticket_id": { "type": "integer", "example": 12 },
+          "sender_type": { "type": "string", "enum": ["student", "admin", "system"], "example": "student" },
+          "sender_id": { "type": "integer", "nullable": true, "example": 15 },
           "sender_name": { "type": "string", "example": "أحمد محمد" },
-          "sender_avatar": { "type": "string", "nullable": true },
+          "is_system_event": { "type": "boolean", "example": false },
           "message": { "type": "string" },
-          "attachments": { "type": "array", "items": { "type": "object" } },
-          "read_at": { "type": "string", "format": "date-time", "nullable": true },
+          "attachment_url": { "type": "string", "nullable": true },
+          "attachment_name": { "type": "string", "nullable": true },
+          "attachment_size": { "type": "string", "nullable": true },
+          "is_image": { "type": "boolean", "example": false },
+          "is_read": { "type": "boolean", "example": true },
           "created_at": { "type": "string", "format": "date-time" },
-          "time_formatted": { "type": "string" },
-          "exact_time": { "type": "string" }
+          "time_ago": { "type": "string" }
         }
       }
     }

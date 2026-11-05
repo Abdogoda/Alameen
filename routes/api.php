@@ -183,7 +183,9 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
                 Route::post('/profile', [SettingsController::class, 'updateProfile'])->name('profile.update');
                 Route::put('/profile', [SettingsController::class, 'updateProfile'])->name('profile.put');
                 Route::delete('/profile', [SettingsController::class, 'deleteAccount'])->name('profile.delete');
+                Route::post('/profile/delete', [SettingsController::class, 'deleteAccount'])->name('profile.delete.post');
 
+                Route::post('/password', [SettingsController::class, 'updatePassword'])->name('password.update.post');
                 Route::put('/password', [SettingsController::class, 'updatePassword'])->name('password.update');
 
                 Route::get('/security', [SettingsController::class, 'securityOverview'])->name('security.overview');

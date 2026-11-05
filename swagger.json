@@ -21,61 +21,61 @@
   ],
   "tags": [
     {
-      "name": "Public & Marketing",
+      "name": "Public",
       "description": "Public platform configuration, landing page content, course catalog, reviews, contact info, SEO metadata, locale switching, and public certificate verification.",
-      "x-apidog-folder": "1. Public & Marketing"
+      "x-apidog-folder": "Public"
     },
     {
-      "name": "Authentication & Recovery",
+      "name": "Auth",
       "description": "Student registration, email/password login, 2FA login challenge, Firebase & Google OAuth login, WebAuthn Passkey login, and 6-digit OTP password reset.",
-      "x-apidog-folder": "2. Authentication & Recovery"
+      "x-apidog-folder": "Auth"
     },
     {
-      "name": "Student Dashboard",
+      "name": "Dashboard",
       "description": "Aggregated student dashboard metrics, enrolled/pending/available courses, resume playback, upcoming clinical tasks, and earned certificates.",
-      "x-apidog-folder": "3. Student Workspace/Dashboard"
+      "x-apidog-folder": "Student/Dashboard"
     },
     {
-      "name": "Student Courses & Receipts",
+      "name": "Courses",
       "description": "Student course catalog, curriculum progress, and manual payment receipt submission (Vodafone Cash / InstaPay).",
-      "x-apidog-folder": "3. Student Workspace/Courses & Receipts"
+      "x-apidog-folder": "Student/Courses"
     },
     {
-      "name": "Student Lessons & DRM",
+      "name": "Lessons",
       "description": "Lesson video playback, dynamic watermark metadata, short-lived signed Bunny/HLS tokens, watch progress heartbeats, and anti-piracy violation reporting.",
-      "x-apidog-folder": "3. Student Workspace/Lessons & DRM"
+      "x-apidog-folder": "Student/Lessons"
     },
     {
-      "name": "Clinical Assignments & Grades",
+      "name": "Assignments",
       "description": "Clinical tasks (voice assignments), audio recording submission (multipart or base64), grades overview, and instructor evaluation results.",
-      "x-apidog-folder": "3. Student Workspace/Clinical Assignments & Grades"
+      "x-apidog-folder": "Student/Assignments"
     },
     {
-      "name": "Student Certificates",
+      "name": "Certificates",
       "description": "Earned course completion certificates, QR codes, verification links, and PDF/image downloads.",
-      "x-apidog-folder": "3. Student Workspace/Certificates"
+      "x-apidog-folder": "Student/Certificates"
     },
     {
-      "name": "Student Notifications",
+      "name": "Notifications",
       "description": "Student notification inbox, navbar bell recent notifications, read tracking, and deletion.",
-      "x-apidog-folder": "3. Student Workspace/Notifications"
+      "x-apidog-folder": "Student/Notifications"
     },
     {
-      "name": "Student Support Tickets",
+      "name": "Support",
       "description": "Technical & clinical support tickets, file attachments, replies, status transitions, and real-time message polling.",
-      "x-apidog-folder": "3. Student Workspace/Support Tickets"
+      "x-apidog-folder": "Student/Support"
     },
     {
-      "name": "Student Settings & Security",
+      "name": "Settings",
       "description": "Student profile management, avatar upload, password update, Two-Factor Authentication (TOTP), and WebAuthn Passkey management.",
-      "x-apidog-folder": "3. Student Workspace/Settings & Security"
+      "x-apidog-folder": "Student/Settings"
     }
   ],
   "paths": {
     "/openapi.json": {
       "get": {
-        "tags": ["Public & Marketing"],
-        "x-apidog-folder": "1. Public & Marketing",
+        "tags": ["Public"],
+        "x-apidog-folder": "Public",
         "x-apidog-status": "released",
         "summary": "Get OpenAPI 3.0.3 Specification (Apidog / Swagger)",
         "operationId": "getOpenApiSpec",
@@ -88,8 +88,8 @@
     },
     "/public/bootstrap": {
       "get": {
-        "tags": ["Public & Marketing"],
-        "x-apidog-folder": "1. Public & Marketing",
+        "tags": ["Public"],
+        "x-apidog-folder": "Public",
         "x-apidog-status": "released",
         "summary": "Get platform branding, currencies, feature flags, and supported locales",
         "operationId": "publicBootstrap",
@@ -151,8 +151,8 @@
     },
     "/public/home": {
       "get": {
-        "tags": ["Public & Marketing"],
-        "x-apidog-folder": "1. Public & Marketing",
+        "tags": ["Public"],
+        "x-apidog-folder": "Public",
         "x-apidog-status": "released",
         "summary": "Get landing page CMS sections, featured courses, stats, and SEO metadata",
         "operationId": "publicHome",
@@ -190,8 +190,8 @@
     },
     "/public/courses": {
       "get": {
-        "tags": ["Public & Marketing"],
-        "x-apidog-folder": "1. Public & Marketing",
+        "tags": ["Public"],
+        "x-apidog-folder": "Public",
         "x-apidog-status": "released",
         "summary": "List all active published courses in the public catalog",
         "operationId": "publicCoursesIndex",
@@ -226,8 +226,8 @@
     },
     "/public/courses/{slug}": {
       "get": {
-        "tags": ["Public & Marketing"],
-        "x-apidog-folder": "1. Public & Marketing",
+        "tags": ["Public"],
+        "x-apidog-folder": "Public",
         "x-apidog-status": "released",
         "summary": "Get public course details, curriculum levels, and preview lessons",
         "operationId": "publicCoursesShow",
@@ -256,8 +256,8 @@
     },
     "/public/reviews": {
       "get": {
-        "tags": ["Public & Marketing"],
-        "x-apidog-folder": "1. Public & Marketing",
+        "tags": ["Public"],
+        "x-apidog-folder": "Public",
         "x-apidog-status": "released",
         "summary": "Get clinical testimonials, student reviews, and feedback media",
         "operationId": "publicReviews",
@@ -284,8 +284,8 @@
     },
     "/public/contact": {
       "get": {
-        "tags": ["Public & Marketing"],
-        "x-apidog-folder": "1. Public & Marketing",
+        "tags": ["Public"],
+        "x-apidog-folder": "Public",
         "x-apidog-status": "released",
         "summary": "Get platform contact information, social links, and support channels",
         "operationId": "publicContact",
@@ -312,8 +312,8 @@
     },
     "/public/seo/{pageKey}": {
       "get": {
-        "tags": ["Public & Marketing"],
-        "x-apidog-folder": "1. Public & Marketing",
+        "tags": ["Public"],
+        "x-apidog-folder": "Public",
         "x-apidog-status": "released",
         "summary": "Get localized SEO metadata and OpenGraph tags for a page key",
         "operationId": "publicSeo",
@@ -347,8 +347,8 @@
     },
     "/public/certificates/verify/{code}": {
       "get": {
-        "tags": ["Public & Marketing"],
-        "x-apidog-folder": "1. Public & Marketing",
+        "tags": ["Public"],
+        "x-apidog-folder": "Public",
         "x-apidog-status": "released",
         "summary": "Verify a certificate publicly by its unique certificate code",
         "operationId": "publicVerifyCertificate",
@@ -391,8 +391,8 @@
     },
     "/public/locale": {
       "post": {
-        "tags": ["Public & Marketing"],
-        "x-apidog-folder": "1. Public & Marketing",
+        "tags": ["Public"],
+        "x-apidog-folder": "Public",
         "x-apidog-status": "released",
         "summary": "Switch active language (ar / en) and sync with authenticated profile if signed in",
         "operationId": "publicSwitchLocale",
@@ -443,8 +443,8 @@
     },
     "/auth/register": {
       "post": {
-        "tags": ["Authentication & Recovery"],
-        "x-apidog-folder": "2. Authentication & Recovery",
+        "tags": ["Auth"],
+        "x-apidog-folder": "Auth",
         "x-apidog-status": "released",
         "summary": "Register a new student account (created in pending status awaiting admin approval)",
         "operationId": "authRegister",
@@ -499,8 +499,8 @@
     },
     "/auth/login": {
       "post": {
-        "tags": ["Authentication & Recovery"],
-        "x-apidog-folder": "2. Authentication & Recovery",
+        "tags": ["Auth"],
+        "x-apidog-folder": "Auth",
         "x-apidog-status": "released",
         "summary": "Login with email and password to receive a Sanctum Bearer token (or 2FA challenge)",
         "operationId": "authLogin",
@@ -536,8 +536,8 @@
     },
     "/auth/two-factor-challenge": {
       "post": {
-        "tags": ["Authentication & Recovery"],
-        "x-apidog-folder": "2. Authentication & Recovery",
+        "tags": ["Auth"],
+        "x-apidog-folder": "Auth",
         "x-apidog-status": "released",
         "summary": "Verify 2FA login challenge using a 6-digit TOTP code or recovery code",
         "operationId": "authTwoFactorChallenge",
@@ -573,8 +573,8 @@
     },
     "/auth/firebase": {
       "post": {
-        "tags": ["Authentication & Recovery"],
-        "x-apidog-folder": "2. Authentication & Recovery",
+        "tags": ["Auth"],
+        "x-apidog-folder": "Auth",
         "x-apidog-status": "released",
         "summary": "Authenticate or register using a Firebase ID Token",
         "operationId": "authFirebase",
@@ -610,8 +610,8 @@
     },
     "/auth/google/redirect": {
       "get": {
-        "tags": ["Authentication & Recovery"],
-        "x-apidog-folder": "2. Authentication & Recovery",
+        "tags": ["Auth"],
+        "x-apidog-folder": "Auth",
         "x-apidog-status": "released",
         "summary": "Get Google OAuth 2.0 authorization redirect URL",
         "operationId": "authGoogleRedirect",
@@ -640,8 +640,8 @@
     },
     "/auth/google/token": {
       "post": {
-        "tags": ["Authentication & Recovery"],
-        "x-apidog-folder": "2. Authentication & Recovery",
+        "tags": ["Auth"],
+        "x-apidog-folder": "Auth",
         "x-apidog-status": "released",
         "summary": "Authenticate or register using a Google OAuth access token",
         "operationId": "authGoogleToken",
@@ -675,8 +675,8 @@
     },
     "/auth/passkeys/login-options": {
       "post": {
-        "tags": ["Authentication & Recovery"],
-        "x-apidog-folder": "2. Authentication & Recovery",
+        "tags": ["Auth"],
+        "x-apidog-folder": "Auth",
         "x-apidog-status": "released",
         "summary": "Generate WebAuthn Passkey authentication assertion challenge options",
         "operationId": "authPasskeyLoginOptions",
@@ -719,8 +719,8 @@
     },
     "/auth/passkeys/login": {
       "post": {
-        "tags": ["Authentication & Recovery"],
-        "x-apidog-folder": "2. Authentication & Recovery",
+        "tags": ["Auth"],
+        "x-apidog-folder": "Auth",
         "x-apidog-status": "released",
         "summary": "Verify WebAuthn Passkey assertion and issue a Sanctum Bearer token",
         "operationId": "authPasskeyLogin",
@@ -755,8 +755,8 @@
     },
     "/auth/forgot-password": {
       "post": {
-        "tags": ["Authentication & Recovery"],
-        "x-apidog-folder": "2. Authentication & Recovery",
+        "tags": ["Auth"],
+        "x-apidog-folder": "Auth",
         "x-apidog-status": "released",
         "summary": "Send a 6-digit password reset OTP code to the student's email",
         "operationId": "authForgotPassword",
@@ -790,8 +790,8 @@
     },
     "/auth/verify-otp": {
       "post": {
-        "tags": ["Authentication & Recovery"],
-        "x-apidog-folder": "2. Authentication & Recovery",
+        "tags": ["Auth"],
+        "x-apidog-folder": "Auth",
         "x-apidog-status": "released",
         "summary": "Verify a 6-digit password reset OTP code before resetting password",
         "operationId": "authVerifyOtp",
@@ -832,8 +832,8 @@
     },
     "/auth/reset-password": {
       "post": {
-        "tags": ["Authentication & Recovery"],
-        "x-apidog-folder": "2. Authentication & Recovery",
+        "tags": ["Auth"],
+        "x-apidog-folder": "Auth",
         "x-apidog-status": "released",
         "summary": "Reset student password using the 6-digit email OTP code",
         "operationId": "authResetPassword",
@@ -870,8 +870,8 @@
     },
     "/auth/me": {
       "get": {
-        "tags": ["Authentication & Recovery"],
-        "x-apidog-folder": "2. Authentication & Recovery",
+        "tags": ["Auth"],
+        "x-apidog-folder": "Auth",
         "x-apidog-status": "released",
         "summary": "Get currently authenticated student profile",
         "operationId": "authMe",
@@ -903,8 +903,8 @@
     },
     "/auth/email/verification-notification": {
       "post": {
-        "tags": ["Authentication & Recovery"],
-        "x-apidog-folder": "2. Authentication & Recovery",
+        "tags": ["Auth"],
+        "x-apidog-folder": "Auth",
         "x-apidog-status": "released",
         "summary": "Resend email verification notification link to the student",
         "operationId": "authResendVerification",
@@ -924,8 +924,8 @@
     },
     "/auth/logout": {
       "post": {
-        "tags": ["Authentication & Recovery"],
-        "x-apidog-folder": "2. Authentication & Recovery",
+        "tags": ["Auth"],
+        "x-apidog-folder": "Auth",
         "x-apidog-status": "released",
         "summary": "Revoke current Sanctum token (or all tokens if all_devices=true)",
         "operationId": "authLogout",
@@ -958,8 +958,8 @@
     },
     "/student/dashboard": {
       "get": {
-        "tags": ["Student Dashboard"],
-        "x-apidog-folder": "3. Student Workspace/Dashboard",
+        "tags": ["Dashboard"],
+        "x-apidog-folder": "Student/Dashboard",
         "x-apidog-status": "released",
         "summary": "Get student dashboard overview (enrolled courses, watch stats, resume lesson, upcoming tasks, certificates)",
         "operationId": "studentDashboard",
@@ -1004,8 +1004,8 @@
     },
     "/student/courses": {
       "get": {
-        "tags": ["Student Courses & Receipts"],
-        "x-apidog-folder": "3. Student Workspace/Courses & Receipts",
+        "tags": ["Courses"],
+        "x-apidog-folder": "Student/Courses",
         "x-apidog-status": "released",
         "summary": "Get student's enrolled, pending, and available courses",
         "operationId": "studentCoursesIndex",
@@ -1042,8 +1042,8 @@
     },
     "/student/courses/{slug}": {
       "get": {
-        "tags": ["Student Courses & Receipts"],
-        "x-apidog-folder": "3. Student Workspace/Courses & Receipts",
+        "tags": ["Courses"],
+        "x-apidog-folder": "Student/Courses",
         "x-apidog-status": "released",
         "summary": "Get full course curriculum, student watch progress, access state, and certificate",
         "operationId": "studentCoursesShow",
@@ -1073,8 +1073,8 @@
     },
     "/student/courses/{slug}/receipt": {
       "post": {
-        "tags": ["Student Courses & Receipts"],
-        "x-apidog-folder": "3. Student Workspace/Courses & Receipts",
+        "tags": ["Courses"],
+        "x-apidog-folder": "Student/Courses",
         "x-apidog-status": "released",
         "summary": "Submit a manual payment receipt (Vodafone Cash / InstaPay) to enroll in a course",
         "operationId": "studentSubmitReceipt",
@@ -1135,8 +1135,8 @@
     },
     "/student/receipts": {
       "get": {
-        "tags": ["Student Courses & Receipts"],
-        "x-apidog-folder": "3. Student Workspace/Courses & Receipts",
+        "tags": ["Courses"],
+        "x-apidog-folder": "Student/Courses",
         "x-apidog-status": "released",
         "summary": "List all payment receipts submitted by the authenticated student",
         "operationId": "studentReceiptsIndex",
@@ -1174,8 +1174,8 @@
     },
     "/student/courses/{slug}/lessons/{lesson}": {
       "get": {
-        "tags": ["Student Lessons & DRM"],
-        "x-apidog-folder": "3. Student Workspace/Lessons & DRM",
+        "tags": ["Lessons"],
+        "x-apidog-folder": "Student/Lessons",
         "x-apidog-status": "released",
         "summary": "Get lesson video player data, DRM signed URLs, watermark text, curriculum, and clinical tasks",
         "operationId": "studentLessonShow",
@@ -1248,8 +1248,8 @@
     },
     "/student/courses/{slug}/lessons/{lesson}/playback-token": {
       "post": {
-        "tags": ["Student Lessons & DRM"],
-        "x-apidog-folder": "3. Student Workspace/Lessons & DRM",
+        "tags": ["Lessons"],
+        "x-apidog-folder": "Student/Lessons",
         "x-apidog-status": "released",
         "summary": "Refresh short-lived signed Bunny Stream / HLS playback URLs for the active lesson",
         "operationId": "studentLessonPlaybackToken",
@@ -1293,8 +1293,8 @@
     },
     "/student/courses/{slug}/lessons/{lesson}/progress": {
       "post": {
-        "tags": ["Student Lessons & DRM"],
-        "x-apidog-folder": "3. Student Workspace/Lessons & DRM",
+        "tags": ["Lessons"],
+        "x-apidog-folder": "Student/Lessons",
         "x-apidog-status": "released",
         "summary": "Record video watch progress heartbeat and trigger automatic certificate issuance upon completion",
         "operationId": "studentLessonRecordProgress",
@@ -1354,8 +1354,8 @@
     },
     "/student/security/violation": {
       "post": {
-        "tags": ["Student Lessons & DRM"],
-        "x-apidog-folder": "3. Student Workspace/Lessons & DRM",
+        "tags": ["Lessons"],
+        "x-apidog-folder": "Student/Lessons",
         "x-apidog-status": "released",
         "summary": "Report a client-side DRM or anti-piracy security violation",
         "operationId": "studentReportViolation",
@@ -1396,8 +1396,8 @@
     },
     "/student/assignments": {
       "get": {
-        "tags": ["Clinical Assignments & Grades"],
-        "x-apidog-folder": "3. Student Workspace/Clinical Assignments & Grades",
+        "tags": ["Assignments"],
+        "x-apidog-folder": "Student/Assignments",
         "x-apidog-status": "released",
         "summary": "List all clinical tasks (voice assignments) for the student's enrolled courses",
         "operationId": "studentAssignmentsIndex",
@@ -1431,8 +1431,8 @@
     },
     "/student/assignments/{task}": {
       "get": {
-        "tags": ["Clinical Assignments & Grades"],
-        "x-apidog-folder": "3. Student Workspace/Clinical Assignments & Grades",
+        "tags": ["Assignments"],
+        "x-apidog-folder": "Student/Assignments",
         "x-apidog-status": "released",
         "summary": "Get details of a specific clinical task and the student's latest submission",
         "operationId": "studentAssignmentsShow",
@@ -1474,8 +1474,8 @@
     },
     "/student/assignments/{task}/submit": {
       "post": {
-        "tags": ["Clinical Assignments & Grades"],
-        "x-apidog-folder": "3. Student Workspace/Clinical Assignments & Grades",
+        "tags": ["Assignments"],
+        "x-apidog-folder": "Student/Assignments",
         "x-apidog-status": "released",
         "summary": "Submit a voice recording (multipart audio file or base64 audio) for a clinical task",
         "operationId": "studentAssignmentsSubmit",
@@ -1544,8 +1544,8 @@
     },
     "/student/grades": {
       "get": {
-        "tags": ["Clinical Assignments & Grades"],
-        "x-apidog-folder": "3. Student Workspace/Clinical Assignments & Grades",
+        "tags": ["Assignments"],
+        "x-apidog-folder": "Student/Assignments",
         "x-apidog-status": "released",
         "summary": "Get student grades overview, average score, and evaluated clinical task submissions",
         "operationId": "studentGradesIndex",
@@ -1585,8 +1585,8 @@
     },
     "/student/submissions/{submission}": {
       "get": {
-        "tags": ["Clinical Assignments & Grades"],
-        "x-apidog-folder": "3. Student Workspace/Clinical Assignments & Grades",
+        "tags": ["Assignments"],
+        "x-apidog-folder": "Student/Assignments",
         "x-apidog-status": "released",
         "summary": "Get detailed instructor evaluation and feedback for a specific submission",
         "operationId": "studentSubmissionsShow",
@@ -1626,8 +1626,8 @@
     },
     "/student/certificates": {
       "get": {
-        "tags": ["Student Certificates"],
-        "x-apidog-folder": "3. Student Workspace/Certificates",
+        "tags": ["Certificates"],
+        "x-apidog-folder": "Student/Certificates",
         "x-apidog-status": "released",
         "summary": "List all certificates earned by the authenticated student",
         "operationId": "studentCertificatesIndex",
@@ -1657,8 +1657,8 @@
     },
     "/student/certificates/{code}": {
       "get": {
-        "tags": ["Student Certificates"],
-        "x-apidog-folder": "3. Student Workspace/Certificates",
+        "tags": ["Certificates"],
+        "x-apidog-folder": "Student/Certificates",
         "x-apidog-status": "released",
         "summary": "Get details, QR SVG, verification link, and file URL for a specific student certificate",
         "operationId": "studentCertificatesShow",
@@ -1698,8 +1698,8 @@
     },
     "/student/notifications": {
       "get": {
-        "tags": ["Student Notifications"],
-        "x-apidog-folder": "3. Student Workspace/Notifications",
+        "tags": ["Notifications"],
+        "x-apidog-folder": "Student/Notifications",
         "x-apidog-status": "released",
         "summary": "List paginated student notifications with filter (all, unread, read)",
         "operationId": "studentNotificationsIndex",
@@ -1751,8 +1751,8 @@
     },
     "/student/notifications/recent": {
       "get": {
-        "tags": ["Student Notifications"],
-        "x-apidog-folder": "3. Student Workspace/Notifications",
+        "tags": ["Notifications"],
+        "x-apidog-folder": "Student/Notifications",
         "x-apidog-status": "released",
         "summary": "Get recent notifications and unread count for navbar bell dropdown",
         "operationId": "studentNotificationsRecent",
@@ -1791,8 +1791,8 @@
     },
     "/student/notifications/read-all": {
       "post": {
-        "tags": ["Student Notifications"],
-        "x-apidog-folder": "3. Student Workspace/Notifications",
+        "tags": ["Notifications"],
+        "x-apidog-folder": "Student/Notifications",
         "x-apidog-status": "released",
         "summary": "Mark all unread notifications as read",
         "operationId": "studentNotificationsReadAll",
@@ -1811,8 +1811,8 @@
     },
     "/student/notifications/{id}/read": {
       "post": {
-        "tags": ["Student Notifications"],
-        "x-apidog-folder": "3. Student Workspace/Notifications",
+        "tags": ["Notifications"],
+        "x-apidog-folder": "Student/Notifications",
         "x-apidog-status": "released",
         "summary": "Mark a specific notification as read",
         "operationId": "studentNotificationsRead",
@@ -1839,8 +1839,8 @@
     },
     "/student/notifications/{id}": {
       "delete": {
-        "tags": ["Student Notifications"],
-        "x-apidog-folder": "3. Student Workspace/Notifications",
+        "tags": ["Notifications"],
+        "x-apidog-folder": "Student/Notifications",
         "x-apidog-status": "released",
         "summary": "Delete a notification from the student's inbox",
         "operationId": "studentNotificationsDestroy",
@@ -1868,8 +1868,8 @@
     },
     "/student/support-tickets": {
       "get": {
-        "tags": ["Student Support Tickets"],
-        "x-apidog-folder": "3. Student Workspace/Support Tickets",
+        "tags": ["Support"],
+        "x-apidog-folder": "Student/Support",
         "x-apidog-status": "released",
         "summary": "List student support tickets with status counts and filterable pagination",
         "operationId": "studentSupportTicketsIndex",
@@ -1926,8 +1926,8 @@
         }
       },
       "post": {
-        "tags": ["Student Support Tickets"],
-        "x-apidog-folder": "3. Student Workspace/Support Tickets",
+        "tags": ["Support"],
+        "x-apidog-folder": "Student/Support",
         "x-apidog-status": "released",
         "summary": "Create a new support ticket with optional file attachments",
         "operationId": "studentSupportTicketsStore",
@@ -1981,8 +1981,8 @@
     },
     "/student/support-tickets/{ticket}": {
       "get": {
-        "tags": ["Student Support Tickets"],
-        "x-apidog-folder": "3. Student Workspace/Support Tickets",
+        "tags": ["Support"],
+        "x-apidog-folder": "Student/Support",
         "x-apidog-status": "released",
         "summary": "Get full support ticket conversation thread and mark admin replies as read",
         "operationId": "studentSupportTicketsShow",
@@ -2022,8 +2022,8 @@
     },
     "/student/support-tickets/{ticket}/reply": {
       "post": {
-        "tags": ["Student Support Tickets"],
-        "x-apidog-folder": "3. Student Workspace/Support Tickets",
+        "tags": ["Support"],
+        "x-apidog-folder": "Student/Support",
         "x-apidog-status": "released",
         "summary": "Send a student reply message on a support ticket",
         "operationId": "studentSupportTicketsReply",
@@ -2081,8 +2081,8 @@
     },
     "/student/support-tickets/{ticket}/close": {
       "post": {
-        "tags": ["Student Support Tickets"],
-        "x-apidog-folder": "3. Student Workspace/Support Tickets",
+        "tags": ["Support"],
+        "x-apidog-folder": "Student/Support",
         "x-apidog-status": "released",
         "summary": "Close a support ticket by the student",
         "operationId": "studentSupportTicketsClose",
@@ -2109,8 +2109,8 @@
     },
     "/student/support-tickets/{ticket}/reopen": {
       "post": {
-        "tags": ["Student Support Tickets"],
-        "x-apidog-folder": "3. Student Workspace/Support Tickets",
+        "tags": ["Support"],
+        "x-apidog-folder": "Student/Support",
         "x-apidog-status": "released",
         "summary": "Reopen a closed or resolved support ticket",
         "operationId": "studentSupportTicketsReopen",
@@ -2137,8 +2137,8 @@
     },
     "/student/support-tickets/{ticket}/poll": {
       "get": {
-        "tags": ["Student Support Tickets"],
-        "x-apidog-folder": "3. Student Workspace/Support Tickets",
+        "tags": ["Support"],
+        "x-apidog-folder": "Student/Support",
         "x-apidog-status": "released",
         "summary": "Poll for new messages on a support ticket after after_id",
         "operationId": "studentSupportTicketsPoll",
@@ -2186,8 +2186,8 @@
     },
     "/student/settings/profile": {
       "get": {
-        "tags": ["Student Settings & Security"],
-        "x-apidog-folder": "3. Student Workspace/Settings & Security",
+        "tags": ["Settings"],
+        "x-apidog-folder": "Student/Settings",
         "x-apidog-status": "released",
         "summary": "Get student profile details",
         "operationId": "studentSettingsProfileShow",
@@ -2215,8 +2215,8 @@
         }
       },
       "post": {
-        "tags": ["Student Settings & Security"],
-        "x-apidog-folder": "3. Student Workspace/Settings & Security",
+        "tags": ["Settings"],
+        "x-apidog-folder": "Student/Settings",
         "x-apidog-status": "released",
         "summary": "Update student profile details, locale, and optional avatar image",
         "operationId": "studentSettingsProfileUpdate",
@@ -2282,8 +2282,8 @@
         }
       },
       "delete": {
-        "tags": ["Student Settings & Security"],
-        "x-apidog-folder": "3. Student Workspace/Settings & Security",
+        "tags": ["Settings"],
+        "x-apidog-folder": "Student/Settings",
         "x-apidog-status": "released",
         "summary": "Permanently delete student account after verifying current password",
         "operationId": "studentSettingsProfileDelete",
@@ -2317,8 +2317,8 @@
     },
     "/student/settings/password": {
       "put": {
-        "tags": ["Student Settings & Security"],
-        "x-apidog-folder": "3. Student Workspace/Settings & Security",
+        "tags": ["Settings"],
+        "x-apidog-folder": "Student/Settings",
         "x-apidog-status": "released",
         "summary": "Update student password",
         "operationId": "studentSettingsPasswordUpdate",
@@ -2354,8 +2354,8 @@
     },
     "/student/settings/security": {
       "get": {
-        "tags": ["Student Settings & Security"],
-        "x-apidog-folder": "3. Student Workspace/Settings & Security",
+        "tags": ["Settings"],
+        "x-apidog-folder": "Student/Settings",
         "x-apidog-status": "released",
         "summary": "Get student security overview (2FA status and registered passkeys)",
         "operationId": "studentSettingsSecurityOverview",
@@ -2386,8 +2386,8 @@
     },
     "/student/settings/two-factor/enable": {
       "post": {
-        "tags": ["Student Settings & Security"],
-        "x-apidog-folder": "3. Student Workspace/Settings & Security",
+        "tags": ["Settings"],
+        "x-apidog-folder": "Student/Settings",
         "x-apidog-status": "released",
         "summary": "Enable Two-Factor Authentication setup and get QR code SVG & secret key",
         "operationId": "studentSettingsTwoFactorEnable",
@@ -2421,8 +2421,8 @@
     },
     "/student/settings/two-factor/confirm": {
       "post": {
-        "tags": ["Student Settings & Security"],
-        "x-apidog-folder": "3. Student Workspace/Settings & Security",
+        "tags": ["Settings"],
+        "x-apidog-folder": "Student/Settings",
         "x-apidog-status": "released",
         "summary": "Confirm Two-Factor Authentication setup using a 6-digit TOTP code",
         "operationId": "studentSettingsTwoFactorConfirm",
@@ -2468,8 +2468,8 @@
     },
     "/student/settings/two-factor": {
       "delete": {
-        "tags": ["Student Settings & Security"],
-        "x-apidog-folder": "3. Student Workspace/Settings & Security",
+        "tags": ["Settings"],
+        "x-apidog-folder": "Student/Settings",
         "x-apidog-status": "released",
         "summary": "Disable Two-Factor Authentication",
         "operationId": "studentSettingsTwoFactorDisable",
@@ -2488,8 +2488,8 @@
     },
     "/student/settings/two-factor/recovery-codes": {
       "get": {
-        "tags": ["Student Settings & Security"],
-        "x-apidog-folder": "3. Student Workspace/Settings & Security",
+        "tags": ["Settings"],
+        "x-apidog-folder": "Student/Settings",
         "x-apidog-status": "released",
         "summary": "Get current 2FA recovery codes",
         "operationId": "studentSettingsRecoveryCodesGet",
@@ -2517,8 +2517,8 @@
         }
       },
       "post": {
-        "tags": ["Student Settings & Security"],
-        "x-apidog-folder": "3. Student Workspace/Settings & Security",
+        "tags": ["Settings"],
+        "x-apidog-folder": "Student/Settings",
         "x-apidog-status": "released",
         "summary": "Regenerate new 2FA recovery codes",
         "operationId": "studentSettingsRecoveryCodesRegenerate",
@@ -2549,8 +2549,8 @@
     },
     "/student/settings/passkeys": {
       "get": {
-        "tags": ["Student Settings & Security"],
-        "x-apidog-folder": "3. Student Workspace/Settings & Security",
+        "tags": ["Settings"],
+        "x-apidog-folder": "Student/Settings",
         "x-apidog-status": "released",
         "summary": "List registered WebAuthn Passkeys for the student",
         "operationId": "studentSettingsPasskeysIndex",
@@ -2578,8 +2578,8 @@
         }
       },
       "post": {
-        "tags": ["Student Settings & Security"],
-        "x-apidog-folder": "3. Student Workspace/Settings & Security",
+        "tags": ["Settings"],
+        "x-apidog-folder": "Student/Settings",
         "x-apidog-status": "released",
         "summary": "Register and store a new WebAuthn Passkey",
         "operationId": "studentSettingsPasskeysStore",
@@ -2615,8 +2615,8 @@
     },
     "/student/settings/passkeys/options": {
       "post": {
-        "tags": ["Student Settings & Security"],
-        "x-apidog-folder": "3. Student Workspace/Settings & Security",
+        "tags": ["Settings"],
+        "x-apidog-folder": "Student/Settings",
         "x-apidog-status": "released",
         "summary": "Generate WebAuthn Passkey creation challenge options",
         "operationId": "studentSettingsPasskeysOptions",
@@ -2647,8 +2647,8 @@
     },
     "/student/settings/passkeys/{passkeyId}": {
       "delete": {
-        "tags": ["Student Settings & Security"],
-        "x-apidog-folder": "3. Student Workspace/Settings & Security",
+        "tags": ["Settings"],
+        "x-apidog-folder": "Student/Settings",
         "x-apidog-status": "released",
         "summary": "Delete a registered WebAuthn Passkey",
         "operationId": "studentSettingsPasskeysDestroy",

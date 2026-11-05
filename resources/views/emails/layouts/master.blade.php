@@ -66,9 +66,9 @@
                             <!-- Logo Box -->
                             <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin: 0 auto 16px auto;">
                                 <tr>
-                                    <td align="center" style="background-color: #FFFFFF; padding: 10px 22px; border-radius: 14px; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);" bgcolor="#FFFFFF">
+                                    <td align="center" style="background-color: #FFFFFF; padding: 10px; border-radius: 18px; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12); width: 64px; height: 64px; text-align: center;" bgcolor="#FFFFFF">
                                         <a href="{{ url('/') }}" target="_blank" style="text-decoration: none; display: block;">
-                                            <img src="{{ $logoSrc }}" alt="{{ $siteName }}" width="140" style="max-height: 48px; max-width: 160px; width: auto; height: auto; display: block; border: 0;" />
+                                            <img src="{{ $logoSrc }}" alt="{{ $siteName }}" width="64" height="64" style="width: 64px; height: 64px; max-width: 64px; max-height: 64px; object-fit: contain; display: block; margin: 0 auto; border: 0;" />
                                         </a>
                                     </td>
                                 </tr>

@@ -223,3 +223,4 @@ class AutoEnrollCourseFeatureTest extends TestCase
         $response->assertOk();
     }
 }
+

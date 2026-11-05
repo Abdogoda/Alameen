@@ -9,8 +9,6 @@ use App\Http\Requests\Student\Support\CloseStudentTicketRequest;
 use App\Http\Requests\Student\Support\ReopenStudentTicketRequest;
 use App\Http\Requests\Student\Support\SendStudentMessageRequest;
 use App\Http\Requests\Student\Support\StoreTicketRequest;
-use App\Models\Admin;
-use App\Models\SupportMessage;
 use App\Models\SupportTicket;
 use App\Models\User;
 use App\Services\Support\SupportTicketService;
@@ -32,47 +30,12 @@ class SupportTicketController extends Controller
     {
         /** @var User $user */
         $user = $request->user();
-        $status = $request->query('status', 'all');
-        $search = $request->query('search');
+        $status = (string) $request->query('status', 'all');
+        $search = $request->query('search') ? (string) $request->query('search') : null;
 
-        $query = $user->supportTickets()
-            ->with(['assignedAdmin', 'course'])
-            ->withCount(['messages as unread_count' => function ($q) {
-                $q->where('type', 'message')
-                    ->where('sender_type', Admin::class)
-                    ->whereNull('read_at');
-            }])
-            ->latest('last_message_at');
+        $data = $this->ticketService->getStudentTicketsWithCounts($user, $status, $search, 15);
 
-        if ($status !== 'all' && in_array($status, ['open', 'in_progress', 'waiting_student', 'waiting_admin', 'resolved', 'closed'], true)) {
-            $query->where('status', $status);
-        }
-
-        if (! empty($search)) {
-            $query->where(function ($q) use ($search) {
-                $q->where('subject', 'like', "%{$search}%")
-                    ->orWhere('ticket_number', 'like', "%{$search}%");
-            });
-        }
-
-        $tickets = $query->paginate(15)->withQueryString();
-
-        $counts = [
-            'all' => $user->supportTickets()->count(),
-            'open' => $user->supportTickets()->whereIn('status', ['open', 'in_progress', 'waiting_admin'])->count(),
-            'waiting_student' => $user->supportTickets()->where('status', 'waiting_student')->count(),
-            'resolved' => $user->supportTickets()->where('status', 'resolved')->count(),
-            'closed' => $user->supportTickets()->where('status', 'closed')->count(),
-        ];
-
-        $unreadNotificationsCount = $user->unreadNotifications()->count();
-        $unreadSupportCount = SupportMessage::whereHas('ticket', fn ($q) => $q->where('user_id', $user->id))
-            ->where('sender_type', Admin::class)
-            ->where('type', 'message')
-            ->whereNull('read_at')
-            ->count();
-
-        return view('web.support.index', compact('tickets', 'counts', 'status', 'search', 'unreadNotificationsCount', 'unreadSupportCount'));
+        return view('web.support.index', $data);
     }
 
     /**
@@ -118,9 +81,7 @@ class SupportTicketController extends Controller
             abort(403, __('غير مصرح لك بالوصول إلى هذه التذكرة.'));
         }
 
-        $this->ticketService->markMessagesAsRead($ticket, $user);
-
-        $ticket->load(['assignedAdmin', 'course', 'publicMessages.sender']);
+        $ticket = $this->ticketService->getStudentTicketDetails($user, $ticket);
 
         return view('web.support.show', compact('ticket'));
     }
@@ -209,36 +170,8 @@ class SupportTicketController extends Controller
         }
 
         $lastId = (int) $request->query('last_id', 0);
+        $data = $this->ticketService->pollStudentMessages($user, $ticket, $lastId);
 
-        $messages = $ticket->publicMessages()
-            ->with('sender')
-            ->where('id', '>', $lastId)
-            ->get();
-
-        if ($messages->isNotEmpty()) {
-            $this->ticketService->markMessagesAsRead($ticket, $user);
-        }
-
-        return response()->json([
-            'status' => $ticket->status,
-            'status_label' => $ticket->getStatusLabel(),
-            'status_badge' => $ticket->getStatusBadgeClass(),
-            'is_closed' => $ticket->isClosed(),
-            'messages' => $messages->map(function (SupportMessage $msg): array {
-                return [
-                    'id' => $msg->id,
-                    'type' => $msg->type,
-                    'is_student' => $msg->isFromStudent(),
-                    'is_system' => $msg->isSystemEvent(),
-                    'sender_name' => $msg->getSenderName(),
-                    'sender_avatar' => $msg->getSenderAvatar(),
-                    'message' => $msg->message,
-                    'attachments' => $msg->attachments,
-                    'time_formatted' => $msg->created_at?->diffForHumans() ?? '',
-                    'exact_time' => $msg->created_at?->format('H:i') ?? '',
-                    'read_at' => $msg->read_at?->format('H:i') ?? null,
-                ];
-            }),
-        ]);
+        return response()->json($data);
     }
 }

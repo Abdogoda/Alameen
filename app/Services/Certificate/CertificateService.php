@@ -93,6 +93,19 @@ class CertificateService
     }
 
     /**
+     * Retrieve all certificates earned by a student.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection<int, Certificate>
+     */
+    public function getStudentCertificates(User $user)
+    {
+        return $user->certificates()
+            ->with('course')
+            ->orderByDesc('issued_at')
+            ->get();
+    }
+
+    /**
      * Issue certificate forcefully by an administrator regardless of minimum percentage.
      */
     public function forceIssueCertificate(

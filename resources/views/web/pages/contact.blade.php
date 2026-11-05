@@ -1,12 +1,7 @@
 <x-layouts::marketing :title="__('تواصل معنا والدعم الفني')" active="contact">
 @php
+    extract(app(\App\Services\Cms\PublicContentService::class)->getContactPageData());
     $cmsSettings = app(\App\Services\Cms\SettingsService::class);
-    $contactEmail = $cmsSettings->get('contact_email', 'contact@alameen-speech.com');
-    $contactPhone = $cmsSettings->get('contact_phone', '+20 100 000 0000');
-    $whatsappUrl = $cmsSettings->get('social_whatsapp', 'https://wa.me/201000000000');
-    $contactAddress = $cmsSettings->get('contact_address', 'القاهرة، جمهورية مصر العربية');
-    $workingHours = $cmsSettings->get('contact_working_hours', 'السبت - الخميس: 9:00 ص - 9:00 م');
-    $supportStatusOnline = $cmsSettings->get('support_status_online', '1') === '1';
 @endphp
 
     <div class="flex-1 w-full max-w-[1280px] mx-auto px-4 sm:px-8 lg:px-12 py-8 lg:py-12 flex flex-col gap-10">

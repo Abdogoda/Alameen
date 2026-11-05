@@ -315,8 +315,13 @@ class AppServiceProvider extends ServiceProvider
                 ? Str::transliterate(Str::lower($request->input('email')).'|'.$request->ip())
                 : $request->ip();
 
-            return Limit::perMinute(5)->by($key)->response(function () {
-                return back()->with('error', __('لقد قمت بمحاولات عديدة في وقت قصير. يرجى الانتظار دقيقة قبل طلب رمز جديد.'));
+            return Limit::perMinute(5)->by($key)->response(function (Request $request) {
+                $message = __('لقد قمت بمحاولات عديدة في وقت قصير. يرجى الانتظار دقيقة قبل طلب رمز جديد.');
+                if ($request->expectsJson() || $request->is('api/*')) {
+                    return response()->json(['success' => false, 'message' => $message], 429);
+                }
+
+                return back()->with('error', $message);
             });
         });
 
@@ -367,8 +372,13 @@ class AppServiceProvider extends ServiceProvider
         RateLimiter::for('uploads', function (Request $request) {
             $key = $request->user()?->id ? 'user:'.$request->user()->id : 'ip:'.$request->ip();
 
-            return Limit::perMinute(10)->by($key)->response(function () {
-                return back()->with('error', __('لقد قمت برفع ملفات متعددة في وقت قصير. يرجى الانتظار دقيقة قبل المحاولة مجدداً.'));
+            return Limit::perMinute(10)->by($key)->response(function (Request $request) {
+                $message = __('لقد قمت برفع ملفات متعددة في وقت قصير. يرجى الانتظار دقيقة قبل المحاولة مجدداً.');
+                if ($request->expectsJson() || $request->is('api/*')) {
+                    return response()->json(['success' => false, 'message' => $message], 429);
+                }
+
+                return back()->with('error', $message);
             });
         });
 

@@ -1,79 +1,6 @@
 <x-layouts::marketing active="home">
 @php
-    $heroBlock = \App\Models\ContentBlock::where('section_key', 'hero')->first();
-    $feedbackBlock = \App\Models\ContentBlock::where('section_key', 'feedback')->first();
-    $reviewsBlock = \App\Models\ContentBlock::where('section_key', 'reviews')->first();
-    $aboutBlock = \App\Models\ContentBlock::where('section_key', 'about')->first();
-    $faqBlock = \App\Models\ContentBlock::where('section_key', 'faq')->first();
-    $cmsSettings = app(\App\Services\Cms\SettingsService::class);
-    $heroMeta = $heroBlock?->metadata ?? [];
-    $feedbackMeta = $feedbackBlock?->metadata ?? [];
-    $loc = app()->getLocale();
-    $cta1Text = $heroMeta['cta_primary_' . $loc] ?? ($loc === 'ar' ? ($heroMeta['cta_primary_ar'] ?? __('landing.slide1Cta1')) : ($heroMeta['cta_primary_en'] ?? __('landing.slide1Cta1')));
-    $cta1Url = !empty($heroMeta['cta_primary_url']) ? $heroMeta['cta_primary_url'] : '#courses';
-    $cta2Text = $heroMeta['cta_secondary_' . $loc] ?? ($loc === 'ar' ? ($heroMeta['cta_secondary_ar'] ?? __('landing.slide1Cta2')) : ($heroMeta['cta_secondary_en'] ?? __('landing.slide1Cta2')));
-    $cta2Url = !empty($heroMeta['cta_secondary_url']) ? $heroMeta['cta_secondary_url'] : '#about';
-    $studentsCount = $heroMeta['students_count'] ?? '2500+';
-
-    $defaultHeroImages = [
-        0 => '/assets/images/alameen-images/7.jpeg',
-        1 => '/assets/images/alameen-images/1.mp4',
-        2 => '/assets/images/alameen-images/2.mp4',
-        3 => '/assets/images/alameen-images/8.jpeg',
-    ];
-    $legacyHeroDefaults = [
-        0 => '/assets/images/alameen-images/6.jpeg',
-        1 => '/assets/images/alameen-images/1.jpeg',
-        2 => '/assets/images/alameen-images/2.jpeg',
-        3 => '/assets/images/alameen-images/3.jpeg',
-    ];
-    $heroImages = [];
-    for ($i = 0; $i < 4; $i++) {
-        $val = $heroMeta['images'][$i] ?? null;
-        // Automatically upgrade legacy seeder defaults or non-video slots 1 and 2 to 7.jpeg, 1.mp4, 2.mp4, 8.jpeg
-        if (
-            empty($val) || 
-            $val === ($legacyHeroDefaults[$i] ?? '') ||
-            ($i === 1 && !str_ends_with(strtolower($val), '.mp4') && !str_ends_with(strtolower($val), '.webm')) ||
-            ($i === 2 && !str_ends_with(strtolower($val), '.mp4') && !str_ends_with(strtolower($val), '.webm'))
-        ) {
-            $val = $defaultHeroImages[$i];
-        }
-        $heroImages[$i] = $val;
-    }
-
-    $defaultFeedbackImages = [
-        0 => '/assets/images/alameen-images/6.jpeg',
-        1 => '/assets/images/alameen-images/1.jpeg',
-        2 => '/assets/images/alameen-images/2.jpeg',
-        3 => '/assets/images/alameen-images/3.jpeg',
-        4 => '/assets/images/alameen-images/9.jpeg',
-        5 => '/assets/images/alameen-images/4.jpeg',
-        6 => '/assets/images/alameen-images/5.jpeg',
-        7 => '/assets/images/alameen-images/certificate.png',
-        8 => '/assets/images/alameen-images/12.jpeg',
-    ];
-    $feedbackImages = [];
-    for ($i = 0; $i < 9; $i++) {
-        $val = $feedbackMeta['images'][$i] ?? null;
-        if (empty($val) || str_contains((string) $val, '14.png')) {
-            $val = $defaultFeedbackImages[$i];
-        }
-        // Guarantee Dr. Hana on the diagonal (slots 0, 4, 8) and feedback on others
-        if ($i === 0 && (empty($val) || !str_contains($val, '6.jpeg'))) {
-            $val = '/assets/images/alameen-images/6.jpeg';
-        }
-        if ($i === 4 && (empty($val) || $val === '/assets/images/alameen-images/6.jpeg' || $val === '/assets/images/alameen-images/4.jpeg' || !str_contains($val, '9.jpeg'))) {
-            $val = '/assets/images/alameen-images/9.jpeg';
-        }
-        if ($i === 7 && (empty($val) || str_contains((string) $val, '14.png'))) {
-            $val = '/assets/images/alameen-images/certificate.png';
-        }
-        if ($i === 8 && (empty($val) || $val === '/assets/images/alameen-images/4.jpeg' || $val === '/assets/images/alameen-images/6.jpeg' || !str_contains($val, '12.jpeg'))) {
-            $val = '/assets/images/alameen-images/12.jpeg';
-        }
-        $feedbackImages[$i] = $val;
-    }
+    extract(app(\App\Services\Cms\PublicContentService::class)->getLandingPageData());
 @endphp
 <!-- SECTION 1: #home (HERO SLIDER SHOWCASE)                                   -->
       <!-- ========================================================================= -->
@@ -482,14 +409,6 @@
           </div>
         </div>
 
-        @php
-          $courses = \App\Models\Course::query()
-              ->where('is_published', true)
-              ->withCount(['videos' => fn ($q) => $q->published()])
-              ->orderBy('sort_order')
-              ->get();
-        @endphp
-
         <!-- Courses Grid -->
         <div class="grid gap-6 w-full {{ $courses->count() === 1 ? 'grid-cols-1 max-w-md mx-auto' : ($courses->count() === 2 ? 'grid-cols-1 md:grid-cols-2 max-w-3xl mx-auto' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3') }}" id="catalog-courses-grid">
           @forelse($courses as $course)
@@ -573,11 +492,6 @@
             {{ $aboutBlock?->subtitle ?: __('landing.aboutSubheading') }}
           </p>
         </div>
-
-        @php
-            $pillars = $aboutBlock?->metadata['pillars'] ?? null;
-            $loc = app()->getLocale();
-        @endphp
 
         <!-- 4 Pillars Grid -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
@@ -731,57 +645,6 @@
           </div>
 
         </div>
-
-        @php
-            $defaultReviewCards = [
-                0 => [
-                    'author' => __('reviews.testimonial1Author'),
-                    'role' => __('reviews.testimonial1Role'),
-                    'badge' => __('reviews.badgeCertifiedStudent'),
-                    'title' => __('reviews.testimonial1Title'),
-                    'text' => __('reviews.testimonial1Text'),
-                    'image' => '/assets/images/alameen-images/2.jpeg',
-                    'initial' => 'أ',
-                    'delay' => '0ms',
-                ],
-                1 => [
-                    'author' => __('reviews.testimonial2Author'),
-                    'role' => __('reviews.testimonial2Role'),
-                    'badge' => __('reviews.badgeCertifiedSpecialist'),
-                    'title' => __('reviews.testimonial2Title'),
-                    'text' => __('reviews.testimonial2Text'),
-                    'image' => '/assets/images/alameen-images/1.jpeg',
-                    'initial' => 'خ',
-                    'delay' => '150ms',
-                ],
-                2 => [
-                    'author' => __('reviews.testimonial3Author'),
-                    'role' => __('reviews.testimonial3Role'),
-                    'badge' => __('reviews.badgeCertifiedStudent'),
-                    'title' => __('reviews.testimonial3Title'),
-                    'text' => __('reviews.testimonial3Text'),
-                    'image' => '/assets/images/alameen-images/3.jpeg',
-                    'initial' => 'ف',
-                    'delay' => '300ms',
-                ],
-            ];
-            $savedReviews = $reviewsBlock?->metadata['items'] ?? [];
-            $reviewCards = [];
-            for ($k = 0; $k < 3; $k++) {
-                $saved = $savedReviews[$k] ?? [];
-                $def = $defaultReviewCards[$k];
-                $reviewCards[$k] = [
-                    'author' => !empty($saved['author']) ? $saved['author'] : $def['author'],
-                    'role' => !empty($saved['role']) ? $saved['role'] : $def['role'],
-                    'badge' => !empty($saved['badge']) ? $saved['badge'] : $def['badge'],
-                    'title' => !empty($saved['title']) ? $saved['title'] : $def['title'],
-                    'text' => !empty($saved['text']) ? $saved['text'] : $def['text'],
-                    'image' => !empty($saved['image']) ? $saved['image'] : $def['image'],
-                    'initial' => mb_substr(!empty($saved['author']) ? $saved['author'] : $def['author'], 0, 1),
-                    'delay' => $def['delay'],
-                ];
-            }
-        @endphp
 
         <!-- Reviews Cards Grid (3 Columns) -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

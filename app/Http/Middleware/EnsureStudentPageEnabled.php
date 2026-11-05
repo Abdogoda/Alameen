@@ -23,6 +23,13 @@ class EnsureStudentPageEnabled
     public function handle(Request $request, Closure $next, string $page): Response
     {
         if (! $this->settingsService->isPageEnabled($page)) {
+            if ($request->expectsJson() || $request->is('api/*')) {
+                return response()->json([
+                    'success' => false,
+                    'message' => __('هذه الصفحة غير متاحة حالياً.'),
+                ], 403);
+            }
+
             return redirect()->route('courses.index');
         }
 

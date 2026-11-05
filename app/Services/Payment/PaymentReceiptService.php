@@ -21,6 +21,24 @@ class PaymentReceiptService
     ) {}
 
     /**
+     * Retrieve payment receipts submitted by a student.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection<int, PaymentReceipt>
+     */
+    public function getStudentReceipts(User $user, ?int $courseId = null)
+    {
+        $query = $user->paymentReceipts()
+            ->with(['course', 'reviewer'])
+            ->latest();
+
+        if ($courseId !== null) {
+            $query->where('course_id', $courseId);
+        }
+
+        return $query->get();
+    }
+
+    /**
      * Submit a new payment receipt by a student.
      *
      * @param  array{

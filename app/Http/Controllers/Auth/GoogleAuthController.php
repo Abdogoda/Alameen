@@ -3,16 +3,20 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Services\Auth\StudentAuthService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\GoogleProvider;
 
 class GoogleAuthController extends Controller
 {
+    public function __construct(
+        protected StudentAuthService $studentAuthService
+    ) {}
+
     /**
      * Redirect the user to the Google authentication page.
      */
@@ -48,50 +52,10 @@ class GoogleAuthController extends Controller
             ]);
         }
 
-        $email = $googleUser->getEmail();
-        if (blank($email)) {
-            return redirect()->route('login')->withErrors([
-                'email' => __('لم يتم العثور على بريد إلكتروني مرتبط بحساب Google.'),
-            ]);
-        }
-
-        // 1. Match by google_id first
-        $user = User::where('google_id', $googleUser->getId())->first();
-
-        // 2. If not found by google_id, match by email
-        if (! $user) {
-            $user = User::where('email', $email)->first();
-        }
-
-        if ($user) {
-            // Update google_id or avatar if needed
-            $updates = [];
-            if (empty($user->google_id)) {
-                $updates['google_id'] = $googleUser->getId();
-            }
-            if (empty($user->avatar) && $googleUser->getAvatar()) {
-                $updates['avatar'] = $googleUser->getAvatar();
-            }
-            if (is_null($user->email_verified_at)) {
-                $updates['email_verified_at'] = now();
-            }
-            if (! empty($updates)) {
-                $user->forceFill($updates)->save();
-            }
-        } else {
-            // Create a new student user
-            $user = new User;
-            $user->forceFill([
-                'name' => $googleUser->getName() ?: ($googleUser->getNickname() ?: 'طالب الأمين'),
-                'email' => $email,
-                'google_id' => $googleUser->getId(),
-                'avatar' => $googleUser->getAvatar(),
-                'email_verified_at' => now(),
-                'locale' => app()->getLocale(),
-                'status' => 'pending',
-                'password' => bcrypt(Str::random(32)),
-            ]);
-            $user->save();
+        try {
+            $user = $this->studentAuthService->resolveOrCreateGoogleUser($googleUser);
+        } catch (ValidationException $e) {
+            return redirect()->route('login')->withErrors($e->errors());
         }
 
         if ($user->status === 'pending') {

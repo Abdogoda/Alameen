@@ -1,0 +1,2905 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Al-Ameen Clinical Speech Therapy Academy API",
+    "description": "Comprehensive RESTful API (v1) for all Public, Authentication, and Student Workspace features of the Al-Ameen Clinical Speech Therapy LMS Platform. Built on a unified Service Layer shared 100% between Web (Blade/Livewire) and API.\n\n### Localization\nSend `Accept-Language: ar` or `Accept-Language: en` (or `X-Locale: ar|en` / `?lang=ar|en`) on any request to receive localized fields and validation messages.\n\n### Authentication\nProtected endpoints require a Laravel Sanctum Bearer Token in the `Authorization: Bearer <token>` header. Student accounts must have `status = active` (approved by administration) to authenticate and access student workspace endpoints.",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Al-Ameen Academy Technical Support",
+      "url": "https://alameen.edu.sa"
+    }
+  },
+  "servers": [
+    {
+      "url": "/api/v1",
+      "description": "API v1 Relative Server"
+    },
+    {
+      "url": "http://localhost:8000/api/v1",
+      "description": "Local Development Server"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Public & Marketing",
+      "description": "Public platform configuration, landing page content, course catalog, reviews, contact info, SEO metadata, locale switching, and public certificate verification."
+    },
+    {
+      "name": "Authentication & Recovery",
+      "description": "Student registration, email/password login, 2FA login challenge, Firebase & Google OAuth login, WebAuthn Passkey login, and 6-digit OTP password reset."
+    },
+    {
+      "name": "Student Dashboard",
+      "description": "Aggregated student dashboard metrics, enrolled/pending/available courses, resume playback, upcoming clinical tasks, and earned certificates."
+    },
+    {
+      "name": "Student Courses & Receipts",
+      "description": "Student course catalog, curriculum progress, and manual payment receipt submission (Vodafone Cash / InstaPay)."
+    },
+    {
+      "name": "Student Lessons & DRM",
+      "description": "Lesson video playback, dynamic watermark metadata, short-lived signed Bunny/HLS tokens, watch progress heartbeats, and anti-piracy violation reporting."
+    },
+    {
+      "name": "Clinical Assignments & Grades",
+      "description": "Clinical tasks (voice assignments), audio recording submission (multipart or base64), grades overview, and instructor evaluation results."
+    },
+    {
+      "name": "Student Certificates",
+      "description": "Earned course completion certificates, QR codes, verification links, and PDF/image downloads."
+    },
+    {
+      "name": "Student Notifications",
+      "description": "Student notification inbox, navbar bell recent notifications, read tracking, and deletion."
+    },
+    {
+      "name": "Student Support Tickets",
+      "description": "Technical & clinical support tickets, file attachments, replies, status transitions, and real-time message polling."
+    },
+    {
+      "name": "Student Settings & Security",
+      "description": "Student profile management, avatar upload, password update, Two-Factor Authentication (TOTP), and WebAuthn Passkey management."
+    }
+  ],
+  "paths": {
+    "/openapi.json": {
+      "get": {
+        "tags": ["Public & Marketing"],
+        "summary": "Get OpenAPI 3.0.3 Specification",
+        "operationId": "getOpenApiSpec",
+        "responses": {
+          "200": {
+            "description": "OpenAPI 3.0.3 JSON specification document"
+          }
+        }
+      }
+    },
+    "/public/bootstrap": {
+      "get": {
+        "tags": ["Public & Marketing"],
+        "summary": "Get platform branding, currencies, feature flags, and supported locales",
+        "operationId": "publicBootstrap",
+        "parameters": [
+          { "$ref": "#/components/parameters/AcceptLanguage" },
+          { "$ref": "#/components/parameters/XLocale" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Bootstrap configuration",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "locale": { "type": "string", "example": "ar" },
+                        "direction": { "type": "string", "example": "rtl" },
+                        "is_rtl": { "type": "boolean", "example": true },
+                        "supported_locales": { "type": "object" },
+                        "branding": {
+                          "type": "object",
+                          "properties": {
+                            "site_name": { "type": "string", "example": "أكاديمية الأمين للتخاطب السريري" },
+                            "site_tagline": { "type": "string" },
+                            "logo_url": { "type": "string" },
+                            "logo_white_url": { "type": "string" },
+                            "footer_logo_url": { "type": "string" },
+                            "auth_login_image_url": { "type": "string" }
+                          }
+                        },
+                        "currency": {
+                          "type": "object",
+                          "properties": {
+                            "symbol": { "type": "string", "example": "ج.م" },
+                            "name": { "type": "string", "example": "جنيه مصري" }
+                          }
+                        },
+                        "payment_methods": {
+                          "type": "object",
+                          "properties": {
+                            "vodafone_cash_number": { "type": "string" },
+                            "instapay_handle": { "type": "string" }
+                          }
+                        },
+                        "features": { "type": "object" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/public/home": {
+      "get": {
+        "tags": ["Public & Marketing"],
+        "summary": "Get landing page CMS sections, featured courses, stats, and SEO metadata",
+        "operationId": "publicHome",
+        "parameters": [
+          { "$ref": "#/components/parameters/AcceptLanguage" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Landing page content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "sections": { "type": "object" },
+                        "featured_courses": {
+                          "type": "array",
+                          "items": { "$ref": "#/components/schemas/CourseSummary" }
+                        },
+                        "stats": { "type": "object" },
+                        "seo": { "type": "object" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/public/courses": {
+      "get": {
+        "tags": ["Public & Marketing"],
+        "summary": "List all active published courses in the public catalog",
+        "operationId": "publicCoursesIndex",
+        "parameters": [
+          { "$ref": "#/components/parameters/AcceptLanguage" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Published courses catalog",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "courses": {
+                          "type": "array",
+                          "items": { "$ref": "#/components/schemas/CourseSummary" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/public/courses/{slug}": {
+      "get": {
+        "tags": ["Public & Marketing"],
+        "summary": "Get public course details, curriculum levels, and preview lessons",
+        "operationId": "publicCoursesShow",
+        "parameters": [
+          { "$ref": "#/components/parameters/AcceptLanguage" },
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "description": "Course slug or ID",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Course details and curriculum",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CourseDetailsResponse" }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/public/reviews": {
+      "get": {
+        "tags": ["Public & Marketing"],
+        "summary": "Get clinical testimonials, student reviews, and feedback media",
+        "operationId": "publicReviews",
+        "parameters": [
+          { "$ref": "#/components/parameters/AcceptLanguage" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Reviews page data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "data": { "type": "object" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/public/contact": {
+      "get": {
+        "tags": ["Public & Marketing"],
+        "summary": "Get platform contact information, social links, and support channels",
+        "operationId": "publicContact",
+        "parameters": [
+          { "$ref": "#/components/parameters/AcceptLanguage" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contact page data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "data": { "type": "object" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/public/seo/{pageKey}": {
+      "get": {
+        "tags": ["Public & Marketing"],
+        "summary": "Get localized SEO metadata and OpenGraph tags for a page key",
+        "operationId": "publicSeo",
+        "parameters": [
+          { "$ref": "#/components/parameters/AcceptLanguage" },
+          {
+            "name": "pageKey",
+            "in": "path",
+            "required": true,
+            "description": "Page identifier (e.g., home, courses, reviews, contact)",
+            "schema": { "type": "string", "example": "home" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "SEO metadata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "data": { "type": "object" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/public/certificates/verify/{code}": {
+      "get": {
+        "tags": ["Public & Marketing"],
+        "summary": "Verify a certificate publicly by its unique certificate code",
+        "operationId": "publicVerifyCertificate",
+        "parameters": [
+          { "$ref": "#/components/parameters/AcceptLanguage" },
+          {
+            "name": "code",
+            "in": "path",
+            "required": true,
+            "description": "Unique certificate verification code (e.g. ALAMEEN-2026-XXXX)",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Certificate is valid and verified",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "valid": { "type": "boolean", "example": true },
+                    "message": { "type": "string" },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "certificate": { "$ref": "#/components/schemas/Certificate" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "429": { "$ref": "#/components/responses/TooManyRequests" }
+        }
+      }
+    },
+    "/public/locale": {
+      "post": {
+        "tags": ["Public & Marketing"],
+        "summary": "Switch active language (ar / en) and sync with authenticated profile if signed in",
+        "operationId": "publicSwitchLocale",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["locale"],
+                "properties": {
+                  "locale": {
+                    "type": "string",
+                    "enum": ["ar", "en"],
+                    "example": "ar"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Locale switched",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "message": { "type": "string" },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "locale": { "type": "string", "example": "ar" },
+                        "direction": { "type": "string", "example": "rtl" },
+                        "is_rtl": { "type": "boolean", "example": true }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "tags": ["Authentication & Recovery"],
+        "summary": "Register a new student account (created in pending status awaiting admin approval)",
+        "operationId": "authRegister",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name", "email", "password", "password_confirmation"],
+                "properties": {
+                  "name": { "type": "string", "example": "أحمد محمد" },
+                  "email": { "type": "string", "format": "email", "example": "ahmed@example.com" },
+                  "password": { "type": "string", "format": "password", "example": "SecretPass123!" },
+                  "password_confirmation": { "type": "string", "format": "password", "example": "SecretPass123!" },
+                  "phone": { "type": "string", "nullable": true, "example": "+201012345678" },
+                  "country": { "type": "string", "nullable": true, "example": "Egypt" },
+                  "city": { "type": "string", "nullable": true, "example": "Cairo" },
+                  "address": { "type": "string", "nullable": true },
+                  "locale": { "type": "string", "enum": ["ar", "en"], "example": "ar" },
+                  "device_name": { "type": "string", "nullable": true, "example": "iPhone 16 Pro" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Account registered and pending admin approval",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "status": { "type": "string", "example": "pending" },
+                    "message": { "type": "string" },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "user": { "$ref": "#/components/schemas/User" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": ["Authentication & Recovery"],
+        "summary": "Login with email and password to receive a Sanctum Bearer token (or 2FA challenge)",
+        "operationId": "authLogin",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email", "password"],
+                "properties": {
+                  "email": { "type": "string", "format": "email", "example": "student@example.com" },
+                  "password": { "type": "string", "format": "password", "example": "Password123!" },
+                  "remember": { "type": "boolean", "example": true },
+                  "device_name": { "type": "string", "example": "mobile-app" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Authenticated or 2FA challenge required",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AuthTokenResponse" }
+              }
+            }
+          },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      }
+    },
+    "/auth/two-factor-challenge": {
+      "post": {
+        "tags": ["Authentication & Recovery"],
+        "summary": "Verify 2FA login challenge using a 6-digit TOTP code or recovery code",
+        "operationId": "authTwoFactorChallenge",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["two_factor_token"],
+                "properties": {
+                  "two_factor_token": { "type": "string", "description": "Challenge token returned by /auth/login" },
+                  "code": { "type": "string", "description": "6-digit TOTP code from authenticator app", "example": "123456" },
+                  "recovery_code": { "type": "string", "description": "Emergency recovery code if TOTP is unavailable" },
+                  "device_name": { "type": "string", "example": "mobile-app" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "2FA verified and Sanctum token issued",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AuthTokenResponse" }
+              }
+            }
+          },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      }
+    },
+    "/auth/firebase": {
+      "post": {
+        "tags": ["Authentication & Recovery"],
+        "summary": "Authenticate or register using a Firebase ID Token",
+        "operationId": "authFirebase",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["id_token"],
+                "properties": {
+                  "id_token": { "type": "string", "description": "Firebase ID Token JWT" },
+                  "remember": { "type": "boolean", "example": true },
+                  "device_name": { "type": "string", "example": "firebase-client" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Authenticated via Firebase",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AuthTokenResponse" }
+              }
+            }
+          },
+          "422": { "$ref": "#/components/responses/ValidationError" },
+          "429": { "$ref": "#/components/responses/TooManyRequests" }
+        }
+      }
+    },
+    "/auth/google/redirect": {
+      "get": {
+        "tags": ["Authentication & Recovery"],
+        "summary": "Get Google OAuth 2.0 authorization redirect URL",
+        "operationId": "authGoogleRedirect",
+        "responses": {
+          "200": {
+            "description": "Google OAuth redirect URL",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "redirect_url": { "type": "string", "format": "uri" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/google/token": {
+      "post": {
+        "tags": ["Authentication & Recovery"],
+        "summary": "Authenticate or register using a Google OAuth access token",
+        "operationId": "authGoogleToken",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["access_token"],
+                "properties": {
+                  "access_token": { "type": "string", "description": "Google OAuth 2.0 access token" },
+                  "device_name": { "type": "string", "example": "android-app" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Authenticated via Google",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AuthTokenResponse" }
+              }
+            }
+          },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      }
+    },
+    "/auth/passkeys/login-options": {
+      "post": {
+        "tags": ["Authentication & Recovery"],
+        "summary": "Generate WebAuthn Passkey authentication assertion challenge options",
+        "operationId": "authPasskeyLoginOptions",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": { "type": "string", "format": "email", "nullable": true }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "WebAuthn assertion options and challenge_id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "challenge_id": { "type": "string", "format": "uuid" },
+                        "options": { "type": "object" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/passkeys/login": {
+      "post": {
+        "tags": ["Authentication & Recovery"],
+        "summary": "Verify WebAuthn Passkey assertion and issue a Sanctum Bearer token",
+        "operationId": "authPasskeyLogin",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["credential", "challenge_id"],
+                "properties": {
+                  "challenge_id": { "type": "string", "format": "uuid" },
+                  "credential": { "type": "object", "description": "PublicKeyCredential JSON assertion from navigator.credentials.get()" },
+                  "device_name": { "type": "string", "example": "passkey-browser" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Authenticated via Passkey",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AuthTokenResponse" }
+              }
+            }
+          },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      }
+    },
+    "/auth/forgot-password": {
+      "post": {
+        "tags": ["Authentication & Recovery"],
+        "summary": "Send a 6-digit password reset OTP code to the student's email",
+        "operationId": "authForgotPassword",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email"],
+                "properties": {
+                  "email": { "type": "string", "format": "email", "example": "student@example.com" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "6-digit OTP sent to email",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/SimpleSuccessResponse" }
+              }
+            }
+          },
+          "422": { "$ref": "#/components/responses/ValidationError" },
+          "429": { "$ref": "#/components/responses/TooManyRequests" }
+        }
+      }
+    },
+    "/auth/verify-otp": {
+      "post": {
+        "tags": ["Authentication & Recovery"],
+        "summary": "Verify a 6-digit password reset OTP code before resetting password",
+        "operationId": "authVerifyOtp",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email", "otp"],
+                "properties": {
+                  "email": { "type": "string", "format": "email", "example": "student@example.com" },
+                  "otp": { "type": "string", "minLength": 6, "maxLength": 6, "example": "482910" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OTP code is valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "valid": { "type": "boolean", "example": true },
+                    "message": { "type": "string" }
+                  }
+                }
+              }
+            }
+          },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      }
+    },
+    "/auth/reset-password": {
+      "post": {
+        "tags": ["Authentication & Recovery"],
+        "summary": "Reset student password using the 6-digit email OTP code",
+        "operationId": "authResetPassword",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email", "otp", "password", "password_confirmation"],
+                "properties": {
+                  "email": { "type": "string", "format": "email", "example": "student@example.com" },
+                  "otp": { "type": "string", "minLength": 6, "maxLength": 6, "example": "482910" },
+                  "password": { "type": "string", "format": "password", "example": "NewStrongPass123!" },
+                  "password_confirmation": { "type": "string", "format": "password", "example": "NewStrongPass123!" },
+                  "device_name": { "type": "string", "example": "api" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password reset successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AuthTokenResponse" }
+              }
+            }
+          },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      }
+    },
+    "/auth/me": {
+      "get": {
+        "tags": ["Authentication & Recovery"],
+        "summary": "Get currently authenticated student profile",
+        "operationId": "authMe",
+        "security": [{ "sanctumBearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Authenticated student profile",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "user": { "$ref": "#/components/schemas/User" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" }
+        }
+      }
+    },
+    "/auth/email/verification-notification": {
+      "post": {
+        "tags": ["Authentication & Recovery"],
+        "summary": "Resend email verification notification link to the student",
+        "operationId": "authResendVerification",
+        "security": [{ "sanctumBearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Verification email sent or already verified",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/SimpleSuccessResponse" }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" }
+        }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "tags": ["Authentication & Recovery"],
+        "summary": "Revoke current Sanctum token (or all tokens if all_devices=true)",
+        "operationId": "authLogout",
+        "security": [{ "sanctumBearer": [] }],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "all_devices": { "type": "boolean", "default": false }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Logged out",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/SimpleSuccessResponse" }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" }
+        }
+      }
+    },
+    "/student/dashboard": {
+      "get": {
+        "tags": ["Student Dashboard"],
+        "summary": "Get student dashboard overview (enrolled courses, watch stats, resume lesson, upcoming tasks, certificates)",
+        "operationId": "studentDashboard",
+        "security": [{ "sanctumBearer": [] }],
+        "parameters": [
+          { "$ref": "#/components/parameters/AcceptLanguage" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Student dashboard data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "enrolled_courses": { "type": "array", "items": { "$ref": "#/components/schemas/CourseSummary" } },
+                        "pending_courses": { "type": "array", "items": { "$ref": "#/components/schemas/CourseSummary" } },
+                        "available_courses": { "type": "array", "items": { "$ref": "#/components/schemas/CourseSummary" } },
+                        "total_watched_videos": { "type": "integer", "example": 12 },
+                        "total_watch_seconds": { "type": "integer", "example": 18400 },
+                        "total_watch_hours": { "type": "number", "example": 5.1 },
+                        "average_progress": { "type": "integer", "example": 65 },
+                        "resume_course": { "$ref": "#/components/schemas/CourseSummary" },
+                        "resume_video": { "$ref": "#/components/schemas/Video" },
+                        "upcoming_tasks": { "type": "array", "items": { "$ref": "#/components/schemas/ClinicalTask" } },
+                        "certificates": { "type": "array", "items": { "$ref": "#/components/schemas/Certificate" } }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" }
+        }
+      }
+    },
+    "/student/courses": {
+      "get": {
+        "tags": ["Student Courses & Receipts"],
+        "summary": "Get student's enrolled, pending, and available courses",
+        "operationId": "studentCoursesIndex",
+        "security": [{ "sanctumBearer": [] }],
+        "parameters": [
+          { "$ref": "#/components/parameters/AcceptLanguage" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Categorized student courses",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "enrolled_courses": { "type": "array", "items": { "$ref": "#/components/schemas/CourseSummary" } },
+                        "pending_courses": { "type": "array", "items": { "$ref": "#/components/schemas/CourseSummary" } },
+                        "available_courses": { "type": "array", "items": { "$ref": "#/components/schemas/CourseSummary" } },
+                        "all_courses": { "type": "array", "items": { "$ref": "#/components/schemas/CourseSummary" } }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" }
+        }
+      }
+    },
+    "/student/courses/{slug}": {
+      "get": {
+        "tags": ["Student Courses & Receipts"],
+        "summary": "Get full course curriculum, student watch progress, access state, and certificate",
+        "operationId": "studentCoursesShow",
+        "security": [{ "sanctumBearer": [] }],
+        "parameters": [
+          { "$ref": "#/components/parameters/AcceptLanguage" },
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "description": "Course slug or ID",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Student course details and progress",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CourseDetailsResponse" }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/student/courses/{slug}/receipt": {
+      "post": {
+        "tags": ["Student Courses & Receipts"],
+        "summary": "Submit a manual payment receipt (Vodafone Cash / InstaPay) to enroll in a course",
+        "operationId": "studentSubmitReceipt",
+        "security": [{ "sanctumBearer": [] }],
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "description": "Course slug or ID",
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": ["payment_method", "sender_name", "sender_account", "amount", "receipt_image"],
+                "properties": {
+                  "payment_method": { "type": "string", "enum": ["vodafone_cash", "instapay"], "example": "instapay" },
+                  "sender_name": { "type": "string", "example": "أحمد محمد علي" },
+                  "sender_account": { "type": "string", "example": "ahmed@instapay" },
+                  "amount": { "type": "number", "example": 1500 },
+                  "transaction_reference": { "type": "string", "nullable": true, "example": "TXN-9928374" },
+                  "receipt_image": { "type": "string", "format": "binary", "description": "Receipt screenshot (JPG/PNG/WEBP, max 5MB)" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Payment receipt submitted for admin verification",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "message": { "type": "string" },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "receipt": { "$ref": "#/components/schemas/PaymentReceipt" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": { "$ref": "#/components/responses/ValidationError" },
+          "429": { "$ref": "#/components/responses/TooManyRequests" }
+        }
+      }
+    },
+    "/student/receipts": {
+      "get": {
+        "tags": ["Student Courses & Receipts"],
+        "summary": "List all payment receipts submitted by the authenticated student",
+        "operationId": "studentReceiptsIndex",
+        "security": [{ "sanctumBearer": [] }],
+        "parameters": [
+          {
+            "name": "course_id",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of student payment receipts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "receipts": { "type": "array", "items": { "$ref": "#/components/schemas/PaymentReceipt" } }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/student/courses/{slug}/lessons/{lesson}": {
+      "get": {
+        "tags": ["Student Lessons & DRM"],
+        "summary": "Get lesson video player data, DRM signed URLs, watermark text, curriculum, and clinical tasks",
+        "operationId": "studentLessonShow",
+        "security": [{ "sanctumBearer": [] }],
+        "parameters": [
+          { "$ref": "#/components/parameters/AcceptLanguage" },
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "description": "Course slug or ID",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "lesson",
+            "in": "path",
+            "required": true,
+            "description": "Video ID or slug (omit or pass first lesson ID)",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lesson playback data and signed stream URLs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "course": { "$ref": "#/components/schemas/CourseSummary" },
+                        "current_video": { "$ref": "#/components/schemas/Video" },
+                        "prev_video": { "$ref": "#/components/schemas/Video" },
+                        "next_video": { "$ref": "#/components/schemas/Video" },
+                        "levels": { "type": "array", "items": { "$ref": "#/components/schemas/Level" } },
+                        "completed_video_ids": { "type": "array", "items": { "type": "integer" } },
+                        "progress_percent": { "type": "integer", "example": 50 },
+                        "current_progress": {
+                          "type": "object",
+                          "properties": {
+                            "watched_seconds": { "type": "integer", "example": 420 },
+                            "last_position_seconds": { "type": "integer", "example": 420 },
+                            "is_completed": { "type": "boolean", "example": false }
+                          }
+                        },
+                        "playback": {
+                          "type": "object",
+                          "properties": {
+                            "embed_url": { "type": "string", "nullable": true },
+                            "hls_url": { "type": "string", "nullable": true },
+                            "watermark_text": { "type": "string", "example": "ahmed@example.com | ID:15 | 192.168.1.1" }
+                          }
+                        },
+                        "clinical_tasks": { "type": "array", "items": { "$ref": "#/components/schemas/ClinicalTask" } },
+                        "student_submissions": { "type": "array", "items": { "$ref": "#/components/schemas/TaskSubmission" } }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/student/courses/{slug}/lessons/{lesson}/playback-token": {
+      "post": {
+        "tags": ["Student Lessons & DRM"],
+        "summary": "Refresh short-lived signed Bunny Stream / HLS playback URLs for the active lesson",
+        "operationId": "studentLessonPlaybackToken",
+        "security": [{ "sanctumBearer": [] }],
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "lesson",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Signed playback URLs refreshed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "embed_url": { "type": "string", "nullable": true },
+                    "hls_url": { "type": "string", "nullable": true },
+                    "watermark": { "type": "string" },
+                    "expires_in": { "type": "integer", "example": 900 }
+                  }
+                }
+              }
+            }
+          },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "429": { "$ref": "#/components/responses/TooManyRequests" }
+        }
+      }
+    },
+    "/student/courses/{slug}/lessons/{lesson}/progress": {
+      "post": {
+        "tags": ["Student Lessons & DRM"],
+        "summary": "Record video watch progress heartbeat and trigger automatic certificate issuance upon completion",
+        "operationId": "studentLessonRecordProgress",
+        "security": [{ "sanctumBearer": [] }],
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "lesson",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["watched_seconds", "position_seconds"],
+                "properties": {
+                  "watched_seconds": { "type": "integer", "minimum": 0, "example": 600 },
+                  "position_seconds": { "type": "integer", "minimum": 0, "example": 600 },
+                  "is_completed": { "type": "boolean", "example": true }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Progress recorded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "is_completed": { "type": "boolean", "example": true },
+                    "watched_seconds": { "type": "integer", "example": 600 },
+                    "course_completed": { "type": "boolean", "example": false },
+                    "certificate_code": { "type": "string", "nullable": true }
+                  }
+                }
+              }
+            }
+          },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "429": { "$ref": "#/components/responses/TooManyRequests" }
+        }
+      }
+    },
+    "/student/security/violation": {
+      "post": {
+        "tags": ["Student Lessons & DRM"],
+        "summary": "Report a client-side DRM or anti-piracy security violation",
+        "operationId": "studentReportViolation",
+        "security": [{ "sanctumBearer": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["type"],
+                "properties": {
+                  "type": { "type": "string", "example": "devtools_open" },
+                  "video_id": { "type": "integer", "nullable": true, "example": 12 },
+                  "details": { "type": "string", "nullable": true }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Violation logged",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "logged": { "type": "boolean", "example": true }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/student/assignments": {
+      "get": {
+        "tags": ["Clinical Assignments & Grades"],
+        "summary": "List all clinical tasks (voice assignments) for the student's enrolled courses",
+        "operationId": "studentAssignmentsIndex",
+        "security": [{ "sanctumBearer": [] }],
+        "parameters": [
+          { "$ref": "#/components/parameters/AcceptLanguage" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Clinical tasks and student submissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "tasks": { "type": "array", "items": { "$ref": "#/components/schemas/ClinicalTask" } },
+                        "submissions": { "type": "array", "items": { "$ref": "#/components/schemas/TaskSubmission" } }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/student/assignments/{task}": {
+      "get": {
+        "tags": ["Clinical Assignments & Grades"],
+        "summary": "Get details of a specific clinical task and the student's latest submission",
+        "operationId": "studentAssignmentsShow",
+        "security": [{ "sanctumBearer": [] }],
+        "parameters": [
+          {
+            "name": "task",
+            "in": "path",
+            "required": true,
+            "description": "ClinicalTask ID",
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Clinical task and submission details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "task": { "$ref": "#/components/schemas/ClinicalTask" },
+                        "submission": { "$ref": "#/components/schemas/TaskSubmission" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/student/assignments/{task}/submit": {
+      "post": {
+        "tags": ["Clinical Assignments & Grades"],
+        "summary": "Submit a voice recording (multipart audio file or base64 audio) for a clinical task",
+        "operationId": "studentAssignmentsSubmit",
+        "security": [{ "sanctumBearer": [] }],
+        "parameters": [
+          {
+            "name": "task",
+            "in": "path",
+            "required": true,
+            "description": "ClinicalTask ID",
+            "schema": { "type": "integer" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "audio_file": { "type": "string", "format": "binary", "description": "Voice recording file (webm, mp3, wav, ogg, m4a, max 25MB)" },
+                  "audio_base64": { "type": "string", "description": "Alternative base64-encoded audio string if not uploading multipart file" },
+                  "duration_seconds": { "type": "integer", "example": 95 },
+                  "student_notes": { "type": "string", "nullable": true, "example": "تم تطبيق خطة التدريب الصوتي على الحالة" }
+                }
+              }
+            },
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["audio_base64"],
+                "properties": {
+                  "audio_base64": { "type": "string", "description": "Data URI or base64 encoded audio recording" },
+                  "duration_seconds": { "type": "integer", "example": 95 },
+                  "student_notes": { "type": "string", "nullable": true }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Voice task submitted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "message": { "type": "string" },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "submission": { "$ref": "#/components/schemas/TaskSubmission" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      }
+    },
+    "/student/grades": {
+      "get": {
+        "tags": ["Clinical Assignments & Grades"],
+        "summary": "Get student grades overview, average score, and evaluated clinical task submissions",
+        "operationId": "studentGradesIndex",
+        "security": [{ "sanctumBearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Grades summary and submissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "stats": {
+                          "type": "object",
+                          "properties": {
+                            "total_submissions": { "type": "integer", "example": 6 },
+                            "graded_count": { "type": "integer", "example": 5 },
+                            "pending_count": { "type": "integer", "example": 1 },
+                            "passed_count": { "type": "integer", "example": 5 },
+                            "average_score": { "type": "number", "example": 94.5 }
+                          }
+                        },
+                        "submissions": { "type": "array", "items": { "$ref": "#/components/schemas/TaskSubmission" } }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/student/submissions/{submission}": {
+      "get": {
+        "tags": ["Clinical Assignments & Grades"],
+        "summary": "Get detailed instructor evaluation and feedback for a specific submission",
+        "operationId": "studentSubmissionsShow",
+        "security": [{ "sanctumBearer": [] }],
+        "parameters": [
+          {
+            "name": "submission",
+            "in": "path",
+            "required": true,
+            "description": "TaskSubmission ID",
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Submission evaluation details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "submission": { "$ref": "#/components/schemas/TaskSubmission" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/student/certificates": {
+      "get": {
+        "tags": ["Student Certificates"],
+        "summary": "List all certificates earned by the authenticated student",
+        "operationId": "studentCertificatesIndex",
+        "security": [{ "sanctumBearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Student certificates",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "certificates": { "type": "array", "items": { "$ref": "#/components/schemas/Certificate" } }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/student/certificates/{code}": {
+      "get": {
+        "tags": ["Student Certificates"],
+        "summary": "Get details, QR SVG, verification link, and file URL for a specific student certificate",
+        "operationId": "studentCertificatesShow",
+        "security": [{ "sanctumBearer": [] }],
+        "parameters": [
+          {
+            "name": "code",
+            "in": "path",
+            "required": true,
+            "description": "Certificate code",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Certificate details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "certificate": { "$ref": "#/components/schemas/Certificate" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/student/notifications": {
+      "get": {
+        "tags": ["Student Notifications"],
+        "summary": "List paginated student notifications with filter (all, unread, read)",
+        "operationId": "studentNotificationsIndex",
+        "security": [{ "sanctumBearer": [] }],
+        "parameters": [
+          {
+            "name": "filter",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string", "enum": ["all", "unread", "read"], "default": "all" }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "default": 15, "maximum": 50 }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "default": 1 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated notifications and unread count",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "unread_count": { "type": "integer", "example": 3 },
+                        "notifications": { "type": "array", "items": { "$ref": "#/components/schemas/Notification" } },
+                        "pagination": { "$ref": "#/components/schemas/PaginationMeta" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/student/notifications/recent": {
+      "get": {
+        "tags": ["Student Notifications"],
+        "summary": "Get recent notifications and unread count for navbar bell dropdown",
+        "operationId": "studentNotificationsRecent",
+        "security": [{ "sanctumBearer": [] }],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "default": 8 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Recent notifications",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "unread_count": { "type": "integer", "example": 2 },
+                        "notifications": { "type": "array", "items": { "$ref": "#/components/schemas/Notification" } }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/student/notifications/read-all": {
+      "post": {
+        "tags": ["Student Notifications"],
+        "summary": "Mark all unread notifications as read",
+        "operationId": "studentNotificationsReadAll",
+        "security": [{ "sanctumBearer": [] }],
+        "responses": {
+          "200": {
+            "description": "All notifications marked as read",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/SimpleSuccessResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/student/notifications/{id}/read": {
+      "post": {
+        "tags": ["Student Notifications"],
+        "summary": "Mark a specific notification as read",
+        "operationId": "studentNotificationsRead",
+        "security": [{ "sanctumBearer": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Notification marked as read",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/SimpleSuccessResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/student/notifications/{id}": {
+      "delete": {
+        "tags": ["Student Notifications"],
+        "summary": "Delete a notification from the student's inbox",
+        "operationId": "studentNotificationsDestroy",
+        "security": [{ "sanctumBearer": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Notification deleted",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/SimpleSuccessResponse" }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/student/support-tickets": {
+      "get": {
+        "tags": ["Student Support Tickets"],
+        "summary": "List student support tickets with status counts and filterable pagination",
+        "operationId": "studentSupportTicketsIndex",
+        "security": [{ "sanctumBearer": [] }],
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string", "enum": ["all", "open", "in_progress", "awaiting_student", "resolved", "closed"] }
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string", "enum": ["all", "technical", "payment", "clinical", "certificate", "other"] }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "default": 12 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Support tickets list and status counts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "counts": { "type": "object" },
+                        "courses": { "type": "array", "items": { "$ref": "#/components/schemas/CourseSummary" } },
+                        "tickets": { "type": "array", "items": { "$ref": "#/components/schemas/SupportTicket" } },
+                        "pagination": { "$ref": "#/components/schemas/PaginationMeta" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Student Support Tickets"],
+        "summary": "Create a new support ticket with optional file attachments",
+        "operationId": "studentSupportTicketsStore",
+        "security": [{ "sanctumBearer": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": ["subject", "category", "message"],
+                "properties": {
+                  "subject": { "type": "string", "example": "استفسار حول التكليف السريري للمستوى الثاني" },
+                  "category": { "type": "string", "enum": ["technical", "payment", "clinical", "certificate", "other"], "example": "clinical" },
+                  "priority": { "type": "string", "enum": ["low", "normal", "high", "urgent"], "default": "normal" },
+                  "course_id": { "type": "integer", "nullable": true },
+                  "message": { "type": "string", "example": "أرجو توضيح مدة التسجيل الصوتي المطلوبة." },
+                  "attachments[]": {
+                    "type": "array",
+                    "items": { "type": "string", "format": "binary" }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Support ticket created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "message": { "type": "string" },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "ticket": { "$ref": "#/components/schemas/SupportTicket" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      }
+    },
+    "/student/support-tickets/{ticket}": {
+      "get": {
+        "tags": ["Student Support Tickets"],
+        "summary": "Get full support ticket conversation thread and mark admin replies as read",
+        "operationId": "studentSupportTicketsShow",
+        "security": [{ "sanctumBearer": [] }],
+        "parameters": [
+          {
+            "name": "ticket",
+            "in": "path",
+            "required": true,
+            "description": "SupportTicket ID",
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Support ticket with messages",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "ticket": { "$ref": "#/components/schemas/SupportTicket" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": { "$ref": "#/components/responses/Forbidden" }
+        }
+      }
+    },
+    "/student/support-tickets/{ticket}/reply": {
+      "post": {
+        "tags": ["Student Support Tickets"],
+        "summary": "Send a student reply message on a support ticket",
+        "operationId": "studentSupportTicketsReply",
+        "security": [{ "sanctumBearer": [] }],
+        "parameters": [
+          {
+            "name": "ticket",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": ["message"],
+                "properties": {
+                  "message": { "type": "string", "example": "شكراً جزيلاً على التوضيح." },
+                  "attachments[]": {
+                    "type": "array",
+                    "items": { "type": "string", "format": "binary" }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Reply sent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "message": { "type": "string" },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "reply": { "$ref": "#/components/schemas/SupportMessage" },
+                        "ticket_status": { "type": "string" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/student/support-tickets/{ticket}/close": {
+      "post": {
+        "tags": ["Student Support Tickets"],
+        "summary": "Close a support ticket by the student",
+        "operationId": "studentSupportTicketsClose",
+        "security": [{ "sanctumBearer": [] }],
+        "parameters": [
+          {
+            "name": "ticket",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ticket closed",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/SimpleSuccessResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/student/support-tickets/{ticket}/reopen": {
+      "post": {
+        "tags": ["Student Support Tickets"],
+        "summary": "Reopen a closed or resolved support ticket",
+        "operationId": "studentSupportTicketsReopen",
+        "security": [{ "sanctumBearer": [] }],
+        "parameters": [
+          {
+            "name": "ticket",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ticket reopened",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/SimpleSuccessResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/student/support-tickets/{ticket}/poll": {
+      "get": {
+        "tags": ["Student Support Tickets"],
+        "summary": "Poll for new messages on a support ticket after after_id",
+        "operationId": "studentSupportTicketsPoll",
+        "security": [{ "sanctumBearer": [] }],
+        "parameters": [
+          {
+            "name": "ticket",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          },
+          {
+            "name": "after_id",
+            "in": "query",
+            "required": false,
+            "description": "Last known SupportMessage ID",
+            "schema": { "type": "integer", "default": 0 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "New messages since after_id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "ticket_status": { "type": "string" },
+                        "ticket_status_label": { "type": "string" },
+                        "is_closed": { "type": "boolean" },
+                        "messages": { "type": "array", "items": { "type": "object" } }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/student/settings/profile": {
+      "get": {
+        "tags": ["Student Settings & Security"],
+        "summary": "Get student profile details",
+        "operationId": "studentSettingsProfileShow",
+        "security": [{ "sanctumBearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Student profile",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "user": { "$ref": "#/components/schemas/User" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Student Settings & Security"],
+        "summary": "Update student profile details, locale, and optional avatar image",
+        "operationId": "studentSettingsProfileUpdate",
+        "security": [{ "sanctumBearer": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": ["name", "email"],
+                "properties": {
+                  "name": { "type": "string", "example": "أحمد محمد" },
+                  "email": { "type": "string", "format": "email", "example": "ahmed@example.com" },
+                  "phone": { "type": "string", "nullable": true, "example": "+201012345678" },
+                  "country": { "type": "string", "nullable": true, "example": "Egypt" },
+                  "city": { "type": "string", "nullable": true, "example": "Cairo" },
+                  "address": { "type": "string", "nullable": true },
+                  "locale": { "type": "string", "enum": ["ar", "en"], "example": "ar" },
+                  "avatar": { "type": "string", "format": "binary", "description": "Profile picture (JPG/PNG/WEBP, max 2MB)" }
+                }
+              }
+            },
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name", "email"],
+                "properties": {
+                  "name": { "type": "string", "example": "أحمد محمد" },
+                  "email": { "type": "string", "format": "email", "example": "ahmed@example.com" },
+                  "phone": { "type": "string", "nullable": true },
+                  "country": { "type": "string", "nullable": true },
+                  "city": { "type": "string", "nullable": true },
+                  "address": { "type": "string", "nullable": true },
+                  "locale": { "type": "string", "enum": ["ar", "en"] }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Profile updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "message": { "type": "string" },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "user": { "$ref": "#/components/schemas/User" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      },
+      "delete": {
+        "tags": ["Student Settings & Security"],
+        "summary": "Permanently delete student account after verifying current password",
+        "operationId": "studentSettingsProfileDelete",
+        "security": [{ "sanctumBearer": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["current_password"],
+                "properties": {
+                  "current_password": { "type": "string", "format": "password" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Account deleted",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/SimpleSuccessResponse" }
+              }
+            }
+          },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      }
+    },
+    "/student/settings/password": {
+      "put": {
+        "tags": ["Student Settings & Security"],
+        "summary": "Update student password",
+        "operationId": "studentSettingsPasswordUpdate",
+        "security": [{ "sanctumBearer": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["current_password", "password", "password_confirmation"],
+                "properties": {
+                  "current_password": { "type": "string", "format": "password" },
+                  "password": { "type": "string", "format": "password" },
+                  "password_confirmation": { "type": "string", "format": "password" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password updated",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/SimpleSuccessResponse" }
+              }
+            }
+          },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      }
+    },
+    "/student/settings/security": {
+      "get": {
+        "tags": ["Student Settings & Security"],
+        "summary": "Get student security overview (2FA status and registered passkeys)",
+        "operationId": "studentSettingsSecurityOverview",
+        "security": [{ "sanctumBearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Security overview",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "two_factor_enabled": { "type": "boolean", "example": false },
+                        "passkeys": { "type": "array", "items": { "type": "object" } }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/student/settings/two-factor/enable": {
+      "post": {
+        "tags": ["Student Settings & Security"],
+        "summary": "Enable Two-Factor Authentication setup and get QR code SVG & secret key",
+        "operationId": "studentSettingsTwoFactorEnable",
+        "security": [{ "sanctumBearer": [] }],
+        "responses": {
+          "200": {
+            "description": "2FA setup initialized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "message": { "type": "string" },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "secret": { "type": "string" },
+                        "qr_code_svg": { "type": "string" },
+                        "qr_code_url": { "type": "string" },
+                        "manual_setup_key": { "type": "string" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/student/settings/two-factor/confirm": {
+      "post": {
+        "tags": ["Student Settings & Security"],
+        "summary": "Confirm Two-Factor Authentication setup using a 6-digit TOTP code",
+        "operationId": "studentSettingsTwoFactorConfirm",
+        "security": [{ "sanctumBearer": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["code"],
+                "properties": {
+                  "code": { "type": "string", "minLength": 6, "maxLength": 6, "example": "123456" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "2FA confirmed and recovery codes generated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "message": { "type": "string" },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "recovery_codes": { "type": "array", "items": { "type": "string" } }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      }
+    },
+    "/student/settings/two-factor": {
+      "delete": {
+        "tags": ["Student Settings & Security"],
+        "summary": "Disable Two-Factor Authentication",
+        "operationId": "studentSettingsTwoFactorDisable",
+        "security": [{ "sanctumBearer": [] }],
+        "responses": {
+          "200": {
+            "description": "2FA disabled",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/SimpleSuccessResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/student/settings/two-factor/recovery-codes": {
+      "get": {
+        "tags": ["Student Settings & Security"],
+        "summary": "Get current 2FA recovery codes",
+        "operationId": "studentSettingsRecoveryCodesGet",
+        "security": [{ "sanctumBearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Recovery codes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "recovery_codes": { "type": "array", "items": { "type": "string" } }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Student Settings & Security"],
+        "summary": "Regenerate new 2FA recovery codes",
+        "operationId": "studentSettingsRecoveryCodesRegenerate",
+        "security": [{ "sanctumBearer": [] }],
+        "responses": {
+          "200": {
+            "description": "New recovery codes generated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "message": { "type": "string" },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "recovery_codes": { "type": "array", "items": { "type": "string" } }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/student/settings/passkeys": {
+      "get": {
+        "tags": ["Student Settings & Security"],
+        "summary": "List registered WebAuthn Passkeys for the student",
+        "operationId": "studentSettingsPasskeysIndex",
+        "security": [{ "sanctumBearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Registered passkeys",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "passkeys": { "type": "array", "items": { "type": "object" } }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Student Settings & Security"],
+        "summary": "Register and store a new WebAuthn Passkey",
+        "operationId": "studentSettingsPasskeysStore",
+        "security": [{ "sanctumBearer": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name", "credential", "challenge_id"],
+                "properties": {
+                  "name": { "type": "string", "example": "MacBook Pro TouchID" },
+                  "challenge_id": { "type": "string", "format": "uuid" },
+                  "credential": { "type": "object" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Passkey registered",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/SimpleSuccessResponse" }
+              }
+            }
+          },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      }
+    },
+    "/student/settings/passkeys/options": {
+      "post": {
+        "tags": ["Student Settings & Security"],
+        "summary": "Generate WebAuthn Passkey creation challenge options",
+        "operationId": "studentSettingsPasskeysOptions",
+        "security": [{ "sanctumBearer": [] }],
+        "responses": {
+          "200": {
+            "description": "WebAuthn creation options and challenge_id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "challenge_id": { "type": "string", "format": "uuid" },
+                        "options": { "type": "object" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/student/settings/passkeys/{passkeyId}": {
+      "delete": {
+        "tags": ["Student Settings & Security"],
+        "summary": "Delete a registered WebAuthn Passkey",
+        "operationId": "studentSettingsPasskeysDestroy",
+        "security": [{ "sanctumBearer": [] }],
+        "parameters": [
+          {
+            "name": "passkeyId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Passkey deleted",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/SimpleSuccessResponse" }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "sanctumBearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "Sanctum Token",
+        "description": "Enter the plainTextToken returned from `/api/v1/auth/login`, `/api/v1/auth/two-factor-challenge`, `/api/v1/auth/firebase`, `/api/v1/auth/google/token`, or `/api/v1/auth/passkeys/login`."
+      }
+    },
+    "parameters": {
+      "AcceptLanguage": {
+        "name": "Accept-Language",
+        "in": "header",
+        "required": false,
+        "description": "Preferred response language (`ar` or `en`)",
+        "schema": { "type": "string", "enum": ["ar", "en"], "default": "ar" }
+      },
+      "XLocale": {
+        "name": "X-Locale",
+        "in": "header",
+        "required": false,
+        "description": "Explicit locale override (`ar` or `en`)",
+        "schema": { "type": "string", "enum": ["ar", "en"] }
+      }
+    },
+    "responses": {
+      "Unauthorized": {
+        "description": "Unauthenticated (Missing or invalid Sanctum Bearer token)",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": { "type": "string", "example": "Unauthenticated." }
+              }
+            }
+          }
+        }
+      },
+      "Forbidden": {
+        "description": "Forbidden (Student account is pending approval, suspended, or lacks course access)",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": { "type": "boolean", "example": false },
+                "message": { "type": "string", "example": "حسابك قيد المراجعة وبانتظار موافقة إدارة المنصة." }
+              }
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "Resource not found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": { "type": "boolean", "example": false },
+                "message": { "type": "string", "example": "المورد المطلوب غير موجود." }
+              }
+            }
+          }
+        }
+      },
+      "ValidationError": {
+        "description": "Validation Error (422 Unprocessable Entity)",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": { "type": "string", "example": "بيانات الإدخال غير صالحة." },
+                "errors": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "array",
+                    "items": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "TooManyRequests": {
+        "description": "Rate Limit Exceeded (429 Too Many Requests)",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": { "type": "boolean", "example": false },
+                "message": { "type": "string", "example": "لقد قمت بمحاولات عديدة في وقت قصير. يرجى الانتظار دقيقة." }
+              }
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "SimpleSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": true },
+          "message": { "type": "string" }
+        }
+      },
+      "PaginationMeta": {
+        "type": "object",
+        "properties": {
+          "current_page": { "type": "integer", "example": 1 },
+          "last_page": { "type": "integer", "example": 3 },
+          "per_page": { "type": "integer", "example": 15 },
+          "total": { "type": "integer", "example": 42 }
+        }
+      },
+      "AuthTokenResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": true },
+          "status": { "type": "string", "enum": ["authenticated", "two_factor_required"], "example": "authenticated" },
+          "two_factor_required": { "type": "boolean", "example": false },
+          "message": { "type": "string" },
+          "data": {
+            "type": "object",
+            "properties": {
+              "token": { "type": "string", "nullable": true, "example": "1|laravel_sanctum_token_example" },
+              "token_type": { "type": "string", "nullable": true, "example": "Bearer" },
+              "two_factor_token": { "type": "string", "nullable": true },
+              "user": { "$ref": "#/components/schemas/User" }
+            }
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "example": 15 },
+          "name": { "type": "string", "example": "أحمد محمد" },
+          "email": { "type": "string", "format": "email", "example": "ahmed@example.com" },
+          "phone": { "type": "string", "nullable": true, "example": "+201012345678" },
+          "country": { "type": "string", "nullable": true, "example": "Egypt" },
+          "city": { "type": "string", "nullable": true, "example": "Cairo" },
+          "address": { "type": "string", "nullable": true },
+          "avatar_url": { "type": "string", "format": "uri" },
+          "locale": { "type": "string", "enum": ["ar", "en"], "example": "ar" },
+          "status": { "type": "string", "enum": ["active", "pending", "suspended"], "example": "active" },
+          "email_verified": { "type": "boolean", "example": true },
+          "email_verified_at": { "type": "string", "format": "date-time", "nullable": true },
+          "two_factor_enabled": { "type": "boolean", "example": false },
+          "has_google_linked": { "type": "boolean", "example": true },
+          "has_firebase_linked": { "type": "boolean", "example": false },
+          "created_at": { "type": "string", "format": "date-time" }
+        }
+      },
+      "CourseSummary": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "example": 1 },
+          "slug": { "type": "string", "example": "comprehensive-speech-therapy-diploma" },
+          "title": { "type": "string", "example": "الدبلوم السريري الشامل في أمراض التخاطب والنطق" },
+          "title_ar": { "type": "string" },
+          "title_en": { "type": "string" },
+          "description": { "type": "string" },
+          "thumbnail_url": { "type": "string", "format": "uri" },
+          "instructor_name": { "type": "string", "example": "د. هنا المكاوي" },
+          "instructor_title": { "type": "string" },
+          "instructor_avatar": { "type": "string", "nullable": true },
+          "price": { "type": "number", "example": 1500 },
+          "original_price": { "type": "number", "nullable": true, "example": 2200 },
+          "has_discount": { "type": "boolean", "example": true },
+          "currency_symbol": { "type": "string", "example": "ج.م" },
+          "duration_hours": { "type": "number", "example": 40 },
+          "Sequential_lock": { "type": "boolean", "example": true },
+          "is_active": { "type": "boolean", "example": true },
+          "levels_count": { "type": "integer", "example": 4 },
+          "videos_count": { "type": "integer", "example": 24 },
+          "student_status": {
+            "type": "string",
+            "nullable": true,
+            "enum": ["enrolled", "pending", "available", "expired"],
+            "example": "enrolled"
+          },
+          "student_progress": { "type": "integer", "nullable": true, "example": 75 }
+        }
+      },
+      "Level": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "example": 1 },
+          "course_id": { "type": "integer", "example": 1 },
+          "title": { "type": "string", "example": "المستوى الأول: التقييم والتشخيص الإكلينيكي" },
+          "description": { "type": "string", "nullable": true },
+          "sort_order": { "type": "integer", "example": 1 },
+          "is_free_preview": { "type": "boolean", "example": false },
+          "videos": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Video" }
+          }
+        }
+      },
+      "Video": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "example": 10 },
+          "course_id": { "type": "integer", "example": 1 },
+          "level_id": { "type": "integer", "nullable": true, "example": 1 },
+          "title": { "type": "string", "example": "المحاضرة الأولى: دراسة الحالة والمقابلة الإكلينيكية" },
+          "description": { "type": "string", "nullable": true },
+          "duration_seconds": { "type": "integer", "example": 1800 },
+          "duration_formatted": { "type": "string", "example": "30:00" },
+          "sort_order": { "type": "integer", "example": 1 },
+          "is_free_preview": { "type": "boolean", "example": true },
+          "provider": { "type": "string", "example": "bunny" },
+          "status": { "type": "string", "example": "ready" },
+          "thumbnail_url": { "type": "string", "nullable": true }
+        }
+      },
+      "CourseDetailsResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": true },
+          "data": {
+            "type": "object",
+            "properties": {
+              "course": { "$ref": "#/components/schemas/CourseSummary" },
+              "has_enrolled": { "type": "boolean", "example": true },
+              "access_state": { "type": "object" },
+              "completed_video_ids": { "type": "array", "items": { "type": "integer" } },
+              "total_videos": { "type": "integer", "example": 24 },
+              "completed_count": { "type": "integer", "example": 12 },
+              "progress_percent": { "type": "integer", "example": 50 },
+              "resume_video": { "$ref": "#/components/schemas/Video" },
+              "levels": { "type": "array", "items": { "$ref": "#/components/schemas/Level" } },
+              "unleveled_videos": { "type": "array", "items": { "$ref": "#/components/schemas/Video" } },
+              "certificate": { "$ref": "#/components/schemas/Certificate" }
+            }
+          }
+        }
+      },
+      "ClinicalTask": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "example": 5 },
+          "course_id": { "type": "integer", "example": 1 },
+          "video_id": { "type": "integer", "nullable": true, "example": 10 },
+          "title": { "type": "string", "example": "تطبيق خطة علاجية صوتية لحالة لدغة الراء" },
+          "instructions": { "type": "string" },
+          "clinical_case_summary": { "type": "string", "nullable": true },
+          "max_duration_seconds": { "type": "integer", "example": 180 },
+          "passing_score": { "type": "integer", "example": 70 },
+          "is_required": { "type": "boolean", "example": true }
+        }
+      },
+      "TaskSubmission": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "example": 42 },
+          "clinical_task_id": { "type": "integer", "example": 5 },
+          "user_id": { "type": "integer", "example": 15 },
+          "audio_url": { "type": "string", "format": "uri" },
+          "duration_seconds": { "type": "integer", "example": 95 },
+          "duration_formatted": { "type": "string", "example": "01:35" },
+          "student_notes": { "type": "string", "nullable": true },
+          "status": { "type": "string", "enum": ["pending", "graded", "revision_requested"], "example": "graded" },
+          "score": { "type": "number", "nullable": true, "example": 96 },
+          "passed": { "type": "boolean", "example": true },
+          "instructor_feedback": { "type": "string", "nullable": true },
+          "evaluated_at": { "type": "string", "format": "date-time", "nullable": true },
+          "created_at": { "type": "string", "format": "date-time" }
+        }
+      },
+      "PaymentReceipt": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "example": 19 },
+          "user_id": { "type": "integer", "example": 15 },
+          "course_id": { "type": "integer", "example": 1 },
+          "payment_method": { "type": "string", "enum": ["vodafone_cash", "instapay"], "example": "instapay" },
+          "payment_method_label": { "type": "string", "example": "InstaPay" },
+          "sender_name": { "type": "string", "example": "أحمد محمد" },
+          "sender_account": { "type": "string", "example": "ahmed@instapay" },
+          "amount": { "type": "number", "example": 1500 },
+          "transaction_reference": { "type": "string", "nullable": true },
+          "receipt_image_url": { "type": "string", "format": "uri" },
+          "status": { "type": "string", "enum": ["pending", "approved", "rejected"], "example": "pending" },
+          "rejection_reason": { "type": "string", "nullable": true },
+          "reviewed_at": { "type": "string", "format": "date-time", "nullable": true },
+          "created_at": { "type": "string", "format": "date-time" }
+        }
+      },
+      "Certificate": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "example": 7 },
+          "user_id": { "type": "integer", "example": 15 },
+          "course_id": { "type": "integer", "example": 1 },
+          "certificate_code": { "type": "string", "example": "ALAMEEN-2026-8F92A" },
+          "verification_url": { "type": "string", "format": "uri" },
+          "qr_code_svg": { "type": "string", "nullable": true },
+          "file_url": { "type": "string", "format": "uri", "nullable": true },
+          "file_type": { "type": "string", "nullable": true, "example": "pdf" },
+          "completion_percentage": { "type": "integer", "example": 100 },
+          "issued_at": { "type": "string", "format": "date-time" }
+        }
+      },
+      "Notification": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "example": 101 },
+          "type": { "type": "string", "example": "receipt_approved" },
+          "title": { "type": "string", "example": "تم تفعيل اشتراكك في المساق" },
+          "body": { "type": "string" },
+          "action_url": { "type": "string", "nullable": true },
+          "action_text": { "type": "string", "nullable": true },
+          "icon": { "type": "string" },
+          "data": { "type": "object", "nullable": true },
+          "is_read": { "type": "boolean", "example": false },
+          "read_at": { "type": "string", "format": "date-time", "nullable": true },
+          "created_at": { "type": "string", "format": "date-time" },
+          "time_formatted": { "type": "string", "example": "منذ 5 دقائق" }
+        }
+      },
+      "SupportTicket": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "example": 12 },
+          "ticket_number": { "type": "string", "example": "TKT-2026-0012" },
+          "subject": { "type": "string", "example": "استفسار حول التكليف السريري" },
+          "category": { "type": "string", "example": "clinical" },
+          "category_label": { "type": "string", "example": "استفسار سريري / أكاديمي" },
+          "priority": { "type": "string", "example": "normal" },
+          "priority_label": { "type": "string", "example": "عادية" },
+          "status": { "type": "string", "example": "open" },
+          "status_label": { "type": "string", "example": "مفتوحة" },
+          "is_closed": { "type": "boolean", "example": false },
+          "unread_count": { "type": "integer", "example": 1 },
+          "last_message_at": { "type": "string", "format": "date-time", "nullable": true },
+          "created_at": { "type": "string", "format": "date-time" },
+          "messages": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/SupportMessage" }
+          }
+        }
+      },
+      "SupportMessage": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "example": 88 },
+          "support_ticket_id": { "type": "integer", "example": 12 },
+          "type": { "type": "string", "enum": ["student", "admin", "system"], "example": "student" },
+          "is_student": { "type": "boolean", "example": true },
+          "is_admin": { "type": "boolean", "example": false },
+          "is_system": { "type": "boolean", "example": false },
+          "sender_name": { "type": "string", "example": "أحمد محمد" },
+          "sender_avatar": { "type": "string", "nullable": true },
+          "message": { "type": "string" },
+          "attachments": { "type": "array", "items": { "type": "object" } },
+          "read_at": { "type": "string", "format": "date-time", "nullable": true },
+          "created_at": { "type": "string", "format": "date-time" },
+          "time_formatted": { "type": "string" },
+          "exact_time": { "type": "string" }
+        }
+      }
+    }
+  }
+}
+

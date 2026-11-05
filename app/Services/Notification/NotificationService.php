@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Services\Notification;
 
 use App\Events\NotificationRequestedEvent;
+use App\Models\Admin;
+use App\Models\SupportMessage;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Notifications\DatabaseNotification;
@@ -142,6 +144,68 @@ class NotificationService
         }
 
         return $query->latest()->paginate($perPage);
+    }
+
+    /**
+     * Get student notification inbox data with filter, search, and category counts (shared by Web Livewire & API).
+     *
+     * @return array<string, mixed>
+     */
+    public function getStudentInboxData(
+        User $user,
+        string $filter = 'all',
+        string $search = '',
+        int $perPage = 12
+    ): array {
+        $query = $user->notifications();
+
+        if ($filter === 'unread') {
+            $query->whereNull('read_at');
+        } elseif (in_array($filter, ['info', 'success', 'warning', 'error', 'security', 'system'], true)) {
+            $query->where('data->type', $filter);
+        }
+
+        $cleanSearch = trim($search);
+        if ($cleanSearch !== '') {
+            $query->where(function ($q) use ($cleanSearch) {
+                $q->where('data->title', 'like', "%{$cleanSearch}%")
+                    ->orWhere('data->body', 'like', "%{$cleanSearch}%");
+            });
+        }
+
+        $notifications = $query->latest()->paginate($perPage);
+
+        $unreadCount = $user->unreadNotifications()->count();
+        $totalCount = $user->notifications()->count();
+        $securityCount = $user->notifications()->where('data->type', 'security')->count();
+        $systemCount = $user->notifications()->where('data->type', 'system')->count();
+        $academicCount = $user->notifications()->whereIn('data->type', ['info', 'success', 'warning'])->count();
+
+        $counts = [
+            'all' => $totalCount,
+            'unread' => $unreadCount,
+            'info' => $user->notifications()->where('data->type', 'info')->count(),
+            'security' => $securityCount,
+            'system' => $systemCount,
+            'warning' => $user->notifications()->where('data->type', 'warning')->count(),
+        ];
+
+        $unreadSupportCount = SupportMessage::whereHas('ticket', fn ($q) => $q->where('user_id', $user->id))
+            ->where('sender_type', Admin::class)
+            ->where('type', 'message')
+            ->whereNull('read_at')
+            ->count();
+
+        return [
+            'notifications' => $notifications,
+            'unreadCount' => $unreadCount,
+            'unreadSupportCount' => $unreadSupportCount,
+            'totalCount' => $totalCount,
+            'securityCount' => $securityCount,
+            'systemCount' => $systemCount,
+            'academicCount' => $academicCount,
+            'counts' => $counts,
+        ];
     }
 
     /**

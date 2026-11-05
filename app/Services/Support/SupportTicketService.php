@@ -21,6 +21,107 @@ class SupportTicketService
     ) {}
 
     /**
+     * Get paginated student support tickets along with status counts and unread badge counts.
+     *
+     * @return array<string, mixed>
+     */
+    public function getStudentTicketsWithCounts(
+        User $user,
+        string $status = 'all',
+        ?string $search = null,
+        int $perPage = 15
+    ): array {
+        $query = $user->supportTickets()
+            ->with(['assignedAdmin', 'course'])
+            ->withCount(['messages as unread_count' => function ($q) {
+                $q->where('type', 'message')
+                    ->where('sender_type', Admin::class)
+                    ->whereNull('read_at');
+            }])
+            ->latest('last_message_at');
+
+        if ($status !== 'all' && in_array($status, ['open', 'in_progress', 'waiting_student', 'waiting_admin', 'resolved', 'closed'], true)) {
+            $query->where('status', $status);
+        }
+
+        if (! empty($search)) {
+            $cleanSearch = trim($search);
+            $query->where(function ($q) use ($cleanSearch) {
+                $q->where('subject', 'like', "%{$cleanSearch}%")
+                    ->orWhere('ticket_number', 'like', "%{$cleanSearch}%");
+            });
+        }
+
+        $tickets = $query->paginate($perPage)->withQueryString();
+
+        $counts = [
+            'all' => $user->supportTickets()->count(),
+            'open' => $user->supportTickets()->whereIn('status', ['open', 'in_progress', 'waiting_admin'])->count(),
+            'waiting_student' => $user->supportTickets()->where('status', 'waiting_student')->count(),
+            'resolved' => $user->supportTickets()->where('status', 'resolved')->count(),
+            'closed' => $user->supportTickets()->where('status', 'closed')->count(),
+        ];
+
+        $unreadNotificationsCount = $user->unreadNotifications()->count();
+        $unreadSupportCount = SupportMessage::whereHas('ticket', fn ($q) => $q->where('user_id', $user->id))
+            ->where('sender_type', Admin::class)
+            ->where('type', 'message')
+            ->whereNull('read_at')
+            ->count();
+
+        return compact('tickets', 'counts', 'status', 'search', 'unreadNotificationsCount', 'unreadSupportCount');
+    }
+
+    /**
+     * Load ticket details for a student and mark admin messages as read.
+     */
+    public function getStudentTicketDetails(User $user, SupportTicket $ticket): SupportTicket
+    {
+        $this->markMessagesAsRead($ticket, $user);
+
+        return $ticket->load(['assignedAdmin', 'course', 'publicMessages.sender']);
+    }
+
+    /**
+     * Poll new public messages on a ticket for real-time chat updates.
+     *
+     * @return array<string, mixed>
+     */
+    public function pollStudentMessages(User $user, SupportTicket $ticket, int $lastId = 0): array
+    {
+        $messages = $ticket->publicMessages()
+            ->with('sender')
+            ->where('id', '>', $lastId)
+            ->get();
+
+        if ($messages->isNotEmpty()) {
+            $this->markMessagesAsRead($ticket, $user);
+        }
+
+        return [
+            'status' => $ticket->status,
+            'status_label' => $ticket->getStatusLabel(),
+            'status_badge' => $ticket->getStatusBadgeClass(),
+            'is_closed' => $ticket->isClosed(),
+            'messages' => $messages->map(function (SupportMessage $msg): array {
+                return [
+                    'id' => $msg->id,
+                    'type' => $msg->type,
+                    'is_student' => $msg->isFromStudent(),
+                    'is_system' => $msg->isSystemEvent(),
+                    'sender_name' => $msg->getSenderName(),
+                    'sender_avatar' => $msg->getSenderAvatar(),
+                    'message' => $msg->message,
+                    'attachments' => $msg->attachments,
+                    'time_formatted' => $msg->created_at?->diffForHumans() ?? '',
+                    'exact_time' => $msg->created_at?->format('H:i') ?? '',
+                    'read_at' => $msg->read_at?->format('H:i') ?? null,
+                ];
+            })->values()->all(),
+        ];
+    }
+
+    /**
      * Create a new support ticket from a student.
      *
      * @param  array<string, mixed>  $data

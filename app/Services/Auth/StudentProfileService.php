@@ -5,12 +5,15 @@ declare(strict_types=1);
 namespace App\Services\Auth;
 
 use App\Models\User;
+use App\Services\Localization\LocalizationService;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
 class StudentProfileService
 {
     /**
-     * Update student profile fields including geographical location.
+     * Update student profile fields including geographical location, avatar, and locale sync.
      *
      * @param  array{
      *     name?: string,
@@ -22,7 +25,7 @@ class StudentProfileService
      *     locale?: string|null
      * }  $data
      */
-    public function updateProfile(User $user, array $data): User
+    public function updateProfile(User $user, array $data, ?UploadedFile $avatar = null): User
     {
         $fillable = array_intersect_key($data, array_flip([
             'name',
@@ -35,9 +38,49 @@ class StudentProfileService
         ]));
 
         $user->fill($fillable);
+
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
+        }
+
+        if ($avatar instanceof UploadedFile && $avatar->isValid()) {
+            $path = $avatar->store('avatars', 'public');
+            if ($path !== false) {
+                $user->avatar = $path;
+            }
+        }
+
         $user->save();
 
+        if (! empty($data['locale'])) {
+            app(LocalizationService::class)->setLocale((string) $data['locale'], $user);
+        }
+
         return $user;
+    }
+
+    /**
+     * Verify current password and permanently delete student account + revoke tokens.
+     *
+     * @throws ValidationException
+     */
+    public function deleteAccount(User $user, string $currentPassword): void
+    {
+        if (! Hash::check($currentPassword, (string) $user->password)) {
+            throw ValidationException::withMessages([
+                'current_password' => [__('The provided password does not match your current password.')],
+            ]);
+        }
+
+        try {
+            if (method_exists($user, 'tokens')) {
+                $user->tokens()->delete();
+            }
+        } catch (\Throwable) {
+            // Ignore if personal_access_tokens table is not migrated yet
+        }
+
+        $user->delete();
     }
 
     /**

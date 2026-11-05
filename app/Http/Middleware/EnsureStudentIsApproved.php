@@ -17,17 +17,25 @@ class EnsureStudentIsApproved
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $user = $request->user('web');
+        $user = $request->user() ?? $request->user('web');
 
-        if ($user && ! $user->isActive()) {
+        if ($user && method_exists($user, 'isActive') && ! $user->isActive()) {
             $isPending = $user->status === 'pending';
 
-            Auth::guard('web')->logout();
-            $request->session()->invalidate();
-            $request->session()->regenerateToken();
+            if ($request->hasSession()) {
+                Auth::guard('web')->logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+            }
 
-            if ($request->expectsJson()) {
+            if ($request->is('api/*') && method_exists($user, 'currentAccessToken') && $user->currentAccessToken()) {
+                $user->currentAccessToken()->delete();
+            }
+
+            if ($request->expectsJson() || $request->is('api/*')) {
                 return response()->json([
+                    'success' => false,
+                    'status' => $user->status,
                     'message' => $isPending
                         ? __('حسابك قيد المراجعة وبانتظار موافقة إدارة المنصة.')
                         : __('تم إيقاف هذا الحساب. يرجى التواصل مع إدارة المنصة.'),

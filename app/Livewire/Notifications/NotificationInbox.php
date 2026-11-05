@@ -85,56 +85,8 @@ class NotificationInbox extends Component
         /** @var User $user */
         $user = auth()->user();
 
-        $query = $user->notifications();
+        $data = $service->getStudentInboxData($user, $this->filter, $this->search, 12);
 
-        // Apply filter
-        if ($this->filter === 'unread') {
-            $query->whereNull('read_at');
-        } elseif (in_array($this->filter, ['info', 'success', 'warning', 'error', 'security', 'system'], true)) {
-            $query->where('data->type', $this->filter);
-        }
-
-        // Apply search
-        $cleanSearch = trim($this->search);
-        if ($cleanSearch !== '') {
-            $query->where(function ($q) use ($cleanSearch) {
-                $q->where('data->title', 'like', "%{$cleanSearch}%")
-                    ->orWhere('data->body', 'like', "%{$cleanSearch}%");
-            });
-        }
-
-        $notifications = $query->latest()->paginate(12);
-
-        $unreadCount = $user->unreadNotifications()->count();
-        $totalCount = $user->notifications()->count();
-        $securityCount = $user->notifications()->where('data->type', 'security')->count();
-        $systemCount = $user->notifications()->where('data->type', 'system')->count();
-        $academicCount = $user->notifications()->whereIn('data->type', ['info', 'success', 'warning'])->count();
-
-        $counts = [
-            'all' => $totalCount,
-            'unread' => $unreadCount,
-            'info' => $user->notifications()->where('data->type', 'info')->count(),
-            'security' => $securityCount,
-            'system' => $systemCount,
-            'warning' => $user->notifications()->where('data->type', 'warning')->count(),
-        ];
-
-        $unreadSupportCount = SupportMessage::whereHas('ticket', fn ($q) => $q->where('user_id', $user->id))
-            ->where('sender_type', Admin::class)
-            ->where('type', 'message')
-            ->whereNull('read_at')
-            ->count();
-
-        return view('web.notifications.notification-inbox', [
-            'notifications' => $notifications,
-            'unreadCount' => $unreadCount,
-            'unreadSupportCount' => $unreadSupportCount,
-            'totalCount' => $totalCount,
-            'securityCount' => $securityCount,
-            'systemCount' => $systemCount,
-            'academicCount' => $academicCount,
-            'counts' => $counts,
-        ]);
+        return view('web.notifications.notification-inbox', $data);
     }
 }

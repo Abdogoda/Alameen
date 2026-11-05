@@ -30,7 +30,8 @@ class FirebaseAuthenticationService
      */
     public function authenticateUser(
         string $idToken,
-        bool $remember = true
+        bool $remember = true,
+        bool $loginWebSession = true
     ): array {
         try {
             $claims = $this->tokenVerifier->verify($idToken);
@@ -114,9 +115,11 @@ class FirebaseAuthenticationService
             ]);
         }
 
-        Auth::guard('web')->login($user, $remember);
-        if (request()->hasSession()) {
-            request()->session()->regenerate();
+        if ($loginWebSession) {
+            Auth::guard('web')->login($user, $remember);
+            if (request()->hasSession()) {
+                request()->session()->regenerate();
+            }
         }
 
         return [

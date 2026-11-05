@@ -1,0 +1,363 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Tests\Feature\Api\V1;
+
+use App\Models\Course;
+use App\Models\Level;
+use App\Models\User;
+use App\Models\Video;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
+use Tests\TestCase;
+
+class StudentAndPublicApiTest extends TestCase
+{
+    use RefreshDatabase;
+
+    public function test_openapi_specification_endpoint_returns_valid_swagger_json(): void
+    {
+        $response = $this->getJson('/api/v1/openapi.json');
+
+        $response->assertStatus(200)
+            ->assertJsonPath('openapi', '3.0.3')
+            ->assertJsonStructure([
+                'openapi',
+                'info' => ['title', 'version'],
+                'paths',
+                'components' => ['securitySchemes', 'schemas'],
+            ]);
+    }
+
+    public function test_public_endpoints_return_structured_json_responses(): void
+    {
+        $course = Course::create([
+            'title_ar' => 'دورة زراعة الأسنان المتقدمة',
+            'title_en' => 'Advanced Dental Implantology',
+            'slug' => 'advanced-dental-implantology',
+            'description_ar' => 'وصف الدورة التدريبية السريرية',
+            'description_en' => 'Clinical course description',
+            'price' => 250.00,
+            'access_duration_days' => 365,
+            'is_published' => true,
+            'sort_order' => 1,
+        ]);
+
+        // Bootstrap
+        $this->getJson('/api/v1/public/bootstrap')
+            ->assertStatus(200)
+            ->assertJsonPath('success', true)
+            ->assertJsonStructure([
+                'success',
+                'data' => [
+                    'locale',
+                    'supported_locales',
+                    'currency',
+                    'page_visibility',
+                ],
+            ]);
+
+        // Home
+        $this->getJson('/api/v1/public/home')
+            ->assertStatus(200)
+            ->assertJsonPath('success', true)
+            ->assertJsonStructure([
+                'success',
+                'data' => [
+                    'hero',
+                    'stats',
+                    'features',
+                    'featured_courses',
+                ],
+            ]);
+
+        // Courses Catalog
+        $this->getJson('/api/v1/public/courses')
+            ->assertStatus(200)
+            ->assertJsonPath('success', true);
+
+        // Single Course Detail
+        $this->getJson("/api/v1/public/courses/{$course->slug}")
+            ->assertStatus(200)
+            ->assertJsonPath('success', true)
+            ->assertJsonPath('data.course.slug', $course->slug);
+
+        // Reviews list & submission
+        $this->getJson('/api/v1/public/reviews')
+            ->assertStatus(200)
+            ->assertJsonPath('success', true);
+
+        $this->postJson('/api/v1/public/reviews', [
+            'name' => 'Dr. Ahmed Mansour',
+            'role_title' => 'Oral Surgeon',
+            'rating' => 5,
+            'content' => 'منصة تعليمية سريرية ممتازة جداً وتطبيق عملي رائع.',
+        ])->assertStatus(201)
+            ->assertJsonPath('success', true);
+
+        // Contact Info & Submit Contact Message
+        $this->getJson('/api/v1/public/contact')
+            ->assertStatus(200)
+            ->assertJsonPath('success', true);
+
+        $this->postJson('/api/v1/public/contact', [
+            'name' => 'Dr. Sara Ali',
+            'email' => 'sara@example.com',
+            'phone' => '+966500000000',
+            'subject' => 'استفسار عن التسجيل في الدورات',
+            'message' => 'أرغب في معرفة تفاصيل الاشتراك في البرامج السريرية المتقدمة.',
+        ])->assertStatus(201)
+            ->assertJsonPath('success', true);
+
+        // Terms, Privacy & Locale Switch
+        $this->getJson('/api/v1/public/terms')->assertStatus(200)->assertJsonPath('success', true);
+        $this->getJson('/api/v1/public/privacy')->assertStatus(200)->assertJsonPath('success', true);
+        $this->postJson('/api/v1/public/locale', ['locale' => 'en'])
+            ->assertStatus(200)
+            ->assertJsonPath('success', true)
+            ->assertJsonPath('data.locale', 'en');
+    }
+
+    public function test_student_registration_and_sanctum_authentication_flow(): void
+    {
+        // 1. Register a new student (defaults to pending approval)
+        $registerResponse = $this->postJson('/api/v1/auth/register', [
+            'name' => 'Dr. Khaled Alameen',
+            'email' => 'khaled@example.com',
+            'password' => 'SecurePass123!',
+            'password_confirmation' => 'SecurePass123!',
+            'phone' => '+966512345678',
+            'country' => 'SA',
+            'city' => 'Riyadh',
+            'locale' => 'ar',
+        ]);
+
+        $registerResponse->assertStatus(201)
+            ->assertJsonPath('success', true)
+            ->assertJsonPath('status', 'pending')
+            ->assertJsonPath('data.user.email', 'khaled@example.com');
+
+        // 2. Pending student cannot log in before admin approval
+        $this->postJson('/api/v1/auth/login', [
+            'email' => 'khaled@example.com',
+            'password' => 'SecurePass123!',
+        ])->assertStatus(422);
+
+        // 3. Approve student and log in to receive a Sanctum Bearer token
+        $user = User::where('email', 'khaled@example.com')->firstOrFail();
+        $user->forceFill([
+            'status' => 'active',
+            'email_verified_at' => now(),
+        ])->save();
+
+        $loginResponse = $this->postJson('/api/v1/auth/login', [
+            'email' => 'khaled@example.com',
+            'password' => 'SecurePass123!',
+            'device_name' => 'phpunit-test',
+        ]);
+
+        $loginResponse->assertStatus(200)
+            ->assertJsonPath('success', true)
+            ->assertJsonPath('status', 'authenticated')
+            ->assertJsonStructure([
+                'success',
+                'status',
+                'data' => [
+                    'token',
+                    'token_type',
+                    'user' => ['id', 'name', 'email', 'status'],
+                ],
+            ]);
+
+        $token = $loginResponse->json('data.token');
+        $this->assertNotEmpty($token);
+
+        // 4. Fetch current authenticated student profile (/api/v1/auth/me)
+        $this->withToken($token)
+            ->getJson('/api/v1/auth/me')
+            ->assertStatus(200)
+            ->assertJsonPath('success', true)
+            ->assertJsonPath('data.user.email', 'khaled@example.com');
+
+        // 5. Logout revokes token
+        $this->withToken($token)
+            ->postJson('/api/v1/auth/logout')
+            ->assertStatus(200)
+            ->assertJsonPath('success', true);
+    }
+
+    public function test_authenticated_student_workspace_endpoints_share_services_and_return_json(): void
+    {
+        $student = User::factory()->create([
+            'name' => 'Dr. Nour Student',
+            'email' => 'nour@example.com',
+            'password' => Hash::make('Password123!'),
+            'status' => 'active',
+            'email_verified_at' => now(),
+        ]);
+
+        $course = Course::create([
+            'title_ar' => 'تجميل الأسنان السريري',
+            'title_en' => 'Clinical Esthetic Dentistry',
+            'slug' => 'clinical-esthetic-dentistry',
+            'description_ar' => 'دورة متكاملة في تجميل الأسنان',
+            'description_en' => 'Comprehensive course in esthetic dentistry',
+            'price' => 300.00,
+            'access_duration_days' => 180,
+            'is_published' => true,
+            'sort_order' => 1,
+        ]);
+
+        $level = Level::create([
+            'course_id' => $course->id,
+            'title_ar' => 'المستوى الأول: الأساسيات',
+            'title_en' => 'Level 1: Fundamentals',
+            'sort_order' => 1,
+            'is_published' => true,
+        ]);
+
+        $video = Video::create([
+            'course_id' => $course->id,
+            'level_id' => $level->id,
+            'slug' => 'intro-to-veneers',
+            'title_ar' => 'مقدمة في العدسات التجميلية',
+            'title_en' => 'Introduction to Veneers',
+            'video_source' => 'youtube',
+            'video_url' => 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+            'duration_seconds' => 600,
+            'min_completion_percentage' => 80,
+            'sort_order' => 1,
+            'is_free_preview' => true,
+            'is_published' => true,
+        ]);
+
+        // Enroll student in course
+        $student->courses()->attach($course->id, [
+            'status' => 'active',
+            'access_starts_at' => now(),
+            'access_expires_at' => now()->addDays(180),
+        ]);
+
+        $token = $student->createToken('test-suite')->plainTextToken;
+
+        // 1. Student Dashboard
+        $this->withToken($token)
+            ->getJson('/api/v1/student/dashboard')
+            ->assertStatus(200)
+            ->assertJsonPath('success', true)
+            ->assertJsonStructure([
+                'success',
+                'data' => [
+                    'stats',
+                    'enrolled_courses',
+                ],
+            ]);
+
+        // 2. Student Courses List & Single Course Workspace
+        $this->withToken($token)
+            ->getJson('/api/v1/student/courses')
+            ->assertStatus(200)
+            ->assertJsonPath('success', true)
+            ->assertJsonStructure([
+                'success',
+                'data' => [
+                    'enrolled_courses',
+                    'catalog_courses',
+                ],
+            ]);
+
+        $this->withToken($token)
+            ->getJson("/api/v1/student/courses/{$course->slug}")
+            ->assertStatus(200)
+            ->assertJsonPath('success', true)
+            ->assertJsonPath('data.course.slug', $course->slug);
+
+        // 3. Lesson Workspace & Heartbeat Progress
+        $this->withToken($token)
+            ->getJson("/api/v1/student/courses/{$course->slug}/lessons/{$video->slug}")
+            ->assertStatus(200)
+            ->assertJsonPath('success', true)
+            ->assertJsonPath('data.current_video.slug', $video->slug);
+
+        $this->withToken($token)
+            ->postJson("/api/v1/student/lessons/{$video->id}/progress", [
+                'watched_seconds' => 550,
+            ])
+            ->assertStatus(200)
+            ->assertJsonPath('success', true)
+            ->assertJsonPath('data.is_completed', true);
+
+        // 4. Assignments & Grades
+        $this->withToken($token)
+            ->getJson('/api/v1/student/assignments')
+            ->assertStatus(200)
+            ->assertJsonPath('success', true);
+
+        $this->withToken($token)
+            ->getJson('/api/v1/student/grades')
+            ->assertStatus(200)
+            ->assertJsonPath('success', true);
+
+        // 5. Certificates
+        $this->withToken($token)
+            ->getJson('/api/v1/student/certificates')
+            ->assertStatus(200)
+            ->assertJsonPath('success', true);
+
+        // 6. Notifications
+        $this->withToken($token)
+            ->getJson('/api/v1/student/notifications')
+            ->assertStatus(200)
+            ->assertJsonPath('success', true);
+
+        $this->withToken($token)
+            ->postJson('/api/v1/student/notifications/read-all')
+            ->assertStatus(200)
+            ->assertJsonPath('success', true);
+
+        // 7. Support Tickets (List, Create, Show, Reply, Close)
+        $ticketResponse = $this->withToken($token)
+            ->postJson('/api/v1/student/support-tickets', [
+                'subject' => 'مشكلة في تشغيل الفيديو السريري',
+                'category' => 'technical',
+                'priority' => 'medium',
+                'message' => 'يرجى المساعدة في تشغيل الفيديو بجودة عالية.',
+            ]);
+
+        $ticketResponse->assertStatus(201)
+            ->assertJsonPath('success', true);
+
+        $ticketId = $ticketResponse->json('data.ticket.id');
+
+        $this->withToken($token)
+            ->getJson("/api/v1/student/support-tickets/{$ticketId}")
+            ->assertStatus(200)
+            ->assertJsonPath('success', true);
+
+        $this->withToken($token)
+            ->postJson("/api/v1/student/support-tickets/{$ticketId}/close")
+            ->assertStatus(200)
+            ->assertJsonPath('success', true);
+
+        // 8. Student Settings & Profile Update
+        $this->withToken($token)
+            ->getJson('/api/v1/student/settings/profile')
+            ->assertStatus(200)
+            ->assertJsonPath('success', true);
+
+        $this->withToken($token)
+            ->postJson('/api/v1/student/settings/profile', [
+                'name' => 'Dr. Nour Updated',
+                'email' => 'nour@example.com',
+                'phone' => '+966599999999',
+                'country' => 'SA',
+                'city' => 'Jeddah',
+                'locale' => 'ar',
+            ])
+            ->assertStatus(200)
+            ->assertJsonPath('success', true)
+            ->assertJsonPath('data.user.name', 'Dr. Nour Updated');
+    }
+}
+

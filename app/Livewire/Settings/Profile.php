@@ -45,17 +45,7 @@ class Profile extends Component
 
         $validated = $this->validate($this->profileRules($user->id));
 
-        $user->fill($validated);
-
-        if ($user->isDirty('email')) {
-            $user->email_verified_at = null;
-        }
-
-        $user->save();
-
-        if (! empty($this->locale)) {
-            app(LocalizationService::class)->setLocale($this->locale, $user);
-        }
+        app(\App\Services\Auth\StudentProfileService::class)->updateProfile($user, $validated);
 
         Flux::toast(variant: 'success', text: __('Profile updated.'));
 

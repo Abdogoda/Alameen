@@ -935,8 +935,8 @@
                     // High-DPI crisp vector scale to eliminate blurriness completely
                     ctx.scale(dpr, dpr);
 
-                    // 15% opacity as requested
-                    ctx.globalAlpha = 0.15;
+                    // 10% opacity as requested
+                    ctx.globalAlpha = 0.10;
 
                     // Angled watermark across the entire frame (-22 degrees)
                     const angle = -22 * Math.PI / 180;
@@ -1002,9 +1002,9 @@
 
                     const lines = this.watermarkLines || [];
 
-                    // Gentle, seamless sub-pixel continuous float
-                    this.gridShiftX += 0.15 * speedFactor;
-                    this.gridShiftY += 0.08 * speedFactor;
+                    // Slower, calm, seamless sub-pixel continuous float
+                    this.gridShiftX += 0.06 * speedFactor;
+                    this.gridShiftY += 0.03 * speedFactor;
 
                     const offsetX = this.gridShiftX % this.colSpacing;
                     const offsetY = this.gridShiftY % this.rowSpacing;

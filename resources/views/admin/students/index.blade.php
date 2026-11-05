@@ -149,16 +149,6 @@
                                         </button>
                                     @endif
                                 </form>
-
-                                <button 
-                                    type="button" 
-                                    onclick="openDeleteStudentModal('{{ $student->id }}', @js($student->name), @js($student->email), '{{ route('admin.students.destroy', $student) }}')"
-                                    class="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 dark:bg-rose-950/40 dark:text-rose-300 dark:border-rose-800 dark:hover:bg-rose-900/60 dark:hover:text-rose-200 transition-colors cursor-pointer inline-flex items-center gap-1"
-                                    title="{{ __('حذف حساب الطالب نهائياً') }}"
-                                >
-                                    <svg class="size-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                                    <span>{{ __('حذف') }}</span>
-                                </button>
                             </div>
                         </td>
                     </tr>
@@ -231,7 +221,7 @@
                     </form>
                 @endif
 
-                <div class="grid grid-cols-3 gap-2 pt-1">
+                <div class="grid grid-cols-2 gap-2 pt-1">
                     <a href="{{ route('admin.students.show', $student) }}" class="py-2 rounded-xl text-xs font-bold bg-[#EAF1FB] text-[#012383] hover:bg-[#DEE8F7] dark:bg-blue-950/60 dark:text-blue-300 dark:hover:bg-blue-900/60 dark:hover:text-blue-200 border border-blue-200 dark:border-blue-900 dark:hover:border-blue-700 transition-colors flex items-center justify-center gap-1">
                         <svg class="size-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                         <span>{{ __('إدارة') }}</span>
@@ -256,15 +246,6 @@
                             </button>
                         @endif
                     </form>
-
-                    <button 
-                        type="button" 
-                        onclick="openDeleteStudentModal('{{ $student->id }}', @js($student->name), @js($student->email), '{{ route('admin.students.destroy', $student) }}')" 
-                        class="w-full py-2 rounded-xl text-xs font-bold bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 dark:bg-rose-950/40 dark:text-rose-300 dark:border-rose-800 dark:hover:bg-rose-900/60 dark:hover:text-rose-200 transition-colors cursor-pointer flex items-center justify-center gap-1"
-                    >
-                        <svg class="size-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                        <span>{{ __('حذف') }}</span>
-                    </button>
                 </div>
             </div>
             @empty
@@ -280,8 +261,4 @@
         </div>
         @endif
     </div>
-
-    <x-slot:modals>
-        <x-admin::delete-student-modal />
-    </x-slot:modals>
 </x-admin-layout::admin>

@@ -279,22 +279,21 @@ class AdminStudentManagementTest extends TestCase
         $certResponse->assertSee($course->title_ar);
     }
 
-    public function test_delete_student_modal_triggers_rendered_on_index_and_show_pages(): void
+    public function test_delete_student_modal_triggers_rendered_on_show_page_not_index_page(): void
     {
         $student = User::factory()->create([
             'name' => 'طالب للاختبار الحذف',
             'email' => 'to-delete@example.com',
         ]);
 
-        // Index page should show delete button and delete modal
+        // Index page should NOT show delete trigger or delete modal
         $indexResponse = $this->actingAs($this->admin, 'admin')
             ->get(route('admin.students.index'));
         $indexResponse->assertOk();
-        $indexResponse->assertSee('modal-delete-student');
-        $indexResponse->assertSee('openDeleteStudentModal');
-        $indexResponse->assertSee('كلمة مرور المشرف لتأكيد الحذف');
+        $indexResponse->assertDontSee('openDeleteStudentModal');
+        $indexResponse->assertDontSee('modal-delete-student');
 
-        // Show page should also show delete button and delete modal
+        // Show page should show delete button and delete modal
         $showResponse = $this->actingAs($this->admin, 'admin')
             ->get(route('admin.students.show', $student));
         $showResponse->assertOk();

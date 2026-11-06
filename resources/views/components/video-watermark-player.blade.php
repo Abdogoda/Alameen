@@ -608,11 +608,17 @@
                         timestamp: new Date().toISOString()
                     })
                 })
-                .catch(() => {})
-                .finally(() => {
+                .then(res => res.json())
+                .then(data => {
+                    const target = (data && data.redirect) ? data.redirect : '{{ route("login", ["suspended" => 1]) }}';
                     setTimeout(() => {
-                        window.location.reload();
-                    }, 400);
+                        window.location.href = target;
+                    }, 350);
+                })
+                .catch(() => {
+                    setTimeout(() => {
+                        window.location.href = '{{ route("login", ["suspended" => 1]) }}';
+                    }, 350);
                 });
             },
 

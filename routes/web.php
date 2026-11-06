@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\EmailVerificationOtpController;
 use App\Http\Controllers\Auth\FirebaseAuthController;
 use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Controllers\Auth\PasswordResetOtpController;
@@ -111,6 +112,24 @@ Route::get('storage/{path}', function (string $path) {
 
     return response()->file($realFullPath, $headers);
 })->where('path', '.*')->name('storage.fallback');
+
+// -------------------------------------------------------------
+// Email Verification via 6-Digit OTP (Guard: web)
+// -------------------------------------------------------------
+Route::middleware('auth')->group(function () {
+    Route::get('email/verify', [EmailVerificationOtpController::class, 'showVerificationPrompt'])
+        ->name('verification.notice');
+    Route::post('email/verify-otp', [EmailVerificationOtpController::class, 'verify'])
+        ->middleware('throttle:otp')
+        ->name('verification.verify-otp');
+    Route::post('email/verification-notification', [EmailVerificationOtpController::class, 'resend'])
+        ->middleware('throttle:otp')
+        ->name('verification.send');
+    Route::get('email/verify/{id}/{hash}', function () {
+        return redirect()->route('verification.notice')
+            ->with('status', __('يرجى إدخال رمز التحقق (OTP) لتأكيد حسابك.'));
+    })->name('verification.verify');
+});
 
 // -------------------------------------------------------------
 // Customer / Student Authenticated Routes (Guard: web)

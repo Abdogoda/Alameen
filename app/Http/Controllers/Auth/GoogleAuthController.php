@@ -59,15 +59,17 @@ class GoogleAuthController extends Controller
         }
 
         if ($user->status === 'pending') {
-            return redirect()->route('login')->withErrors([
-                'email' => __('حسابك قيد المراجعة وبانتظار موافقة إدارة المنصة. يرجى الانتظار حتى يتم اعتماد الحساب لتتمكن من تسجيل الدخول.'),
-            ]);
+            $msg = __('حسابك قيد المراجعة وبانتظار موافقة إدارة المنصة. يرجى الانتظار حتى يتم اعتماد الحساب لتتمكن من تسجيل الدخول.');
+            return redirect()->route('login')
+                ->with('error', $msg)
+                ->withErrors(['email' => $msg]);
         }
 
         if ($user->status === 'suspended') {
-            return redirect()->route('login')->withErrors([
-                'email' => __('تم إيقاف هذا الحساب. يرجى التواصل مع إدارة المنصة.'),
-            ]);
+            $msg = __('تم إيقاف هذا الحساب. يرجى التواصل مع إدارة المنصة.');
+            return redirect()->route('login', ['suspended' => 1])
+                ->with('error', $msg)
+                ->withErrors(['email' => $msg]);
         }
 
         Auth::login($user, remember: true);

@@ -774,12 +774,13 @@ class StudentCourseWorkspaceService
         if ($request && $request->hasSession()) {
             $request->session()->invalidate();
             $request->session()->regenerateToken();
+            $request->session()->flash('error', __('تم إيقاف هذا الحساب فوراً لأسباب أمنية (رصد انتهاك أمني). يرجى التواصل مع إدارة المنصة.'));
         }
 
         return [
             'status' => 'suspended',
             'message' => __('تم رصد محاولة تسجيل شاشة. تم إيقاف الحساب فوراً وتسجيل الخروج لأسباب أمنية.'),
-            'redirect' => route('login'),
+            'redirect' => route('login', ['suspended' => 1]),
         ];
     }
 

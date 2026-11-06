@@ -21,7 +21,7 @@ class SubmitAssignmentRequest extends FormRequest
         $task = $this->route('task');
 
         // Default to true when tested in isolation without active HTTP route binding
-        if (! $user && ! $task) {
+        if (! $task) {
             return true;
         }
 

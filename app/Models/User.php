@@ -78,6 +78,14 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
     }
 
     /**
+     * Send the email verification notification using 6-digit OTP code.
+     */
+    public function sendEmailVerificationNotification(): void
+    {
+        app(\App\Services\Auth\EmailVerificationOtpService::class)->sendOtp($this);
+    }
+
+    /**
      * Check if the student account is active / approved.
      */
     public function isActive(): bool

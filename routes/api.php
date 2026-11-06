@@ -87,8 +87,11 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
         Route::middleware(['auth:sanctum', 'student.approved'])->group(function () {
             Route::get('/me', [AuthController::class, 'me'])->name('me');
             Route::post('/email/verification-notification', [AuthController::class, 'resendVerification'])
-                ->middleware('throttle:6,1')
+                ->middleware('throttle:otp')
                 ->name('verification.send');
+            Route::post('/email/verify-otp', [AuthController::class, 'verifyEmailOtp'])
+                ->middleware('throttle:otp')
+                ->name('email.verify-otp');
             Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
         });
     });

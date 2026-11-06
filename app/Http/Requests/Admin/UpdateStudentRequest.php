@@ -43,7 +43,8 @@ class UpdateStudentRequest extends FormRequest
             'country' => ['nullable', 'string', 'max:100'],
             'city' => ['nullable', 'string', 'max:100'],
             'address' => ['nullable', 'string', 'max:255'],
-            'status' => ['required', 'string', Rule::in(['active', 'suspended'])],
+            'status' => ['required', 'string', Rule::in(['active', 'pending', 'suspended'])],
+            'is_verified' => ['nullable', 'boolean'],
         ];
     }
 

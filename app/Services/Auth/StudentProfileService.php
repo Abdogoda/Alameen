@@ -43,6 +43,15 @@ class StudentProfileService
             $user->email_verified_at = null;
         }
 
+        if (array_key_exists('is_verified', $data) && $data['is_verified'] !== null) {
+            $shouldBeVerified = (bool) $data['is_verified'];
+            if ($shouldBeVerified && ! $user->hasVerifiedEmail()) {
+                $user->email_verified_at = now();
+            } elseif (! $shouldBeVerified && $user->hasVerifiedEmail()) {
+                $user->email_verified_at = null;
+            }
+        }
+
         if ($avatar instanceof UploadedFile && $avatar->isValid()) {
             $path = $avatar->store('avatars', 'public');
             if ($path !== false) {
@@ -122,5 +131,27 @@ class StudentProfileService
     public function activate(User $user): User
     {
         return $this->setStatus($user, 'active');
+    }
+
+    /**
+     * Mark student email as verified.
+     */
+    public function verifyEmail(User $user): User
+    {
+        if (! $user->hasVerifiedEmail()) {
+            $user->markEmailAsVerified();
+        }
+
+        return $user;
+    }
+
+    /**
+     * Mark student email as unverified.
+     */
+    public function unverifyEmail(User $user): User
+    {
+        $user->forceFill(['email_verified_at' => null])->save();
+
+        return $user;
     }
 }

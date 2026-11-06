@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Api\V1\Student;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Student\Support\CreateTicketRequest;
 use App\Http\Requests\Student\Support\ListTicketsRequest;
 use App\Http\Requests\Student\Support\PollMessagesRequest;
-use App\Http\Requests\Student\Support\ReplyTicketRequest;
+use App\Http\Requests\Student\Support\SendStudentMessageRequest;
+use App\Http\Requests\Student\Support\StoreTicketRequest;
 use App\Http\Resources\Api\V1\SupportMessageResource;
 use App\Http\Resources\Api\V1\SupportTicketResource;
 use App\Models\SupportTicket;
@@ -60,7 +60,7 @@ class SupportTicketController extends Controller
      * POST /api/v1/student/support-tickets
      * Create a new student support ticket with optional file attachments.
      */
-    public function store(CreateTicketRequest $request): JsonResponse
+    public function store(StoreTicketRequest $request): JsonResponse
     {
         $ticket = $this->ticketService->createTicket(
             $request->user(),
@@ -106,7 +106,7 @@ class SupportTicketController extends Controller
      * POST /api/v1/student/support-tickets/{ticket}/reply
      * Send a student reply message (with optional attachments) on a support ticket.
      */
-    public function reply(ReplyTicketRequest $request, SupportTicket $ticket): JsonResponse
+    public function reply(SendStudentMessageRequest $request, SupportTicket $ticket): JsonResponse
     {
         if ((int) $ticket->user_id !== (int) $request->user()->id) {
             return response()->json([

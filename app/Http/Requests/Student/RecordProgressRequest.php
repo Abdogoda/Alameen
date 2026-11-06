@@ -20,7 +20,7 @@ class RecordProgressRequest extends FormRequest
         $video = $this->route('video');
 
         // Default to true when tested in isolation without active HTTP route binding
-        if (! $user && ! $video) {
+        if (! $video) {
             return true;
         }
 

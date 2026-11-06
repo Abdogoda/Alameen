@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api\V1\Student;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Student\RecordVideoProgressRequest;
+use App\Http\Requests\Student\RecordProgressRequest;
 use App\Http\Requests\Student\ReportViolationRequest;
 use App\Http\Resources\Api\V1\ClinicalTaskResource;
 use App\Http\Resources\Api\V1\CourseSummaryResource;
@@ -105,7 +105,7 @@ class LessonController extends Controller
      * POST /api/v1/student/courses/{slug}/lessons/{lesson}/progress
      * Record video watch progress heartbeat and trigger automatic certificate check if course is completed.
      */
-    public function recordProgress(RecordVideoProgressRequest $request, string $slug, string $lesson): JsonResponse
+    public function recordProgress(RecordProgressRequest $request, string $slug, string $lesson): JsonResponse
     {
         $course = Course::query()
             ->where('slug', $slug)

@@ -163,7 +163,7 @@ return [
     'features' => [
         Features::registration(),
         // Features::resetPasswords(), // Handled via 6-digit OTP in routes/web.php and routes/api.php
-        Features::emailVerification(),
+        // Features::emailVerification(), // Handled via 6-digit OTP in routes/web.php and routes/api.php
         Features::twoFactorAuthentication([
             'confirm' => true,
             'confirmPassword' => true,

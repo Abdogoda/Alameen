@@ -163,6 +163,25 @@ class NotificationManager extends Component
         $stats = $service->getNotificationStats();
         $type = $this->filterType !== 'all' ? $this->filterType : null;
         $history = $service->getAllSystemNotifications(15, $type, $this->filterUserId);
+
+        // Preload student models referenced in incident/notification payload
+        $studentIds = collect($history->items())
+            ->map(function ($item): ?int {
+                $data = $item->data ?? [];
+                $nested = (isset($data['data']) && is_array($data['data'])) ? $data['data'] : [];
+                $id = $nested['student_id'] ?? $data['student_id'] ?? $nested['user_id'] ?? $data['user_id'] ?? null;
+
+                return $id !== null ? (int) $id : null;
+            })
+            ->filter()
+            ->unique()
+            ->values()
+            ->all();
+
+        $students = ! empty($studentIds)
+            ? User::query()->whereIn('id', $studentIds)->get()->keyBy('id')
+            : collect();
+
         /** @var Collection<int, User> $users */
         $users = User::query()->select('id', 'name', 'email')->orderBy('name')->limit(100)->get();
 
@@ -170,6 +189,7 @@ class NotificationManager extends Component
             'stats' => $stats,
             'history' => $history,
             'users' => $users,
+            'students' => $students,
         ]);
     }
 }

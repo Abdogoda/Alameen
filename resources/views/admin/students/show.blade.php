@@ -64,6 +64,39 @@
                 </form>
             @endif
 
+            {{-- Verify / Unverify Account Action --}}
+            @if($user->hasVerifiedEmail())
+                <form 
+                    method="POST" 
+                    action="{{ route('admin.students.unverify', $user->id) }}"
+                    data-confirm="{{ __('هل أنت متأكد من رغبتك في إلغاء توثيق حساب هذا الطالب؟ سيعود البريد لحالة غير موثق.', ['name' => $user->name]) }}"
+                    data-confirm-title="{{ __('إلغاء توثيق الحساب') }}"
+                    data-confirm-btn="{{ __('نعم، ألغِ التوثيق') }}"
+                    data-confirm-danger="true"
+                >
+                    @csrf
+                    <button type="submit" class="h-9 sm:h-10 px-3.5 sm:px-4 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-700 font-bold text-xs flex items-center gap-1.5 transition-all shadow-2xs cursor-pointer whitespace-nowrap" title="{{ __('إلغاء توثيق الحساب') }}">
+                        <svg class="size-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
+                        <span>{{ __('إلغاء التوثيق') }}</span>
+                    </button>
+                </form>
+            @else
+                <form 
+                    method="POST" 
+                    action="{{ route('admin.students.verify', $user->id) }}"
+                    data-confirm="{{ __('هل أنت متأكد من رغبتك في توثيق وتأكيد حساب هذا الطالب (:name) وتأكيد بريده الإلكتروني يدوياً؟', ['name' => $user->name]) }}"
+                    data-confirm-title="{{ __('توثيق حساب الطالب') }}"
+                    data-confirm-btn="{{ __('نعم، وثّق الحساب الآن') }}"
+                    data-confirm-danger="false"
+                >
+                    @csrf
+                    <button type="submit" class="h-9 sm:h-10 px-3.5 sm:px-4 rounded-xl bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-300 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-700 font-bold text-xs flex items-center gap-1.5 transition-all shadow-2xs cursor-pointer whitespace-nowrap" title="{{ __('توثيق وتأكيد حساب الطالب والبريد الإلكتروني يدوياً') }}">
+                        <svg class="size-4 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <span>{{ __('توثيق الحساب') }}</span>
+                    </button>
+                </form>
+            @endif
+
             {{-- Toggle Status Form --}}
             <form 
                 method="POST" 
@@ -173,13 +206,35 @@
                     {{-- Contact & Location Details --}}
                     <div class="flex items-center gap-3 sm:gap-5 text-xs text-slate-600 dark:text-slate-400 mt-2.5 flex-wrap">
                         {{-- Email --}}
-                        <div class="flex items-center gap-1.5 font-mono min-w-0">
-                            <svg class="size-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                            <a href="mailto:{{ $user->email }}" class="hover:text-[#012383] dark:hover:text-blue-400 underline decoration-dotted truncate max-w-[220px] sm:max-w-none">{{ $user->email }}</a>
+                        <div class="flex items-center gap-2 font-mono min-w-0 flex-wrap">
+                            <div class="flex items-center gap-1.5 min-w-0">
+                                <svg class="size-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                                <a href="mailto:{{ $user->email }}" class="hover:text-[#012383] dark:hover:text-blue-400 underline decoration-dotted truncate max-w-[220px] sm:max-w-none">{{ $user->email }}</a>
+                            </div>
+
                             @if($user->email_verified_at)
-                                <span class="text-emerald-600 dark:text-emerald-400 text-[10px] font-bold shrink-0" title="{{ __('تم توثيق البريد الإلكتروني') }}">✓ {{ __('موثق') }}</span>
+                                <span class="text-emerald-600 dark:text-emerald-400 text-[10px] font-bold shrink-0 inline-flex items-center gap-1 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800" title="{{ __('تم توثيق البريد الإلكتروني بتاريخ: :date', ['date' => $user->email_verified_at->format('d/m/Y - h:i A')]) }}">
+                                    <svg class="size-3 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                    <span>{{ __('موثق') }}</span>
+                                </span>
                             @else
-                                <span class="text-amber-500 text-[10px] font-bold shrink-0" title="{{ __('البريد غير موثق بعد') }}">{{ __('غير موثق بعد') }}</span>
+                                <span class="text-amber-600 dark:text-amber-400 text-[10px] font-bold shrink-0 bg-amber-50 dark:bg-amber-950/60 px-2 py-0.5 rounded-full border border-amber-200 dark:border-amber-800" title="{{ __('البريد غير موثق بعد') }}">{{ __('غير موثق بعد') }}</span>
+
+                                <form method="POST" action="{{ route('admin.students.verify', $user->id) }}" class="inline">
+                                    @csrf
+                                    <button type="submit" class="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-emerald-600 hover:bg-emerald-700 text-white transition-colors cursor-pointer inline-flex items-center gap-1 shadow-2xs shrink-0" title="{{ __('توثيق وتأكيد هذا الحساب يدوياً الآن') }}">
+                                        <svg class="size-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                        <span>{{ __('توثيق الآن') }}</span>
+                                    </button>
+                                </form>
+
+                                <form method="POST" action="{{ route('admin.students.resend-verification', $user->id) }}" class="inline">
+                                    @csrf
+                                    <button type="submit" class="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-colors cursor-pointer inline-flex items-center gap-1 border border-slate-200 dark:border-slate-700 shrink-0" title="{{ __('إرسال رمز تحقق وتفعيل البريد الإلكتروني (OTP) إلى الطالب') }}">
+                                        <svg class="size-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                                        <span>{{ __('إرسال كود التفعيل') }}</span>
+                                    </button>
+                                </form>
                             @endif
                         </div>
 
@@ -1094,6 +1149,19 @@
                     <div>
                         <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">{{ __('العنوان التفصيلي') }}</label>
                         <input type="text" name="address" value="{{ old('address', $user->address) }}" class="w-full h-11 px-3.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-medium text-slate-800 dark:text-slate-200 outline-none focus:border-[#012383]">
+                    </div>
+
+                    {{-- Account Verification Toggle --}}
+                    <div class="flex items-center justify-between p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+                        <div class="min-w-0 pe-3">
+                            <span class="text-xs font-bold text-slate-800 dark:text-slate-200 block">{{ __('توثيق الحساب (البريد الإلكتروني)') }}</span>
+                            <span class="text-[11px] text-slate-500 dark:text-slate-400 block mt-0.5">{{ __('تأكيد البريد الإلكتروني واعتماد الحساب كموثق في المنصة.') }}</span>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer shrink-0">
+                            <input type="hidden" name="is_verified" value="0">
+                            <input type="checkbox" name="is_verified" value="1" @checked(old('is_verified', $user->hasVerifiedEmail())) class="sr-only peer">
+                            <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-slate-600 peer-checked:bg-emerald-600"></div>
+                        </label>
                     </div>
 
                     <div class="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-end gap-2.5">

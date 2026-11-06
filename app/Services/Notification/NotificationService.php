@@ -282,8 +282,13 @@ class NotificationService
         $query = DatabaseNotification::query()->with('notifiable');
 
         if ($userId !== null) {
-            $query->where('notifiable_id', $userId)
-                ->where('notifiable_type', User::class);
+            $query->where(function ($q) use ($userId): void {
+                $q->where(function ($q2) use ($userId): void {
+                    $q2->where('notifiable_id', $userId)
+                        ->where('notifiable_type', User::class);
+                })->orWhere('data->data->student_id', $userId)
+                  ->orWhere('data->student_id', $userId);
+            });
         }
 
         if ($unreadOnly === true) {

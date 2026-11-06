@@ -34,6 +34,14 @@
                     <span>{{ __('ملغي الصلاحية') }} ({{ $counts['suspended'] ?? 0 }})</span>
                 </span>
             </a>
+            <a href="{{ route('admin.students.index', ['status' => $status, 'verified' => ($verified ?? 'all') === 'unverified' ? 'all' : 'unverified', 'search' => $search]) }}" class="px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 {{ ($verified ?? 'all') === 'unverified' ? 'bg-amber-600 text-white' : 'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 hover:bg-amber-100 border border-amber-200/80 dark:border-amber-800/80' }}">
+                <span class="inline-flex items-center gap-1.5">
+                    @if(($counts['unverified'] ?? 0) > 0)
+                        <span class="size-2 rounded-full bg-amber-500"></span>
+                    @endif
+                    <span>{{ __('غير موثق') }} ({{ $counts['unverified'] ?? 0 }})</span>
+                </span>
+            </a>
         </div>
 
         <form method="GET" action="{{ route('admin.students.index') }}" class="relative w-full sm:w-80">
@@ -73,7 +81,14 @@
                                         <span>{{ $student->name }}</span>
                                         <svg class="size-3.5 opacity-0 group-hover:opacity-100 transition-opacity text-blue-500 dark:text-blue-400 shrink-0 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                                     </div>
-                                    <div class="text-[11px] text-slate-500 dark:text-slate-400 group-hover/row:text-slate-600 dark:group-hover/row:text-slate-300 font-mono truncate transition-colors">{{ $student->phone ?? '—' }} • {{ $student->email }}</div>
+                                    <div class="text-[11px] text-slate-500 dark:text-slate-400 group-hover/row:text-slate-600 dark:group-hover/row:text-slate-300 font-mono truncate transition-colors flex items-center gap-1.5 flex-wrap">
+                                        <span>{{ $student->phone ?? '—' }} • {{ $student->email }}</span>
+                                        @if($student->hasVerifiedEmail())
+                                            <span class="text-emerald-600 dark:text-emerald-400 text-[10px] font-bold" title="{{ __('حساب موثق') }}">✓</span>
+                                        @else
+                                            <span class="text-amber-600 dark:text-amber-400 text-[10px] font-bold bg-amber-50 dark:bg-amber-950/60 px-1.5 py-0.2 rounded border border-amber-200 dark:border-amber-800" title="{{ __('البريد غير موثق بعد') }}">{{ __('غير موثق') }}</span>
+                                        @endif
+                                    </div>
                                 </div>
                             </a>
                         </td>
@@ -117,6 +132,23 @@
                                         <button type="submit" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs transition-colors cursor-pointer inline-flex items-center gap-1">
                                             <svg class="size-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                                             <span>{{ __('موافقة واعتماد') }}</span>
+                                        </button>
+                                    </form>
+                                @endif
+
+                                @if(!$student->hasVerifiedEmail())
+                                    <form 
+                                        method="POST" 
+                                        action="{{ route('admin.students.verify', $student->id) }}"
+                                        data-confirm="{{ __('هل أنت متأكد من رغبتك في توثيق حساب الطالب (:name) وتأكيد بريده الإلكتروني يدوياً؟', ['name' => $student->name]) }}"
+                                        data-confirm-title="{{ __('توثيق حساب الطالب') }}"
+                                        data-confirm-btn="{{ __('نعم، وثّق الحساب') }}"
+                                        data-confirm-danger="false"
+                                    >
+                                        @csrf
+                                        <button type="submit" class="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800 transition-colors cursor-pointer inline-flex items-center gap-1" title="{{ __('توثيق حساب الطالب يدوياً') }}">
+                                            <svg class="size-3.5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                            <span>{{ __('توثيق') }}</span>
                                         </button>
                                     </form>
                                 @endif
@@ -175,7 +207,14 @@
                         <div class="min-w-0">
                             <div class="font-bold text-sm text-[#012383] dark:text-blue-400 truncate group-hover:underline">{{ $student->name }}</div>
                             <div class="text-[11px] text-slate-500 dark:text-slate-400 font-mono truncate">{{ $student->phone ?? '—' }}</div>
-                            <div class="text-[10px] text-slate-400 font-mono truncate">{{ $student->email }}</div>
+                            <div class="text-[10px] text-slate-400 font-mono truncate flex items-center gap-1.5">
+                                <span>{{ $student->email }}</span>
+                                @if($student->hasVerifiedEmail())
+                                    <span class="text-emerald-600 dark:text-emerald-400 font-bold">✓</span>
+                                @else
+                                    <span class="text-amber-600 dark:text-amber-400 font-bold bg-amber-50 dark:bg-amber-950/60 px-1 rounded">{{ __('غير موثق') }}</span>
+                                @endif
+                            </div>
                         </div>
                     </a>
                     @if($student->isActive())
@@ -217,6 +256,24 @@
                         <button type="submit" class="w-full py-2.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
                             <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                             <span>{{ __('موافقة واعتماد حساب الطالب') }}</span>
+                        </button>
+                    </form>
+                @endif
+
+                @if(!$student->hasVerifiedEmail())
+                    <form 
+                        method="POST" 
+                        action="{{ route('admin.students.verify', $student->id) }}"
+                        data-confirm="{{ __('هل أنت متأكد من رغبتك في توثيق حساب الطالب (:name) وتأكيد بريده الإلكتروني يدوياً؟', ['name' => $student->name]) }}"
+                        data-confirm-title="{{ __('توثيق حساب الطالب') }}"
+                        data-confirm-btn="{{ __('نعم، وثّق الحساب') }}"
+                        data-confirm-danger="false"
+                        class="w-full"
+                    >
+                        @csrf
+                        <button type="submit" class="w-full py-2 rounded-xl text-xs font-bold bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800 transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
+                            <svg class="size-3.5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            <span>{{ __('توثيق الحساب يدوياً') }}</span>
                         </button>
                     </form>
                 @endif

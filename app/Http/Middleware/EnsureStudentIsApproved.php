@@ -42,11 +42,15 @@ class EnsureStudentIsApproved
                 ], 403);
             }
 
-            return redirect()->route('login')->withErrors([
-                'email' => $isPending
-                    ? __('حسابك قيد المراجعة وبانتظار موافقة إدارة المنصة. ستتمكن من تسجيل الدخول فور اعتماد الحساب.')
-                    : __('تم إيقاف هذا الحساب. يرجى التواصل مع إدارة المنصة.'),
-            ]);
+            $message = $isPending
+                ? __('حسابك قيد المراجعة وبانتظار موافقة إدارة المنصة. ستتمكن من تسجيل الدخول فور اعتماد الحساب.')
+                : __('تم إيقاف هذا الحساب. يرجى التواصل مع إدارة المنصة.');
+
+            return redirect()->route('login')
+                ->with('error', $message)
+                ->withErrors([
+                    'email' => $message,
+                ]);
         }
 
         return $next($request);

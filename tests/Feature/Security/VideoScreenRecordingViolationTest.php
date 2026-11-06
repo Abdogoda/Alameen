@@ -139,4 +139,21 @@ class VideoScreenRecordingViolationTest extends TestCase
         $studentResponse->assertOk();
         $this->assertTrue(Auth::guard('web')->check());
     }
+
+    public function test_login_page_renders_prominent_suspension_alert_when_suspended(): void
+    {
+        // 1. When redirected with ?suspended=1 query parameter
+        $response = $this->get(route('login', ['suspended' => 1]));
+        $response->assertOk();
+        $response->assertSee('تم إيقاف الحساب');
+        $response->assertSee('تم إيقاف هذا الحساب فوراً لأسباب أمنية');
+
+        // 2. When redirected with session error
+        $responseWithSession = $this->withSession([
+            'error' => 'تم إيقاف هذا الحساب. يرجى التواصل مع إدارة المنصة.',
+        ])->get(route('login'));
+        $responseWithSession->assertOk();
+        $responseWithSession->assertSee('تم إيقاف الحساب');
+        $responseWithSession->assertSee('تم إيقاف هذا الحساب. يرجى التواصل مع إدارة المنصة.');
+    }
 }

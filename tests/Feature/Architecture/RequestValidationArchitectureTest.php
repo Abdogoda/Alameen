@@ -65,6 +65,7 @@ class RequestValidationArchitectureTest extends TestCase
 
             /** @var FormRequest $instance */
             $instance = new $className;
+            $instance->setUserResolver(fn () => new \App\Models\User);
             $this->assertTrue($instance->authorize(), "{$className}::authorize() should return true.");
 
             $rules = $instance->rules();

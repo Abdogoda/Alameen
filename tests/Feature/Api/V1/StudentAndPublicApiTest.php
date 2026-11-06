@@ -8,9 +8,11 @@ use App\Models\Course;
 use App\Models\Level;
 use App\Models\User;
 use App\Models\Video;
+use App\Notifications\EmailVerificationOtpNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
 class StudentAndPublicApiTest extends TestCase
@@ -74,10 +76,10 @@ class StudentAndPublicApiTest extends TestCase
             ->assertJsonStructure([
                 'success',
                 'data' => [
-                    'locale',
-                    'supported_locales',
+                    'branding',
                     'currency',
-                    'page_visibility',
+                    'features',
+                    'localization',
                 ],
             ]);
 
@@ -194,6 +196,51 @@ class StudentAndPublicApiTest extends TestCase
             ->assertJsonPath('success', true);
     }
 
+    public function test_email_verification_otp_api_flow(): void
+    {
+        Notification::fake();
+
+        $student = User::factory()->create([
+            'email' => 'student-verify@example.com',
+            'status' => 'active',
+            'email_verified_at' => null,
+        ]);
+
+        $token = $student->createToken('test-device')->plainTextToken;
+
+        // 1. Request OTP via API
+        $this->withToken($token)
+            ->postJson('/api/v1/auth/email/verification-notification')
+            ->assertStatus(200)
+            ->assertJsonPath('success', true)
+            ->assertJsonPath('already_verified', false);
+
+        $sentOtp = null;
+        Notification::assertSentTo($student, EmailVerificationOtpNotification::class, function ($notification) use (&$sentOtp) {
+            $sentOtp = $notification->otp;
+
+            return true;
+        });
+
+        $this->assertNotNull($sentOtp);
+
+        // 2. Submit invalid OTP
+        $this->withToken($token)
+            ->postJson('/api/v1/auth/email/verify-otp', ['otp' => '000000'])
+            ->assertStatus(422)
+            ->assertJsonValidationErrors(['otp']);
+
+        $this->assertFalse($student->fresh()->hasVerifiedEmail());
+
+        // 3. Submit valid OTP
+        $this->withToken($token)
+            ->postJson('/api/v1/auth/email/verify-otp', ['otp' => $sentOtp])
+            ->assertStatus(200)
+            ->assertJsonPath('success', true);
+
+        $this->assertTrue($student->fresh()->hasVerifiedEmail());
+    }
+
     public function test_authenticated_student_workspace_endpoints_share_services_and_return_json(): void
     {
         $student = User::factory()->create([
@@ -270,7 +317,7 @@ class StudentAndPublicApiTest extends TestCase
                 'success',
                 'data' => [
                     'enrolled_courses',
-                    'catalog_courses',
+                    'all_courses',
                 ],
             ]);
 
@@ -328,7 +375,7 @@ class StudentAndPublicApiTest extends TestCase
             ->postJson('/api/v1/student/support-tickets', [
                 'subject' => 'مشكلة في تشغيل الفيديو السريري',
                 'category' => 'technical',
-                'priority' => 'normal',
+                'priority' => 'medium',
                 'message' => 'يرجى المساعدة في تشغيل الفيديو بجودة عالية.',
             ]);
 

@@ -17,6 +17,68 @@
         <!-- Session Status -->
         <x-auth-session-status class="text-start" :status="session('status')" />
 
+        @php
+            $alertMessage = session('error');
+            $isSuspended = false;
+            $isPendingAlert = false;
+
+            if (! $alertMessage && request()->boolean('suspended')) {
+                $alertMessage = __('تم إيقاف هذا الحساب فوراً لأسباب أمنية (رصد انتهاك أمني). يرجى التواصل مع إدارة المنصة.');
+                $isSuspended = true;
+            }
+
+            if (! $alertMessage && $errors->has('email')) {
+                $emailError = $errors->first('email');
+                if (str_contains($emailError, 'إيقاف') || str_contains($emailError, 'تعليق')) {
+                    $alertMessage = $emailError;
+                    $isSuspended = true;
+                } elseif (str_contains($emailError, 'المراجعة')) {
+                    $alertMessage = $emailError;
+                    $isPendingAlert = true;
+                }
+            } elseif ($alertMessage && (str_contains($alertMessage, 'إيقاف') || str_contains($alertMessage, 'أمنية'))) {
+                $isSuspended = true;
+            } elseif ($alertMessage && str_contains($alertMessage, 'المراجعة')) {
+                $isPendingAlert = true;
+            }
+        @endphp
+
+        @if ($alertMessage)
+            @if ($isPendingAlert)
+                <div class="w-full p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-200 text-sm shadow-xs flex items-start gap-3 animate-shake">
+                    <div class="size-9 rounded-xl bg-amber-100 dark:bg-amber-900/60 text-amber-700 dark:text-amber-300 flex items-center justify-center shrink-0 shadow-2xs">
+                        <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <div class="flex flex-col gap-1 text-start">
+                        <p class="font-bold text-amber-900 dark:text-amber-100 text-sm leading-tight">
+                            {{ __('الحساب قيد المراجعة') }}
+                        </p>
+                        <p class="text-xs leading-relaxed text-amber-800 dark:text-amber-300 font-medium">
+                            {{ $alertMessage }}
+                        </p>
+                    </div>
+                </div>
+            @else
+                <div class="w-full p-4 rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-300 text-sm shadow-xs flex items-start gap-3 animate-shake">
+                    <div class="size-9 rounded-xl bg-rose-100 dark:bg-rose-900/60 text-rose-600 dark:text-rose-300 flex items-center justify-center shrink-0 shadow-2xs">
+                        <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                        </svg>
+                    </div>
+                    <div class="flex flex-col gap-1 text-start">
+                        <p class="font-bold text-rose-800 dark:text-rose-200 text-sm leading-tight">
+                            {{ __('تم إيقاف الحساب') }}
+                        </p>
+                        <p class="text-xs leading-relaxed text-rose-700 dark:text-rose-300 font-medium">
+                            {{ $alertMessage }}
+                        </p>
+                    </div>
+                </div>
+            @endif
+        @endif
+
         <!-- Social & Passwordless Authentication -->
         <div class="flex flex-col gap-3 w-full">
             <x-google-button action="login" />

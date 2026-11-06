@@ -8,9 +8,10 @@
     $isRtl = ($locale ?? 'ar') === 'ar';
     $align = $isRtl ? 'right' : 'left';
     $userName = $user->name ?? ($isRtl ? 'عزيزنا المتدرب' : 'Valued User');
+    $expires = $expiresInMinutes ?? 15;
 @endphp
 
-<!-- Icon Badge (Checkmark / Email) -->
+<!-- Icon Badge (Checkmark / Shield) -->
 <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin: 0 auto 20px auto; text-align: center;">
     <tr>
         <td align="center">
@@ -44,37 +45,47 @@
 </div>
 
 <!-- Intro Explanation -->
-<div style="font-size: 14.5px; line-height: 1.7; color: #334155; margin-bottom: 24px; font-family: 'Cairo', 'Tajawal', sans-serif;">
+<div style="font-size: 14.5px; line-height: 1.7; color: #334155; margin-bottom: 22px; font-family: 'Cairo', 'Tajawal', sans-serif;">
     @if ($isRtl)
-        شكراً لانضمامك إلى <strong>منصة الأمين</strong> للتعليم الطبي والتدريب السريري. لإتمام تفعيل حسابك والبدء في استكشاف البرامج التدريبية المتاحة، يرجى تأكيد عنوان بريدك الإلكتروني بالضغط على الزر التالي:
+        شكراً لانضمامك إلى <strong>منصة الأمين</strong> للتعليم الطبي والتدريب السريري. لإتمام تفعيل حسابك وتأكيد بريدك الإلكتروني، يرجى إدخال رمز التحقق لمرة واحدة (OTP) الموضح أدناه:
     @else
-        Thank you for joining <strong>Alameen Platform</strong>. To complete your account activation and access your medical courses, please verify your email address by clicking the button below:
+        Thank you for joining <strong>Alameen Platform</strong>. To complete your account activation and verify your email address, please use the one-time verification code (OTP) below:
     @endif
 </div>
 
-<!-- Action CTA Button -->
-<table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin: 32px auto; text-align: center;">
+<!-- OTP Highlight Card -->
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: #F0F5FF; border: 2px dashed #0B2A8F; border-radius: 16px; margin: 24px 0; text-align: center;" bgcolor="#F0F5FF">
     <tr>
-        <td align="center">
-            <a href="{{ $url }}" target="_blank" style="display: inline-block; background-color: #012383; color: #FFFFFF; font-size: 15px; font-weight: 700; text-decoration: none; padding: 15px 36px; border-radius: 12px; box-shadow: 0 4px 14px rgba(1, 35, 131, 0.25); font-family: 'Cairo', 'Tajawal', sans-serif;">
-                {{ $isRtl ? 'تأكيد البريد الإلكتروني الآن' : 'Verify Email Address Now' }}
-            </a>
+        <td style="padding: 24px 20px; text-align: center;" align="center">
+            <!-- OTP Card Label -->
+            <div style="font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #0B2A8F; margin-bottom: 8px; font-family: 'Cairo', 'Tajawal', sans-serif;">
+                {{ $isRtl ? 'رمز التحقق لمرة واحدة (OTP)' : 'One-Time Verification Code (OTP)' }}
+            </div>
+
+            <!-- OTP Digits -->
+            <div class="otp-digits" style="direction: ltr; font-family: 'Courier New', Consolas, Monaco, monospace; font-size: 38px; font-weight: 800; color: #012383; letter-spacing: 12px; padding-left: 12px; margin: 8px 0; display: inline-block;">
+                {{ $otp ?? '------' }}
+            </div>
+
+            <!-- Expiry Badge -->
+            <div style="margin-top: 12px;">
+                <span style="display: inline-block; background-color: #FEF3C7; border: 1px solid #FDE68A; color: #92400E; font-size: 12px; font-weight: 700; padding: 5px 14px; border-radius: 20px; font-family: 'Cairo', 'Tajawal', sans-serif;">
+                    ⏱️ {{ $isRtl ? 'صالح لمدة ' . $expires . ' دقيقة فقط' : 'Valid for ' . $expires . ' minutes only' }}
+                </span>
+            </div>
         </td>
     </tr>
 </table>
 
-<!-- Security / Subcopy Box -->
-<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 12px; margin-top: 28px;" bgcolor="#F8FAFC">
+<!-- Security Warning Box -->
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: #F8FAFC; border: 1px solid #E2E8F0; {{ $isRtl ? 'border-right: 4px solid #012383;' : 'border-left: 4px solid #012383;' }} border-radius: 12px; margin-top: 26px;" bgcolor="#F8FAFC">
     <tr>
-        <td style="padding: 16px 18px; font-size: 13px; line-height: 1.6; color: #64748B; font-family: 'Cairo', 'Tajawal', sans-serif;">
+        <td style="padding: 16px 18px; font-size: 13px; line-height: 1.6; color: #475569; font-family: 'Cairo', 'Tajawal', sans-serif;">
             @if ($isRtl)
-                إذا كنت تواجه مشكلة في النقر على الزر أعلاه، يمكنك نسخ الرابط التالي ولصقه مباشرة في متصفحك:
+                <strong style="color: #012383;">🛡️ ملاحظة أمنية:</strong> إذا لم تقم بإنشاء حساب في منصة الأمين، يمكنك تجاهل هذه الرسالة بأمان تام. لن يتم تفعيل الحساب دون إدخال هذا الرمز.
             @else
-                If you're having trouble clicking the button, copy and paste the URL below into your web browser:
+                <strong style="color: #012383;">🛡️ Security Notice:</strong> If you did not create an account on Alameen Platform, you can safely ignore this email. The account will not be activated without entering this code.
             @endif
-            <div style="direction: ltr; text-align: left; word-break: break-all; margin-top: 8px;">
-                <a href="{{ $url }}" style="color: #012383; text-decoration: underline; font-size: 12px;">{{ $url }}</a>
-            </div>
         </td>
     </tr>
 </table>

@@ -349,4 +349,111 @@ class AdminStudentManagementTest extends TestCase
         $response->assertSessionHas('success');
         $this->assertDatabaseMissing('users', ['id' => $student->id]);
     }
+
+    public function test_admin_can_manually_verify_unverified_student_account(): void
+    {
+        $student = User::factory()->create([
+            'email_verified_at' => null,
+        ]);
+
+        $this->assertFalse($student->hasVerifiedEmail());
+
+        $response = $this->actingAs($this->admin, 'admin')
+            ->post(route('admin.students.verify', $student));
+
+        $response->assertSessionHas('success');
+        $student->refresh();
+        $this->assertTrue($student->hasVerifiedEmail());
+        $this->assertNotNull($student->email_verified_at);
+    }
+
+    public function test_admin_can_unverify_student_account(): void
+    {
+        $student = User::factory()->create([
+            'email_verified_at' => now(),
+        ]);
+
+        $this->assertTrue($student->hasVerifiedEmail());
+
+        $response = $this->actingAs($this->admin, 'admin')
+            ->post(route('admin.students.unverify', $student));
+
+        $response->assertSessionHas('success');
+        $student->refresh();
+        $this->assertFalse($student->hasVerifiedEmail());
+        $this->assertNull($student->email_verified_at);
+    }
+
+    public function test_admin_can_update_verification_status_via_profile_update(): void
+    {
+        $student = User::factory()->create([
+            'email_verified_at' => null,
+            'status' => 'active',
+        ]);
+
+        $this->assertFalse($student->hasVerifiedEmail());
+
+        $response = $this->actingAs($this->admin, 'admin')
+            ->put(route('admin.students.update', $student), [
+                'name' => $student->name,
+                'email' => $student->email,
+                'status' => 'active',
+                'is_verified' => 1,
+            ]);
+
+        $response->assertSessionHas('success');
+        $student->refresh();
+        $this->assertTrue($student->hasVerifiedEmail());
+
+        // Now toggle verification off
+        $response2 = $this->actingAs($this->admin, 'admin')
+            ->put(route('admin.students.update', $student), [
+                'name' => $student->name,
+                'email' => $student->email,
+                'status' => 'active',
+                'is_verified' => 0,
+            ]);
+
+        $response2->assertSessionHas('success');
+        $student->refresh();
+        $this->assertFalse($student->hasVerifiedEmail());
+    }
+
+    public function test_admin_can_resend_verification_email(): void
+    {
+        \Illuminate\Support\Facades\Notification::fake();
+
+        $student = User::factory()->create([
+            'email_verified_at' => null,
+        ]);
+
+        $response = $this->actingAs($this->admin, 'admin')
+            ->post(route('admin.students.resend-verification', $student));
+
+        $response->assertSessionHas('success');
+        \Illuminate\Support\Facades\Notification::assertSentTo(
+            $student,
+            \App\Notifications\EmailVerificationOtpNotification::class
+        );
+    }
+
+    public function test_admin_can_filter_students_by_unverified_status(): void
+    {
+        User::factory()->create([
+            'name' => 'Verified Student XYZ',
+            'email_verified_at' => now(),
+        ]);
+
+        User::factory()->create([
+            'name' => 'Unverified Student ABC',
+            'email_verified_at' => null,
+        ]);
+
+        $response = $this->actingAs($this->admin, 'admin')
+            ->get(route('admin.students.index', ['verified' => 'unverified']));
+
+        $response->assertOk();
+        $response->assertSee('Unverified Student ABC');
+        $response->assertDontSee('Verified Student XYZ');
+    }
 }

@@ -147,4 +147,58 @@ class NotificationSystemTest extends TestCase
             ->get(route('admin.notifications.index'))
             ->assertOk();
     }
+
+    public function test_admin_notifications_log_displays_details_of_violating_user(): void
+    {
+        $admin = Admin::factory()->create(['permissions' => ['*']]);
+        $student = User::factory()->create([
+            'name' => 'Tariq Student Violator',
+            'email' => 'tariq.violator@example.com',
+            'phone' => '01099887766',
+            'status' => 'suspended',
+        ]);
+
+        $notification = new UnifiedNotification(
+            title: [
+                'ar' => '🚨 رصد محاولة تسجيل شاشة — تم إيقاف الحساب فوراً',
+                'en' => '🚨 Screen Recording Detected — Account Suspended',
+            ],
+            body: [
+                'ar' => "تم رصد محاولة تسجيل شاشة للمحاضرة 'مخارج الحروف' بواسطة الطالب {$student->name} (هاتف: {$student->phone}). تم إيقاف الحساب فوراً وتسجيل الخروج.",
+                'en' => "Screen recording attempt detected for lecture 'مخارج الحروف' by student {$student->name} (Phone: {$student->phone}). Account suspended immediately.",
+            ],
+            channels: ['database'],
+            type: 'security',
+            actionUrl: route('admin.students.show', $student->id),
+            actionText: [
+                'ar' => 'فحص ملف الطالب وبيانات الانتهاك',
+                'en' => 'Review Student Profile & Violation',
+            ],
+            data: [
+                'incident' => 'screen_recording_blocked',
+                'student_id' => $student->id,
+                'student_name' => $student->name,
+                'student_phone' => $student->phone,
+                'student_email' => $student->email,
+                'ip_address' => '192.168.10.55',
+                'user_agent' => 'Mozilla/5.0 TestBrowser',
+                'video_title' => 'مخارج الحروف',
+                'course_title' => 'دورة التخاطب',
+                'incident_type' => 'screen_recording_attempt',
+                'reported_at' => now()->toIso8601String(),
+            ]
+        );
+
+        Notification::send($admin, $notification);
+
+        $response = $this->actingAs($admin, 'admin')
+            ->get(route('admin.notifications.index'));
+
+        $response->assertOk();
+        $response->assertSee('Tariq Student Violator');
+        $response->assertSee('01099887766');
+        $response->assertSee('tariq.violator@example.com');
+        $response->assertSee(__('notifications.admin.violator'));
+        $response->assertSee($admin->name);
+    }
 }

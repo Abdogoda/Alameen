@@ -45,11 +45,18 @@ class StudentManagerController extends Controller
     {
         $search = $request->query('search');
         $status = $request->query('status', 'all');
+        $verified = $request->query('verified', 'all');
 
         $query = User::with(['courses', 'videoProgress', 'certificates'])->latest();
 
         if ($status !== 'all' && in_array($status, ['active', 'pending', 'suspended'], true)) {
             $query->where('status', $status);
+        }
+
+        if ($verified === 'verified') {
+            $query->whereNotNull('email_verified_at');
+        } elseif ($verified === 'unverified') {
+            $query->whereNull('email_verified_at');
         }
 
         if (! empty($search)) {
@@ -69,9 +76,10 @@ class StudentManagerController extends Controller
             'pending' => User::where('status', 'pending')->count(),
             'active' => User::where('status', 'active')->count(),
             'suspended' => User::where('status', 'suspended')->count(),
+            'unverified' => User::whereNull('email_verified_at')->count(),
         ];
 
-        return view('admin.students.index', compact('students', 'counts', 'status', 'search'));
+        return view('admin.students.index', compact('students', 'counts', 'status', 'verified', 'search'));
     }
 
     /**
@@ -140,6 +148,9 @@ class StudentManagerController extends Controller
     public function update(UpdateStudentRequest $request, User $user): RedirectResponse
     {
         $validated = $request->validated();
+        if ($request->has('is_verified')) {
+            $validated['is_verified'] = $request->boolean('is_verified');
+        }
 
         $this->profileService->updateProfile($user, $validated);
 
@@ -148,6 +159,44 @@ class StudentManagerController extends Controller
         }
 
         return back()->with('success', __('تم تحديث بيانات الطالب بنجاح.'));
+    }
+
+    /**
+     * Manually verify student email/account from admin panel.
+     */
+    public function verifyAccount(User $user): RedirectResponse
+    {
+        $this->profileService->verifyEmail($user);
+
+        return back()->with('success', __('تم توثيق وتأكيد حساب الطالب (:name) بنجاح.', ['name' => $user->name]));
+    }
+
+    /**
+     * Revoke student verification status (mark as unverified).
+     */
+    public function unverifyAccount(User $user): RedirectResponse
+    {
+        $this->profileService->unverifyEmail($user);
+
+        return back()->with('success', __('تم إلغاء توثيق حساب الطالب (:name) بنجاح.', ['name' => $user->name]));
+    }
+
+    /**
+     * Resend verification email notification to student.
+     */
+    public function resendVerificationEmail(User $user): RedirectResponse
+    {
+        if ($user->hasVerifiedEmail()) {
+            return back()->with('warning', __('حساب الطالب موثق بالفعل ولا يحتاج إلى رمز تفعيل جديد.'));
+        }
+
+        try {
+            $user->sendEmailVerificationNotification();
+
+            return back()->with('success', __('تم إرسال رمز تأكيد وتفعيل الحساب (OTP) إلى البريد الإلكتروني (:email) بنجاح.', ['email' => $user->email]));
+        } catch (\Throwable) {
+            return back()->with('warning', __('تعذر إرسال البريد الإلكتروني حالياً. يمكنك استخدام زر "توثيق الحساب" لتوثيقه يدوياً ومباشرة.'));
+        }
     }
 
     /**

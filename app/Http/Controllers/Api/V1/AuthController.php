@@ -11,9 +11,11 @@ use App\Http\Requests\Auth\PasskeyLoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Auth\ResetPasswordWithOtpRequest;
 use App\Http\Requests\Auth\TwoFactorLoginRequest;
+use App\Http\Requests\Auth\VerifyEmailOtpRequest;
 use App\Http\Requests\Auth\VerifyOtpRequest;
 use App\Http\Resources\Api\V1\UserResource;
 use App\Models\User;
+use App\Services\Auth\EmailVerificationOtpService;
 use App\Services\Auth\PasskeyService;
 use App\Services\Auth\PasswordSecurityService;
 use App\Services\Auth\StudentAuthService;
@@ -290,7 +292,7 @@ class AuthController extends Controller
 
     /**
      * POST /api/v1/auth/email/verification-notification
-     * Resend email verification link to the authenticated student.
+     * Resend 6-digit email verification OTP code to the authenticated student.
      */
     public function resendVerification(Request $request): JsonResponse
     {
@@ -309,7 +311,41 @@ class AuthController extends Controller
         return response()->json([
             'success' => true,
             'already_verified' => false,
-            'message' => __('تم إرسال رابط تأكيد البريد الإلكتروني بنجاح.'),
+            'message' => __('تم إرسال رمز تأكيد البريد الإلكتروني (OTP) بنجاح.'),
+        ]);
+    }
+
+    /**
+     * POST /api/v1/auth/email/verify-otp
+     * Verify the student's email using the 6-digit OTP code.
+     */
+    public function verifyEmailOtp(VerifyEmailOtpRequest $request): JsonResponse
+    {
+        $user = $request->user();
+
+        if ($user->hasVerifiedEmail()) {
+            return response()->json([
+                'success' => true,
+                'already_verified' => true,
+                'message' => __('البريد الإلكتروني مؤكد بالفعل.'),
+                'data' => [
+                    'user' => new UserResource($user),
+                ],
+            ]);
+        }
+
+        app(EmailVerificationOtpService::class)->verifyOtp(
+            $user,
+            (string) $request->validated('otp')
+        );
+
+        return response()->json([
+            'success' => true,
+            'already_verified' => false,
+            'message' => __('تم تأكيد البريد الإلكتروني بنجاح.'),
+            'data' => [
+                'user' => new UserResource($user->fresh()),
+            ],
         ]);
     }
 

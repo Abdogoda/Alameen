@@ -45,20 +45,20 @@ class PasswordResetOtpService
             ]);
         }
 
-        // Throttle check
+        // Throttle check (cooldown between OTP requests)
         $existing = DB::table('password_reset_tokens')
             ->where('email', $normalizedEmail)
             ->first();
 
         if ($existing && $existing->created_at) {
-            $createdAt = Carbon::parse($existing->created_at);
-            $secondsSinceCreation = Carbon::now()->diffInSeconds($createdAt);
+            $throttleUntil = Carbon::parse($existing->created_at)->addSeconds(self::THROTTLE_SECONDS);
 
-            if ($secondsSinceCreation < self::THROTTLE_SECONDS) {
-                $retryAfter = (int) (self::THROTTLE_SECONDS - $secondsSinceCreation);
+            if ($throttleUntil->isFuture()) {
+                $retryAfter = (int) ceil(Carbon::now()->diffInSeconds($throttleUntil, false));
+                $retryAfter = max(1, min(self::THROTTLE_SECONDS, $retryAfter));
 
                 throw ValidationException::withMessages([
-                    'email' => [__('auth.throttle', ['seconds' => $retryAfter])],
+                    'email' => [__('auth.otp_throttle', ['seconds' => $retryAfter])],
                 ]);
             }
         }

@@ -12,6 +12,12 @@
         <!-- Session Status -->
         <x-auth-session-status class="text-start" :status="session('status')" />
 
+        @if (session('error'))
+            <div class="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold w-full text-start">
+                {{ session('error') }}
+            </div>
+        @endif
+
         <form method="POST" action="{{ route('password.email') }}" class="flex flex-col gap-5 w-full">
             @csrf
 

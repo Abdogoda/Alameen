@@ -57,6 +57,7 @@ return [
     'otp_verified' => 'Verification code is valid.',
     'invalid_otp' => 'The provided verification code is invalid.',
     'otp_expired' => 'The verification code has expired. Please request a new one.',
+    'otp_throttle' => 'A verification code was recently sent to your email. Please wait :seconds seconds before requesting a new code.',
     'password_reset_success' => 'Your password has been reset successfully.',
     'enter_otp' => 'Please enter the 6-digit verification code.',
     'resend_otp' => 'Resend Code',

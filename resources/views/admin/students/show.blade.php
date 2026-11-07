@@ -4,7 +4,7 @@
     contentClass="p-3.5 sm:p-6 lg:p-8 flex flex-col gap-5 sm:gap-6 w-full min-w-0"
 >
     <x-slot:actions>
-        <div class="flex items-center gap-2 sm:gap-2.5 flex-wrap w-full 2xl:w-auto">
+        <div class="flex items-center gap-2 sm:gap-2.5 flex-wrap w-full xl:w-auto xl:justify-end">
             {{-- Back to Students List --}}
             <a 
                 href="{{ route('admin.students.index') }}" 
@@ -26,6 +26,16 @@
             </button>
             @endif
 
+            @if($user->isPending())
+                <form method="POST" action="{{ route('admin.students.approve', $user->id) }}">
+                    @csrf
+                    <button type="submit" class="h-9 sm:h-10 px-4 sm:px-5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center gap-1.5 transition-all shadow-sm cursor-pointer whitespace-nowrap animate-pulse">
+                        <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                        <span>{{ __('موافقة واعتماد حساب الطالب') }}</span>
+                    </button>
+                </form>
+            @endif
+
             @if(auth('admin')->user()?->hasAnyPermission(['certificates.approve', 'students.manage']))
             {{-- Issue Certificate Modal Trigger --}}
             <button 
@@ -39,107 +49,177 @@
             @endif
 
             @if(auth('admin')->user()?->hasPermission('students.manage'))
-            {{-- Edit Profile Modal Trigger --}}
+            {{-- Edit Profile Modal Trigger (Visible on sm+) --}}
             <button 
                 type="button" 
                 onclick="openModal('modal-edit-student')" 
-                class="h-9 sm:h-10 px-3.5 sm:px-4 rounded-xl bg-white dark:bg-slate-800 border border-[#DEE8F7] dark:border-slate-700 hover:border-[#0B2A8F] text-slate-700 dark:text-slate-200 font-bold text-xs flex items-center gap-1.5 transition-all shadow-2xs cursor-pointer whitespace-nowrap"
+                class="hidden sm:inline-flex h-9 sm:h-10 px-3.5 sm:px-4 rounded-xl bg-white dark:bg-slate-800 border border-[#DEE8F7] dark:border-slate-700 hover:border-[#0B2A8F] text-slate-700 dark:text-slate-200 font-bold text-xs items-center gap-1.5 transition-all shadow-2xs cursor-pointer whitespace-nowrap"
             >
                 <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
                 <span>{{ __('تعديل البيانات') }}</span>
             </button>
 
-            {{-- Change Password Modal Trigger --}}
+            {{-- Change Password Modal Trigger (Visible on md+) --}}
             <button 
                 type="button" 
                 onclick="openModal('modal-change-password')" 
-                class="h-9 sm:h-10 px-3.5 sm:px-4 rounded-xl bg-white dark:bg-slate-800 border border-[#DEE8F7] dark:border-slate-700 hover:border-[#0B2A8F] text-slate-700 dark:text-slate-200 font-bold text-xs flex items-center gap-1.5 transition-all shadow-2xs cursor-pointer whitespace-nowrap"
+                class="hidden md:inline-flex h-9 sm:h-10 px-3.5 sm:px-4 rounded-xl bg-white dark:bg-slate-800 border border-[#DEE8F7] dark:border-slate-700 hover:border-[#0B2A8F] text-slate-700 dark:text-slate-200 font-bold text-xs items-center gap-1.5 transition-all shadow-2xs cursor-pointer whitespace-nowrap"
             >
                 <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg>
                 <span>{{ __('تغيير كلمة المرور') }}</span>
             </button>
 
-            @if($user->isPending())
-                <form method="POST" action="{{ route('admin.students.approve', $user->id) }}">
-                    @csrf
-                    <button type="submit" class="h-9 sm:h-10 px-4 sm:px-5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center gap-1.5 transition-all shadow-sm cursor-pointer whitespace-nowrap animate-pulse">
-                        <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                        <span>{{ __('موافقة واعتماد حساب الطالب') }}</span>
-                    </button>
-                </form>
-            @endif
-
-            {{-- Verify / Unverify Account Action --}}
-            @if($user->hasVerifiedEmail())
+            {{-- Direct Status Toggle Button (Visible on 2xl+) --}}
+            <div class="hidden 2xl:block">
                 <form 
                     method="POST" 
-                    action="{{ route('admin.students.unverify', $user->id) }}"
-                    data-confirm="{{ __('هل أنت متأكد من رغبتك في إلغاء توثيق حساب هذا الطالب؟ سيعود البريد لحالة غير موثق.', ['name' => $user->name]) }}"
-                    data-confirm-title="{{ __('إلغاء توثيق الحساب') }}"
-                    data-confirm-btn="{{ __('نعم، ألغِ التوثيق') }}"
-                    data-confirm-danger="true"
+                    action="{{ route('admin.students.toggle', $user->id) }}"
+                    data-confirm="{{ $user->isActive() ? __('هل أنت متأكد من تعليق حساب هذا الطالب ومنعه من الوصول لمنصة التدريب؟') : ($user->isPending() ? __('هل أنت متأكد من اعتماد وتفعيل حساب الطالب؟') : __('هل أنت متأكد من إعادة تنشيط هذا الحساب؟')) }}"
+                    data-confirm-title="{{ $user->isActive() ? __('تعليق حساب الطالب') : ($user->isPending() ? __('اعتماد حساب الطالب') : __('تنشيط حساب الطالب')) }}"
+                    data-confirm-btn="{{ $user->isActive() ? __('نعم، علّق الحساب') : ($user->isPending() ? __('نعم، اعتمد الحساب') : __('نعم، نشّط الحساب')) }}"
+                    data-confirm-danger="{{ $user->isActive() ? 'true' : 'false' }}"
                 >
                     @csrf
-                    <button type="submit" class="h-9 sm:h-10 px-3.5 sm:px-4 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-700 font-bold text-xs flex items-center gap-1.5 transition-all shadow-2xs cursor-pointer whitespace-nowrap" title="{{ __('إلغاء توثيق الحساب') }}">
-                        <svg class="size-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
-                        <span>{{ __('إلغاء التوثيق') }}</span>
-                    </button>
+                    @if($user->isActive())
+                        <button type="submit" class="h-9 sm:h-10 px-3.5 sm:px-4 rounded-xl bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 dark:bg-rose-950/40 dark:text-rose-300 dark:border-rose-800 font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer whitespace-nowrap">
+                            <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
+                            <span>{{ __('تعليق الحساب') }}</span>
+                        </button>
+                    @elseif($user->isPending())
+                        <button type="submit" class="h-9 sm:h-10 px-3.5 sm:px-4 rounded-xl bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800 font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer whitespace-nowrap">
+                            <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            <span>{{ __('تفعيل الحساب') }}</span>
+                        </button>
+                    @else
+                        <button type="submit" class="h-9 sm:h-10 px-3.5 sm:px-4 rounded-xl bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800 font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer whitespace-nowrap">
+                            <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            <span>{{ __('تنشيط الحساب') }}</span>
+                        </button>
+                    @endif
                 </form>
-            @else
-                <form 
-                    method="POST" 
-                    action="{{ route('admin.students.verify', $user->id) }}"
-                    data-confirm="{{ __('هل أنت متأكد من رغبتك في توثيق وتأكيد حساب هذا الطالب (:name) وتأكيد بريده الإلكتروني يدوياً؟', ['name' => $user->name]) }}"
-                    data-confirm-title="{{ __('توثيق حساب الطالب') }}"
-                    data-confirm-btn="{{ __('نعم، وثّق الحساب الآن') }}"
-                    data-confirm-danger="false"
+            </div>
+
+            {{-- Comprehensive Account Actions Dropdown (Always accessible, responsive and clean) --}}
+            <div class="relative" x-data="{ accountMenuOpen: false }" @click.outside="accountMenuOpen = false" @keydown.escape.window="accountMenuOpen = false">
+                <button 
+                    type="button" 
+                    @click="accountMenuOpen = !accountMenuOpen" 
+                    class="h-9 sm:h-10 px-3 sm:px-3.5 rounded-xl bg-white dark:bg-slate-800 border border-[#DEE8F7] dark:border-slate-700 hover:border-[#0B2A8F] text-slate-700 dark:text-slate-200 font-bold text-xs flex items-center gap-1.5 transition-all shadow-2xs cursor-pointer whitespace-nowrap"
+                    :class="{ 'ring-2 ring-[#012383]/10 border-[#0B2A8F]': accountMenuOpen }"
+                    aria-label="{{ __('إجراءات الحساب الإضافية') }}"
+                    :aria-expanded="accountMenuOpen"
                 >
-                    @csrf
-                    <button type="submit" class="h-9 sm:h-10 px-3.5 sm:px-4 rounded-xl bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-300 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-700 font-bold text-xs flex items-center gap-1.5 transition-all shadow-2xs cursor-pointer whitespace-nowrap" title="{{ __('توثيق وتأكيد حساب الطالب والبريد الإلكتروني يدوياً') }}">
-                        <svg class="size-4 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        <span>{{ __('توثيق الحساب') }}</span>
-                    </button>
-                </form>
-            @endif
+                    <svg class="size-4 text-slate-500 dark:text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/></svg>
+                    <span>{{ __('إجراءات الحساب') }}</span>
+                    <svg class="size-3 text-slate-400 transition-transform duration-200" :class="{ 'rotate-180': accountMenuOpen }" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+                </button>
 
-            {{-- Toggle Status Form --}}
-            <form 
-                method="POST" 
-                action="{{ route('admin.students.toggle', $user->id) }}"
-                data-confirm="{{ $user->isActive() ? __('هل أنت متأكد من تعليق حساب هذا الطالب ومنعه من الوصول لمنصة التدريب؟') : ($user->isPending() ? __('هل أنت متأكد من اعتماد وتفعيل حساب الطالب؟') : __('هل أنت متأكد من إعادة تنشيط هذا الحساب؟')) }}"
-                data-confirm-title="{{ $user->isActive() ? __('تعليق حساب الطالب') : ($user->isPending() ? __('اعتماد حساب الطالب') : __('تنشيط حساب الطالب')) }}"
-                data-confirm-btn="{{ $user->isActive() ? __('نعم، علّق الحساب') : ($user->isPending() ? __('نعم، اعتمد الحساب') : __('نعم، نشّط الحساب')) }}"
-                data-confirm-danger="{{ $user->isActive() ? 'true' : 'false' }}"
-            >
-                @csrf
-                @if($user->isActive())
-                    <button type="submit" class="h-9 sm:h-10 px-3.5 sm:px-4 rounded-xl bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 dark:bg-rose-950/40 dark:text-rose-300 dark:border-rose-800 font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer whitespace-nowrap">
-                        <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
-                        <span>{{ __('تعليق الحساب') }}</span>
+                <div 
+                    x-show="accountMenuOpen" 
+                    x-cloak 
+                    x-transition:enter="transition ease-out duration-150" 
+                    x-transition:enter-start="opacity-0 scale-95 -translate-y-1" 
+                    x-transition:enter-end="opacity-100 scale-100 translate-y-0" 
+                    x-transition:leave="transition ease-in duration-100" 
+                    x-transition:leave-start="opacity-100 scale-100 translate-y-0" 
+                    x-transition:leave-end="opacity-0 scale-95 -translate-y-1" 
+                    class="absolute end-0 mt-2 w-56 rounded-2xl bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 shadow-xl p-1.5 z-50 flex flex-col gap-1 font-['Cairo']"
+                    style="display: none;"
+                >
+                    {{-- Edit Profile (In dropdown for mobile & quick access) --}}
+                    <button 
+                        type="button" 
+                        @click="accountMenuOpen = false; openModal('modal-edit-student')" 
+                        class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-[#EAF1FB] hover:text-[#012383] dark:hover:bg-slate-800 dark:hover:text-blue-300 transition-colors text-start cursor-pointer"
+                    >
+                        <svg class="size-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                        <span>{{ __('تعديل البيانات') }}</span>
                     </button>
-                @elseif($user->isPending())
-                    <button type="submit" class="h-9 sm:h-10 px-3.5 sm:px-4 rounded-xl bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800 font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer whitespace-nowrap">
-                        <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                        <span>{{ __('تفعيل الحساب') }}</span>
-                    </button>
-                @else
-                    <button type="submit" class="h-9 sm:h-10 px-3.5 sm:px-4 rounded-xl bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800 font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer whitespace-nowrap">
-                        <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        <span>{{ __('تنشيط الحساب') }}</span>
-                    </button>
-                @endif
-            </form>
 
-            {{-- Delete Student Trigger --}}
-            <button 
-                type="button" 
-                onclick="openDeleteStudentModal('{{ $user->id }}', @js($user->name), @js($user->email), '{{ route('admin.students.destroy', $user) }}')" 
-                class="h-9 sm:h-10 px-3.5 sm:px-4 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 dark:bg-rose-950/40 dark:text-rose-300 dark:border-rose-800 dark:hover:bg-rose-900/60 font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer whitespace-nowrap"
-                title="{{ __('حذف حساب الطالب نهائياً مع تأكيد كلمة مرور المشرف') }}"
-            >
-                <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                <span>{{ __('حذف الحساب') }}</span>
-            </button>
+                    {{-- Change Password (In dropdown for mobile & quick access) --}}
+                    <button 
+                        type="button" 
+                        @click="accountMenuOpen = false; openModal('modal-change-password')" 
+                        class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-[#EAF1FB] hover:text-[#012383] dark:hover:bg-slate-800 dark:hover:text-blue-300 transition-colors text-start cursor-pointer"
+                    >
+                        <svg class="size-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg>
+                        <span>{{ __('تغيير كلمة المرور') }}</span>
+                    </button>
+
+                    <div class="border-t border-[#DEE8F7] dark:border-slate-800 my-0.5"></div>
+
+                    {{-- Verify / Unverify Account Action --}}
+                    @if($user->hasVerifiedEmail())
+                        <form 
+                            method="POST" 
+                            action="{{ route('admin.students.unverify', $user->id) }}"
+                            data-confirm="{{ __('هل أنت متأكد من رغبتك في إلغاء توثيق حساب هذا الطالب؟ سيعود البريد لحالة غير موثق.', ['name' => $user->name]) }}"
+                            data-confirm-title="{{ __('إلغاء توثيق الحساب') }}"
+                            data-confirm-btn="{{ __('نعم، ألغِ التوثيق') }}"
+                            data-confirm-danger="true"
+                            class="w-full"
+                        >
+                            @csrf
+                            <button type="submit" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-amber-700 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950/40 transition-colors text-start cursor-pointer">
+                                <svg class="size-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
+                                <span>{{ __('إلغاء توثيق الحساب') }}</span>
+                            </button>
+                        </form>
+                    @else
+                        <form 
+                            method="POST" 
+                            action="{{ route('admin.students.verify', $user->id) }}"
+                            data-confirm="{{ __('هل أنت متأكد من رغبتك في توثيق وتأكيد حساب هذا الطالب (:name) وتأكيد بريده الإلكتروني يدوياً؟', ['name' => $user->name]) }}"
+                            data-confirm-title="{{ __('توثيق حساب الطالب') }}"
+                            data-confirm-btn="{{ __('نعم، وثّق الحساب الآن') }}"
+                            data-confirm-danger="false"
+                            class="w-full"
+                        >
+                            @csrf
+                            <button type="submit" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 transition-colors text-start cursor-pointer">
+                                <svg class="size-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                <span>{{ __('توثيق الحساب يدوياً') }}</span>
+                            </button>
+                        </form>
+                    @endif
+
+                    {{-- Toggle Status Action (Suspend / Activate) --}}
+                    <form 
+                        method="POST" 
+                        action="{{ route('admin.students.toggle', $user->id) }}"
+                        data-confirm="{{ $user->isActive() ? __('هل أنت متأكد من تعليق حساب هذا الطالب ومنعه من الوصول لمنصة التدريب؟') : ($user->isPending() ? __('هل أنت متأكد من اعتماد وتفعيل حساب الطالب؟') : __('هل أنت متأكد من إعادة تنشيط هذا الحساب؟')) }}"
+                        data-confirm-title="{{ $user->isActive() ? __('تعليق حساب الطالب') : ($user->isPending() ? __('اعتماد حساب الطالب') : __('تنشيط حساب الطالب')) }}"
+                        data-confirm-btn="{{ $user->isActive() ? __('نعم، علّق الحساب') : ($user->isPending() ? __('نعم، اعتمد الحساب') : __('نعم، نشّط الحساب')) }}"
+                        data-confirm-danger="{{ $user->isActive() ? 'true' : 'false' }}"
+                        class="w-full"
+                    >
+                        @csrf
+                        @if($user->isActive())
+                            <button type="submit" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-rose-700 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors text-start cursor-pointer">
+                                <svg class="size-4 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
+                                <span>{{ __('تعليق الحساب') }}</span>
+                            </button>
+                        @else
+                            <button type="submit" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 transition-colors text-start cursor-pointer">
+                                <svg class="size-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                <span>{{ $user->isPending() ? __('تفعيل واعتماد الحساب') : __('تنشيط الحساب') }}</span>
+                            </button>
+                        @endif
+                    </form>
+
+                    <div class="border-t border-[#DEE8F7] dark:border-slate-800 my-0.5"></div>
+
+                    {{-- Delete Student Trigger --}}
+                    <button 
+                        type="button" 
+                        @click="accountMenuOpen = false; openDeleteStudentModal('{{ $user->id }}', @js($user->name), @js($user->email), '{{ route('admin.students.destroy', $user) }}')" 
+                        class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors text-start cursor-pointer"
+                    >
+                        <svg class="size-4 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                        <span>{{ __('حذف الحساب نهائياً') }}</span>
+                    </button>
+                </div>
+            </div>
             @endif
         </div>
     </x-slot:actions>

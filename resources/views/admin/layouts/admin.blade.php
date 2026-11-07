@@ -599,25 +599,27 @@
                 <!-- Page Content Area with Dedicated Responsive Page Header -->
                 <div class="{{ $contentClass }}">
                     @if(isset($title) || isset($actions))
-                        <div class="flex flex-col gap-3.5 sm:gap-4 pb-2 min-w-0 {{ isset($actions) ? '2xl:flex-row 2xl:items-center 2xl:justify-between' : '' }}">
-                            @if(isset($title))
-                                <div class="min-w-0 max-w-full">
-                                    <h1 class="font-['Baloo_Bhaijaan_2'] font-bold text-xl sm:text-2xl lg:text-[26px] text-[#012383] dark:text-white leading-tight">
-                                        {{ $title }}
-                                    </h1>
-                                    @if(isset($description))
-                                        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1 max-w-3xl leading-relaxed">
-                                            {{ $description }}
-                                        </p>
-                                    @endif
-                                </div>
-                            @endif
+                        <div class="flex flex-col gap-3.5 sm:gap-4 pb-2 min-w-0">
+                            <div class="flex flex-col xl:flex-row xl:items-start xl:justify-between gap-3.5 sm:gap-4 min-w-0">
+                                @if(isset($title))
+                                    <div class="min-w-0 flex-1">
+                                        <h1 class="font-['Baloo_Bhaijaan_2'] font-bold text-xl sm:text-2xl lg:text-[26px] text-[#012383] dark:text-white leading-tight">
+                                            {{ $title }}
+                                        </h1>
+                                        @if(isset($description))
+                                            <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1 max-w-3xl leading-relaxed">
+                                                {{ $description }}
+                                            </p>
+                                        @endif
+                                    </div>
+                                @endif
 
-                            @if(isset($actions))
-                                <div class="flex items-center gap-2 flex-wrap w-full 2xl:w-auto 2xl:justify-end min-w-0 shrink-0">
-                                    {{ $actions }}
-                                </div>
-                            @endif
+                                @if(isset($actions))
+                                    <div class="flex items-center gap-2 flex-wrap w-full xl:w-auto xl:justify-end min-w-0">
+                                        {{ $actions }}
+                                    </div>
+                                @endif
+                            </div>
                         </div>
                     @endif
 

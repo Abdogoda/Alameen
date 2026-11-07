@@ -12,7 +12,8 @@
         $totalAdmins = \App\Models\Admin::count();
         $totalRoles = \App\Models\Role::count();
         $recentAdmins = \App\Models\Admin::with('role')->take(4)->get();
-        $adminName = auth('admin')->user()?->name ?? __('المسؤول العام');
+        $adminUser = auth('admin')->user();
+        $adminName = $adminUser?->name ?? __('المسؤول العام');
     @endphp
 
     <div class="flex flex-col gap-6 sm:gap-8 w-full text-start min-w-0">
@@ -51,24 +52,28 @@
 
             <!-- Quick Action Shortcuts -->
             <div class="flex items-center gap-2.5 z-10 w-full lg:w-auto shrink-0 flex-wrap sm:flex-nowrap">
+                @if($adminUser?->hasAnyPermission(['notifications.send', 'notifications.manage']))
                 <a href="{{ route('admin.notifications.index') }}" class="flex-1 sm:flex-initial h-10 sm:h-11 px-4 sm:px-5 rounded-xl bg-[#012383] hover:bg-[#0B2A8F] text-white font-bold text-xs shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer">
                     <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
                     <span>{{ __('إرسال إشعار') }}</span>
                 </a>
+                @endif
                 <a href="{{ route('dashboard') }}" target="_blank" class="flex-1 sm:flex-initial h-10 sm:h-11 px-3.5 sm:px-4 rounded-xl bg-slate-50 dark:bg-slate-800 hover:bg-[#EAF1FB] dark:hover:bg-slate-700 text-[#012383] dark:text-blue-300 font-bold text-xs border border-[#DEE8F7] dark:border-slate-700 transition-all flex items-center justify-center gap-1.5 cursor-pointer" title="{{ __('معاينة بوابة الطالب') }}">
                     <span>{{ __('بوابة الطالب') }}</span>
                     <svg class="size-4 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                 </a>
+                @if($adminUser?->hasAnyPermission(['logs.view', 'settings.manage']))
                 <a href="{{ route('log-viewer.index') }}" target="_blank" class="h-10 sm:h-11 px-3 sm:px-3.5 rounded-xl bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs border border-[#DEE8F7] dark:border-slate-700 transition-all flex items-center justify-center cursor-pointer" title="{{ __('سجلات النظام (Logs)') }}">
                     <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                 </a>
+                @endif
             </div>
         </div>
 
         <!-- ============================================== -->
         <!-- PENDING STUDENTS APPROVAL ALERT BANNER         -->
         <!-- ============================================== -->
-        @if($pendingStudentsCount > 0)
+        @if($adminUser?->hasAnyPermission(['students.view', 'students.manage']) && $pendingStudentsCount > 0)
             <div class="p-5 rounded-2xl sm:rounded-3xl bg-amber-500/10 border-2 border-amber-400 dark:border-amber-600/80 shadow-md flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                 <div class="flex items-center gap-3.5">
                     <div class="size-12 sm:size-14 rounded-2xl bg-amber-500 text-white flex items-center justify-center shrink-0 shadow-md ring-4 ring-amber-500/20">
@@ -105,6 +110,7 @@
         <!-- ============================================== -->
         <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-5">
             
+            @if($adminUser?->hasAnyPermission(['students.view', 'students.manage']))
             <!-- KPI 1: Registered Students -->
             <a href="{{ route('admin.students.index') }}" class="group bg-white dark:bg-slate-900 border {{ $pendingStudentsCount > 0 ? 'border-amber-300 dark:border-amber-700/60 bg-amber-50/10' : 'border-[#DEE8F7] dark:border-slate-800' }} rounded-2xl p-5 shadow-xs hover:shadow-card hover:border-[#0B2A8F]/40 dark:hover:border-blue-500/40 transition-all flex flex-col justify-between gap-4 cursor-pointer">
                 <div class="flex items-center justify-between">
@@ -128,7 +134,9 @@
                     </div>
                 </div>
             </a>
+            @endif
 
+            @if($adminUser?->hasAnyPermission(['receipts.view', 'receipts.verify', 'receipts.approve', 'receipts.reject']))
             <!-- KPI 2: Pending Bank Receipts -->
             <a href="{{ route('admin.receipts.index') }}" class="group bg-white dark:bg-slate-900 border {{ $pendingReceipts > 0 ? 'border-amber-300 dark:border-amber-700/60 bg-amber-50/20' : 'border-[#DEE8F7] dark:border-slate-800' }} rounded-2xl p-5 shadow-xs hover:shadow-card hover:border-amber-400 dark:hover:border-amber-500 transition-all flex flex-col justify-between gap-4 cursor-pointer">
                 <div class="flex items-center justify-between">
@@ -152,7 +160,9 @@
                     </div>
                 </div>
             </a>
+            @endif
 
+            @if($adminUser?->hasAnyPermission(['tasks.view', 'tasks.grade']))
             <!-- KPI 3: Pending Tasks to Grade -->
             <a href="{{ route('admin.tasks.index') }}" class="group bg-white dark:bg-slate-900 border {{ $pendingTasks > 0 ? 'border-indigo-300 dark:border-indigo-700/60 bg-indigo-50/20' : 'border-[#DEE8F7] dark:border-slate-800' }} rounded-2xl p-5 shadow-xs hover:shadow-card hover:border-indigo-400 dark:hover:border-indigo-500 transition-all flex flex-col justify-between gap-4 cursor-pointer">
                 <div class="flex items-center justify-between">
@@ -176,7 +186,9 @@
                     </div>
                 </div>
             </a>
+            @endif
 
+            @if($adminUser?->hasAnyPermission(['courses.view', 'courses.manage']))
             <!-- KPI 4: Curriculum Lessons & Videos -->
             <a href="{{ route('admin.courses.index') }}" class="group bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-2xl p-5 shadow-xs hover:shadow-card hover:border-[#0B2A8F]/40 dark:hover:border-blue-500/40 transition-all flex flex-col justify-between gap-4 cursor-pointer">
                 <div class="flex items-center justify-between">
@@ -193,6 +205,7 @@
                     </div>
                 </div>
             </a>
+            @endif
 
         </div>
 
@@ -204,7 +217,7 @@
             <!-- Left 2 Cols: Course Overview & Health Architecture -->
             <div class="lg:col-span-2 flex flex-col gap-5 sm:gap-6 min-w-0">
                 
-                @if($pendingStudentsList->isNotEmpty())
+                @if($adminUser?->hasAnyPermission(['students.view', 'students.manage']) && $pendingStudentsList->isNotEmpty())
                     <!-- PENDING STUDENTS ROSTER CARD -->
                     <div class="bg-white dark:bg-slate-900 border-2 border-amber-300 dark:border-amber-700/80 rounded-2xl sm:rounded-3xl p-5 sm:p-6 shadow-xs flex flex-col gap-4 min-w-0">
                         <div class="flex items-center justify-between gap-3 border-b border-amber-100 dark:border-slate-800 pb-3 flex-wrap">
@@ -254,6 +267,7 @@
                                     </div>
 
                                     <div class="flex items-center gap-2 w-full sm:w-auto shrink-0 justify-end">
+                                        @if($adminUser?->hasPermission('students.manage'))
                                         <form method="POST" action="{{ route('admin.students.approve', $pendingStudent->id) }}">
                                             @csrf
                                             <button type="submit" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs transition-colors flex items-center gap-1 cursor-pointer">
@@ -261,6 +275,7 @@
                                                 <span>{{ __('موافقة واعتماد') }}</span>
                                             </button>
                                         </form>
+                                        @endif
 
                                         <a href="{{ route('admin.students.show', $pendingStudent) }}" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 transition-colors">
                                             {{ __('التفاصيل') }}
@@ -272,6 +287,7 @@
                     </div>
                 @endif
 
+                @if($adminUser?->hasAnyPermission(['courses.view', 'courses.manage']))
                 <!-- Active Diploma Control Card -->
                 <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-2xl sm:rounded-3xl p-5 sm:p-6 shadow-xs flex flex-col justify-between gap-5 min-w-0">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#DEE8F7] dark:border-slate-800 pb-4">
@@ -320,6 +336,7 @@
                         {{ (app()->getLocale() === 'en' && !empty($activeCourse?->description_en)) ? $activeCourse->description_en : __(($activeCourse?->description_ar ?? 'البرنامج التدريبي المتكامل لتأهيل أخصائيي التخاطب وأولياء الأمور مع نظام المهام بعد كل درس ونظام القفل المتسلسل.')) }}
                     </p>
                 </div>
+                @endif
 
                 <!-- Platform Activity & Student Engagement Summary -->
                 <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-2xl sm:rounded-3xl p-5 sm:p-6 shadow-xs flex flex-col justify-between gap-5 min-w-0">
@@ -395,6 +412,7 @@
 
                     <div class="flex flex-col gap-2.5">
                         
+                        @if($adminUser?->hasAnyPermission(['students.view', 'students.manage']))
                         <!-- Approve Pending Students Action -->
                         <a href="{{ route('admin.students.index', ['status' => 'pending']) }}" class="flex items-center justify-between p-3 rounded-xl border {{ $pendingStudentsCount > 0 ? 'border-amber-400 bg-amber-50/50 dark:bg-amber-950/20' : 'border-[#DEE8F7] dark:border-slate-800' }} hover:border-amber-500 hover:bg-amber-100/50 dark:hover:bg-slate-800 transition-colors group">
                             <div class="flex items-center gap-3 min-w-0">
@@ -414,7 +432,9 @@
                             </div>
                             <span class="text-xs text-amber-600 dark:text-amber-400 font-bold group-hover:translate-x-[-2px] rtl:group-hover:translate-x-[2px] transition-transform">←</span>
                         </a>
+                        @endif
 
+                        @if($adminUser?->hasAnyPermission(['receipts.view', 'receipts.verify', 'receipts.approve', 'receipts.reject']))
                         <!-- Review Receipts Action -->
                         <a href="{{ route('admin.receipts.index') }}" class="flex items-center justify-between p-3 rounded-xl border border-[#DEE8F7] dark:border-slate-800 hover:border-amber-400 hover:bg-amber-50/40 dark:hover:bg-slate-800 transition-colors group">
                             <div class="flex items-center gap-3 min-w-0">
@@ -434,7 +454,9 @@
                             </div>
                             <span class="text-xs text-amber-600 dark:text-amber-400 font-bold group-hover:translate-x-[-2px] rtl:group-hover:translate-x-[2px] transition-transform">←</span>
                         </a>
+                        @endif
 
+                        @if($adminUser?->hasAnyPermission(['tasks.view', 'tasks.grade']))
                         <!-- Grade Tasks Action -->
                         <a href="{{ route('admin.tasks.index') }}" class="flex items-center justify-between p-3 rounded-xl border border-[#DEE8F7] dark:border-slate-800 hover:border-indigo-400 hover:bg-indigo-50/40 dark:hover:bg-slate-800 transition-colors group">
                             <div class="flex items-center gap-3 min-w-0">
@@ -454,7 +476,9 @@
                             </div>
                             <span class="text-xs text-indigo-600 dark:text-indigo-400 font-bold group-hover:translate-x-[-2px] rtl:group-hover:translate-x-[2px] transition-transform">←</span>
                         </a>
+                        @endif
 
+                        @if($adminUser?->hasAnyPermission(['notifications.view', 'notifications.send', 'notifications.manage']))
                         <!-- Send Notifications Action -->
                         <a href="{{ route('admin.notifications.index') }}" class="flex items-center justify-between p-3 rounded-xl border border-[#DEE8F7] dark:border-slate-800 hover:border-[#0B2A8F] hover:bg-[#EAF1FB]/40 dark:hover:bg-slate-800 transition-colors group">
                             <div class="flex items-center gap-3 min-w-0">
@@ -468,7 +492,9 @@
                             </div>
                             <span class="text-xs text-[#0B2A8F] dark:text-blue-400 font-bold group-hover:translate-x-[-2px] rtl:group-hover:translate-x-[2px] transition-transform">←</span>
                         </a>
+                        @endif
 
+                        @if($adminUser?->hasAnyPermission(['admins.view', 'admins.manage', 'roles.manage']))
                         <!-- Admins & Roles Action -->
                         <a href="{{ route('admin.admins.index') }}" class="flex items-center justify-between p-3 rounded-xl border border-[#DEE8F7] dark:border-slate-800 hover:border-[#012383] hover:bg-[#EAF1FB]/40 dark:hover:bg-slate-800 transition-colors group">
                             <div class="flex items-center gap-3 min-w-0">
@@ -482,7 +508,9 @@
                             </div>
                             <span class="text-xs text-[#0B2A8F] dark:text-blue-400 font-bold group-hover:translate-x-[-2px] rtl:group-hover:translate-x-[2px] transition-transform">←</span>
                         </a>
+                        @endif
 
+                        @if($adminUser?->hasAnyPermission(['settings.manage', 'cms.manage', 'menus.manage']))
                         <!-- Platform Settings Action -->
                         <a href="{{ route('admin.settings.index') }}" class="flex items-center justify-between p-3 rounded-xl border border-[#DEE8F7] dark:border-slate-800 hover:border-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors group">
                             <div class="flex items-center gap-3 min-w-0">
@@ -496,7 +524,9 @@
                             </div>
                             <span class="text-xs text-slate-400 group-hover:translate-x-[-2px] rtl:group-hover:translate-x-[2px] transition-transform">←</span>
                         </a>
+                        @endif
 
+                        @if($adminUser?->hasAnyPermission(['logs.view', 'settings.manage']))
                         <!-- Logs Viewer Action -->
                         <a href="{{ route('log-viewer.index') }}" target="_blank" class="flex items-center justify-between p-3 rounded-xl border border-[#DEE8F7] dark:border-slate-800 hover:border-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors group">
                             <div class="flex items-center gap-3 min-w-0">
@@ -510,10 +540,12 @@
                             </div>
                             <span class="text-xs text-slate-400 group-hover:translate-x-[-2px] rtl:group-hover:translate-x-[2px] transition-transform">↗</span>
                         </a>
+                        @endif
 
                     </div>
                 </div>
 
+                @if($adminUser?->hasAnyPermission(['admins.view', 'admins.manage', 'roles.manage']))
                 <!-- Team & Roles Quick Card -->
                 <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-2xl sm:rounded-3xl p-5 shadow-xs flex flex-col gap-3.5 min-w-0">
                     <div class="flex items-center justify-between">
@@ -521,9 +553,11 @@
                             <h5 class="text-xs font-bold text-slate-400 uppercase tracking-wider">{{ __('فريق العمل والمشرفين') }}</h5>
                             <span class="text-sm font-black text-[#012383] dark:text-blue-400 block mt-0.5">{{ $totalAdmins }} {{ __('مشرفين نشطين') }}</span>
                         </div>
+                        @if($adminUser?->hasPermission('admins.manage'))
                         <a href="{{ route('admin.admins.create') }}" class="size-8 rounded-lg bg-blue-50 dark:bg-slate-800 text-[#012383] dark:text-blue-300 hover:bg-blue-100 flex items-center justify-center transition-colors" title="{{ __('إضافة مشرف جديد') }}">
                             <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                         </a>
+                        @endif
                     </div>
 
                     <div class="space-y-2 pt-1 border-t border-slate-100 dark:border-slate-800">
@@ -544,11 +578,14 @@
                         <a href="{{ route('admin.admins.index') }}" class="text-xs font-bold text-[#0B2A8F] dark:text-blue-400 hover:underline">
                             {{ __('إدارة المشرفين') }} ←
                         </a>
+                        @if($adminUser?->hasPermission('roles.manage'))
                         <a href="{{ route('admin.roles.index') }}" class="text-xs font-bold text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
                             {{ __('الأدوار (:count)', ['count' => $totalRoles]) }}
                         </a>
+                        @endif
                     </div>
                 </div>
+                @endif
 
                 <!-- System Services Health Card -->
                 <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-2xl sm:rounded-3xl p-5 shadow-xs flex flex-col gap-3 min-w-0">

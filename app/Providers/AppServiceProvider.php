@@ -237,19 +237,20 @@ class AppServiceProvider extends ServiceProvider
     protected function configureAuthorization(): void
     {
         Gate::before(function ($user, string $ability) {
-            if ($user instanceof Admin) {
-                if ($user->isSuperAdmin()) {
+            $admin = $user instanceof Admin ? $user : auth('admin')->user();
+            if ($admin instanceof Admin) {
+                if ($admin->isSuperAdmin()) {
                     return true;
                 }
 
-                return $user->hasPermission($ability) ? true : null;
+                return $admin->hasPermission($ability) ? true : null;
             }
         });
 
         Gate::define('viewLogViewer', function ($user = null) {
             $admin = auth('admin')->user() ?? ($user instanceof Admin ? $user : null);
 
-            return $admin instanceof Admin;
+            return $admin instanceof Admin && ($admin->isSuperAdmin() || $admin->hasAnyPermission(['logs.view', 'settings.manage']));
         });
 
         LogViewer::auth(function ($request) {
@@ -257,7 +258,7 @@ class AppServiceProvider extends ServiceProvider
                 ?? ($request->user('admin') instanceof Admin ? $request->user('admin') : null)
                 ?? ($request->user() instanceof Admin ? $request->user() : null);
 
-            return $admin instanceof Admin;
+            return $admin instanceof Admin && ($admin->isSuperAdmin() || $admin->hasAnyPermission(['logs.view', 'settings.manage']));
         });
     }
 

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\AdminMiddleware;
+use App\Http\Middleware\EnsureAdminHasPermission;
 use App\Http\Middleware\EnsureCourseAccessValid;
 use App\Http\Middleware\EnsureStudentIsApproved;
 use App\Http\Middleware\EnsureStudentPageEnabled;
@@ -45,6 +46,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'admin' => AdminMiddleware::class,
+            'admin.can' => EnsureAdminHasPermission::class,
             'course.access' => EnsureCourseAccessValid::class,
             'page.enabled' => EnsureStudentPageEnabled::class,
             'student.approved' => EnsureStudentIsApproved::class,

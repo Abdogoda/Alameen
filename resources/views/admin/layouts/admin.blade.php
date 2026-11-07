@@ -103,7 +103,9 @@
                 <div class="flex-1 min-h-0 overflow-y-auto overscroll-contain px-3 sm:px-4 py-4 flex flex-col gap-5 sm:gap-6 alameen-sidebar-scroll">
                     <!-- Navigation Links Group -->
                     <nav class="flex flex-col gap-1.5">
-                        <p class="text-[11px] font-bold text-slate-400 dark:text-slate-500 px-3 uppercase tracking-wider mb-1 sidebar-section-title">{{ __('التعليم وشؤون الطلاب') }}</p>
+                        @if($adminUser?->hasAnyPermission(['courses.view', 'courses.manage', 'students.view', 'students.manage', 'tasks.view', 'tasks.grade']))
+                            <p class="text-[11px] font-bold text-slate-400 dark:text-slate-500 px-3 uppercase tracking-wider mb-1 sidebar-section-title">{{ __('التعليم وشؤون الطلاب') }}</p>
+                        @endif
                         
                         <!-- الرئيسية (Active state) -->
                         <a
@@ -116,6 +118,7 @@
                             <span class="flex-1 text-start sidebar-label">{{ __('لوحة الإحصائيات') }}</span>
                         </a>
 
+                        @if($adminUser?->hasAnyPermission(['courses.view', 'courses.manage']))
                         <!-- المستويات والفيديوهات -->
                         <a
                             href="{{ route('admin.courses.index') }}"
@@ -126,7 +129,9 @@
                             <svg class="size-5 shrink-0 {{ request()->routeIs('admin.courses.*') ? 'text-white' : 'text-slate-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
                             <span class="flex-1 text-start sidebar-label">{{ __('المستويات والدروس') }}</span>
                         </a>
+                        @endif
 
+                        @if($adminUser?->hasAnyPermission(['students.view', 'students.manage']))
                         <!-- شؤون الطلاب والمسجلين -->
                         <a
                             href="{{ route('admin.students.index') }}"
@@ -163,7 +168,9 @@
                                 @endif
                             </div>
                         </a>
+                        @endif
 
+                        @if($adminUser?->hasAnyPermission(['tasks.view', 'tasks.grade']))
                         <!-- تصحيح المهام والتاسكات -->
                         <a
                             href="{{ route('admin.tasks.index') }}"
@@ -177,10 +184,13 @@
                                 <span class="sidebar-label min-w-5 h-5 px-1.5 flex items-center justify-center text-[11px] font-black rounded-full shrink-0 transition-colors {{ request()->routeIs('admin.tasks.*') ? 'bg-white/20 text-white border border-white/30' : 'bg-blue-100 text-[#0B2A8F]' }}">{{ $pendingTasksCount }}</span>
                             @endif
                         </a>
+                        @endif
 
+                        @if($adminUser?->hasAnyPermission(['receipts.view', 'receipts.verify', 'receipts.approve', 'receipts.reject', 'support.view', 'support.manage', 'inquiries.manage', 'notifications.view', 'notifications.send', 'notifications.manage']))
+                            <p class="text-[11px] font-bold text-slate-400 dark:text-slate-500 px-3 uppercase tracking-wider mt-3 mb-1 sidebar-section-title">{{ __('المالية والدعم الفني') }}</p>
+                        @endif
 
-                        <p class="text-[11px] font-bold text-slate-400 dark:text-slate-500 px-3 uppercase tracking-wider mt-3 mb-1 sidebar-section-title">{{ __('المالية والدعم الفني') }}</p>
-
+                        @if($adminUser?->hasAnyPermission(['receipts.view', 'receipts.verify', 'receipts.approve', 'receipts.reject']))
                         <!-- إيصالات الدفع والتحويلات -->
                         <a
                             href="{{ route('admin.receipts.index') }}"
@@ -194,7 +204,9 @@
                                 <span class="sidebar-label min-w-5 h-5 px-1.5 flex items-center justify-center text-[11px] font-black rounded-full animate-pulse shrink-0 transition-colors {{ request()->routeIs('admin.receipts.*') ? 'bg-amber-400 !text-slate-950 shadow-xs font-black' : 'bg-amber-100 text-amber-900' }}">{{ $pendingReceiptsCount }}</span>
                             @endif
                         </a>
+                        @endif
 
+                        @if($adminUser?->hasAnyPermission(['support.view', 'support.manage', 'inquiries.manage']))
                         <!-- تذاكر الدعم والرسائل المباشرة -->
                         <a
                             href="{{ route('admin.support.index') }}"
@@ -212,7 +224,9 @@
                                 </span>
                             @endif
                         </a>
+                        @endif
 
+                        @if($adminUser?->hasAnyPermission(['notifications.view', 'notifications.send', 'notifications.manage']))
                         <!-- إدارة الإشعارات المركزية -->
                         <a
                             href="{{ route('admin.notifications.index') }}"
@@ -223,9 +237,13 @@
                             <svg class="size-5 shrink-0 {{ request()->routeIs('admin.notifications.*') ? 'text-white' : 'text-slate-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
                             <span class="flex-1 text-start sidebar-label">{{ __('إدارة الإشعارات') }}</span>
                         </a>
+                        @endif
 
-                        <p class="text-[11px] font-bold text-slate-400 dark:text-slate-500 px-3 uppercase tracking-wider mt-3 mb-1 sidebar-section-title">{{ __('فريق العمل والصلاحيات') }}</p>
+                        @if($adminUser?->hasAnyPermission(['admins.view', 'admins.manage', 'roles.manage']))
+                            <p class="text-[11px] font-bold text-slate-400 dark:text-slate-500 px-3 uppercase tracking-wider mt-3 mb-1 sidebar-section-title">{{ __('فريق العمل والصلاحيات') }}</p>
+                        @endif
 
+                        @if($adminUser?->hasAnyPermission(['admins.view', 'admins.manage']))
                         <!-- إدارة المشرفين -->
                         <a
                             href="{{ route('admin.admins.index') }}"
@@ -236,7 +254,9 @@
                             <svg class="size-5 shrink-0 {{ request()->routeIs('admin.admins.*') ? 'text-white' : 'text-slate-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                             <span class="flex-1 text-start sidebar-label">{{ __('إدارة المشرفين') }}</span>
                         </a>
+                        @endif
 
+                        @if($adminUser?->hasPermission('roles.manage'))
                         <!-- الأدوار والصلاحيات -->
                         <a
                             href="{{ route('admin.roles.index') }}"
@@ -247,9 +267,13 @@
                             <svg class="size-5 shrink-0 {{ request()->routeIs('admin.roles.*') ? 'text-white' : 'text-slate-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
                             <span class="flex-1 text-start sidebar-label">{{ __('الأدوار والصلاحيات') }}</span>
                         </a>
+                        @endif
 
-                        <p class="text-[11px] font-bold text-slate-400 dark:text-slate-500 px-3 uppercase tracking-wider mt-3 mb-1 sidebar-section-title">{{ __('إعدادات المنصة والسجلات') }}</p>
+                        @if($adminUser?->hasAnyPermission(['settings.manage', 'cms.manage', 'menus.manage', 'logs.view']))
+                            <p class="text-[11px] font-bold text-slate-400 dark:text-slate-500 px-3 uppercase tracking-wider mt-3 mb-1 sidebar-section-title">{{ __('إعدادات المنصة والسجلات') }}</p>
+                        @endif
 
+                        @if($adminUser?->hasAnyPermission(['settings.manage', 'cms.manage', 'menus.manage']))
                         <!-- إعدادات النظام -->
                         <a
                             href="{{ route('admin.settings.index') }}"
@@ -260,7 +284,9 @@
                             <svg class="size-5 shrink-0 {{ request()->routeIs('admin.settings.*') ? 'text-white' : 'text-slate-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                             <span class="flex-1 text-start sidebar-label">{{ __('إعدادات المنصة') }}</span>
                         </a>
+                        @endif
 
+                        @if($adminUser?->hasAnyPermission(['logs.view', 'settings.manage']))
                         <!-- سجلات النظام والـ Logs -->
                         <a
                             href="{{ route('log-viewer.index') }}"
@@ -272,6 +298,7 @@
                             <svg class="size-5 shrink-0 {{ request()->routeIs('log-viewer.*') ? 'text-white' : 'text-slate-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                             <span class="flex-1 text-start sidebar-label">{{ __('سجلات النظام (Logs)') }}</span>
                         </a>
+                        @endif
                     </nav>
                 </div>
 
@@ -321,6 +348,7 @@
                             <span class="text-[10px] text-slate-400 font-normal">⚙</span>
                         </a>
 
+                        @if($adminUser?->hasAnyPermission(['settings.manage', 'cms.manage', 'menus.manage']))
                         <a
                             href="{{ route('admin.settings.index') }}"
                             @click="sidebarUserMenuOpen = false"
@@ -329,6 +357,7 @@
                             <svg class="size-4 text-[#0B2A8F] dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                             <span class="flex-1 text-start">{{ __('إعدادات المنصة') }}</span>
                         </a>
+                        @endif
 
                         <a
                             href="{{ route('dashboard') }}"
@@ -436,10 +465,12 @@
                         <x-admin::language-switcher />
 
                         <!-- Notifications Quick Access -->
+                        @if($adminUser?->hasAnyPermission(['notifications.view', 'notifications.send', 'notifications.manage']))
                         <a href="{{ route('admin.notifications.index') }}" class="size-9 sm:size-10 rounded-xl bg-slate-50 dark:bg-slate-800 border border-[#DEE8F7] dark:border-slate-700 hover:border-[#0B2A8F]/40 dark:hover:border-blue-400/40 hover:bg-[#EAF1FB] dark:hover:bg-slate-700 hover:-translate-y-0.5 hover:shadow-xs active:scale-95 flex items-center justify-center text-[#012383] dark:text-slate-200 transition-all duration-200 relative cursor-pointer" title="{{ __('إدارة الإشعارات') }}">
                             <svg class="size-4 sm:size-5 text-[#0B2A8F] dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
                             <span class="absolute top-1.5 end-1.5 sm:top-2 sm:end-2 size-2 rounded-full bg-[#F2AE2E] animate-pulse"></span>
                         </a>
+                        @endif
 
                         <!-- Admin User Info Badge & Dropdown -->
                         <div class="relative ps-1.5 sm:ps-2 border-s border-[#DEE8F7] dark:border-slate-700" x-data="{ adminHeaderMenuOpen: false }" @click.outside="adminHeaderMenuOpen = false" @keydown.escape.window="adminHeaderMenuOpen = false">
@@ -522,6 +553,7 @@
                                     <span class="text-[10px] text-slate-400 font-normal">⚙</span>
                                 </a>
 
+                                @if($adminUser?->hasAnyPermission(['settings.manage', 'cms.manage', 'menus.manage']))
                                 <a
                                     href="{{ route('admin.settings.index') }}"
                                     @click="adminHeaderMenuOpen = false"
@@ -530,6 +562,7 @@
                                     <svg class="size-4 text-[#0B2A8F] dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                                     <span class="flex-1 text-start">{{ __('إعدادات المنصة') }}</span>
                                 </a>
+                                @endif
 
                                 <a
                                     href="{{ route('dashboard') }}"

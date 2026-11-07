@@ -118,6 +118,14 @@ class Role extends Model
             return true;
         }
 
+        if ($permission === 'support.view' && (in_array('inquiries.manage', $perms, true) || in_array('support.manage', $perms, true))) {
+            return true;
+        }
+
+        if ($permission === 'support.manage' && in_array('inquiries.manage', $perms, true)) {
+            return true;
+        }
+
         return false;
     }
 }

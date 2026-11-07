@@ -3,6 +3,7 @@
     :description="__('عرض شامل لكافة الكورسات، إنشاء دورات جديدة، وتخصيص المناهج والمستويات')"
     contentClass="p-3.5 sm:p-6 lg:p-8 flex flex-col gap-6 w-full min-w-0"
 >
+    @if(auth('admin')->user()?->hasPermission('courses.manage'))
     <x-slot:actions>
         <button 
             type="button" 
@@ -15,6 +16,7 @@
             <span>{{ __('إضافة كورس جديد') }}</span>
         </button>
     </x-slot:actions>
+    @endif
 
     {{-- Session Flash Alerts --}}
     @if(session('success'))
@@ -174,6 +176,7 @@
                                 <span>{{ __('عرض المنهج والمستويات') }}</span>
                             </a>
 
+                            @if(auth('admin')->user()?->hasPermission('courses.manage'))
                             <a 
                                 href="{{ route('admin.courses.edit', $course) }}" 
                                 class="h-9.5 px-3.5 rounded-xl bg-white dark:bg-slate-800 border border-[#DEE8F7] dark:border-slate-700 hover:border-[#0B2A8F] text-[#0B2A8F] dark:text-blue-300 font-bold text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap text-center"
@@ -198,9 +201,11 @@
                                     @endif
                                 </button>
                             </form>
+                            @endif
                         </div>
 
                         {{-- Quick Delete Course --}}
+                        @if(auth('admin')->user()?->hasPermission('courses.manage'))
                         <div class="flex items-center justify-end sm:justify-start">
                             <form 
                                 action="{{ route('admin.courses.destroy', $course) }}" 
@@ -222,6 +227,7 @@
                                 </button>
                             </form>
                         </div>
+                        @endif
                     </div>
 
                 </div>
@@ -232,14 +238,17 @@
                     </div>
                     <h4 class="font-bold text-lg text-[#012383] dark:text-white">{{ __('لا توجد كورسات مسجلة حالياً') }}</h4>
                     <p class="text-xs text-slate-500 max-w-sm mx-auto">{{ __('ابدأ بإنشاء أول دبلوم أو برنامج تدريبي وتوزيع المحتوى على مستويات ديناميكية.') }}</p>
+                    @if(auth('admin')->user()?->hasPermission('courses.manage'))
                     <button type="button" onclick="openModal('modal-add-course')" class="px-5 py-2.5 rounded-xl bg-[#012383] text-white font-bold text-xs">
                         {{ __('إضافة أول كورس الآن') }}
                     </button>
+                    @endif
                 </div>
             @endforelse
         </div>
     </div>
 
+    @if(auth('admin')->user()?->hasPermission('courses.manage'))
     <x-slot:modals>
         <!-- Modal: Add New Course -->
         <div id="modal-add-course" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 modal-hidden">
@@ -328,7 +337,7 @@
                                 {{ __('إتاحة الكورس تلقائياً لجميع الطلاب فور تفعيل حساباتهم') }}
                             </span>
                             <span class="text-slate-500 dark:text-slate-400 leading-relaxed block text-[11px]">
-                                {{ __('عند التفعيل، سيظهر هذا الكورس ويتاح كاملاً لجميع الطلاب دون الحاجة لطلب اشتراك يدوي أو رفع إيصال دفع واعتماده.') }}
+                                {{ __('عند التفعيل، سيظهر هذا الكورس ويتاح كاملاً لجميع الطلاب دون الحاجة لطلب اشتراك يديد أو رفع إيصال دفع واعتماده.') }}
                             </span>
                         </label>
                     </div>
@@ -345,4 +354,5 @@
             </div>
         </div>
     </x-slot:modals>
+    @endif
 </x-admin-layout::admin>

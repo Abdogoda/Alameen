@@ -49,6 +49,13 @@ enum AdminPermission: string
     case REPORTS_VIEW = 'reports.view';
     case REPORTS_EXPORT = 'reports.export';
 
+    // Support Tickets & Student Help Desk
+    case SUPPORT_VIEW = 'support.view';
+    case SUPPORT_MANAGE = 'support.manage';
+
+    // System Logs Viewer
+    case LOGS_VIEW = 'logs.view';
+
     /**
      * Get human-readable description in Arabic.
      */
@@ -80,6 +87,9 @@ enum AdminPermission: string
             self::SETTINGS_MANAGE => 'التحكم في إعدادات المنصة العامة',
             self::REPORTS_VIEW => 'استعراض التقارير المالية والأكاديمية',
             self::REPORTS_EXPORT => 'تصدير التقارير بصيغة Excel / PDF',
+            self::SUPPORT_VIEW => 'استعراض تذاكر ودعم الطلاب والرسائل',
+            self::SUPPORT_MANAGE => 'الرد على تذاكر الطلاب وإدارتها وتغيير حالتها',
+            self::LOGS_VIEW => 'استعراض سجلات أخطاء النظام (Logs)',
         };
     }
 
@@ -114,6 +124,9 @@ enum AdminPermission: string
             self::SETTINGS_MANAGE => 'Configure platform wide parameters',
             self::REPORTS_VIEW => 'View financial and academic analytics',
             self::REPORTS_EXPORT => 'Export analytical data to Excel/PDF',
+            self::SUPPORT_VIEW => 'View student support tickets and inquiries',
+            self::SUPPORT_MANAGE => 'Manage, reply and assign support tickets',
+            self::LOGS_VIEW => 'View system error and activity logs',
         };
     }
 
@@ -132,7 +145,8 @@ enum AdminPermission: string
             self::STUDENTS_VIEW, self::STUDENTS_MANAGE => 'شؤون الطلاب والمتدربين',
             self::ADMINS_VIEW, self::ADMINS_MANAGE, self::ROLES_MANAGE => 'إدارة المشرفين والأدوار',
             self::CMS_MANAGE, self::MENUS_MANAGE => 'إدارة المحتوى والقوائم',
-            self::SETTINGS_MANAGE, self::REPORTS_VIEW, self::REPORTS_EXPORT => 'الإعدادات والتقارير',
+            self::SUPPORT_VIEW, self::SUPPORT_MANAGE => 'الدعم الفني وتذاكر الطلاب',
+            self::SETTINGS_MANAGE, self::REPORTS_VIEW, self::REPORTS_EXPORT, self::LOGS_VIEW => 'الإعدادات والسجلات والتقارير',
         };
     }
 

@@ -127,6 +127,7 @@
                             @endif
                         </td>
                         <td class="py-4 px-5 text-center">
+                            @if(auth('admin')->user()?->hasPermission('tasks.grade'))
                             <button
                                 type="button"
                                 onclick="openGradeModal('{{ $sub->id }}', '{{ addslashes($sub->user?->name ?? '') }}', '{{ addslashes($sub->task?->title ?? '') }}', '{{ $sub->score ?? '' }}', '{{ addslashes($sub->clinical_feedback ?? '') }}')"
@@ -134,6 +135,9 @@
                             >
                                 {{ $sub->status === 'graded' ? __('تعديل الدرجة') : __('رصد الدرجة') }}
                             </button>
+                            @else
+                                <span class="text-xs text-slate-400 font-medium">{{ __('معاينة فقط') }}</span>
+                            @endif
                         </td>
                     </tr>
                     @empty
@@ -205,6 +209,7 @@
                             <span class="text-slate-400 font-medium mx-1">—</span>
                         @endif
                     </div>
+                    @if(auth('admin')->user()?->hasPermission('tasks.grade'))
                     <button
                         type="button"
                         onclick="openGradeModal('{{ $sub->id }}', '{{ addslashes($sub->user?->name ?? '') }}', '{{ addslashes($sub->task?->title ?? '') }}', '{{ $sub->score ?? '' }}', '{{ addslashes($sub->clinical_feedback ?? '') }}')"
@@ -212,6 +217,9 @@
                     >
                         {{ $sub->status === 'graded' ? __('تعديل الدرجة') : __('رصد الدرجة') }}
                     </button>
+                    @else
+                        <span class="text-xs text-slate-400 font-medium">{{ __('معاينة فقط') }}</span>
+                    @endif
                 </div>
             </div>
             @empty
@@ -228,10 +236,11 @@
         @endif
     </div>
 
+    @if(auth('admin')->user()?->hasPermission('tasks.grade'))
     <x-slot:modals>
         <!-- Modal: Grade Voice Submission -->
         <div id="modal-grade-task" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/50 backdrop-blur-xs hidden">
-            <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-lg w-full max-h-[90dvh] overflow-y-auto p-5 sm:p-7 flex flex-col gap-5 shadow-2xl border border-[#DEE8F7] dark:border-slate-800">
+            <div class="bg-white dark:bg-slate-900 rounded-3xl max-lg w-full max-h-[90dvh] overflow-y-auto p-5 sm:p-7 flex flex-col gap-5 shadow-2xl border border-[#DEE8F7] dark:border-slate-800">
                 <div class="flex items-center gap-2.5 text-[#012383] dark:text-blue-400">
                     <div class="size-9 rounded-xl bg-blue-50 dark:bg-slate-800 flex items-center justify-center shrink-0">
                         <svg class="size-5 text-[#0B2A8F] dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
@@ -291,4 +300,5 @@
             }
         </script>
     </x-slot:modals>
+    @endif
 </x-admin-layout::admin>

@@ -122,6 +122,7 @@
                             <td class="py-4 px-5 text-center">
                                 <div class="flex items-center justify-center gap-2">
                                     @if($receipt->isPending())
+                                        @if(auth('admin')->user()?->hasPermission('receipts.approve'))
                                         <form method="POST" action="{{ route('admin.receipts.approve', $receipt->id) }}">
                                             @csrf
                                             <button type="submit" class="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-2xs transition-colors cursor-pointer flex items-center gap-1">
@@ -129,9 +130,15 @@
                                                 <span>{{ __('اعتماد فوري') }}</span>
                                             </button>
                                         </form>
+                                        @endif
+                                        @if(auth('admin')->user()?->hasPermission('receipts.reject'))
                                         <button type="button" onclick="openRejectReceiptModalWithId({{ $receipt->id }})" class="px-3 py-1.5 rounded-xl bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 text-rose-700 dark:text-rose-300 font-bold text-xs border border-rose-200 dark:border-rose-800 transition-colors cursor-pointer">
                                             {{ __('رفض') }}
                                         </button>
+                                        @endif
+                                        @if(!auth('admin')->user()?->hasPermission('receipts.approve') && !auth('admin')->user()?->hasPermission('receipts.reject'))
+                                            <span class="text-xs text-slate-400 font-medium">{{ __('معاينة فقط') }}</span>
+                                        @endif
                                     @else
                                         <span class="text-xs text-slate-400 font-medium">{{ __('تمت المعالجة') }}</span>
                                     @endif
@@ -210,6 +217,7 @@
 
                         <div class="flex items-center gap-2">
                             @if($receipt->isPending())
+                                @if(auth('admin')->user()?->hasPermission('receipts.approve'))
                                 <form method="POST" action="{{ route('admin.receipts.approve', $receipt->id) }}" class="flex-1 sm:flex-initial">
                                     @csrf
                                     <button type="submit" class="w-full sm:w-auto px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-2xs transition-colors cursor-pointer flex items-center justify-center gap-1">
@@ -217,9 +225,15 @@
                                         <span>{{ __('اعتماد') }}</span>
                                     </button>
                                 </form>
+                                @endif
+                                @if(auth('admin')->user()?->hasPermission('receipts.reject'))
                                 <button type="button" onclick="openRejectReceiptModalWithId({{ $receipt->id }})" class="flex-1 sm:flex-initial px-4 py-2 rounded-xl bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 text-rose-700 dark:text-rose-300 font-bold text-xs border border-rose-200 dark:border-rose-800 transition-colors cursor-pointer text-center">
                                     {{ __('رفض') }}
                                 </button>
+                                @endif
+                                @if(!auth('admin')->user()?->hasPermission('receipts.approve') && !auth('admin')->user()?->hasPermission('receipts.reject'))
+                                    <span class="text-xs text-slate-400 font-medium">{{ __('معاينة فقط') }}</span>
+                                @endif
                             @else
                                 <span class="text-xs text-slate-400 font-medium">{{ __('تمت المعالجة') }}</span>
                             @endif
@@ -241,6 +255,7 @@
     </div>
 
 
+    @if(auth('admin')->user()?->hasPermission('receipts.reject'))
     <!-- Reject Receipt Modal Script Support -->
     <div id="modal-reject-receipt" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs hidden">
         <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 flex flex-col gap-5 shadow-2xl border border-rose-100">
@@ -270,6 +285,7 @@
             </form>
         </div>
     </div>
+    @endif
 
     <script>
         function openRejectReceiptModalWithId(id) {

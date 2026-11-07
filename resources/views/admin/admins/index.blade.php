@@ -1,6 +1,7 @@
 <x-admin-layout::admin :title="__('إدارة المشرفين وفريق العمل')">
 
     <x-slot:actions>
+        @if(auth('admin')->user()?->hasPermission('roles.manage'))
         <a
             href="{{ route('admin.roles.index') }}"
             class="h-10 px-4 rounded-xl bg-slate-50 dark:bg-slate-800 hover:bg-[#EAF1FB] dark:hover:bg-slate-700 text-[#012383] dark:text-blue-300 font-bold text-xs border border-[#DEE8F7] dark:border-slate-700 transition-colors flex items-center gap-2 cursor-pointer shadow-xs"
@@ -8,7 +9,9 @@
             <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
             <span>{{ __('الأدوار والصلاحيات') }} ({{ $totalRoles }})</span>
         </a>
+        @endif
 
+        @if(auth('admin')->user()?->hasPermission('admins.manage'))
         <a
             href="{{ route('admin.admins.create') }}"
             class="h-10 px-4 rounded-xl bg-[#012383] hover:bg-[#0B2A8F] text-white font-bold text-xs shadow-xs transition-colors flex items-center gap-2 cursor-pointer"
@@ -16,6 +19,7 @@
             <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
             <span>{{ __('إضافة مشرف جديد') }}</span>
         </a>
+        @endif
     </x-slot:actions>
 
     <div class="space-y-6">
@@ -145,6 +149,7 @@
                                 <!-- Actions -->
                                 <td class="py-4 px-4 sm:px-6 text-end">
                                     <div class="flex items-center justify-end gap-1.5">
+                                        @if(auth('admin')->user()?->hasPermission('admins.manage'))
                                         <a
                                             href="{{ route('admin.admins.edit', $item) }}"
                                             class="p-2 rounded-xl text-slate-500 hover:text-[#012383] hover:bg-[#EAF1FB] dark:hover:bg-slate-800 transition-colors cursor-pointer"
@@ -172,6 +177,9 @@
                                                     <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                                 </button>
                                             </form>
+                                        @endif
+                                        @else
+                                            <span class="text-xs text-slate-400 font-medium">{{ __('معاينة فقط') }}</span>
                                         @endif
                                     </div>
                                 </td>

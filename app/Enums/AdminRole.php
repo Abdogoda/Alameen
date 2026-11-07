@@ -89,6 +89,8 @@ enum AdminRole: string
                 'notifications.send',
                 'notifications.manage',
                 'students.view',
+                'support.view',
+                'support.manage',
                 'inquiries.manage',
             ],
         };

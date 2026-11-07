@@ -1,1207 +1,1966 @@
 {
-  "info": {
-    "_postman_id": "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d",
-    "name": "Al-Ameen Clinical Speech Therapy Academy API (v1)",
-    "description": "Complete OpenAPI / Postman v2.1 Collection for all Public, Authentication, and Student Workspace endpoints of the Al-Ameen Clinical Speech Therapy Academy LMS Platform (`/api/v1/*`).\n\n### Quick Start\n1. Set the `base_url` collection variable (defaults to `http://localhost:8000/api/v1`).\n2. Run **2. Authentication & Recovery -> Login (Email & Password)** — the collection test script automatically saves the returned Sanctum token into `{{token}}`.\n3. All authenticated Student endpoints automatically inherit `Authorization: Bearer {{token}}` and `Accept-Language: {{locale}}`.",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-  },
-  "auth": {
-    "type": "bearer",
-    "bearer": [
-      {
-        "key": "token",
-        "value": "{{token}}",
-        "type": "string"
-      }
-    ]
-  },
-  "event": [
-    {
-      "listen": "prerequest",
-      "script": {
-        "type": "text/javascript",
-        "exec": [
-          "pm.request.headers.upsert({ key: 'Accept', value: 'application/json' });",
-          "pm.request.headers.upsert({ key: 'Accept-Language', value: pm.collectionVariables.get('locale') || 'ar' });"
+    "info": {
+        "_postman_id": "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d",
+        "name": "Al-Ameen Clinical Speech Therapy Academy API (v1)",
+        "description": "Complete OpenAPI / Postman v2.1 Collection for all Public, Authentication, and Student Workspace endpoints of the Al-Ameen Clinical Speech Therapy Academy LMS Platform (`/api/v1/*`).\n\n### Quick Start\n1. Set the `base_url` collection variable (defaults to `http://localhost:8000/api/v1`).\n2. Run **2. Authentication & Recovery -> Login (Email & Password)** — the collection test script automatically saves the returned Sanctum token into `{{token}}`.\n3. All authenticated Student endpoints automatically inherit `Authorization: Bearer {{token}}` and `Accept-Language: {{locale}}`.",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "auth": {
+        "type": "bearer",
+        "bearer": [
+            {
+                "key": "token",
+                "value": "{{token}}",
+                "type": "string"
+            }
         ]
-      }
-    }
-  ],
-  "variable": [
-    {
-      "key": "base_url",
-      "value": "http://localhost:8000/api/v1",
-      "type": "string"
     },
-    {
-      "key": "token",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "locale",
-      "value": "ar",
-      "type": "string"
-    },
-    {
-      "key": "course_slug",
-      "value": "comprehensive-speech-therapy-diploma",
-      "type": "string"
-    },
-    {
-      "key": "lesson_slug",
-      "value": "1",
-      "type": "string"
-    },
-    {
-      "key": "task_id",
-      "value": "1",
-      "type": "string"
-    },
-    {
-      "key": "submission_id",
-      "value": "1",
-      "type": "string"
-    },
-    {
-      "key": "certificate_code",
-      "value": "ALAMEEN-2026-XXXX",
-      "type": "string"
-    },
-    {
-      "key": "notification_id",
-      "value": "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d",
-      "type": "string"
-    },
-    {
-      "key": "ticket_id",
-      "value": "1",
-      "type": "string"
-    },
-    {
-      "key": "passkey_id",
-      "value": "1",
-      "type": "string"
-    }
-  ],
-  "item": [
-    {
-      "name": "1. Public & Marketing",
-      "description": "Public platform configuration, landing page content, course catalog, reviews, contact info, SEO metadata, locale switching, and public certificate verification.",
-      "item": [
+    "event": [
         {
-          "name": "Get OpenAPI 3.0.3 Spec (swagger.json)",
-          "request": {
-            "auth": { "type": "noauth" },
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/openapi.json",
-              "host": ["{{base_url}}"],
-              "path": ["openapi.json"]
-            }
-          }
-        },
-        {
-          "name": "Get Postman Collection (collection.json)",
-          "request": {
-            "auth": { "type": "noauth" },
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/collection.json",
-              "host": ["{{base_url}}"],
-              "path": ["collection.json"]
-            }
-          }
-        },
-        {
-          "name": "Platform Bootstrap Config",
-          "request": {
-            "auth": { "type": "noauth" },
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/public/bootstrap",
-              "host": ["{{base_url}}"],
-              "path": ["public", "bootstrap"]
-            }
-          }
-        },
-        {
-          "name": "Landing Page Content (Home)",
-          "request": {
-            "auth": { "type": "noauth" },
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/public/home",
-              "host": ["{{base_url}}"],
-              "path": ["public", "home"]
-            }
-          }
-        },
-        {
-          "name": "Public Courses Catalog",
-          "request": {
-            "auth": { "type": "noauth" },
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/public/courses?search=",
-              "host": ["{{base_url}}"],
-              "path": ["public", "courses"],
-              "query": [
-                { "key": "search", "value": "", "description": "Optional search keyword" }
-              ]
-            }
-          }
-        },
-        {
-          "name": "Public Course Details & Curriculum Preview",
-          "request": {
-            "auth": { "type": "noauth" },
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/public/courses/{{course_slug}}",
-              "host": ["{{base_url}}"],
-              "path": ["public", "courses", "{{course_slug}}"]
-            }
-          }
-        },
-        {
-          "name": "Public Clinical Reviews & Testimonials",
-          "request": {
-            "auth": { "type": "noauth" },
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/public/reviews",
-              "host": ["{{base_url}}"],
-              "path": ["public", "reviews"]
-            }
-          }
-        },
-        {
-          "name": "Public Contact Info & Channels",
-          "request": {
-            "auth": { "type": "noauth" },
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/public/contact",
-              "host": ["{{base_url}}"],
-              "path": ["public", "contact"]
-            }
-          }
-        },
-        {
-          "name": "Page SEO & OpenGraph Metadata",
-          "request": {
-            "auth": { "type": "noauth" },
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/public/seo/home",
-              "host": ["{{base_url}}"],
-              "path": ["public", "seo", "home"]
-            }
-          }
-        },
-        {
-          "name": "Verify Certificate Publicly",
-          "request": {
-            "auth": { "type": "noauth" },
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/public/certificates/verify/{{certificate_code}}",
-              "host": ["{{base_url}}"],
-              "path": ["public", "certificates", "verify", "{{certificate_code}}"]
-            }
-          }
-        },
-        {
-          "name": "Switch Active Locale (ar / en)",
-          "request": {
-            "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"locale\": \"ar\"\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/public/locale",
-              "host": ["{{base_url}}"],
-              "path": ["public", "locale"]
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "2. Authentication & Recovery",
-      "description": "Student registration, email/password login, 2FA login challenge, Firebase & Google OAuth login, WebAuthn Passkey login, and 6-digit OTP password reset.",
-      "item": [
-        {
-          "name": "Register New Student Account",
-          "request": {
-            "auth": { "type": "noauth" },
-            "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"name\": \"د. أحمد محمد\",\n  \"email\": \"student@example.com\",\n  \"password\": \"SecretPass123!\",\n  \"password_confirmation\": \"SecretPass123!\",\n  \"phone\": \"+201012345678\",\n  \"country\": \"Egypt\",\n  \"city\": \"Cairo\",\n  \"address\": \"Nasr City\",\n  \"locale\": \"ar\",\n  \"device_name\": \"Postman Client\"\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/auth/register",
-              "host": ["{{base_url}}"],
-              "path": ["auth", "register"]
-            }
-          }
-        },
-        {
-          "name": "Login (Email & Password)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
+            "listen": "prerequest",
+            "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if (pm.response.code === 200) {",
-                  "    const res = pm.response.json();",
-                  "    if (res.data && res.data.token) {",
-                  "        pm.collectionVariables.set('token', res.data.token);",
-                  "    }",
-                  "}"
+                    "pm.request.headers.upsert({ key: 'Accept', value: 'application/json' });",
+                    "pm.request.headers.upsert({ key: 'Accept-Language', value: pm.collectionVariables.get('locale') || 'ar' });"
                 ]
-              }
             }
-          ],
-          "request": {
-            "auth": { "type": "noauth" },
-            "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"email\": \"student@example.com\",\n  \"password\": \"SecretPass123!\",\n  \"remember\": true,\n  \"device_name\": \"Postman Client\"\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/auth/login",
-              "host": ["{{base_url}}"],
-              "path": ["auth", "login"]
-            }
-          }
-        },
-        {
-          "name": "Verify Two-Factor (2FA) Login Challenge",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "if (pm.response.code === 200) {",
-                  "    const res = pm.response.json();",
-                  "    if (res.data && res.data.token) {",
-                  "        pm.collectionVariables.set('token', res.data.token);",
-                  "    }",
-                  "}"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "auth": { "type": "noauth" },
-            "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"two_factor_token\": \"uuid-from-login-response\",\n  \"code\": \"123456\",\n  \"device_name\": \"Postman Client\"\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/auth/two-factor-challenge",
-              "host": ["{{base_url}}"],
-              "path": ["auth", "two-factor-challenge"]
-            }
-          }
-        },
-        {
-          "name": "Login via Firebase ID Token",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "if (pm.response.code === 200) {",
-                  "    const res = pm.response.json();",
-                  "    if (res.data && res.data.token) {",
-                  "        pm.collectionVariables.set('token', res.data.token);",
-                  "    }",
-                  "}"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "auth": { "type": "noauth" },
-            "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"id_token\": \"firebase-jwt-id-token\",\n  \"remember\": true,\n  \"device_name\": \"firebase-mobile\"\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/auth/firebase",
-              "host": ["{{base_url}}"],
-              "path": ["auth", "firebase"]
-            }
-          }
-        },
-        {
-          "name": "Get Google OAuth Redirect URL",
-          "request": {
-            "auth": { "type": "noauth" },
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/auth/google/redirect",
-              "host": ["{{base_url}}"],
-              "path": ["auth", "google", "redirect"]
-            }
-          }
-        },
-        {
-          "name": "Login via Google OAuth Access Token",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "if (pm.response.code === 200) {",
-                  "    const res = pm.response.json();",
-                  "    if (res.data && res.data.token) {",
-                  "        pm.collectionVariables.set('token', res.data.token);",
-                  "    }",
-                  "}"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "auth": { "type": "noauth" },
-            "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"access_token\": \"ya29.a0AfH6SM...\",\n  \"device_name\": \"google-mobile\"\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/auth/google/token",
-              "host": ["{{base_url}}"],
-              "path": ["auth", "google", "token"]
-            }
-          }
-        },
-        {
-          "name": "Passkey Login Options (WebAuthn Challenge)",
-          "request": {
-            "auth": { "type": "noauth" },
-            "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"email\": \"student@example.com\"\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/auth/passkeys/login-options",
-              "host": ["{{base_url}}"],
-              "path": ["auth", "passkeys", "login-options"]
-            }
-          }
-        },
-        {
-          "name": "Passkey Login Verify Assertion",
-          "request": {
-            "auth": { "type": "noauth" },
-            "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"challenge_id\": \"uuid-from-login-options\",\n  \"credential\": {},\n  \"device_name\": \"passkey-client\"\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/auth/passkeys/login",
-              "host": ["{{base_url}}"],
-              "path": ["auth", "passkeys", "login"]
-            }
-          }
-        },
-        {
-          "name": "Forgot Password (Send 6-Digit Email OTP)",
-          "request": {
-            "auth": { "type": "noauth" },
-            "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"email\": \"student@example.com\"\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/auth/forgot-password",
-              "host": ["{{base_url}}"],
-              "path": ["auth", "forgot-password"]
-            }
-          }
-        },
-        {
-          "name": "Verify 6-Digit Password Reset OTP",
-          "request": {
-            "auth": { "type": "noauth" },
-            "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"email\": \"student@example.com\",\n  \"otp\": \"123456\"\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/auth/verify-otp",
-              "host": ["{{base_url}}"],
-              "path": ["auth", "verify-otp"]
-            }
-          }
-        },
-        {
-          "name": "Reset Password with 6-Digit OTP",
-          "request": {
-            "auth": { "type": "noauth" },
-            "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"email\": \"student@example.com\",\n  \"otp\": \"123456\",\n  \"password\": \"NewSecretPass123!\",\n  \"password_confirmation\": \"NewSecretPass123!\",\n  \"device_name\": \"Postman Client\"\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/auth/reset-password",
-              "host": ["{{base_url}}"],
-              "path": ["auth", "reset-password"]
-            }
-          }
-        },
-        {
-          "name": "Get Current Authenticated Student (/auth/me)",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/auth/me",
-              "host": ["{{base_url}}"],
-              "path": ["auth", "me"]
-            }
-          }
-        },
-        {
-          "name": "Resend Email Verification Notification",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/auth/email/verification-notification",
-              "host": ["{{base_url}}"],
-              "path": ["auth", "email", "verification-notification"]
-            }
-          }
-        },
-        {
-          "name": "Logout (Revoke Sanctum Token)",
-          "request": {
-            "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"all_devices\": false\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/auth/logout",
-              "host": ["{{base_url}}"],
-              "path": ["auth", "logout"]
-            }
-          }
         }
-      ]
-    },
-    {
-      "name": "3. Student Dashboard",
-      "description": "Aggregated student dashboard metrics, enrolled/pending/available courses, resume playback, upcoming clinical tasks, and earned certificates.",
-      "item": [
+    ],
+    "variable": [
         {
-          "name": "Get Student Dashboard Overview",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/student/dashboard",
-              "host": ["{{base_url}}"],
-              "path": ["student", "dashboard"]
-            }
-          }
+            "key": "base_url",
+            "value": "http://localhost:8000/api/v1",
+            "type": "string"
+        },
+        {
+            "key": "token",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "locale",
+            "value": "ar",
+            "type": "string"
+        },
+        {
+            "key": "course_slug",
+            "value": "comprehensive-speech-therapy-diploma",
+            "type": "string"
+        },
+        {
+            "key": "lesson_slug",
+            "value": "1",
+            "type": "string"
+        },
+        {
+            "key": "task_id",
+            "value": "1",
+            "type": "string"
+        },
+        {
+            "key": "submission_id",
+            "value": "1",
+            "type": "string"
+        },
+        {
+            "key": "certificate_code",
+            "value": "ALAMEEN-2026-XXXX",
+            "type": "string"
+        },
+        {
+            "key": "notification_id",
+            "value": "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d",
+            "type": "string"
+        },
+        {
+            "key": "ticket_id",
+            "value": "1",
+            "type": "string"
+        },
+        {
+            "key": "passkey_id",
+            "value": "1",
+            "type": "string"
         }
-      ]
-    },
-    {
-      "name": "4. Student Courses & Receipts",
-      "description": "Student course catalog, curriculum progress, and manual payment receipt submission (Vodafone Cash / InstaPay).",
-      "item": [
+    ],
+    "item": [
         {
-          "name": "List Student Courses (Enrolled, Pending, Catalog)",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/student/courses?search=",
-              "host": ["{{base_url}}"],
-              "path": ["student", "courses"],
-              "query": [
-                { "key": "search", "value": "" }
-              ]
-            }
-          }
+            "name": "1. Public & Marketing",
+            "description": "Public platform configuration, landing page content, course catalog, reviews, contact info, SEO metadata, locale switching, and public certificate verification.",
+            "item": [
+                {
+                    "name": "Get OpenAPI 3.0.3 Spec (swagger.json)",
+                    "request": {
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/openapi.json",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "openapi.json"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Interactive API Docs (Scalar UI)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "text/html"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/docs",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "docs"
+                            ]
+                        },
+                        "description": "Interactive browser-based OpenAPI 3.0.3 documentation viewer powered by Scalar UI."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Postman Collection (collection.json)",
+                    "request": {
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/collection.json",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "collection.json"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Platform Bootstrap Config",
+                    "request": {
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/public/bootstrap",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "public",
+                                "bootstrap"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Landing Page Content (Home)",
+                    "request": {
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/public/home",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "public",
+                                "home"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Public Courses Catalog",
+                    "request": {
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/public/courses?search=",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "public",
+                                "courses"
+                            ],
+                            "query": [
+                                {
+                                    "key": "search",
+                                    "value": "",
+                                    "description": "Optional search keyword"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Public Course Details & Curriculum Preview",
+                    "request": {
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/public/courses/{{course_slug}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "public",
+                                "courses",
+                                "{{course_slug}}"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Public Clinical Reviews & Testimonials",
+                    "request": {
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/public/reviews",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "public",
+                                "reviews"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Public Contact Info & Channels",
+                    "request": {
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/public/contact",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "public",
+                                "contact"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Page SEO & OpenGraph Metadata",
+                    "request": {
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/public/seo/home",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "public",
+                                "seo",
+                                "home"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Verify Certificate Publicly",
+                    "request": {
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/public/certificates/verify/{{certificate_code}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "public",
+                                "certificates",
+                                "verify",
+                                "{{certificate_code}}"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Switch Active Locale (ar / en)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"locale\": \"ar\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/public/locale",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "public",
+                                "locale"
+                            ]
+                        }
+                    }
+                }
+            ]
         },
         {
-          "name": "Get Student Course Curriculum & Progress",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/student/courses/{{course_slug}}",
-              "host": ["{{base_url}}"],
-              "path": ["student", "courses", "{{course_slug}}"]
-            }
-          }
+            "name": "2. Authentication & Recovery",
+            "description": "Student registration, email/password login, 2FA login challenge, Firebase & Google OAuth login, WebAuthn Passkey login, and 6-digit OTP password reset.",
+            "item": [
+                {
+                    "name": "Register New Student Account",
+                    "request": {
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"د. أحمد محمد\",\n  \"email\": \"student@example.com\",\n  \"password\": \"SecretPass123!\",\n  \"password_confirmation\": \"SecretPass123!\",\n  \"phone\": \"+201012345678\",\n  \"country\": \"Egypt\",\n  \"city\": \"Cairo\",\n  \"address\": \"Nasr City\",\n  \"locale\": \"ar\",\n  \"device_name\": \"Postman Client\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/auth/register",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "register"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Login (Email & Password)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "if (pm.response.code === 200) {",
+                                    "    const res = pm.response.json();",
+                                    "    if (res.data && res.data.token) {",
+                                    "        pm.collectionVariables.set('token', res.data.token);",
+                                    "    }",
+                                    "}"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"email\": \"student@example.com\",\n  \"password\": \"SecretPass123!\",\n  \"remember\": true,\n  \"device_name\": \"Postman Client\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/auth/login",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "login"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Verify Two-Factor (2FA) Login Challenge",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "if (pm.response.code === 200) {",
+                                    "    const res = pm.response.json();",
+                                    "    if (res.data && res.data.token) {",
+                                    "        pm.collectionVariables.set('token', res.data.token);",
+                                    "    }",
+                                    "}"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"two_factor_token\": \"uuid-from-login-response\",\n  \"code\": \"123456\",\n  \"device_name\": \"Postman Client\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/auth/two-factor-challenge",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "two-factor-challenge"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Login via Firebase ID Token",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "if (pm.response.code === 200) {",
+                                    "    const res = pm.response.json();",
+                                    "    if (res.data && res.data.token) {",
+                                    "        pm.collectionVariables.set('token', res.data.token);",
+                                    "    }",
+                                    "}"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"id_token\": \"firebase-jwt-id-token\",\n  \"remember\": true,\n  \"device_name\": \"firebase-mobile\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/auth/firebase",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "firebase"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Google OAuth Redirect URL",
+                    "request": {
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/auth/google/redirect",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "google",
+                                "redirect"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Login via Google OAuth Access Token",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "if (pm.response.code === 200) {",
+                                    "    const res = pm.response.json();",
+                                    "    if (res.data && res.data.token) {",
+                                    "        pm.collectionVariables.set('token', res.data.token);",
+                                    "    }",
+                                    "}"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"access_token\": \"ya29.a0AfH6SM...\",\n  \"device_name\": \"google-mobile\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/auth/google/token",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "google",
+                                "token"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Passkey Login Options (WebAuthn Challenge)",
+                    "request": {
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"email\": \"student@example.com\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/auth/passkeys/login-options",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "passkeys",
+                                "login-options"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Passkey Login Verify Assertion",
+                    "request": {
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"challenge_id\": \"uuid-from-login-options\",\n  \"credential\": {},\n  \"device_name\": \"passkey-client\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/auth/passkeys/login",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "passkeys",
+                                "login"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Forgot Password (Send 6-Digit Email OTP)",
+                    "request": {
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"email\": \"student@example.com\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/auth/forgot-password",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "forgot-password"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Verify 6-Digit Password Reset OTP",
+                    "request": {
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"email\": \"student@example.com\",\n  \"otp\": \"123456\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/auth/verify-otp",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "verify-otp"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Reset Password with 6-Digit OTP",
+                    "request": {
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"email\": \"student@example.com\",\n  \"otp\": \"123456\",\n  \"password\": \"NewSecretPass123!\",\n  \"password_confirmation\": \"NewSecretPass123!\",\n  \"device_name\": \"Postman Client\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/auth/reset-password",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "reset-password"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Current Authenticated Student (/auth/me)",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/auth/me",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "me"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Resend 6-Digit Email Verification OTP",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/auth/email/verification-notification",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "email",
+                                "verification-notification"
+                            ]
+                        },
+                        "description": "Generates and dispatches a fresh 6-digit numeric OTP code via email (`EmailVerificationOtpNotification`) to the authenticated student for email address confirmation."
+                    }
+                },
+                {
+                    "name": "Verify Email with 6-Digit OTP",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"otp\": \"123456\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/auth/email/verify-otp",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "email",
+                                "verify-otp"
+                            ]
+                        },
+                        "description": "Verifies the authenticated student's email address using the 6-digit numeric OTP received in their email inbox.\n\n- **Service**: `EmailVerificationOtpService::verifyOtp()`\n- **Rate Limiting**: `throttle:otp`\n- **Middleware**: `auth:sanctum`, `student.approved`"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Logout (Revoke Sanctum Token)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"all_devices\": false\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/auth/logout",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "logout"
+                            ]
+                        }
+                    }
+                }
+            ]
         },
         {
-          "name": "Submit Course Payment Receipt (Vodafone Cash / InstaPay)",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "formdata",
-              "formdata": [
-                { "key": "payment_method", "value": "instapay", "type": "text", "description": "vodafone_cash or instapay" },
-                { "key": "sender_identifier", "value": "ahmed@instapay", "type": "text" },
-                { "key": "amount_paid", "value": "1500", "type": "text" },
-                { "key": "transaction_reference", "value": "TXN-9876543", "type": "text" },
-                { "key": "receipt_image", "type": "file", "src": [], "description": "Receipt image or PDF (max 5MB)" }
-              ]
-            },
-            "url": {
-              "raw": "{{base_url}}/student/courses/{{course_slug}}/receipt",
-              "host": ["{{base_url}}"],
-              "path": ["student", "courses", "{{course_slug}}", "receipt"]
-            }
-          }
+            "name": "3. Student Dashboard",
+            "description": "Aggregated student dashboard metrics, enrolled/pending/available courses, resume playback, upcoming clinical tasks, and earned certificates.",
+            "item": [
+                {
+                    "name": "Get Student Dashboard Overview",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/student/dashboard",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "student",
+                                "dashboard"
+                            ]
+                        }
+                    }
+                }
+            ]
         },
         {
-          "name": "List Student Submitted Payment Receipts",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/student/receipts",
-              "host": ["{{base_url}}"],
-              "path": ["student", "receipts"]
-            }
-          }
+            "name": "4. Student Courses & Receipts",
+            "description": "Student course catalog, curriculum progress, and manual payment receipt submission (Vodafone Cash / InstaPay).",
+            "item": [
+                {
+                    "name": "List Student Courses (Enrolled, Pending, Catalog)",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/student/courses?search=",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "student",
+                                "courses"
+                            ],
+                            "query": [
+                                {
+                                    "key": "search",
+                                    "value": ""
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Student Course Curriculum & Progress",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/student/courses/{{course_slug}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "student",
+                                "courses",
+                                "{{course_slug}}"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Submit Course Payment Receipt (Vodafone Cash / InstaPay)",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "payment_method",
+                                    "value": "instapay",
+                                    "type": "text",
+                                    "description": "vodafone_cash or instapay"
+                                },
+                                {
+                                    "key": "sender_identifier",
+                                    "value": "ahmed@instapay",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "amount_paid",
+                                    "value": "1500",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "transaction_reference",
+                                    "value": "TXN-9876543",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "receipt_image",
+                                    "type": "file",
+                                    "src": [],
+                                    "description": "Receipt image or PDF (max 5MB)"
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/student/courses/{{course_slug}}/receipt",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "student",
+                                "courses",
+                                "{{course_slug}}",
+                                "receipt"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "List Student Submitted Payment Receipts",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/student/receipts",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "student",
+                                "receipts"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "5. Student Lessons & DRM",
+            "description": "Lesson video playback, dynamic watermark metadata, short-lived signed Bunny/HLS tokens, watch progress heartbeats, and anti-piracy violation reporting.",
+            "item": [
+                {
+                    "name": "Get Lesson Workspace & Signed Playback URLs",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/student/courses/{{course_slug}}/lessons/{{lesson_slug}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "student",
+                                "courses",
+                                "{{course_slug}}",
+                                "lessons",
+                                "{{lesson_slug}}"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Refresh Short-Lived DRM Playback Token",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/student/courses/{{course_slug}}/lessons/{{lesson_slug}}/playback-token",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "student",
+                                "courses",
+                                "{{course_slug}}",
+                                "lessons",
+                                "{{lesson_slug}}",
+                                "playback-token"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Record Lesson Watch Progress Heartbeat",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"watched_seconds\": 600\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/student/courses/{{course_slug}}/lessons/{{lesson_slug}}/progress",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "student",
+                                "courses",
+                                "{{course_slug}}",
+                                "lessons",
+                                "{{lesson_slug}}",
+                                "progress"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Report Anti-Piracy / DRM Security Violation",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"type\": \"devtools_open\",\n  \"video_id\": 1,\n  \"details\": \"DevTools detected during video playback\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/student/security/violation",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "student",
+                                "security",
+                                "violation"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "6. Clinical Assignments & Grades",
+            "description": "Clinical tasks (voice assignments), audio recording submission (multipart or base64), grades overview, and instructor evaluation results.",
+            "item": [
+                {
+                    "name": "List Student Clinical Tasks (Voice Assignments)",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/student/assignments",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "student",
+                                "assignments"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Single Clinical Task & Latest Submission",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/student/assignments/{{task_id}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "student",
+                                "assignments",
+                                "{{task_id}}"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Submit Voice Recording for Clinical Task (Multipart)",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "audio_file",
+                                    "type": "file",
+                                    "src": [],
+                                    "description": "Audio file (webm/mp3/wav/ogg/m4a)"
+                                },
+                                {
+                                    "key": "student_notes",
+                                    "value": "تم تطبيق خطة العلاج الصوتي للحالة",
+                                    "type": "text"
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/student/assignments/{{task_id}}/submit",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "student",
+                                "assignments",
+                                "{{task_id}}",
+                                "submit"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Student Grades Overview & Stats",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/student/grades",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "student",
+                                "grades"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Single Submission Evaluation Result",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/student/submissions/{{submission_id}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "student",
+                                "submissions",
+                                "{{submission_id}}"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "7. Student Certificates",
+            "description": "Earned course completion certificates, verification links, and PDF/image downloads.",
+            "item": [
+                {
+                    "name": "List Student Earned Certificates",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/student/certificates",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "student",
+                                "certificates"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Certificate Details by Code",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/student/certificates/{{certificate_code}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "student",
+                                "certificates",
+                                "{{certificate_code}}"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "8. Student Notifications",
+            "description": "Student notification inbox, navbar bell recent notifications, read tracking, and deletion.",
+            "item": [
+                {
+                    "name": "List Paginated Notifications",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/student/notifications?filter=all&per_page=15",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "student",
+                                "notifications"
+                            ],
+                            "query": [
+                                {
+                                    "key": "filter",
+                                    "value": "all",
+                                    "description": "all | unread | read"
+                                },
+                                {
+                                    "key": "per_page",
+                                    "value": "15"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Recent Notifications (Navbar Bell)",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/student/notifications/recent?limit=8",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "student",
+                                "notifications",
+                                "recent"
+                            ],
+                            "query": [
+                                {
+                                    "key": "limit",
+                                    "value": "8"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Mark All Notifications as Read",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/student/notifications/read-all",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "student",
+                                "notifications",
+                                "read-all"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Mark Single Notification as Read",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/student/notifications/{{notification_id}}/read",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "student",
+                                "notifications",
+                                "{{notification_id}}",
+                                "read"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Delete Single Notification",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/student/notifications/{{notification_id}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "student",
+                                "notifications",
+                                "{{notification_id}}"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "9. Student Support Tickets",
+            "description": "Technical & clinical support tickets, file attachments, replies, status transitions, and real-time message polling.",
+            "item": [
+                {
+                    "name": "List Student Support Tickets",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/student/support-tickets?status=all&search=",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "student",
+                                "support-tickets"
+                            ],
+                            "query": [
+                                {
+                                    "key": "status",
+                                    "value": "all"
+                                },
+                                {
+                                    "key": "search",
+                                    "value": ""
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Create New Support Ticket",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "subject",
+                                    "value": "استفسار حول التكليف السريري",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "category",
+                                    "value": "clinical",
+                                    "type": "text",
+                                    "description": "technical | payment | clinical | certificate | other"
+                                },
+                                {
+                                    "key": "priority",
+                                    "value": "normal",
+                                    "type": "text",
+                                    "description": "low | normal | high | urgent"
+                                },
+                                {
+                                    "key": "message",
+                                    "value": "أرجو توضيح المطلوب في التسجيل الصوتي.",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "attachment",
+                                    "type": "file",
+                                    "src": [],
+                                    "description": "Optional attachment file"
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/student/support-tickets",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "student",
+                                "support-tickets"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Support Ticket Thread & Messages",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/student/support-tickets/{{ticket_id}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "student",
+                                "support-tickets",
+                                "{{ticket_id}}"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Reply to Support Ticket",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "message",
+                                    "value": "شكراً جزيلاً على التوضيح.",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "attachment",
+                                    "type": "file",
+                                    "src": []
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/student/support-tickets/{{ticket_id}}/reply",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "student",
+                                "support-tickets",
+                                "{{ticket_id}}",
+                                "reply"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Close Support Ticket",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/student/support-tickets/{{ticket_id}}/close",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "student",
+                                "support-tickets",
+                                "{{ticket_id}}",
+                                "close"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Reopen Closed Support Ticket",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/student/support-tickets/{{ticket_id}}/reopen",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "student",
+                                "support-tickets",
+                                "{{ticket_id}}",
+                                "reopen"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Poll New Support Ticket Messages",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/student/support-tickets/{{ticket_id}}/poll?after_id=0",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "student",
+                                "support-tickets",
+                                "{{ticket_id}}",
+                                "poll"
+                            ],
+                            "query": [
+                                {
+                                    "key": "after_id",
+                                    "value": "0"
+                                }
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "10. Student Settings & Security",
+            "description": "Student profile management, avatar upload, password update, Two-Factor Authentication (TOTP), and WebAuthn Passkey management.",
+            "item": [
+                {
+                    "name": "Get Student Profile Settings",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/student/settings/profile",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "student",
+                                "settings",
+                                "profile"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Update Student Profile & Avatar",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"د. أحمد محمد\",\n  \"email\": \"student@example.com\",\n  \"phone\": \"+201012345678\",\n  \"country\": \"Egypt\",\n  \"city\": \"Cairo\",\n  \"address\": \"Nasr City\",\n  \"locale\": \"ar\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/student/settings/profile",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "student",
+                                "settings",
+                                "profile"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Delete Student Account",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"current_password\": \"SecretPass123!\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/student/settings/profile",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "student",
+                                "settings",
+                                "profile"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Update Student Password",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"current_password\": \"SecretPass123!\",\n  \"password\": \"NewSecretPass123!\",\n  \"password_confirmation\": \"NewSecretPass123!\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/student/settings/password",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "student",
+                                "settings",
+                                "password"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Security Overview (2FA & Passkeys)",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/student/settings/security",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "student",
+                                "settings",
+                                "security"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Enable Two-Factor Authentication (Get QR & Secret)",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/student/settings/two-factor/enable",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "student",
+                                "settings",
+                                "two-factor",
+                                "enable"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Confirm Two-Factor Authentication Setup",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"code\": \"123456\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/student/settings/two-factor/confirm",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "student",
+                                "settings",
+                                "two-factor",
+                                "confirm"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Disable Two-Factor Authentication",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/student/settings/two-factor",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "student",
+                                "settings",
+                                "two-factor"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get 2FA Recovery Codes",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/student/settings/two-factor/recovery-codes",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "student",
+                                "settings",
+                                "two-factor",
+                                "recovery-codes"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Regenerate 2FA Recovery Codes",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/student/settings/two-factor/recovery-codes",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "student",
+                                "settings",
+                                "two-factor",
+                                "recovery-codes"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "List Registered WebAuthn Passkeys",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/student/settings/passkeys",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "student",
+                                "settings",
+                                "passkeys"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Generate Passkey Registration Options",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/student/settings/passkeys/options",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "student",
+                                "settings",
+                                "passkeys",
+                                "options"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Store Registered WebAuthn Passkey",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"MacBook Pro TouchID\",\n  \"challenge_id\": \"uuid-from-options\",\n  \"credential\": {}\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/student/settings/passkeys",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "student",
+                                "settings",
+                                "passkeys"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Delete Registered Passkey",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/student/settings/passkeys/{{passkey_id}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "student",
+                                "settings",
+                                "passkeys",
+                                "{{passkey_id}}"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Update Student Profile & Avatar (PUT alias)",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"أحمد محمد المحدث\",\n    \"phone\": \"+201012345678\",\n    \"country\": \"Egypt\",\n    \"city\": \"Cairo\",\n    \"address\": \"مدينة نصر، القاهرة\",\n    \"locale\": \"ar\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/student/settings/profile",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "student",
+                                "settings",
+                                "profile"
+                            ]
+                        },
+                        "description": "PUT alias for updating profile settings."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete Student Account (POST alias)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"password\": \"Password123!\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/student/settings/profile/delete",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "student",
+                                "settings",
+                                "profile",
+                                "delete"
+                            ]
+                        },
+                        "description": "POST alias for deleting student account with password confirmation."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update Student Password (POST alias)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"current_password\": \"OldPassword123!\",\n    \"password\": \"NewSecurePass456!\",\n    \"password_confirmation\": \"NewSecurePass456!\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/student/settings/password",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "student",
+                                "settings",
+                                "password"
+                            ]
+                        },
+                        "description": "POST alias for changing student password."
+                    },
+                    "response": []
+                }
+            ]
         }
-      ]
-    },
-    {
-      "name": "5. Student Lessons & DRM",
-      "description": "Lesson video playback, dynamic watermark metadata, short-lived signed Bunny/HLS tokens, watch progress heartbeats, and anti-piracy violation reporting.",
-      "item": [
-        {
-          "name": "Get Lesson Workspace & Signed Playback URLs",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/student/courses/{{course_slug}}/lessons/{{lesson_slug}}",
-              "host": ["{{base_url}}"],
-              "path": ["student", "courses", "{{course_slug}}", "lessons", "{{lesson_slug}}"]
-            }
-          }
-        },
-        {
-          "name": "Refresh Short-Lived DRM Playback Token",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/student/courses/{{course_slug}}/lessons/{{lesson_slug}}/playback-token",
-              "host": ["{{base_url}}"],
-              "path": ["student", "courses", "{{course_slug}}", "lessons", "{{lesson_slug}}", "playback-token"]
-            }
-          }
-        },
-        {
-          "name": "Record Lesson Watch Progress Heartbeat",
-          "request": {
-            "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"watched_seconds\": 600\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/student/courses/{{course_slug}}/lessons/{{lesson_slug}}/progress",
-              "host": ["{{base_url}}"],
-              "path": ["student", "courses", "{{course_slug}}", "lessons", "{{lesson_slug}}", "progress"]
-            }
-          }
-        },
-        {
-          "name": "Report Anti-Piracy / DRM Security Violation",
-          "request": {
-            "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"type\": \"devtools_open\",\n  \"video_id\": 1,\n  \"details\": \"DevTools detected during video playback\"\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/student/security/violation",
-              "host": ["{{base_url}}"],
-              "path": ["student", "security", "violation"]
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "6. Clinical Assignments & Grades",
-      "description": "Clinical tasks (voice assignments), audio recording submission (multipart or base64), grades overview, and instructor evaluation results.",
-      "item": [
-        {
-          "name": "List Student Clinical Tasks (Voice Assignments)",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/student/assignments",
-              "host": ["{{base_url}}"],
-              "path": ["student", "assignments"]
-            }
-          }
-        },
-        {
-          "name": "Get Single Clinical Task & Latest Submission",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/student/assignments/{{task_id}}",
-              "host": ["{{base_url}}"],
-              "path": ["student", "assignments", "{{task_id}}"]
-            }
-          }
-        },
-        {
-          "name": "Submit Voice Recording for Clinical Task (Multipart)",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "formdata",
-              "formdata": [
-                { "key": "audio_file", "type": "file", "src": [], "description": "Audio file (webm/mp3/wav/ogg/m4a)" },
-                { "key": "student_notes", "value": "تم تطبيق خطة العلاج الصوتي للحالة", "type": "text" }
-              ]
-            },
-            "url": {
-              "raw": "{{base_url}}/student/assignments/{{task_id}}/submit",
-              "host": ["{{base_url}}"],
-              "path": ["student", "assignments", "{{task_id}}", "submit"]
-            }
-          }
-        },
-        {
-          "name": "Get Student Grades Overview & Stats",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/student/grades",
-              "host": ["{{base_url}}"],
-              "path": ["student", "grades"]
-            }
-          }
-        },
-        {
-          "name": "Get Single Submission Evaluation Result",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/student/submissions/{{submission_id}}",
-              "host": ["{{base_url}}"],
-              "path": ["student", "submissions", "{{submission_id}}"]
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "7. Student Certificates",
-      "description": "Earned course completion certificates, verification links, and PDF/image downloads.",
-      "item": [
-        {
-          "name": "List Student Earned Certificates",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/student/certificates",
-              "host": ["{{base_url}}"],
-              "path": ["student", "certificates"]
-            }
-          }
-        },
-        {
-          "name": "Get Certificate Details by Code",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/student/certificates/{{certificate_code}}",
-              "host": ["{{base_url}}"],
-              "path": ["student", "certificates", "{{certificate_code}}"]
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "8. Student Notifications",
-      "description": "Student notification inbox, navbar bell recent notifications, read tracking, and deletion.",
-      "item": [
-        {
-          "name": "List Paginated Notifications",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/student/notifications?filter=all&per_page=15",
-              "host": ["{{base_url}}"],
-              "path": ["student", "notifications"],
-              "query": [
-                { "key": "filter", "value": "all", "description": "all | unread | read" },
-                { "key": "per_page", "value": "15" }
-              ]
-            }
-          }
-        },
-        {
-          "name": "Get Recent Notifications (Navbar Bell)",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/student/notifications/recent?limit=8",
-              "host": ["{{base_url}}"],
-              "path": ["student", "notifications", "recent"],
-              "query": [
-                { "key": "limit", "value": "8" }
-              ]
-            }
-          }
-        },
-        {
-          "name": "Mark All Notifications as Read",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/student/notifications/read-all",
-              "host": ["{{base_url}}"],
-              "path": ["student", "notifications", "read-all"]
-            }
-          }
-        },
-        {
-          "name": "Mark Single Notification as Read",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/student/notifications/{{notification_id}}/read",
-              "host": ["{{base_url}}"],
-              "path": ["student", "notifications", "{{notification_id}}", "read"]
-            }
-          }
-        },
-        {
-          "name": "Delete Single Notification",
-          "request": {
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/student/notifications/{{notification_id}}",
-              "host": ["{{base_url}}"],
-              "path": ["student", "notifications", "{{notification_id}}"]
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "9. Student Support Tickets",
-      "description": "Technical & clinical support tickets, file attachments, replies, status transitions, and real-time message polling.",
-      "item": [
-        {
-          "name": "List Student Support Tickets",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/student/support-tickets?status=all&search=",
-              "host": ["{{base_url}}"],
-              "path": ["student", "support-tickets"],
-              "query": [
-                { "key": "status", "value": "all" },
-                { "key": "search", "value": "" }
-              ]
-            }
-          }
-        },
-        {
-          "name": "Create New Support Ticket",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "formdata",
-              "formdata": [
-                { "key": "subject", "value": "استفسار حول التكليف السريري", "type": "text" },
-                { "key": "category", "value": "clinical", "type": "text", "description": "technical | payment | clinical | certificate | other" },
-                { "key": "priority", "value": "normal", "type": "text", "description": "low | normal | high | urgent" },
-                { "key": "message", "value": "أرجو توضيح المطلوب في التسجيل الصوتي.", "type": "text" },
-                { "key": "attachment", "type": "file", "src": [], "description": "Optional attachment file" }
-              ]
-            },
-            "url": {
-              "raw": "{{base_url}}/student/support-tickets",
-              "host": ["{{base_url}}"],
-              "path": ["student", "support-tickets"]
-            }
-          }
-        },
-        {
-          "name": "Get Support Ticket Thread & Messages",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/student/support-tickets/{{ticket_id}}",
-              "host": ["{{base_url}}"],
-              "path": ["student", "support-tickets", "{{ticket_id}}"]
-            }
-          }
-        },
-        {
-          "name": "Reply to Support Ticket",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "formdata",
-              "formdata": [
-                { "key": "message", "value": "شكراً جزيلاً على التوضيح.", "type": "text" },
-                { "key": "attachment", "type": "file", "src": [] }
-              ]
-            },
-            "url": {
-              "raw": "{{base_url}}/student/support-tickets/{{ticket_id}}/reply",
-              "host": ["{{base_url}}"],
-              "path": ["student", "support-tickets", "{{ticket_id}}", "reply"]
-            }
-          }
-        },
-        {
-          "name": "Close Support Ticket",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/student/support-tickets/{{ticket_id}}/close",
-              "host": ["{{base_url}}"],
-              "path": ["student", "support-tickets", "{{ticket_id}}", "close"]
-            }
-          }
-        },
-        {
-          "name": "Reopen Closed Support Ticket",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/student/support-tickets/{{ticket_id}}/reopen",
-              "host": ["{{base_url}}"],
-              "path": ["student", "support-tickets", "{{ticket_id}}", "reopen"]
-            }
-          }
-        },
-        {
-          "name": "Poll New Support Ticket Messages",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/student/support-tickets/{{ticket_id}}/poll?after_id=0",
-              "host": ["{{base_url}}"],
-              "path": ["student", "support-tickets", "{{ticket_id}}", "poll"],
-              "query": [
-                { "key": "after_id", "value": "0" }
-              ]
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "10. Student Settings & Security",
-      "description": "Student profile management, avatar upload, password update, Two-Factor Authentication (TOTP), and WebAuthn Passkey management.",
-      "item": [
-        {
-          "name": "Get Student Profile Settings",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/student/settings/profile",
-              "host": ["{{base_url}}"],
-              "path": ["student", "settings", "profile"]
-            }
-          }
-        },
-        {
-          "name": "Update Student Profile & Avatar",
-          "request": {
-            "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"name\": \"د. أحمد محمد\",\n  \"email\": \"student@example.com\",\n  \"phone\": \"+201012345678\",\n  \"country\": \"Egypt\",\n  \"city\": \"Cairo\",\n  \"address\": \"Nasr City\",\n  \"locale\": \"ar\"\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/student/settings/profile",
-              "host": ["{{base_url}}"],
-              "path": ["student", "settings", "profile"]
-            }
-          }
-        },
-        {
-          "name": "Delete Student Account",
-          "request": {
-            "method": "DELETE",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"current_password\": \"SecretPass123!\"\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/student/settings/profile",
-              "host": ["{{base_url}}"],
-              "path": ["student", "settings", "profile"]
-            }
-          }
-        },
-        {
-          "name": "Update Student Password",
-          "request": {
-            "method": "PUT",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"current_password\": \"SecretPass123!\",\n  \"password\": \"NewSecretPass123!\",\n  \"password_confirmation\": \"NewSecretPass123!\"\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/student/settings/password",
-              "host": ["{{base_url}}"],
-              "path": ["student", "settings", "password"]
-            }
-          }
-        },
-        {
-          "name": "Get Security Overview (2FA & Passkeys)",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/student/settings/security",
-              "host": ["{{base_url}}"],
-              "path": ["student", "settings", "security"]
-            }
-          }
-        },
-        {
-          "name": "Enable Two-Factor Authentication (Get QR & Secret)",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/student/settings/two-factor/enable",
-              "host": ["{{base_url}}"],
-              "path": ["student", "settings", "two-factor", "enable"]
-            }
-          }
-        },
-        {
-          "name": "Confirm Two-Factor Authentication Setup",
-          "request": {
-            "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"code\": \"123456\"\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/student/settings/two-factor/confirm",
-              "host": ["{{base_url}}"],
-              "path": ["student", "settings", "two-factor", "confirm"]
-            }
-          }
-        },
-        {
-          "name": "Disable Two-Factor Authentication",
-          "request": {
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/student/settings/two-factor",
-              "host": ["{{base_url}}"],
-              "path": ["student", "settings", "two-factor"]
-            }
-          }
-        },
-        {
-          "name": "Get 2FA Recovery Codes",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/student/settings/two-factor/recovery-codes",
-              "host": ["{{base_url}}"],
-              "path": ["student", "settings", "two-factor", "recovery-codes"]
-            }
-          }
-        },
-        {
-          "name": "Regenerate 2FA Recovery Codes",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/student/settings/two-factor/recovery-codes",
-              "host": ["{{base_url}}"],
-              "path": ["student", "settings", "two-factor", "recovery-codes"]
-            }
-          }
-        },
-        {
-          "name": "List Registered WebAuthn Passkeys",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/student/settings/passkeys",
-              "host": ["{{base_url}}"],
-              "path": ["student", "settings", "passkeys"]
-            }
-          }
-        },
-        {
-          "name": "Generate Passkey Registration Options",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/student/settings/passkeys/options",
-              "host": ["{{base_url}}"],
-              "path": ["student", "settings", "passkeys", "options"]
-            }
-          }
-        },
-        {
-          "name": "Store Registered WebAuthn Passkey",
-          "request": {
-            "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"name\": \"MacBook Pro TouchID\",\n  \"challenge_id\": \"uuid-from-options\",\n  \"credential\": {}\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/student/settings/passkeys",
-              "host": ["{{base_url}}"],
-              "path": ["student", "settings", "passkeys"]
-            }
-          }
-        },
-        {
-          "name": "Delete Registered Passkey",
-          "request": {
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/student/settings/passkeys/{{passkey_id}}",
-              "host": ["{{base_url}}"],
-              "path": ["student", "settings", "passkeys", "{{passkey_id}}"]
-            }
-          }
-        }
-      ]
-    }
-  ]
+    ]
 }
-

@@ -302,12 +302,12 @@
               <div class="mt-1 pt-1">
                 <div
                   class="group/attach relative rounded-xl overflow-hidden border border-[#DEE8F7] bg-slate-50 cursor-pointer hover:border-[#0B2A8F] hover:shadow-xs transition-all"
-                  onclick="openReviewImageLightbox('/assets/images/alameen-images/2.jpeg', '{{ __('reviews.card1Author') }}')"
+                  onclick="openReviewImageLightbox('/assets/images/alameen-images/2.jpeg')"
                   title="{{ __('انقر لتكبير الصورة') }}"
                 >
                   <img
                     src="/assets/images/alameen-images/2.jpeg"
-                    alt="صورة تجربة {{ __('reviews.card1Author') }}"
+                    alt="{{ __('صورة تقييم موثق') }}"
                     class="w-full h-36 sm:h-40 object-cover object-top group-hover/attach:scale-105 transition-transform duration-300"
                     loading="lazy"
                   />
@@ -364,12 +364,12 @@
               <div class="mt-1 pt-1">
                 <div
                   class="group/attach relative rounded-xl overflow-hidden border border-[#DEE8F7] bg-slate-50 cursor-pointer hover:border-[#0B2A8F] hover:shadow-xs transition-all"
-                  onclick="openReviewImageLightbox('/assets/images/alameen-images/1.jpeg', '{{ __('reviews.card2Author') }}')"
+                  onclick="openReviewImageLightbox('/assets/images/alameen-images/1.jpeg')"
                   title="{{ __('انقر لتكبير الصورة') }}"
                 >
                   <img
                     src="/assets/images/alameen-images/1.jpeg"
-                    alt="صورة تجربة {{ __('reviews.card2Author') }}"
+                    alt="{{ __('صورة تقييم موثق') }}"
                     class="w-full h-36 sm:h-40 object-cover object-top group-hover/attach:scale-105 transition-transform duration-300"
                     loading="lazy"
                   />
@@ -426,12 +426,12 @@
               <div class="mt-1 pt-1">
                 <div
                   class="group/attach relative rounded-xl overflow-hidden border border-[#DEE8F7] bg-slate-50 cursor-pointer hover:border-[#0B2A8F] hover:shadow-xs transition-all"
-                  onclick="openReviewImageLightbox('/assets/images/alameen-images/3.jpeg', '{{ __('reviews.card3Author') }}')"
+                  onclick="openReviewImageLightbox('/assets/images/alameen-images/3.jpeg')"
                   title="{{ __('انقر لتكبير الصورة') }}"
                 >
                   <img
                     src="/assets/images/alameen-images/3.jpeg"
-                    alt="صورة تجربة {{ __('reviews.card3Author') }}"
+                    alt="{{ __('صورة تقييم موثق') }}"
                     class="w-full h-36 sm:h-40 object-cover object-top group-hover/attach:scale-105 transition-transform duration-300"
                     loading="lazy"
                   />
@@ -488,12 +488,12 @@
               <div class="mt-1 pt-1">
                 <div
                   class="group/attach relative rounded-xl overflow-hidden border border-[#DEE8F7] bg-slate-50 cursor-pointer hover:border-[#0B2A8F] hover:shadow-xs transition-all"
-                  onclick="openReviewImageLightbox('/assets/images/alameen-images/certificate.png', '{{ __('reviews.card4Author') }}')"
+                  onclick="openReviewImageLightbox('/assets/images/alameen-images/certificate.png')"
                   title="{{ __('انقر لتكبير الشهادة المعتمدة') }}"
                 >
                   <img
                     src="/assets/images/alameen-images/certificate.png"
-                    alt="شهادة معتمدة {{ __('reviews.card4Author') }}"
+                    alt="{{ __('شهادة معتمدة موثقة') }}"
                     class="w-full h-36 sm:h-40 object-cover object-center group-hover/attach:scale-105 transition-transform duration-300"
                     loading="lazy"
                   />
@@ -550,12 +550,12 @@
               <div class="mt-1 pt-1">
                 <div
                   class="group/attach relative rounded-xl overflow-hidden border border-[#DEE8F7] bg-slate-50 cursor-pointer hover:border-[#0B2A8F] hover:shadow-xs transition-all"
-                  onclick="openReviewImageLightbox('/assets/images/alameen-images/4.jpeg', '{{ __('reviews.card5Author') }}')"
+                  onclick="openReviewImageLightbox('/assets/images/alameen-images/4.jpeg')"
                   title="{{ __('انقر لتكبير الصورة') }}"
                 >
                   <img
                     src="/assets/images/alameen-images/4.jpeg"
-                    alt="صورة تجربة {{ __('reviews.card5Author') }}"
+                    alt="{{ __('صورة تقييم موثق') }}"
                     class="w-full h-36 sm:h-40 object-cover object-top group-hover/attach:scale-105 transition-transform duration-300"
                     loading="lazy"
                   />
@@ -612,12 +612,12 @@
               <div class="mt-1 pt-1">
                 <div
                   class="group/attach relative rounded-xl overflow-hidden border border-[#DEE8F7] bg-slate-50 cursor-pointer hover:border-[#0B2A8F] hover:shadow-xs transition-all"
-                  onclick="openReviewImageLightbox('/assets/images/alameen-images/5.jpeg', '{{ __('reviews.card6Author') }}')"
+                  onclick="openReviewImageLightbox('/assets/images/alameen-images/5.jpeg')"
                   title="{{ __('انقر لتكبير الصورة') }}"
                 >
                   <img
                     src="/assets/images/alameen-images/5.jpeg"
-                    alt="صورة تجربة {{ __('reviews.card6Author') }}"
+                    alt="{{ __('صورة تقييم موثق') }}"
                     class="w-full h-36 sm:h-40 object-cover object-top group-hover/attach:scale-105 transition-transform duration-300"
                     loading="lazy"
                   />
@@ -1159,12 +1159,12 @@
               <div class="mt-1 pt-1">
                 <div
                   class="group/attach relative rounded-xl overflow-hidden border border-[#DEE8F7] bg-slate-50 cursor-pointer hover:border-[#0B2A8F] hover:shadow-xs transition-all"
-                  onclick="openReviewImageLightbox('${uploadedImgSrc}', '${title}')"
+                  onclick="openReviewImageLightbox('${uploadedImgSrc}')"
                   title="${document.documentElement.lang === 'en' ? 'Click to zoom' : 'انقر لتكبير الصورة'}"
                 >
                   <img
                     src="${uploadedImgSrc}"
-                    alt="صورة تجربة الطالب"
+                    alt="صورة تقييم موثق"
                     class="w-full h-36 sm:h-40 object-cover object-top group-hover/attach:scale-105 transition-transform duration-300"
                   />
                   <div class="absolute inset-0 bg-black/25 opacity-0 group-hover/attach:opacity-100 transition-opacity flex items-center justify-center gap-1.5 text-white text-xs font-bold pointer-events-none">
@@ -1213,7 +1213,7 @@
         // ----------------------------------------------------
         // 4. IMAGE LIGHTBOX HANDLER
         // ----------------------------------------------------
-        window.openReviewImageLightbox = function (src, author) {
+        window.openReviewImageLightbox = function (src) {
           const lightbox = document.getElementById('review-image-lightbox');
           const img = document.getElementById('review-lightbox-img');
           const caption = document.getElementById('review-lightbox-caption');
@@ -1221,7 +1221,8 @@
 
           img.src = src;
           if (caption) {
-            caption.textContent = author ? `صورة مرفقة - ${author}` : 'صورة مرفقة مع التقييم';
+            const isEn = document.documentElement.lang === 'en';
+            caption.textContent = isEn ? 'Verified student testimonial (Anonymous)' : 'صورة رأي متدرب موثق (مجهول الهوية)';
           }
           lightbox.classList.remove('opacity-0', 'pointer-events-none');
           lightbox.classList.add('opacity-100', 'pointer-events-auto');

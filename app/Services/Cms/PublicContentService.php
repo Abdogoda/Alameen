@@ -358,43 +358,16 @@ class PublicContentService
     }
 
     /**
-     * Resolve localized review cards with defaults.
+     * Resolve anonymous testimonial image cards with defaults.
      *
      * @return array<int, array<string, string>>
      */
     protected function resolveReviewCards(?ContentBlock $reviewsBlock): array
     {
-        $defaultReviewCards = [
-            0 => [
-                'author' => __('reviews.testimonial1Author'),
-                'role' => __('reviews.testimonial1Role'),
-                'badge' => __('reviews.badgeCertifiedStudent'),
-                'title' => __('reviews.testimonial1Title'),
-                'text' => __('reviews.testimonial1Text'),
-                'image' => '/assets/images/alameen-images/2.jpeg',
-                'initial' => 'أ',
-                'delay' => '0ms',
-            ],
-            1 => [
-                'author' => __('reviews.testimonial2Author'),
-                'role' => __('reviews.testimonial2Role'),
-                'badge' => __('reviews.badgeCertifiedSpecialist'),
-                'title' => __('reviews.testimonial2Title'),
-                'text' => __('reviews.testimonial2Text'),
-                'image' => '/assets/images/alameen-images/1.jpeg',
-                'initial' => 'خ',
-                'delay' => '150ms',
-            ],
-            2 => [
-                'author' => __('reviews.testimonial3Author'),
-                'role' => __('reviews.testimonial3Role'),
-                'badge' => __('reviews.badgeCertifiedStudent'),
-                'title' => __('reviews.testimonial3Title'),
-                'text' => __('reviews.testimonial3Text'),
-                'image' => '/assets/images/alameen-images/3.jpeg',
-                'initial' => 'ف',
-                'delay' => '300ms',
-            ],
+        $defaultImages = [
+            0 => '/assets/images/alameen-images/2.jpeg',
+            1 => '/assets/images/alameen-images/1.jpeg',
+            2 => '/assets/images/alameen-images/3.jpeg',
         ];
 
         $savedReviews = $reviewsBlock?->metadata['items'] ?? [];
@@ -402,18 +375,11 @@ class PublicContentService
 
         for ($k = 0; $k < 3; $k++) {
             $saved = $savedReviews[$k] ?? [];
-            $def = $defaultReviewCards[$k];
-            $author = ! empty($saved['author']) ? (string) $saved['author'] : (string) $def['author'];
+            $img = ! empty($saved['image']) ? (string) $saved['image'] : $defaultImages[$k];
 
             $reviewCards[$k] = [
-                'author' => $author,
-                'role' => ! empty($saved['role']) ? (string) $saved['role'] : (string) $def['role'],
-                'badge' => ! empty($saved['badge']) ? (string) $saved['badge'] : (string) $def['badge'],
-                'title' => ! empty($saved['title']) ? (string) $saved['title'] : (string) $def['title'],
-                'text' => ! empty($saved['text']) ? (string) $saved['text'] : (string) $def['text'],
-                'image' => ! empty($saved['image']) ? (string) $saved['image'] : (string) $def['image'],
-                'initial' => mb_substr($author, 0, 1),
-                'delay' => $def['delay'],
+                'image' => $img,
+                'delay' => ($k * 150).'ms',
             ];
         }
 

@@ -646,58 +646,63 @@
 
         </div>
 
-        <!-- Reviews Cards Grid (3 Columns) -->
+        <!-- Anonymous Testimonial Images Grid (3 Columns) -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           @foreach($reviewCards as $idx => $card)
-            <div class="reveal-on-scroll bg-[#FAFCFF] border border-[#DEE8F7] hover:border-[#0B2A8F] rounded-[20px] p-5 sm:p-6 shadow-xs hover:shadow-card hover:-translate-y-1 transition-all flex flex-col justify-between gap-4" style="transition-delay: {{ $card['delay'] }};">
-              <div class="flex flex-col gap-3">
-                <div class="flex items-center justify-between">
-                  <div class="flex items-center gap-1 text-[#F59E0B] text-sm">★★★★★</div>
-                  <span class="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">{{ $card['badge'] }}</span>
+            @if(!empty($card['image']))
+              <div class="reveal-on-scroll bg-[#FAFCFF] dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 hover:border-[#0B2A8F] dark:hover:border-blue-500 rounded-[22px] p-4 sm:p-5 shadow-xs hover:shadow-card hover:-translate-y-1 transition-all flex flex-col justify-between gap-4 group" style="transition-delay: {{ $card['delay'] ?? '0ms' }};">
+                <div class="flex items-center justify-between pb-3 border-b border-[#DEE8F7] dark:border-slate-800">
+                  <div class="flex items-center gap-1 text-[#F59E0B] text-xs">★★★★★</div>
+                  <span class="text-[11px] font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-950/60 dark:text-emerald-400 px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                    <svg class="size-3" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                    </svg>
+                    <span>{{ __('رأي متدرب موثق') }}</span>
+                  </span>
                 </div>
-                <h4 class="font-bold text-[#012383] text-base">{{ $card['title'] }}</h4>
-                <p class="text-xs text-[#475569] leading-relaxed">
-                  {{ $card['text'] }}
-                </p>
 
-                <!-- Attached Review Image -->
-                @if(!empty($card['image']))
-                  <div class="mt-1 pt-1">
-                    <div
-                      class="group/attach relative rounded-xl overflow-hidden border border-[#DEE8F7] bg-slate-50 cursor-pointer hover:border-[#0B2A8F] hover:shadow-xs transition-all"
-                      onclick="openReviewImageLightbox(this.querySelector('img')?.getAttribute('src') || '{{ $card['image'] }}', '{{ addslashes($card['author']) }}')"
-                      title="{{ __('انقر لتكبير الصورة') }}"
-                    >
-                      <img
-                        src="{{ $card['image'] }}"
-                        alt="صورة تجربة {{ $card['author'] }}"
-                        class="w-full h-36 sm:h-40 object-cover object-top group-hover/attach:scale-105 transition-transform duration-300"
-                        loading="lazy"
-                      />
-                      <div class="absolute inset-0 bg-black/25 opacity-0 group-hover/attach:opacity-100 transition-opacity flex items-center justify-center gap-1.5 text-white text-xs font-bold pointer-events-none">
-                        <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7" />
-                        </svg>
-                        <span>{{ __('تكبير الصورة') }}</span>
-                      </div>
-                      <span class="absolute bottom-2 start-2 bg-black/65 backdrop-blur-xs text-white text-[10px] font-bold px-2 py-0.5 rounded-md flex items-center gap-1 pointer-events-none">
-                        <span>📷</span>
-                        <span>{{ __('صورة مرفقة') }}</span>
-                      </span>
+                <!-- Anonymous Testimonial Image Container -->
+                <div
+                  class="relative rounded-xl overflow-hidden border border-[#DEE8F7] dark:border-slate-800 bg-slate-100 dark:bg-slate-800 cursor-pointer hover:border-[#0B2A8F] hover:shadow-md transition-all aspect-3/4 sm:aspect-4/5"
+                  onclick="openReviewImageLightbox('{{ $card['image'] }}')"
+                  title="{{ __('انقر لتكبير صورة الرأي') }}"
+                >
+                  <img
+                    src="{{ $card['image'] }}"
+                    alt="{{ __('صورة تقييم موثق') }}"
+                    class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
+                    loading="lazy"
+                  />
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4 pointer-events-none">
+                    <div class="flex items-center justify-center gap-2 text-white text-xs font-bold bg-white/20 backdrop-blur-md py-2 px-3 rounded-lg w-full">
+                      <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7" />
+                      </svg>
+                      <span>{{ __('تكبير وقراءة الرأي') }}</span>
                     </div>
                   </div>
-                @endif
-              </div>
-              <div class="flex items-center gap-3 pt-3 border-t border-[#DEE8F7]">
-                <div class="size-9 rounded-full bg-[#EAF1FB] flex items-center justify-center font-bold text-xs text-[#0B2A8F]">
-                  {{ $card['initial'] }}
+                  <span class="absolute top-2.5 start-2.5 bg-black/60 backdrop-blur-xs text-white text-[10px] font-bold px-2 py-0.5 rounded-md flex items-center gap-1 pointer-events-none">
+                    <span>📷</span>
+                    <span>{{ __('صورة موثقة') }}</span>
+                  </span>
                 </div>
-                <div class="flex flex-col">
-                  <span class="text-xs font-bold text-[#012383]">{{ $card['author'] }}</span>
-                  <span class="text-[11px] text-[#475569]">{{ $card['role'] }}</span>
+
+                <div class="flex items-center justify-between pt-3 border-t border-[#DEE8F7] dark:border-slate-800 text-[11px] text-[#475569] dark:text-slate-400">
+                  <span class="font-medium flex items-center gap-1.5">
+                    <span class="size-1.5 rounded-full bg-emerald-500 inline-block"></span>
+                    <span>{{ __('تقييم معتمد مجهول الهوية') }}</span>
+                  </span>
+                  <button
+                    type="button"
+                    onclick="openReviewImageLightbox('{{ $card['image'] }}')"
+                    class="font-bold text-[#0B2A8F] dark:text-blue-400 hover:underline flex items-center gap-1 cursor-pointer"
+                  >
+                    <span>{{ __('عرض بالكامل') }}</span>
+                    <span>↗</span>
+                  </button>
                 </div>
               </div>
-            </div>
+            @endif
           @endforeach
         </div>
 
@@ -1048,7 +1053,7 @@
 
         <div class="mt-3 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-sm text-white text-xs font-semibold flex items-center gap-2">
           <span>📷</span>
-          <span id="review-lightbox-caption">{{ __('صورة مرفقة مع التقييم') }}</span>
+          <span id="review-lightbox-caption">{{ __('صورة رأي متدرب موثق (مجهول الهوية)') }}</span>
         </div>
       </div>
     </div>

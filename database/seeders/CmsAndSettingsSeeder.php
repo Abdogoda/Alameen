@@ -674,7 +674,7 @@ class CmsAndSettingsSeeder extends Seeder
             ]
         );
 
-        // Block 6: Reviews & Testimonials with Images
+        // Block 6: Anonymous Reviews & Testimonials Images
         ContentBlock::query()->updateOrCreate(
             ['section_key' => 'reviews'],
             [
@@ -685,30 +685,12 @@ class CmsAndSettingsSeeder extends Seeder
                 'metadata' => [
                     'items' => [
                         [
-                            'author' => 'سارة المنصور',
-                            'role' => 'طالبة دراسات عليا - علوم التخاطب',
-                            'badge' => 'طالب معتمد',
-                            'rating' => 5,
-                            'title' => 'تمارين واضحة ونتائج مباشرة في تصحيح مخارج الحروف',
-                            'text' => 'الكورس ممتاز من حيث الترتيب المنهجي، الفيديوهات مركزة وملاحظات المحاضر على تحليلي الصوتي ساعدتني كثيراً في فهم مخارج الحروف وتطبيقها عملياً.',
                             'image' => '/assets/images/alameen-images/2.jpeg',
                         ],
                         [
-                            'author' => 'خالد العمري',
-                            'role' => 'أخصائي نطق وتخاطب مبتدئ',
-                            'badge' => 'أخصائي معتمد',
-                            'rating' => 5,
-                            'title' => 'أفضل استثمار في مسيرتي كطالب وباحث في علوم التخاطب',
-                            'text' => 'استفدت كثيراً من النماذج التطبيقية واستمارة الملاحظة المرفقة بتوجيه المحاضرين. أنصح كل دارس في علوم التخاطب بهذه المنصة.',
                             'image' => '/assets/images/alameen-images/1.jpeg',
                         ],
                         [
-                            'author' => 'فهد الدوسري',
-                            'role' => 'متدرب في مسار التخاطب الشامل',
-                            'badge' => 'طالب معتمد',
-                            'rating' => 5,
-                            'title' => 'منهجية علمية واضحة في تصحيح اللدغات الصوتية',
-                            'text' => 'الكورس قدّم تدريباً دقيقاً على تقنيات المحاكاة وتعديل مخارج الأصوات. التقييم المباشر للمهام من المحاضر عزز مهاراتي التطبيقية بشكل ملحوظ.',
                             'image' => '/assets/images/alameen-images/3.jpeg',
                         ],
                     ],

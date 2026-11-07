@@ -169,30 +169,12 @@ class SettingsController extends Controller
                 'metadata' => [
                     'items' => [
                         [
-                            'author' => 'سارة المنصور',
-                            'role' => 'طالبة دراسات عليا - علوم التخاطب',
-                            'badge' => 'طالب معتمد',
-                            'rating' => 5,
-                            'title' => 'تمارين واضحة ونتائج مباشرة في تصحيح مخارج الحروف',
-                            'text' => 'الكورس ممتاز من حيث الترتيب المنهجي، الفيديوهات مركزة وملاحظات المحاضر على تحليلي الصوتي ساعدتني كثيراً في فهم مخارج الحروف وتطبيقها عملياً.',
                             'image' => '/assets/images/alameen-images/2.jpeg',
                         ],
                         [
-                            'author' => 'خالد العمري',
-                            'role' => 'أخصائي نطق وتخاطب مبتدئ',
-                            'badge' => 'أخصائي معتمد',
-                            'rating' => 5,
-                            'title' => 'أفضل استثمار في مسيرتي كطالب وباحث في علوم التخاطب',
-                            'text' => 'استفدت كثيراً من النماذج التطبيقية واستمارة الملاحظة المرفقة بتوجيه المحاضرين. أنصح كل دارس في علوم التخاطب بهذه المنصة.',
                             'image' => '/assets/images/alameen-images/1.jpeg',
                         ],
                         [
-                            'author' => 'فهد الدوسري',
-                            'role' => 'متدرب في مسار التخاطب الشامل',
-                            'badge' => 'طالب معتمد',
-                            'rating' => 5,
-                            'title' => 'منهجية علمية واضحة في تصحيح اللدغات الصوتية',
-                            'text' => 'الكورس قدّم تدريباً دقيقاً على تقنيات المحاكاة وتعديل مخارج الأصوات. التقييم المباشر للمهام من المحاضر عزز مهاراتي التطبيقية بشكل ملحوظ.',
                             'image' => '/assets/images/alameen-images/3.jpeg',
                         ],
                     ],
@@ -354,6 +336,17 @@ class SettingsController extends Controller
             $metadata = array_replace_recursive($metadata, $validated['metadata']);
         }
 
+        // Testimonial / review images must be completely anonymous (no name, title, description, or details)
+        if ($sectionKey === 'reviews') {
+            $rawItems = $request->input('metadata.items', []);
+            $cleanItems = [];
+            for ($i = 0; $i < 3; $i++) {
+                $img = $rawItems[$i]['image'] ?? ($metadata['items'][$i]['image'] ?? '');
+                $cleanItems[$i] = ['image' => $img];
+            }
+            $metadata['items'] = $cleanItems;
+        }
+
         // Handle uploaded media files (e.g. hero images/videos, feedback grid images, reviews images)
         if ($request->hasFile('media_files')) {
             $files = $request->file('media_files');
@@ -364,7 +357,7 @@ class SettingsController extends Controller
                         if ($file->isValid()) {
                             $path = $file->store('cms/reviews', 'public');
                             if (is_string($path)) {
-                                $items[(int) $idx]['image'] = Storage::url($path);
+                                $items[(int) $idx] = ['image' => Storage::url($path)];
                             }
                         }
                     }

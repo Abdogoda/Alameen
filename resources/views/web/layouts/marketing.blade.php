@@ -64,7 +64,7 @@
 
         <!-- Review Lightbox Core Handlers (Available Globally Across All Marketing Pages) -->
         <script>
-            window.openReviewImageLightbox = function (src, author) {
+            window.openReviewImageLightbox = function (src) {
                 const lightbox = document.getElementById('review-image-lightbox');
                 const img = document.getElementById('review-lightbox-img');
                 const caption = document.getElementById('review-lightbox-caption');
@@ -73,9 +73,7 @@
                 img.src = src;
                 if (caption) {
                     const isEn = document.documentElement.lang === 'en';
-                    caption.textContent = author
-                        ? (isEn ? `Photo attached by ${author}` : `صورة مرفقة مع تقييم ${author}`)
-                        : (isEn ? 'Attached review photo' : 'صورة مرفقة مع التقييم');
+                    caption.textContent = isEn ? 'Verified student testimonial (Anonymous)' : 'صورة رأي متدرب موثق (مجهول الهوية)';
                 }
                 lightbox.classList.remove('opacity-0', 'pointer-events-none');
                 lightbox.classList.add('opacity-100', 'pointer-events-auto');

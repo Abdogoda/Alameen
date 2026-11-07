@@ -718,50 +718,30 @@
                 </form>
             </div>
 
-            {{-- 4. Trainee Reviews Section (آراء المتدربين والشهادات المصورة) --}}
+            {{-- 4. Trainee Reviews Section (صور آراء المتدربين مجهولة الهوية) --}}
             <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-3xl p-5 sm:p-7 shadow-xs">
                 <div class="border-b border-[#DEE8F7] dark:border-slate-800 pb-4 mb-6">
                     <div class="flex items-center justify-between">
                         <div>
                             <h3 class="font-['Baloo_Bhaijaan_2'] font-bold text-lg sm:text-xl text-[#012383] dark:text-blue-400">
-                                {{ __('قسم آراء المتدربين والشهادات المرفقة (Reviews & Testimonials with Images)') }}
+                                {{ __('قسم صور آراء المتدربين والشهادات (Anonymous Testimonials & Reviews)') }}
                             </h3>
                             <p class="text-xs text-slate-500 dark:text-slate-400">
-                                {{ __('تحكم كامل في كروت الآراء الـ 3 الظاهرة في صفحة الهبوط مع إمكانية إرفاق صورة تجربة لكل متدرب وتكبيرها باللايت بوكس') }}
+                                {{ __('إدارة صور آراء المتدربين الموثقة — تُعرض الصور بشكل مجهول الهوية تماماً دون أي أسماء أو عناوين أو تفاصيل شخصية للحفاظ على الخصوصية والمصداقية') }}
                             </p>
                         </div>
-                        <span class="px-3 py-1 rounded-full text-xs font-bold bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-800">
-                            دعم الصور واللايت بوكس
+                        <span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 flex items-center gap-1.5">
+                            <svg class="size-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                            <span>{{ __('مجهولة الهوية تماماً (Anonymous)') }}</span>
                         </span>
                     </div>
                 </div>
 
                 @php
                     $reviewDefaults = [
-                        0 => [
-                            'author' => 'سارة المنصور',
-                            'role' => 'طالبة دراسات عليا - علوم التخاطب',
-                            'badge' => 'طالب معتمد',
-                            'title' => 'تمارين واضحة ونتائج مباشرة في تصحيح مخارج الحروف',
-                            'text' => 'الكورس ممتاز من حيث الترتيب المنهجي، الفيديوهات مركزة وملاحظات المحاضر على تحليلي الصوتي ساعدتني كثيراً في فهم مخارج الحروف وتطبيقها عملياً.',
-                            'image' => '/assets/images/alameen-images/2.jpeg',
-                        ],
-                        1 => [
-                            'author' => 'خالد العمري',
-                            'role' => 'أخصائي نطق وتخاطب مبتدئ',
-                            'badge' => 'أخصائي معتمد',
-                            'title' => 'أفضل استثمار في مسيرتي كطالب وباحث في علوم التخاطب',
-                            'text' => 'استفدت كثيراً من النماذج التطبيقية واستمارة الملاحظة المرفقة بتوجيه المحاضرين. أنصح كل دارس في علوم التخاطب بهذه المنصة.',
-                            'image' => '/assets/images/alameen-images/1.jpeg',
-                        ],
-                        2 => [
-                            'author' => 'فهد الدوسري',
-                            'role' => 'متدرب في مسار التخاطب الشامل',
-                            'badge' => 'طالب معتمد',
-                            'title' => 'منهجية علمية واضحة في تصحيح اللدغات الصوتية',
-                            'text' => 'الكورس قدّم تدريباً دقيقاً على تقنيات المحاكاة وتعديل مخارج الأصوات. التقييم المباشر للمهام من المحاضر عزز مهاراتي التطبيقية بشكل ملحوظ.',
-                            'image' => '/assets/images/alameen-images/3.jpeg',
-                        ],
+                        0 => ['image' => '/assets/images/alameen-images/2.jpeg'],
+                        1 => ['image' => '/assets/images/alameen-images/1.jpeg'],
+                        2 => ['image' => '/assets/images/alameen-images/3.jpeg'],
                     ];
                     $currentReviews = $reviewsBlock->metadata['items'] ?? [];
                 @endphp
@@ -780,55 +760,38 @@
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
                         @for($r = 0; $r < 3; $r++)
                             @php
                                 $rItem = $currentReviews[$r] ?? $reviewDefaults[$r];
                                 $rImg = !empty($rItem['image']) ? $rItem['image'] : $reviewDefaults[$r]['image'];
                             @endphp
-                            <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-[#DEE8F7] dark:border-slate-800 flex flex-col gap-3">
-                                <div class="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-slate-700">
-                                    <span class="text-xs font-bold text-[#012383] dark:text-blue-400">رأي متدرب {{ $r + 1 }}</span>
-                                    <span class="text-[10px] font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-950 px-2 py-0.5 rounded-full">★★★★★ 5/5</span>
-                                </div>
-
-                                <div>
-                                    <label class="text-[11px] font-bold text-slate-600 dark:text-slate-400 block mb-1">{{ __('اسم صاحب الرأي:') }}</label>
-                                    <input type="text" name="metadata[items][{{ $r }}][author]" value="{{ $rItem['author'] ?? $reviewDefaults[$r]['author'] }}" class="w-full h-9 px-3 rounded-lg border border-[#DEE8F7] dark:border-slate-700 text-xs font-bold bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" />
-                                </div>
-
-                                <div class="grid grid-cols-2 gap-2">
-                                    <div>
-                                        <label class="text-[11px] font-bold text-slate-600 dark:text-slate-400 block mb-1">{{ __('الصفة / الدور:') }}</label>
-                                        <input type="text" name="metadata[items][{{ $r }}][role]" value="{{ $rItem['role'] ?? $reviewDefaults[$r]['role'] }}" class="w-full h-9 px-2.5 rounded-lg border border-[#DEE8F7] dark:border-slate-700 text-[11px] bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" />
-                                    </div>
-                                    <div>
-                                        <label class="text-[11px] font-bold text-slate-600 dark:text-slate-400 block mb-1">{{ __('شارة الاعتماد:') }}</label>
-                                        <input type="text" name="metadata[items][{{ $r }}][badge]" value="{{ $rItem['badge'] ?? $reviewDefaults[$r]['badge'] }}" class="w-full h-9 px-2.5 rounded-lg border border-[#DEE8F7] dark:border-slate-700 text-[11px] bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" />
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <label class="text-[11px] font-bold text-slate-600 dark:text-slate-400 block mb-1">{{ __('عنوان الرأي الرئيسي:') }}</label>
-                                    <input type="text" name="metadata[items][{{ $r }}][title]" value="{{ $rItem['title'] ?? $reviewDefaults[$r]['title'] }}" class="w-full h-9 px-3 rounded-lg border border-[#DEE8F7] dark:border-slate-700 text-xs font-bold bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" />
-                                </div>
-
-                                <div>
-                                    <label class="text-[11px] font-bold text-slate-600 dark:text-slate-400 block mb-1">{{ __('نص الرأي التفصيلي:') }}</label>
-                                    <textarea name="metadata[items][{{ $r }}][text]" rows="2" class="w-full p-2.5 rounded-lg border border-[#DEE8F7] dark:border-slate-700 text-xs bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]">{{ $rItem['text'] ?? $reviewDefaults[$r]['text'] }}</textarea>
-                                </div>
-
-                                <div>
-                                    <label class="text-[11px] font-bold text-slate-600 dark:text-slate-400 block mb-1">{{ __('الصورة المرفقة بالرأي (مسار أو رفع ملف):') }}</label>
+                            <div class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-[#DEE8F7] dark:border-slate-800 flex flex-col gap-4">
+                                <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-700">
                                     <div class="flex items-center gap-2">
-                                        <div class="size-11 rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shrink-0">
-                                            <img src="{{ $rImg }}" alt="Review {{ $r + 1 }}" class="size-full object-cover object-top" />
-                                        </div>
-                                        <div class="flex-1 flex flex-col gap-1">
-                                            <input type="text" name="metadata[items][{{ $r }}][image]" value="{{ $rImg }}" placeholder="{{ $reviewDefaults[$r]['image'] }}" class="w-full h-8 px-2.5 rounded-md border border-[#DEE8F7] dark:border-slate-700 text-[11px] font-mono bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" />
-                                            <input type="file" name="media_files[{{ $r }}]" accept="image/*" class="w-full text-[10px] text-slate-500 file:mr-1.5 file:py-0.5 file:px-2 file:rounded-md file:border-0 file:text-[10px] file:font-bold file:bg-[#012383] file:text-white hover:file:bg-[#0B2A8F] cursor-pointer" />
-                                        </div>
+                                        <span class="size-6 rounded-full bg-[#012383] text-white flex items-center justify-center text-xs font-bold">{{ $r + 1 }}</span>
+                                        <span class="text-xs font-bold text-[#012383] dark:text-blue-400">صورة رأي متدرب {{ $r + 1 }}</span>
                                     </div>
+                                    <span class="text-[10px] font-bold text-slate-500 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-2.5 py-0.5 rounded-full">
+                                        مجهول الهوية (Anonymous)
+                                    </span>
+                                </div>
+
+                                <div class="aspect-4/3 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-inner group relative">
+                                    <img src="{{ $rImg }}" alt="Testimonial {{ $r + 1 }}" class="size-full object-cover object-top" />
+                                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-bold pointer-events-none">
+                                        معاينة صورة التقييم
+                                    </div>
+                                </div>
+
+                                <div class="flex flex-col gap-1.5">
+                                    <label class="text-[11px] font-bold text-slate-700 dark:text-slate-300">{{ __('مسار الصورة الحالية:') }}</label>
+                                    <input type="text" name="metadata[items][{{ $r }}][image]" value="{{ $rImg }}" placeholder="{{ $reviewDefaults[$r]['image'] }}" class="w-full h-9 px-3 rounded-lg border border-[#DEE8F7] dark:border-slate-700 text-xs font-mono bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" />
+                                </div>
+
+                                <div class="flex flex-col gap-1.5">
+                                    <label class="text-[11px] font-bold text-slate-700 dark:text-slate-300">{{ __('رفع صورة جديدة (لقطة واتساب / رأي متدرب):') }}</label>
+                                    <input type="file" name="media_files[{{ $r }}]" accept="image/*" class="w-full text-xs text-slate-500 file:mr-2 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-[#012383] file:text-white hover:file:bg-[#0B2A8F] cursor-pointer" />
                                 </div>
                             </div>
                         @endfor
@@ -837,7 +800,7 @@
                     <div class="flex justify-end pt-2">
                         <button type="submit" class="px-6 h-11 rounded-xl bg-[#012383] hover:bg-[#0B2A8F] text-white font-bold text-xs shadow-sm transition-colors cursor-pointer flex items-center justify-center gap-2">
                             <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                            <span>{{ __('حفظ وتحديث آراء المتدربين فورياً') }}</span>
+                            <span>{{ __('حفظ وتحديث صور الآراء فورياً') }}</span>
                         </button>
                     </div>
                 </form>

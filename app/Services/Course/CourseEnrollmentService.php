@@ -134,4 +134,71 @@ class CourseEnrollmentService
                 'updated_at' => Carbon::now(),
             ]);
     }
+
+    /**
+     * Bulk assign or synchronize users to a course.
+     *
+     * @param  Course  $course
+     * @param  array<int>  $userIds
+     * @param  bool  $syncMode If true, users currently enrolled who are not in $userIds will be detached.
+     * @param  int|null  $durationDays
+     * @param  Carbon|null  $expiresAt
+     * @param  string  $status
+     * @param  int|null  $adminId
+     * @return array{assigned_count: int, detached_count: int}
+     */
+    public function syncCourseUsers(
+        Course $course,
+        array $userIds,
+        bool $syncMode = true,
+        ?int $durationDays = null,
+        ?Carbon $expiresAt = null,
+        string $status = 'active',
+        ?int $adminId = null
+    ): array {
+        $normalizedUserIds = array_values(array_unique(array_filter(array_map('intval', $userIds))));
+
+        $days = $durationDays ?? $course->access_duration_days ?? 365;
+        $finalExpiresAt = $expiresAt ?? Carbon::now()->addDays($days);
+        $now = Carbon::now();
+
+        $detachedCount = 0;
+        if ($syncMode) {
+            $existingUserIds = DB::table('course_user')
+                ->where('course_id', $course->id)
+                ->pluck('user_id')
+                ->map(fn ($id) => (int) $id)
+                ->all();
+
+            $toDetach = array_diff($existingUserIds, $normalizedUserIds);
+            if (! empty($toDetach)) {
+                $detachedCount = DB::table('course_user')
+                    ->where('course_id', $course->id)
+                    ->whereIn('user_id', $toDetach)
+                    ->delete();
+            }
+        }
+
+        $assignedCount = 0;
+        if (! empty($normalizedUserIds)) {
+            $syncData = [];
+            foreach ($normalizedUserIds as $userId) {
+                $syncData[$userId] = [
+                    'access_starts_at' => $now,
+                    'access_expires_at' => $finalExpiresAt,
+                    'status' => $status,
+                    'granted_by' => $adminId,
+                    'updated_at' => $now,
+                ];
+            }
+
+            $course->users()->syncWithoutDetaching($syncData);
+            $assignedCount = count($normalizedUserIds);
+        }
+
+        return [
+            'assigned_count' => $assignedCount,
+            'detached_count' => $detachedCount,
+        ];
+    }
 }

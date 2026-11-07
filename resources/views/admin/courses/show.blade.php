@@ -21,6 +21,18 @@
                 <span>{{ __('تعديل بيانات الكورس') }}</span>
             </a>
 
+            @if(auth('admin')->user()?->hasPermission('courses.manage'))
+            <a 
+                href="{{ route('admin.courses.assign-users', $course) }}" 
+                class="h-9 sm:h-11 px-3.5 sm:px-4 rounded-xl bg-purple-50 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800/80 hover:bg-purple-100 text-purple-700 dark:text-purple-300 font-bold text-xs flex items-center gap-1.5 transition-all shadow-2xs"
+                title="{{ __('تعيين وتخصيص الكورس لعدد من الطلاب وإدارة المشتركين') }}"
+            >
+                <svg class="size-4 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                <span>{{ __('تعيين الطلاب') }}</span>
+                <span class="bg-purple-200/80 dark:bg-purple-900/60 text-purple-800 dark:text-purple-200 text-[10px] px-1.5 py-0.5 rounded-full font-black">{{ $course->users()->count() }}</span>
+            </a>
+            @endif
+
             {{-- Course-level lesson settings --}}
             <button 
                 type="button" 

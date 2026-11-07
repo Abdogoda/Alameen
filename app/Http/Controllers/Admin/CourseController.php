@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\ApplyVideoSettingsRequest;
+use App\Http\Requests\Admin\AssignCourseUsersRequest;
 use App\Http\Requests\Admin\StoreCourseRequest;
 use App\Http\Requests\Admin\StoreLevelRequest;
 use App\Http\Requests\Admin\StoreVideoRequest;
@@ -19,7 +20,9 @@ use App\Http\Requests\Admin\UploadLessonChunkRequest;
 use App\Models\ClinicalTask;
 use App\Models\Course;
 use App\Models\Level;
+use App\Models\User;
 use App\Models\Video;
+use App\Services\Course\CourseEnrollmentService;
 use App\Services\Video\ChunkedUploadService;
 use App\Services\Video\Drivers\MuxDriver;
 use App\Services\Video\MuxTokenService;
@@ -28,6 +31,7 @@ use App\Services\Video\VideoServiceManager;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -40,6 +44,7 @@ class CourseController extends Controller
         protected VideoServiceManager $videoManager,
         protected ChunkedUploadService $chunkedUploadService,
         protected MuxVideoService $muxService,
+        protected CourseEnrollmentService $enrollmentService,
     ) {}
 
     /**
@@ -1100,6 +1105,115 @@ class CourseController extends Controller
         return response()->json([
             'success' => true,
             'upload' => $upload,
+        ]);
+    }
+
+    /**
+     * Display interface to assign and manage course enrollments for users.
+     */
+    public function assignUsers(Course $course): View
+    {
+        $course->loadCount(['users', 'levels', 'videos']);
+
+        $students = User::query()
+            ->select(['id', 'name', 'email', 'phone', 'city', 'country', 'status', 'email_verified_at', 'created_at'])
+            ->orderBy('name')
+            ->get();
+
+        $enrolledUsers = $course->users()
+            ->get()
+            ->keyBy('id');
+
+        return view('admin.courses.assign-users', [
+            'course' => $course,
+            'students' => $students,
+            'enrolledUsers' => $enrolledUsers,
+        ]);
+    }
+
+    /**
+     * Bulk assign, synchronize, or update users enrolled in this course.
+     */
+    public function updateAssignedUsers(AssignCourseUsersRequest $request, Course $course): RedirectResponse|JsonResponse
+    {
+        $validated = $request->validated();
+        $userIds = $validated['user_ids'] ?? [];
+        $syncMode = $request->boolean('sync_mode', true);
+        $status = $validated['status'] ?? 'active';
+
+        $durationType = $validated['duration_type'] ?? 'default';
+        $durationDays = null;
+        $expiresAt = null;
+
+        if ($durationType === 'custom_days' && ! empty($validated['duration_days'])) {
+            $durationDays = (int) $validated['duration_days'];
+        } elseif ($durationType === 'custom_date' && ! empty($validated['access_expires_at'])) {
+            $expiresAt = Carbon::parse($validated['access_expires_at']);
+        } else {
+            $durationDays = (int) ($course->access_duration_days ?: 365);
+        }
+
+        $adminId = auth('admin')->id();
+
+        $result = $this->enrollmentService->syncCourseUsers(
+            course: $course,
+            userIds: $userIds,
+            syncMode: $syncMode,
+            durationDays: $durationDays,
+            expiresAt: $expiresAt,
+            status: $status,
+            adminId: $adminId,
+        );
+
+        $message = __('تم تحديث تعيينات الطلاب للكورس بنجاح (تم تعيين/تحديث :assigned طالب، وإلغاء :detached طالب).', [
+            'assigned' => $result['assigned_count'],
+            'detached' => $result['detached_count'],
+        ]);
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => $message,
+                'assigned_count' => $result['assigned_count'],
+                'detached_count' => $result['detached_count'],
+            ]);
+        }
+
+        return back()->with('success', $message);
+    }
+
+    /**
+     * Quick toggle single user enrollment in the course (AJAX or form).
+     */
+    public function toggleUserEnrollment(Request $request, Course $course): JsonResponse
+    {
+        $request->validate([
+            'user_id' => ['required', 'integer', 'exists:users,id'],
+            'duration_days' => ['nullable', 'integer', 'min:1'],
+        ]);
+
+        /** @var User $user */
+        $user = User::query()->findOrFail($request->input('user_id'));
+        $adminId = auth('admin')->id();
+        $durationDays = $request->filled('duration_days') ? (int) $request->input('duration_days') : null;
+
+        $isEnrolled = $course->users()->where('users.id', $user->id)->exists();
+
+        if ($isEnrolled) {
+            $course->users()->detach($user->id);
+            $enrolled = false;
+            $message = __('تم إلغاء تعيين الطالب (:name) من الكورس بنجاح.', ['name' => $user->name]);
+        } else {
+            $this->enrollmentService->enroll($user, $course, $durationDays, $adminId);
+            $enrolled = true;
+            $message = __('تم تعيين الطالب (:name) في الكورس بنجاح.', ['name' => $user->name]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'enrolled' => $enrolled,
+            'message' => $message,
+            'total_enrolled' => $course->users()->count(),
         ]);
     }
 }

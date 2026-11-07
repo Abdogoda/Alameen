@@ -92,6 +92,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
             // Mux Direct Upload Endpoint
             Route::post('mux/direct-upload', [CourseController::class, 'createMuxDirectUpload'])->name('mux.direct-upload');
+
+            // Bulk Course Users Assignment & Synchronization
+            Route::get('courses/{course}/assign-users', [CourseController::class, 'assignUsers'])->name('courses.assign-users');
+            Route::post('courses/{course}/assign-users', [CourseController::class, 'updateAssignedUsers'])->name('courses.assign-users.update');
+            Route::post('courses/{course}/assign-users/toggle', [CourseController::class, 'toggleUserEnrollment'])->name('courses.assign-users.toggle');
         });
 
         Route::middleware('admin.can:courses.publish,courses.manage')->group(function () {

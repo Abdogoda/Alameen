@@ -18,7 +18,7 @@ return [
     'currentPasswordLabel' => 'Current Password',
     'newPasswordLabel' => 'New Password',
     'confirmNewPasswordLabel' => 'Confirm New Password',
-    'passwordHint' => 'Password must be at least 8 characters and include letters and numbers.',
+    'passwordHint' => 'Enter your preferred new password.',
     'notifNewLessons' => 'New Lessons & Content Notifications',
     'notifNewLessonsDesc' => 'Alert you when new lessons and videos are added to your enrolled courses.',
     'notifAssignments' => 'Assignment Evaluation Notifications',

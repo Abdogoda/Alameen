@@ -18,7 +18,7 @@ return [
     'currentPasswordLabel' => 'كلمة المرور الحالية',
     'newPasswordLabel' => 'كلمة المرور الجديدة',
     'confirmNewPasswordLabel' => 'تأكيد كلمة المرور الجديدة',
-    'passwordHint' => 'يجب أن تتكون كلمة المرور من ٨ خانات على الأقل وتتضمن أرقامًا وحروفًا.',
+    'passwordHint' => 'أدخل كلمة المرور الجديدة التي تفضلها.',
     'notifNewLessons' => 'إشعارات الدروس والمحتوى الجديد',
     'notifNewLessonsDesc' => 'تنبيهك فور إضافة دروس وفيديوهات جديدة في كورساتك المسجلة.',
     'notifAssignments' => 'إشعارات تقييم المهام والواجبات',

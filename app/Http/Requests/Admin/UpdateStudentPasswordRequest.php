@@ -6,6 +6,7 @@ namespace App\Http\Requests\Admin;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Password;
 
 class UpdateStudentPasswordRequest extends FormRequest
 {
@@ -25,7 +26,7 @@ class UpdateStudentPasswordRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'password' => ['required', 'string', 'min:6'],
+            'password' => ['required', 'string', Password::defaults()],
         ];
     }
 

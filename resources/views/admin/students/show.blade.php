@@ -1279,7 +1279,7 @@
 
                     <div>
                         <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">{{ __('كلمة المرور الجديدة') }} *</label>
-                        <input type="password" name="password" required minlength="6" placeholder="••••••••" class="w-full h-11 px-3.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-medium text-slate-800 dark:text-slate-200 outline-none focus:border-[#012383]">
+                        <input type="password" name="password" required minlength="1" placeholder="••••••••" class="w-full h-11 px-3.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-medium text-slate-800 dark:text-slate-200 outline-none focus:border-[#012383]">
                         <span class="text-[11px] text-slate-400 mt-1 block">{{ __('يجب ألا تقل عن 6 خانات. سيتمكن الطالب من تسجيل الدخول بها فوراً.') }}</span>
                     </div>
 

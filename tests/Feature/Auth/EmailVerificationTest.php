@@ -132,4 +132,29 @@ class EmailVerificationTest extends TestCase
 
         $response->assertRedirect(route('verification.notice'));
     }
+
+    public function test_email_verification_otp_is_logged_when_email_transport_fails(): void
+    {
+        \Illuminate\Support\Facades\Log::spy();
+
+        $user = User::factory()->unverified()->create();
+
+        \Illuminate\Support\Facades\Notification::shouldReceive('send')
+            ->andThrow(new \Symfony\Component\Mailer\Exception\TransportException('Connection timed out'));
+
+        $otpService = app(EmailVerificationOtpService::class);
+        $otp = $otpService->sendOtp($user);
+
+        $this->assertNotEmpty($otp);
+        $this->assertDatabaseHas('email_verification_tokens', [
+            'email' => strtolower($user->email),
+        ]);
+
+        \Illuminate\Support\Facades\Log::shouldHaveReceived('warning')
+            ->withArgs(function ($message, $context) use ($otp, $user) {
+                return str_contains($message, 'Sent OTP to log instead')
+                    && ($context['otp'] ?? null) === $otp
+                    && ($context['email'] ?? null) === strtolower($user->email);
+            });
+    }
 }

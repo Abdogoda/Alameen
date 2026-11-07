@@ -79,22 +79,18 @@ class PasswordResetOtpService
         try {
             $user->notify(new ResetPasswordOtpNotification($otp, self::OTP_EXPIRATION_MINUTES));
         } catch (TransportExceptionInterface $e) {
-            Log::error('Password reset OTP email failed to send (SMTP/Transport error): '.$e->getMessage(), [
+            Log::warning("Password reset OTP email failed to send to [{$normalizedEmail}] (SMTP/Transport error). Sent OTP to log instead. OTP: [{$otp}]", [
                 'email' => $normalizedEmail,
+                'otp' => $otp,
+                'error' => $e->getMessage(),
                 'exception' => $e,
-            ]);
-
-            throw ValidationException::withMessages([
-                'email' => [__('auth.mail_transport_error')],
             ]);
         } catch (Throwable $e) {
-            Log::error('Password reset OTP email failed with unexpected error: '.$e->getMessage(), [
+            Log::warning("Password reset OTP email failed to send to [{$normalizedEmail}] (unexpected error). Sent OTP to log instead. OTP: [{$otp}]", [
                 'email' => $normalizedEmail,
+                'otp' => $otp,
+                'error' => $e->getMessage(),
                 'exception' => $e,
-            ]);
-
-            throw ValidationException::withMessages([
-                'email' => [__('auth.mail_transport_error')],
             ]);
         }
 

@@ -75,22 +75,18 @@ class EmailVerificationOtpService
         try {
             $user->notify(new EmailVerificationOtpNotification($otp, self::OTP_EXPIRATION_MINUTES));
         } catch (TransportExceptionInterface $e) {
-            Log::error('Email verification OTP failed to send (SMTP/Transport error): '.$e->getMessage(), [
+            Log::warning("Email verification OTP failed to send to [{$normalizedEmail}] (SMTP/Transport error). Sent OTP to log instead. OTP: [{$otp}]", [
                 'email' => $normalizedEmail,
+                'otp' => $otp,
+                'error' => $e->getMessage(),
                 'exception' => $e,
-            ]);
-
-            throw ValidationException::withMessages([
-                'email' => [__('auth.mail_transport_error')],
             ]);
         } catch (Throwable $e) {
-            Log::error('Email verification OTP failed with unexpected error: '.$e->getMessage(), [
+            Log::warning("Email verification OTP failed to send to [{$normalizedEmail}] (unexpected error). Sent OTP to log instead. OTP: [{$otp}]", [
                 'email' => $normalizedEmail,
+                'otp' => $otp,
+                'error' => $e->getMessage(),
                 'exception' => $e,
-            ]);
-
-            throw ValidationException::withMessages([
-                'email' => [__('auth.mail_transport_error')],
             ]);
         }
 

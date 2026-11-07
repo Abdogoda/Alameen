@@ -110,4 +110,30 @@ class PasswordResetTest extends TestCase
 
         $response->assertSessionHasErrors('email');
     }
+
+    public function test_password_reset_otp_is_logged_when_email_transport_fails(): void
+    {
+        \Illuminate\Support\Facades\Log::spy();
+
+        $user = User::factory()->create();
+
+        \Illuminate\Support\Facades\Notification::shouldReceive('send')
+            ->andThrow(new \Symfony\Component\Mailer\Exception\TransportException('Connection timed out'));
+
+        $response = $this->post(route('password.email'), ['email' => $user->email]);
+
+        $response->assertRedirect(route('password.reset', ['email' => $user->email]));
+        $response->assertSessionHas('status');
+
+        $this->assertDatabaseHas('password_reset_tokens', [
+            'email' => strtolower($user->email),
+        ]);
+
+        \Illuminate\Support\Facades\Log::shouldHaveReceived('warning')
+            ->withArgs(function ($message, $context) use ($user) {
+                return str_contains($message, 'Sent OTP to log instead')
+                    && isset($context['otp'])
+                    && ($context['email'] ?? null) === strtolower($user->email);
+            });
+    }
 }

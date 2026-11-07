@@ -206,5 +206,12 @@ return [
             'group_ar' => 'الإعدادات والتقارير',
             'group_en' => 'Settings & Reports',
         ],
+        'logs_view' => [
+            'value' => 'logs.view',
+            'label_ar' => 'استعراض سجل نشاط المشرفين والعمليات (Audit Logs)',
+            'label_en' => 'View administrative audit trail and activity logs',
+            'group_ar' => 'الإعدادات والتقارير',
+            'group_en' => 'Settings & Reports',
+        ],
     ],
 ];

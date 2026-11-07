@@ -10,6 +10,7 @@ use App\Http\Requests\Admin\AssignCourseUsersRequest;
 use App\Http\Requests\Admin\StoreCourseRequest;
 use App\Http\Requests\Admin\StoreLevelRequest;
 use App\Http\Requests\Admin\StoreVideoRequest;
+use App\Http\Requests\Admin\ToggleCourseUserEnrollmentRequest;
 use App\Http\Requests\Admin\UpdateCoursePriceRequest;
 use App\Http\Requests\Admin\UpdateCoursePromoMuxRequest;
 use App\Http\Requests\Admin\UpdateCourseRequest;
@@ -1185,17 +1186,14 @@ class CourseController extends Controller
     /**
      * Quick toggle single user enrollment in the course (AJAX or form).
      */
-    public function toggleUserEnrollment(Request $request, Course $course): JsonResponse
+    public function toggleUserEnrollment(ToggleCourseUserEnrollmentRequest $request, Course $course): JsonResponse
     {
-        $request->validate([
-            'user_id' => ['required', 'integer', 'exists:users,id'],
-            'duration_days' => ['nullable', 'integer', 'min:1'],
-        ]);
+        $validated = $request->validated();
 
         /** @var User $user */
-        $user = User::query()->findOrFail($request->input('user_id'));
+        $user = User::query()->findOrFail($validated['user_id']);
         $adminId = auth('admin')->id();
-        $durationDays = $request->filled('duration_days') ? (int) $request->input('duration_days') : null;
+        $durationDays = ! empty($validated['duration_days']) ? (int) $validated['duration_days'] : null;
 
         $isEnrolled = $course->users()->where('users.id', $user->id)->exists();
 

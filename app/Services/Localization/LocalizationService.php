@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Session;
 
@@ -86,6 +87,13 @@ class LocalizationService
             (int) config('localization.cookie_lifetime', 525600)
         );
 
+        if ($user === null) {
+            $user = Auth::guard('admin')->user()
+                ?? request()?->user('admin')
+                ?? Auth::guard('web')->user()
+                ?? request()?->user();
+        }
+
         if ($user !== null && method_exists($user, 'update')) {
             $user->update(['locale' => $normalized]);
         }
@@ -102,7 +110,12 @@ class LocalizationService
         // 1. Explicit query parameter (e.g. ?lang=ar or ?locale=ar)
         $queryLocale = $request->query('lang') ?? $request->query('locale');
         if (is_string($queryLocale) && $this->isSupported($queryLocale)) {
-            return strtolower($queryLocale);
+            $normalized = strtolower($queryLocale);
+            if ($request->hasSession()) {
+                $request->session()->put((string) config('localization.session_key', 'locale'), $normalized);
+            }
+
+            return $normalized;
         }
 
         // 2. Custom header (X-Locale or X-Language)
@@ -124,7 +137,7 @@ class LocalizationService
             }
 
             /** @var mixed $user */
-            $user = $request->user('admin') ?? $request->user();
+            $user = Auth::guard('admin')->user() ?? $request->user('admin') ?? Auth::guard('web')->user() ?? $request->user();
             if ($user !== null && ! empty($user->locale) && $this->isSupported($user->locale)) {
                 return strtolower($user->locale);
             }
@@ -133,25 +146,44 @@ class LocalizationService
         }
 
         // Web Requests (including AJAX/Fetch requests to web auth routes):
-        // 4. Authenticated user preference
-        /** @var mixed $user */
-        $user = $request->user('admin') ?? $request->user();
-        if ($user !== null && ! empty($user->locale) && $this->isSupported($user->locale)) {
-            return strtolower($user->locale);
-        }
-
-        // 5. Session
+        // 4. Active Session (Explicit language chosen by user in active session)
         if ($request->hasSession()) {
             $sessionLocale = $request->session()->get((string) config('localization.session_key', 'locale'));
             if (is_string($sessionLocale) && $this->isSupported($sessionLocale)) {
-                return strtolower($sessionLocale);
+                $normalized = strtolower($sessionLocale);
+
+                // Auto-sync active session preference to authenticated user if different
+                /** @var mixed $user */
+                $user = Auth::guard('admin')->user() ?? $request->user('admin') ?? Auth::guard('web')->user() ?? $request->user();
+                if ($user !== null && method_exists($user, 'update') && $user->locale !== $normalized) {
+                    $user->update(['locale' => $normalized]);
+                }
+
+                return $normalized;
             }
         }
 
-        // 6. Cookie
+        // 5. Authenticated user preference (when no session preference is set)
+        /** @var mixed $user */
+        $user = Auth::guard('admin')->user() ?? $request->user('admin') ?? Auth::guard('web')->user() ?? $request->user();
+        if ($user !== null && ! empty($user->locale) && $this->isSupported($user->locale)) {
+            $userLocale = strtolower($user->locale);
+            if ($request->hasSession()) {
+                $request->session()->put((string) config('localization.session_key', 'locale'), $userLocale);
+            }
+
+            return $userLocale;
+        }
+
+        // 6. Remembered Cookie
         $cookieLocale = $request->cookie((string) config('localization.cookie_name', 'locale'));
         if (is_string($cookieLocale) && $this->isSupported($cookieLocale)) {
-            return strtolower($cookieLocale);
+            $normalized = strtolower($cookieLocale);
+            if ($request->hasSession()) {
+                $request->session()->put((string) config('localization.session_key', 'locale'), $normalized);
+            }
+
+            return $normalized;
         }
 
         // 7. Default configured locale (Primary default: Arabic)

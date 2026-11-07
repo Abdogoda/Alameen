@@ -38,8 +38,26 @@ class FirebaseAuthController extends Controller
                 remember: (bool) ($validated['remember'] ?? true)
             );
 
+            if (($result['status'] ?? null) === 'pending') {
+                return response()->json([
+                    'success' => true,
+                    'status' => 'pending',
+                    'type' => 'info',
+                    'message' => $result['message'] ?? __('حسابك قيد المراجعة وبانتظار موافقة إدارة المنصة. يرجى الانتظار حتى يتم اعتماد الحساب لتتمكن من تسجيل الدخول.'),
+                    'user' => [
+                        'id' => $result['user']->id,
+                        'name' => $result['user']->name,
+                        'email' => $result['user']->email,
+                        'avatar' => $result['user']->avatar,
+                        'status' => $result['user']->status,
+                    ],
+                ], 200);
+            }
+
             return response()->json([
                 'success' => true,
+                'status' => 'authenticated',
+                'type' => 'success',
                 'message' => __('تم تسجيل الدخول بنجاح.'),
                 'redirect' => $result['redirect'] ?? route('dashboard'),
                 'user' => [
@@ -50,9 +68,20 @@ class FirebaseAuthController extends Controller
                 ],
             ]);
         } catch (ValidationException $e) {
+            $firstError = collect($e->errors())->flatten()->first() ?? __('فشل تسجيل الدخول.');
+
+            if (str_contains($firstError, 'المراجعة') || str_contains($firstError, 'موافقة')) {
+                return response()->json([
+                    'success' => true,
+                    'status' => 'pending',
+                    'type' => 'info',
+                    'message' => $firstError,
+                ], 200);
+            }
+
             return response()->json([
                 'success' => false,
-                'message' => collect($e->errors())->flatten()->first() ?? __('فشل تسجيل الدخول.'),
+                'message' => $firstError,
                 'errors' => $e->errors(),
             ], 422);
         }

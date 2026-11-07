@@ -154,9 +154,11 @@ class FirebaseAuthenticationTest extends TestCase
             'id_token' => 'valid-new-user-token',
         ]);
 
-        $response->assertStatus(422)
+        $response->assertStatus(200)
             ->assertJson([
-                'success' => false,
+                'success' => true,
+                'status' => 'pending',
+                'type' => 'info',
             ]);
 
         $this->assertGuest('web');
@@ -164,6 +166,34 @@ class FirebaseAuthenticationTest extends TestCase
         $user = User::where('email', 'newstudent@alameen.edu.sa')->first();
         $this->assertNotNull($user);
         $this->assertTrue($user->isPending());
+    }
+
+    public function test_existing_pending_student_user_logging_in_via_firebase_returns_info_not_error(): void
+    {
+        $user = User::factory()->create([
+            'email' => 'pending-student@alameen.edu.sa',
+            'status' => 'pending',
+        ]);
+
+        FirebaseTokenVerifier::fake([
+            'uid' => 'firebase-existing-pending-uid',
+            'email' => 'pending-student@alameen.edu.sa',
+            'email_verified' => true,
+        ]);
+
+        $response = $this->postJson(route('auth.google.firebase'), [
+            'id_token' => 'valid-existing-pending-token',
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJson([
+                'success' => true,
+                'status' => 'pending',
+                'type' => 'info',
+            ]);
+
+        $this->assertGuest('web');
+        $this->assertTrue($user->fresh()->isPending());
     }
 
     public function test_suspended_student_cannot_authenticate_via_firebase(): void

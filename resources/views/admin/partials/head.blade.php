@@ -36,6 +36,10 @@
     })();
 </script>
 <style>
+    /* Strict early concealment for Alpine components and dropdowns */
+    [x-cloak] {
+        display: none !important;
+    }
     /* Scroll is strictly disabled ONLY when loader is active or when mobile sidebar is open */
     body.alameen-loader-active,
     body.overflow-hidden {

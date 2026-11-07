@@ -18,9 +18,9 @@
         <x-auth-session-status class="text-start" :status="session('status')" />
 
         @php
-            $alertMessage = session('error');
+            $alertMessage = session('info') ?: session('error');
             $isSuspended = false;
-            $isPendingAlert = false;
+            $isPendingAlert = session()->has('info');
 
             if (! $alertMessage && request()->boolean('suspended')) {
                 $alertMessage = __('تم إيقاف هذا الحساب فوراً لأسباب أمنية (رصد انتهاك أمني). يرجى التواصل مع إدارة المنصة.');
@@ -32,13 +32,13 @@
                 if (str_contains($emailError, 'إيقاف') || str_contains($emailError, 'تعليق')) {
                     $alertMessage = $emailError;
                     $isSuspended = true;
-                } elseif (str_contains($emailError, 'المراجعة')) {
+                } elseif (str_contains($emailError, 'المراجعة') || str_contains($emailError, 'موافقة')) {
                     $alertMessage = $emailError;
                     $isPendingAlert = true;
                 }
             } elseif ($alertMessage && (str_contains($alertMessage, 'إيقاف') || str_contains($alertMessage, 'أمنية'))) {
                 $isSuspended = true;
-            } elseif ($alertMessage && str_contains($alertMessage, 'المراجعة')) {
+            } elseif ($alertMessage && (str_contains($alertMessage, 'المراجعة') || str_contains($alertMessage, 'موافقة') || session()->has('info'))) {
                 $isPendingAlert = true;
             }
         @endphp

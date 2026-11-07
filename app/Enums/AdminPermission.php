@@ -89,7 +89,7 @@ enum AdminPermission: string
             self::REPORTS_EXPORT => 'تصدير التقارير بصيغة Excel / PDF',
             self::SUPPORT_VIEW => 'استعراض تذاكر ودعم الطلاب والرسائل',
             self::SUPPORT_MANAGE => 'الرد على تذاكر الطلاب وإدارتها وتغيير حالتها',
-            self::LOGS_VIEW => 'استعراض سجلات أخطاء النظام (Logs)',
+            self::LOGS_VIEW => 'استعراض سجل نشاط المشرفين والعمليات (Audit Logs)',
         };
     }
 

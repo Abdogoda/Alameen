@@ -6,6 +6,7 @@ use App\Services\Localization\LocalizationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class LocaleController extends Controller
 {
@@ -31,7 +32,11 @@ class LocaleController extends Controller
         }
 
         /** @var mixed $user */
-        $user = $request->user('admin') ?? $request->user();
+        $user = Auth::guard('admin')->user()
+            ?? $request->user('admin')
+            ?? Auth::guard('web')->user()
+            ?? $request->user();
+
         $activeLocale = $this->localizationService->setLocale($locale, $user);
 
         if ($request->expectsJson()) {

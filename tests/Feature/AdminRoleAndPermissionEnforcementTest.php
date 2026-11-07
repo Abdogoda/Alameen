@@ -56,7 +56,9 @@ class AdminRoleAndPermissionEnforcementTest extends TestCase
         ];
 
         foreach ($routesToTest as $routeUrl) {
-            $response = $this->actingAs($superAdmin, 'admin')->get($routeUrl);
+            $response = $this->actingAs($superAdmin, 'admin')
+                ->withSession(['admin_log_viewer_confirmed_at' => time()])
+                ->get($routeUrl);
             $response->assertOk();
         }
 

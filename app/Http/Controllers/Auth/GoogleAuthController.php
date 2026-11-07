@@ -61,8 +61,7 @@ class GoogleAuthController extends Controller
         if ($user->status === 'pending') {
             $msg = __('حسابك قيد المراجعة وبانتظار موافقة إدارة المنصة. يرجى الانتظار حتى يتم اعتماد الحساب لتتمكن من تسجيل الدخول.');
             return redirect()->route('login')
-                ->with('error', $msg)
-                ->withErrors(['email' => $msg]);
+                ->with('info', $msg);
         }
 
         if ($user->status === 'suspended') {

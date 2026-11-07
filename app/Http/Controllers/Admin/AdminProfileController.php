@@ -46,11 +46,17 @@ class AdminProfileController extends Controller
         $admin = Auth::guard('admin')->user();
         $validated = $request->validated();
 
+        $newLocale = $validated['locale'] ?? $admin->locale;
+
         $admin->update([
             'name' => $validated['name'],
             'email' => $validated['email'],
-            'locale' => $validated['locale'] ?? $admin->locale,
+            'locale' => $newLocale,
         ]);
+
+        if (! empty($validated['locale'])) {
+            app(\App\Services\Localization\LocalizationService::class)->setLocale($newLocale, $admin);
+        }
 
         return redirect()
             ->route('admin.profile.edit')

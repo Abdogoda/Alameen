@@ -60,6 +60,7 @@ class AppServiceProvider extends ServiceProvider
         $this->configureGlobalSettings();
         $this->configureRateLimiting();
         $this->configureMailTheming();
+        $this->configureAuditLogging();
     }
 
     /**
@@ -253,6 +254,12 @@ class AppServiceProvider extends ServiceProvider
             return $admin instanceof Admin && ($admin->isSuperAdmin() || $admin->hasAnyPermission(['logs.view', 'settings.manage']));
         });
 
+        Gate::define('viewAuditLogs', function ($user = null) {
+            $admin = auth('admin')->user() ?? ($user instanceof Admin ? $user : null);
+
+            return $admin instanceof Admin && ($admin->isSuperAdmin() || $admin->hasAnyPermission(['logs.view', 'settings.manage']));
+        });
+
         LogViewer::auth(function ($request) {
             $admin = auth('admin')->user()
                 ?? ($request->user('admin') instanceof Admin ? $request->user('admin') : null)
@@ -260,6 +267,25 @@ class AppServiceProvider extends ServiceProvider
 
             return $admin instanceof Admin && ($admin->isSuperAdmin() || $admin->hasAnyPermission(['logs.view', 'settings.manage']));
         });
+    }
+
+    /**
+     * Configure audit logging events and model mutation observers.
+     */
+    protected function configureAuditLogging(): void
+    {
+        \Illuminate\Support\Facades\Event::subscribe(\App\Listeners\LogAdminAuthenticationEvents::class);
+
+        $observer = \App\Observers\AdminModelAuditObserver::class;
+        \App\Models\User::observe($observer);
+        \App\Models\Course::observe($observer);
+        \App\Models\PaymentReceipt::observe($observer);
+        \App\Models\TaskSubmission::observe($observer);
+        \App\Models\Admin::observe($observer);
+        \App\Models\Role::observe($observer);
+        \App\Models\Setting::observe($observer);
+        \App\Models\SupportTicket::observe($observer);
+        \App\Models\Certificate::observe($observer);
     }
 
     /**

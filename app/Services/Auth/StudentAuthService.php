@@ -204,7 +204,14 @@ class StudentAuthService
     /**
      * Authenticate or register via Firebase ID Token and issue Sanctum token.
      *
-     * @return array{user: User, token: string, redirect: string}
+     * @return array{
+     *     user: User,
+     *     status?: string,
+     *     type?: string,
+     *     message?: string,
+     *     token?: string|null,
+     *     redirect?: string
+     * }
      *
      * @throws ValidationException
      */
@@ -223,8 +230,19 @@ class StudentAuthService
         /** @var User $user */
         $user = $result['user'];
 
+        if (($result['status'] ?? null) === 'pending') {
+            return [
+                'user' => $user,
+                'status' => 'pending',
+                'type' => 'info',
+                'message' => $result['message'] ?? __('حسابك قيد المراجعة وبانتظار موافقة إدارة المنصة. يرجى الانتظار حتى يتم اعتماد الحساب لتتمكن من تسجيل الدخول.'),
+                'token' => null,
+            ];
+        }
+
         return [
             'user' => $user,
+            'status' => 'authenticated',
             'token' => $this->issueToken($user, $deviceName),
             'redirect' => $result['redirect'] ?? route('dashboard'),
         ];

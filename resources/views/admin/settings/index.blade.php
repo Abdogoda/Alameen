@@ -67,6 +67,13 @@
     <div x-data="{ 
         validTabs: ['branding', 'seo', 'contact', 'cms', 'faq', 'academic', 'payments', 'mux', 'menus', 'theme', 'pages'],
         activeTab: 'branding',
+        canScrollLeft: false,
+        canScrollRight: false,
+        isDown: false,
+        startX: 0,
+        scrollLeftPos: 0,
+        hasDragged: false,
+
         init() {
             const rawHash = (window.location.hash || '').replace(/^#/, '').trim();
             const urlTab = new URLSearchParams(window.location.search).get('tab');
@@ -81,75 +88,259 @@
             } else {
                 this.activeTab = 'branding';
             }
+
+            this.$nextTick(() => {
+                this.updateScrollIndicators();
+                this.scrollToActiveTab(false);
+            });
+
+            setTimeout(() => {
+                this.updateScrollIndicators();
+                this.scrollToActiveTab(false);
+            }, 120);
+
+            window.addEventListener('resize', () => this.updateScrollIndicators(), { passive: true });
         },
+
         setTab(tab) {
+            if (this.hasDragged) return;
             if (!this.validTabs.includes(tab)) return;
             this.activeTab = tab;
             try {
                 localStorage.setItem('alameen_admin_settings_tab', tab);
                 history.replaceState(null, '', '#' + tab);
             } catch (e) {}
+            this.$nextTick(() => {
+                this.scrollToActiveTab(true);
+            });
+        },
+
+        scrollToActiveTab(smooth = true) {
+            const container = this.$refs.tabsContainer;
+            if (!container) return;
+            const activeBtn = container.querySelector(`[data-tab='${this.activeTab}']`);
+            if (activeBtn) {
+                activeBtn.scrollIntoView({
+                    behavior: smooth ? 'smooth' : 'auto',
+                    block: 'nearest',
+                    inline: 'center'
+                });
+            }
+            setTimeout(() => this.updateScrollIndicators(), smooth ? 320 : 60);
+        },
+
+        scroll(direction) {
+            const container = this.$refs.tabsContainer;
+            if (!container) return;
+            const offset = 280;
+            const delta = direction === 'left' ? -offset : offset;
+            container.scrollBy({ left: delta, behavior: 'smooth' });
+            setTimeout(() => this.updateScrollIndicators(), 280);
+        },
+
+        handleWheel(e) {
+            const el = this.$refs.tabsContainer;
+            if (!el) return;
+            const maxScroll = el.scrollWidth - el.clientWidth;
+            if (maxScroll <= 2) return;
+
+            if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+                const isRtl = document.documentElement.dir === 'rtl' || getComputedStyle(el).direction === 'rtl';
+                const goingForward = e.deltaY > 0;
+                
+                // In RTL: forward = scroll left. In LTR: forward = scroll right.
+                const canScroll = isRtl 
+                    ? (goingForward ? this.canScrollLeft : this.canScrollRight)
+                    : (goingForward ? this.canScrollRight : this.canScrollLeft);
+
+                if (canScroll) {
+                    e.preventDefault();
+                    const delta = isRtl ? -e.deltaY : e.deltaY;
+                    el.scrollBy({ left: delta, behavior: 'auto' });
+                    this.updateScrollIndicators();
+                }
+            }
+        },
+
+        updateScrollIndicators() {
+            const el = this.$refs.tabsContainer;
+            if (!el) return;
+            const maxScroll = el.scrollWidth - el.clientWidth;
+            if (maxScroll <= 2) {
+                this.canScrollLeft = false;
+                this.canScrollRight = false;
+                return;
+            }
+            const isRtl = document.documentElement.dir === 'rtl' || getComputedStyle(el).direction === 'rtl';
+            const sl = el.scrollLeft;
+
+            if (isRtl) {
+                if (sl <= 0) {
+                    // Modern spec: 0 is right edge, -maxScroll is left edge
+                    const current = Math.abs(sl);
+                    this.canScrollRight = current > 5;
+                    this.canScrollLeft = (maxScroll - current) > 5;
+                } else {
+                    // Legacy spec: maxScroll is right edge, 0 is left edge
+                    this.canScrollRight = (maxScroll - sl) > 5;
+                    this.canScrollLeft = sl > 5;
+                }
+            } else {
+                // LTR: 0 is left edge, maxScroll is right edge
+                this.canScrollLeft = sl > 5;
+                this.canScrollRight = (maxScroll - sl) > 5;
+            }
+        },
+
+        startDrag(e) {
+            if (e.button !== 0) return;
+            this.isDown = true;
+            this.hasDragged = false;
+            this.startX = e.pageX;
+            this.scrollLeftPos = this.$refs.tabsContainer.scrollLeft;
+        },
+
+        onDrag(e) {
+            if (!this.isDown) return;
+            const walk = e.pageX - this.startX;
+            if (Math.abs(walk) > 4) {
+                this.hasDragged = true;
+            }
+            this.$refs.tabsContainer.scrollLeft = this.scrollLeftPos - walk;
+            this.updateScrollIndicators();
+        },
+
+        endDrag() {
+            if (!this.isDown) return;
+            this.isDown = false;
+            setTimeout(() => { this.hasDragged = false; }, 60);
         }
     }" class="flex flex-col gap-6">
 
-        {{-- Tab Pills Navigation Bar --}}
-        <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-2xl p-1.5 shadow-xs overflow-x-auto flex items-center gap-1.5 scrollbar-none">
+        {{-- Tab Pills Navigation Bar with Enhanced Scroll & Arrows --}}
+        <div class="relative w-full max-w-full group">
             
-            <button type="button" @click="setTab('branding')" :class="activeTab === 'branding' ? 'bg-[#012383] text-white shadow-xs font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" class="shrink-0 px-4 py-2.5 rounded-xl text-xs whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer">
-                <span class="shrink-0 text-sm">🏢</span>
-                <span class="shrink-0 font-bold whitespace-nowrap">{{ __('الهوية والعلامة التجارية') }}</span>
+            {{-- Right Scroll Navigation Arrow Button (RTL: Scroll back to start) --}}
+            <button
+                type="button"
+                @click="scroll('right')"
+                x-show="canScrollRight"
+                x-cloak
+                x-transition:enter="transition ease-out duration-200"
+                x-transition:enter-start="opacity-0 scale-90"
+                x-transition:enter-end="opacity-100 scale-100"
+                x-transition:leave="transition ease-in duration-150"
+                x-transition:leave-start="opacity-100 scale-100"
+                x-transition:leave-end="opacity-0 scale-90"
+                class="absolute right-1 top-1/2 -translate-y-1/2 z-20 size-8 sm:size-9 rounded-xl bg-white/95 dark:bg-slate-900/95 border border-[#DEE8F7] dark:border-slate-700 shadow-md flex items-center justify-center text-slate-700 dark:text-slate-200 hover:bg-[#012383] hover:text-white dark:hover:bg-blue-600 dark:hover:text-white transition-all cursor-pointer backdrop-blur-xs focus:outline-none"
+                aria-label="{{ __('تمرير لليمين') }}"
+                title="{{ __('تمرير لليمين') }}"
+            >
+                <svg class="size-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
             </button>
 
-            <button type="button" @click="setTab('seo')" :class="activeTab === 'seo' ? 'bg-[#012383] text-white shadow-xs font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" class="shrink-0 px-4 py-2.5 rounded-xl text-xs whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer">
-                <span class="shrink-0 text-sm">🚀</span>
-                <span class="shrink-0 font-bold whitespace-nowrap">{{ __('محركات البحث وSEO') }}</span>
-            </button>
+            {{-- Right Gradient Fade Mask --}}
+            <div 
+                x-show="canScrollRight" 
+                x-cloak
+                class="pointer-events-none absolute right-0 top-0 bottom-0 w-14 bg-gradient-to-l from-white dark:from-slate-900 via-white/80 dark:via-slate-900/80 to-transparent rounded-r-2xl z-10 transition-opacity duration-200"
+            ></div>
 
-            <button type="button" @click="setTab('pages')" :class="activeTab === 'pages' ? 'bg-[#012383] text-white shadow-xs font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" class="shrink-0 px-4 py-2.5 rounded-xl text-xs whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer">
-                <span class="shrink-0 text-sm">👁️</span>
-                <span class="shrink-0 font-bold whitespace-nowrap">{{ __('إدارة صفحات الطالب (ظهور/إخفاء)') }}</span>
-            </button>
+            {{-- Scrollable Tab Container --}}
+            <div 
+                x-ref="tabsContainer"
+                @scroll.passive="updateScrollIndicators()"
+                @wheel="handleWheel($event)"
+                @mousedown="startDrag($event)"
+                @mousemove="onDrag($event)"
+                @mouseup="endDrag()"
+                @mouseleave="endDrag()"
+                :class="isDown ? 'cursor-grabbing select-none' : 'cursor-grab'"
+                class="tabs-scroll-container bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-2xl p-1.5 pb-2.5 shadow-xs overflow-x-auto flex items-center gap-1.5 scrollbar-thin scroll-smooth w-full max-w-full overscroll-x-contain"
+            >
+                
+                <button type="button" data-tab="branding" @click="setTab('branding')" :class="activeTab === 'branding' ? 'bg-[#012383] text-white shadow-xs font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" class="shrink-0 px-4 py-2.5 rounded-xl text-xs whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer">
+                    <span class="shrink-0 text-sm">🏢</span>
+                    <span class="shrink-0 font-bold whitespace-nowrap">{{ __('الهوية والعلامة التجارية') }}</span>
+                </button>
 
-            <button type="button" @click="setTab('contact')" :class="activeTab === 'contact' ? 'bg-[#012383] text-white shadow-xs font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" class="shrink-0 px-4 py-2.5 rounded-xl text-xs whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer">
-                <span class="shrink-0 text-sm">📞</span>
-                <span class="shrink-0 font-bold whitespace-nowrap">{{ __('التواصل والدعم الفني') }}</span>
-            </button>
+                <button type="button" data-tab="seo" @click="setTab('seo')" :class="activeTab === 'seo' ? 'bg-[#012383] text-white shadow-xs font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" class="shrink-0 px-4 py-2.5 rounded-xl text-xs whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer">
+                    <span class="shrink-0 text-sm">🚀</span>
+                    <span class="shrink-0 font-bold whitespace-nowrap">{{ __('محركات البحث وSEO') }}</span>
+                </button>
 
-            <button type="button" @click="setTab('cms')" :class="activeTab === 'cms' ? 'bg-[#012383] text-white shadow-xs font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" class="shrink-0 px-4 py-2.5 rounded-xl text-xs whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer">
-                <span class="shrink-0 text-sm">🚀</span>
-                <span class="shrink-0 font-bold whitespace-nowrap">{{ __('الواجهة ومحتوى الموقع') }}</span>
-            </button>
+                <button type="button" data-tab="pages" @click="setTab('pages')" :class="activeTab === 'pages' ? 'bg-[#012383] text-white shadow-xs font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" class="shrink-0 px-4 py-2.5 rounded-xl text-xs whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer">
+                    <span class="shrink-0 text-sm">👁️</span>
+                    <span class="shrink-0 font-bold whitespace-nowrap">{{ __('إدارة صفحات الطالب (ظهور/إخفاء)') }}</span>
+                </button>
 
-            <button type="button" @click="setTab('faq')" :class="activeTab === 'faq' ? 'bg-[#012383] text-white shadow-xs font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" class="shrink-0 px-4 py-2.5 rounded-xl text-xs whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer">
-                <span class="shrink-0 text-sm">❓</span>
-                <span class="shrink-0 font-bold whitespace-nowrap">{{ __('الأسئلة الشائعة (FAQ)') }}</span>
-            </button>
+                <button type="button" data-tab="contact" @click="setTab('contact')" :class="activeTab === 'contact' ? 'bg-[#012383] text-white shadow-xs font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" class="shrink-0 px-4 py-2.5 rounded-xl text-xs whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer">
+                    <span class="shrink-0 text-sm">📞</span>
+                    <span class="shrink-0 font-bold whitespace-nowrap">{{ __('التواصل والدعم الفني') }}</span>
+                </button>
 
-            <button type="button" @click="setTab('academic')" :class="activeTab === 'academic' ? 'bg-[#012383] text-white shadow-xs font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" class="shrink-0 px-4 py-2.5 rounded-xl text-xs whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer">
-                <span class="shrink-0 text-sm">🎓</span>
-                <span class="shrink-0 font-bold whitespace-nowrap">{{ __('السياسات الأكاديمية والمحاضرات') }}</span>
-            </button>
+                <button type="button" data-tab="cms" @click="setTab('cms')" :class="activeTab === 'cms' ? 'bg-[#012383] text-white shadow-xs font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" class="shrink-0 px-4 py-2.5 rounded-xl text-xs whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer">
+                    <span class="shrink-0 text-sm">🚀</span>
+                    <span class="shrink-0 font-bold whitespace-nowrap">{{ __('الواجهة ومحتوى الموقع') }}</span>
+                </button>
 
-            <button type="button" @click="setTab('payments')" :class="activeTab === 'payments' ? 'bg-[#012383] text-white shadow-xs font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" class="shrink-0 px-4 py-2.5 rounded-xl text-xs whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer">
-                <span class="shrink-0 text-sm">💳</span>
-                <span class="shrink-0 font-bold whitespace-nowrap">{{ __('قنوات الدفع والتحويل') }}</span>
-            </button>
+                <button type="button" data-tab="faq" @click="setTab('faq')" :class="activeTab === 'faq' ? 'bg-[#012383] text-white shadow-xs font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" class="shrink-0 px-4 py-2.5 rounded-xl text-xs whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer">
+                    <span class="shrink-0 text-sm">❓</span>
+                    <span class="shrink-0 font-bold whitespace-nowrap">{{ __('الأسئلة الشائعة (FAQ)') }}</span>
+                </button>
 
-            <button type="button" @click="setTab('mux')" :class="activeTab === 'mux' ? 'bg-[#012383] text-white shadow-xs font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" class="shrink-0 px-4 py-2.5 rounded-xl text-xs whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer">
-                <span class="shrink-0 text-sm">🎬</span>
-                <span class="shrink-0 font-bold whitespace-nowrap">{{ __('سحابة MUX للبث والتشفير') }}</span>
-            </button>
+                <button type="button" data-tab="academic" @click="setTab('academic')" :class="activeTab === 'academic' ? 'bg-[#012383] text-white shadow-xs font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" class="shrink-0 px-4 py-2.5 rounded-xl text-xs whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer">
+                    <span class="shrink-0 text-sm">🎓</span>
+                    <span class="shrink-0 font-bold whitespace-nowrap">{{ __('السياسات الأكاديمية والمحاضرات') }}</span>
+                </button>
 
-            <button type="button" @click="setTab('menus')" :class="activeTab === 'menus' ? 'bg-[#012383] text-white shadow-xs font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" class="shrink-0 px-4 py-2.5 rounded-xl text-xs whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer">
-                <span class="shrink-0 text-sm">🧭</span>
-                <span class="shrink-0 font-bold whitespace-nowrap">{{ __('مدير القوائم والتنقل') }}</span>
-            </button>
+                <button type="button" data-tab="payments" @click="setTab('payments')" :class="activeTab === 'payments' ? 'bg-[#012383] text-white shadow-xs font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" class="shrink-0 px-4 py-2.5 rounded-xl text-xs whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer">
+                    <span class="shrink-0 text-sm">💳</span>
+                    <span class="shrink-0 font-bold whitespace-nowrap">{{ __('قنوات الدفع والتحويل') }}</span>
+                </button>
 
-            <button type="button" @click="setTab('theme')" :class="activeTab === 'theme' ? 'bg-[#012383] text-white shadow-xs font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" class="shrink-0 px-4 py-2.5 rounded-xl text-xs whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer">
-                <span class="shrink-0 text-sm">🎨</span>
-                <span class="shrink-0 font-bold whitespace-nowrap">{{ __('المظهر والنظام') }}</span>
-            </button>
+                <button type="button" data-tab="mux" @click="setTab('mux')" :class="activeTab === 'mux' ? 'bg-[#012383] text-white shadow-xs font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" class="shrink-0 px-4 py-2.5 rounded-xl text-xs whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer">
+                    <span class="shrink-0 text-sm">🎬</span>
+                    <span class="shrink-0 font-bold whitespace-nowrap">{{ __('سحابة MUX للبث والتشفير') }}</span>
+                </button>
 
+                <button type="button" data-tab="menus" @click="setTab('menus')" :class="activeTab === 'menus' ? 'bg-[#012383] text-white shadow-xs font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" class="shrink-0 px-4 py-2.5 rounded-xl text-xs whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer">
+                    <span class="shrink-0 text-sm">🧭</span>
+                    <span class="shrink-0 font-bold whitespace-nowrap">{{ __('مدير القوائم والتنقل') }}</span>
+                </button>
+
+                <button type="button" data-tab="theme" @click="setTab('theme')" :class="activeTab === 'theme' ? 'bg-[#012383] text-white shadow-xs font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" class="shrink-0 px-4 py-2.5 rounded-xl text-xs whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer">
+                    <span class="shrink-0 text-sm">🎨</span>
+                    <span class="shrink-0 font-bold whitespace-nowrap">{{ __('المظهر والنظام') }}</span>
+                </button>
+
+            </div>
+
+            {{-- Left Gradient Fade Mask --}}
+            <div 
+                x-show="canScrollLeft" 
+                x-cloak
+                class="pointer-events-none absolute left-0 top-0 bottom-0 w-14 bg-gradient-to-r from-white dark:from-slate-900 via-white/80 dark:via-slate-900/80 to-transparent rounded-l-2xl z-10 transition-opacity duration-200"
+            ></div>
+
+            {{-- Left Scroll Navigation Arrow Button (RTL: Scroll forward to remaining tabs) --}}
+            <button
+                type="button"
+                @click="scroll('left')"
+                x-show="canScrollLeft"
+                x-cloak
+                x-transition:enter="transition ease-out duration-200"
+                x-transition:enter-start="opacity-0 scale-90"
+                x-transition:enter-end="opacity-100 scale-100"
+                x-transition:leave="transition ease-in duration-150"
+                x-transition:leave-start="opacity-100 scale-100"
+                x-transition:leave-end="opacity-0 scale-90"
+                class="absolute left-1 top-1/2 -translate-y-1/2 z-20 size-8 sm:size-9 rounded-xl bg-white/95 dark:bg-slate-900/95 border border-[#DEE8F7] dark:border-slate-700 shadow-md flex items-center justify-center text-slate-700 dark:text-slate-200 hover:bg-[#012383] hover:text-white dark:hover:bg-blue-600 dark:hover:text-white transition-all cursor-pointer backdrop-blur-xs focus:outline-none"
+                aria-label="{{ __('تمرير لليسار') }}"
+                title="{{ __('تمرير لليسار') }}"
+            >
+                <svg class="size-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
+            </button>
         </div>
 
         {{-- ======================================================== --}}

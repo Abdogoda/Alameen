@@ -126,7 +126,17 @@ class AdminPasskeyService
 
             // Authenticate the admin using the dedicated admin guard
             Auth::guard('admin')->login($passkey->admin, $remember);
-            request()->session()->regenerate();
+            if (request()->hasSession()) {
+                $sessionKey = (string) config('localization.session_key', 'locale');
+                $sessionLocale = request()->session()->get($sessionKey);
+                request()->session()->regenerate();
+                if ($sessionLocale && app(\App\Services\Localization\LocalizationService::class)->isSupported((string) $sessionLocale)) {
+                    request()->session()->put($sessionKey, (string) $sessionLocale);
+                    if ($passkey->admin->locale !== $sessionLocale) {
+                        $passkey->admin->update(['locale' => $sessionLocale]);
+                    }
+                }
+            }
 
             return [
                 'admin' => $passkey->admin,

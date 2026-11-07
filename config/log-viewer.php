@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\AdminMiddleware;
+use App\Http\Middleware\EnsureAdminPasswordForLogViewer;
 use Opcodes\LogViewer\Enums\SortingMethod;
 use Opcodes\LogViewer\Enums\SortingOrder;
 use Opcodes\LogViewer\Enums\Theme;
@@ -107,6 +108,7 @@ return [
         'web',
         AdminMiddleware::class,
         AuthorizeLogViewer::class,
+        EnsureAdminPasswordForLogViewer::class,
     ],
 
     /*
@@ -122,7 +124,19 @@ return [
         EnsureFrontendRequestsAreStateful::class,
         AdminMiddleware::class,
         AuthorizeLogViewer::class,
+        EnsureAdminPasswordForLogViewer::class,
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Log Viewer Password Confirmation Timeout
+    |--------------------------------------------------------------------------
+    | Number of seconds the administrator's password confirmation remains valid
+    | before requiring re-confirmation to view logs (default: 1800s / 30 mins).
+    |
+    */
+
+    'password_timeout' => (int) env('LOG_VIEWER_PASSWORD_TIMEOUT', 1800),
 
     'api_stateful_domains' => env('LOG_VIEWER_API_STATEFUL_DOMAINS') ? explode(',', env('LOG_VIEWER_API_STATEFUL_DOMAINS')) : null,
 

@@ -2,8 +2,10 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\Admin\AdminAuditLogController;
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\AdminFirebaseAuthController;
+use App\Http\Controllers\Admin\AdminLogViewerSecurityController;
 use App\Http\Controllers\Admin\AdminManagementController;
 use App\Http\Controllers\Admin\AdminPasskeyController;
 use App\Http\Controllers\Admin\AdminProfileController;
@@ -14,6 +16,7 @@ use App\Http\Controllers\Admin\RoleManagementController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\StudentManagerController;
 use App\Http\Controllers\Admin\SupportTicketController;
+use App\Http\Middleware\LogAdminActivity;
 use App\Livewire\Admin\Notifications\NotificationManager;
 use Illuminate\Support\Facades\Route;
 
@@ -23,7 +26,7 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 
-Route::prefix('admin')->name('admin.')->group(function () {
+Route::prefix('admin')->name('admin.')->middleware([LogAdminActivity::class])->group(function () {
 
     // -------------------------------------------------------------
     // Admin Guest Routes
@@ -220,9 +223,24 @@ Route::prefix('admin')->name('admin.')->group(function () {
             ->middleware('admin.can:notifications.view,notifications.send,notifications.manage')
             ->name('notifications.index');
 
-        // System Logs Viewer Shortcut
-        Route::redirect('logs', '/admin/log-viewer')
-            ->middleware('admin.can:logs.view,settings.manage')
-            ->name('logs');
+        // Central Admin Audit Logs (Record of all dashboard pages and actions)
+        Route::middleware('admin.can:logs.view,settings.manage')->group(function () {
+            Route::get('audit-logs', [AdminAuditLogController::class, 'index'])->name('audit-logs.index');
+            Route::get('audit-logs/export', [AdminAuditLogController::class, 'export'])->name('audit-logs.export');
+            Route::get('audit-logs/{log}', [AdminAuditLogController::class, 'show'])->name('audit-logs.show');
+            Route::post('audit-logs/clear', [AdminAuditLogController::class, 'clear'])->name('audit-logs.clear');
+        });
+
+        // System Logs Viewer Shortcut (Redirect to Admin Audit Logs or Log Viewer)
+        Route::get('logs', function () {
+            return redirect()->route('admin.audit-logs.index');
+        })->middleware('admin.can:logs.view,settings.manage')->name('logs');
+
+        // Laravel Log Viewer Security & Password Confirmation Gates
+        Route::middleware('admin.can:logs.view,settings.manage')->group(function () {
+            Route::get('log-viewer-confirm', [AdminLogViewerSecurityController::class, 'showConfirmForm'])->name('log-viewer.confirm');
+            Route::post('log-viewer-confirm', [AdminLogViewerSecurityController::class, 'confirm'])->name('log-viewer.confirm.store');
+            Route::post('log-viewer-lock', [AdminLogViewerSecurityController::class, 'lock'])->name('log-viewer.lock');
+        });
     });
 });

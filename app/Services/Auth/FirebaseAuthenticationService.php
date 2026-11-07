@@ -23,6 +23,9 @@ class FirebaseAuthenticationService
      *
      * @return array{
      *     user: User,
+     *     status?: string,
+     *     type?: string,
+     *     message?: string,
      *     redirect?: string
      * }
      *
@@ -104,9 +107,14 @@ class FirebaseAuthenticationService
         }
 
         if ($user->status === 'pending') {
-            throw ValidationException::withMessages([
-                'email' => [__('حسابك قيد المراجعة وبانتظار موافقة إدارة المنصة. يرجى الانتظار حتى يتم اعتماد الحساب لتتمكن من تسجيل الدخول.')],
-            ]);
+            return [
+                'user' => $user,
+                'status' => 'pending',
+                'type' => 'info',
+                'message' => $user->wasRecentlyCreated
+                    ? __('تم إنشاء حسابك بنجاح وهو قيد المراجعة وبانتظار موافقة إدارة المنصة. يرجى الانتظار حتى يتم اعتماد الحساب لتتمكن من تسجيل الدخول.')
+                    : __('حسابك قيد المراجعة وبانتظار موافقة إدارة المنصة. يرجى الانتظار حتى يتم اعتماد الحساب لتتمكن من تسجيل الدخول.'),
+            ];
         }
 
         if ($user->isSuspended()) {
@@ -199,7 +207,15 @@ class FirebaseAuthenticationService
 
         Auth::guard('admin')->login($admin, $remember);
         if (request()->hasSession()) {
+            $sessionKey = (string) config('localization.session_key', 'locale');
+            $sessionLocale = request()->session()->get($sessionKey);
             request()->session()->regenerate();
+            if ($sessionLocale && app(\App\Services\Localization\LocalizationService::class)->isSupported((string) $sessionLocale)) {
+                request()->session()->put($sessionKey, (string) $sessionLocale);
+                if ($admin->locale !== $sessionLocale) {
+                    $admin->update(['locale' => $sessionLocale]);
+                }
+            }
         }
 
         return [

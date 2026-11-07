@@ -287,16 +287,29 @@
                         @endif
 
                         @if($adminUser?->hasAnyPermission(['logs.view', 'settings.manage']))
+                        <!-- سجل نشاط الإدارة المركزي (Audit Logs) -->
+                        <a
+                            href="{{ route('admin.audit-logs.index') }}"
+                            @click="if (window.innerWidth < 1024) mobileSidebarOpen = false"
+                            class="sidebar-nav-link flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-sm transition-colors {{ request()->routeIs('admin.audit-logs.*') ? 'bg-[#012383] text-white font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-[#EAF1FB]/60 dark:hover:bg-slate-800 hover:text-[#012383] dark:hover:text-white' }}"
+                            :title="!desktopSidebarOpen && window.innerWidth >= 1024 ? '{{ __('سجل نشاط الإدارة') }}' : ''"
+                        >
+                            <svg class="size-5 shrink-0 {{ request()->routeIs('admin.audit-logs.*') ? 'text-white' : 'text-slate-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                            </svg>
+                            <span class="flex-1 text-start sidebar-label">{{ __('سجل نشاط الإدارة') }}</span>
+                        </a>
+
                         <!-- سجلات النظام والـ Logs -->
                         <a
                             href="{{ route('log-viewer.index') }}"
                             target="_blank"
                             @click="if (window.innerWidth < 1024) mobileSidebarOpen = false"
                             class="sidebar-nav-link flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-sm transition-colors {{ request()->routeIs('log-viewer.*') ? 'bg-[#012383] text-white font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-[#EAF1FB]/60 dark:hover:bg-slate-800 hover:text-[#012383] dark:hover:text-white' }}"
-                            :title="!desktopSidebarOpen && window.innerWidth >= 1024 ? '{{ __('سجلات النظام (Logs)') }}' : ''"
+                            :title="!desktopSidebarOpen && window.innerWidth >= 1024 ? '{{ __('سجلات أخطاء النظام (Logs)') }}' : ''"
                         >
                             <svg class="size-5 shrink-0 {{ request()->routeIs('log-viewer.*') ? 'text-white' : 'text-slate-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                            <span class="flex-1 text-start sidebar-label">{{ __('سجلات النظام (Logs)') }}</span>
+                            <span class="flex-1 text-start sidebar-label">{{ __('سجلات أخطاء النظام (Logs)') }}</span>
                         </a>
                         @endif
                     </nav>

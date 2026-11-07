@@ -36,7 +36,17 @@ class AdminAuthController extends Controller
         $remember = $request->boolean('remember');
 
         if (Auth::guard('admin')->attempt($credentials, $remember)) {
+            $sessionKey = (string) config('localization.session_key', 'locale');
+            $sessionLocale = $request->session()->get($sessionKey);
             $request->session()->regenerate();
+
+            if ($sessionLocale && app(\App\Services\Localization\LocalizationService::class)->isSupported((string) $sessionLocale)) {
+                $request->session()->put($sessionKey, (string) $sessionLocale);
+                $admin = Auth::guard('admin')->user();
+                if ($admin instanceof \App\Models\Admin && $admin->locale !== $sessionLocale) {
+                    $admin->update(['locale' => $sessionLocale]);
+                }
+            }
 
             return redirect()->intended(route('admin.dashboard'));
         }

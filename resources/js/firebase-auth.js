@@ -165,7 +165,55 @@ async function postTokenToBackend(idToken, targetRole, buttonElement, originalCo
         }),
     });
 
-    const data = await response.json();
+    const data = await response.json().catch(() => ({}));
+
+    // Comprehensive translation mapping for auth alerts
+    const errorTranslationsAr = {
+        'Your account is temporarily suspended, please review the platform administration.': 'حسابك موقوف مؤقتاً، يرجى مراجعة إدارة المنصة.',
+        'Your account is under review and pending approval from the platform administration. Please wait until the account is approved to be able to log in.': 'حسابك قيد المراجعة وبانتظار موافقة إدارة المنصة. يرجى الانتظار حتى يتم اعتماد الحساب لتتمكن من تسجيل الدخول.',
+        'Your account was created successfully and is under review pending approval from the platform administration. Please wait until the account is approved to be able to log in.': 'تم إنشاء حسابك بنجاح وهو قيد المراجعة وبانتظار موافقة إدارة المنصة. يرجى الانتظار حتى يتم اعتماد الحساب لتتمكن من تسجيل الدخول.',
+        'This account has been suspended. Please contact the platform administration.': 'تم إيقاف هذا الحساب. يرجى التواصل مع إدارة المنصة.',
+        'Invalid or expired credentials. Please try again.': 'بيانات الاعتماد غير صالحة أو انتهت مدتها. يرجى المحاولة مرة أخرى.',
+        'Sign in failed. Please try again.': 'فشل تسجيل الدخول. يرجى المحاولة مرة أخرى.',
+        'These credentials do not match our records.': 'بيانات الاعتماد هذه لا تتطابق مع سجلاتنا.',
+        'The selected email is invalid.': 'البريد الإلكتروني المدخل غير صالح.',
+    };
+
+    const errorTranslationsEn = {
+        'حسابك موقوف مؤقتاً، يرجى مراجعة إدارة المنصة.': 'Your account is temporarily suspended, please review the platform administration.',
+        'حسابك قيد المراجعة وبانتظار موافقة إدارة المنصة. يرجى الانتظار حتى يتم اعتماد الحساب لتتمكن من تسجيل الدخول.': 'Your account is under review and pending approval from the platform administration. Please wait until the account is approved to be able to log in.',
+        'تم إنشاء حسابك بنجاح وهو قيد المراجعة وبانتظار موافقة إدارة المنصة. يرجى الانتظار حتى يتم اعتماد الحساب لتتمكن من تسجيل الدخول.': 'Your account was created successfully and is under review pending approval from the platform administration. Please wait until the account is approved to be able to log in.',
+        'تم إيقاف هذا الحساب. يرجى التواصل مع إدارة المنصة.': 'This account has been suspended. Please contact the platform administration.',
+        'فشل تسجيل الدخول. يرجى المحاولة مرة أخرى.': 'Sign in failed. Please try again.',
+    };
+
+    const isPending = data.status === 'pending'
+        || data.type === 'info'
+        || Boolean(
+            data.message && (
+                data.message.includes('المراجعة') ||
+                data.message.includes('موافقة') ||
+                data.message.toLowerCase().includes('under review') ||
+                data.message.toLowerCase().includes('pending approval')
+            )
+        );
+
+    if (isPending) {
+        const isEn = (document.documentElement.lang || 'ar').toLowerCase().startsWith('en');
+        let infoMessage = data.message || (isEn
+            ? 'Your account is under review and pending approval from the platform administration. Please wait until the account is approved to be able to log in.'
+            : 'حسابك قيد المراجعة وبانتظار موافقة إدارة المنصة. يرجى الانتظار حتى يتم اعتماد الحساب لتتمكن من تسجيل الدخول.');
+
+        if (!isEn && errorTranslationsAr[infoMessage]) {
+            infoMessage = errorTranslationsAr[infoMessage];
+        } else if (isEn && errorTranslationsEn[infoMessage]) {
+            infoMessage = errorTranslationsEn[infoMessage];
+        }
+
+        showAuthAlert(infoMessage, 'info', isEn ? 'Account Pending Approval' : 'الحساب بانتظار الموافقة');
+        resetButton(buttonElement, originalContent);
+        return;
+    }
 
     if (response.ok && data.success) {
         if (buttonElement) {
@@ -181,24 +229,6 @@ async function postTokenToBackend(idToken, targetRole, buttonElement, originalCo
     } else {
         const isEn = (document.documentElement.lang || 'ar').toLowerCase().startsWith('en');
         let errorMessage = data.message || (isEn ? 'Sign in failed. Please try again.' : 'فشل تسجيل الدخول. يرجى المحاولة مرة أخرى.');
-
-        // Comprehensive translation mapping for auth alerts
-        const errorTranslationsAr = {
-            'Your account is temporarily suspended, please review the platform administration.': 'حسابك موقوف مؤقتاً، يرجى مراجعة إدارة المنصة.',
-            'Your account is under review and pending approval from the platform administration. Please wait until the account is approved to be able to log in.': 'حسابك قيد المراجعة وبانتظار موافقة إدارة المنصة. يرجى الانتظار حتى يتم اعتماد الحساب لتتمكن من تسجيل الدخول.',
-            'This account has been suspended. Please contact the platform administration.': 'تم إيقاف هذا الحساب. يرجى التواصل مع إدارة المنصة.',
-            'Invalid or expired credentials. Please try again.': 'بيانات الاعتماد غير صالحة أو انتهت مدتها. يرجى المحاولة مرة أخرى.',
-            'Sign in failed. Please try again.': 'فشل تسجيل الدخول. يرجى المحاولة مرة أخرى.',
-            'These credentials do not match our records.': 'بيانات الاعتماد هذه لا تتطابق مع سجلاتنا.',
-            'The selected email is invalid.': 'البريد الإلكتروني المدخل غير صالح.',
-        };
-
-        const errorTranslationsEn = {
-            'حسابك موقوف مؤقتاً، يرجى مراجعة إدارة المنصة.': 'Your account is temporarily suspended, please review the platform administration.',
-            'حسابك قيد المراجعة وبانتظار موافقة إدارة المنصة. يرجى الانتظار حتى يتم اعتماد الحساب لتتمكن من تسجيل الدخول.': 'Your account is under review and pending approval from the platform administration. Please wait until the account is approved to be able to log in.',
-            'تم إيقاف هذا الحساب. يرجى التواصل مع إدارة المنصة.': 'This account has been suspended. Please contact the platform administration.',
-            'فشل تسجيل الدخول. يرجى المحاولة مرة أخرى.': 'Sign in failed. Please try again.',
-        };
 
         if (!isEn && errorTranslationsAr[errorMessage]) {
             errorMessage = errorTranslationsAr[errorMessage];
@@ -264,7 +294,7 @@ function resetButton(buttonElement, originalContent) {
     }
 }
 
-function showAuthAlert(message, type = 'error') {
+function showAuthAlert(message, type = 'error', titleOverride = null) {
     let alertBox = document.getElementById('firebase-auth-alert');
     if (!alertBox) {
         alertBox = document.createElement('div');
@@ -274,6 +304,10 @@ function showAuthAlert(message, type = 'error') {
 
     const isEn = (document.documentElement.lang || 'ar').toLowerCase().startsWith('en');
     const isError = type === 'error';
+    const alertTitle = titleOverride || (isError
+        ? (isEn ? 'Sign In Alert' : 'تنبيه تسجيل الدخول')
+        : (isEn ? 'Notice' : 'إشعار'));
+
     alertBox.className = `fixed top-6 inset-x-4 sm:inset-x-auto sm:end-8 z-[99999] max-w-md p-4 rounded-2xl shadow-2xl transition-all duration-300 font-['Cairo'] flex items-start gap-3 text-sm border backdrop-blur-md ${
         isError
             ? 'bg-rose-50/95 border-rose-200 text-rose-900 dark:bg-rose-950/95 dark:border-rose-900 dark:text-rose-100 shadow-rose-500/10'
@@ -289,7 +323,7 @@ function showAuthAlert(message, type = 'error') {
             }"/>
         </svg>
         <div class="flex-1">
-            <p class="font-bold mb-0.5">${isError ? (isEn ? 'Sign In Alert' : 'تنبيه تسجيل الدخول') : (isEn ? 'Notice' : 'إشعار')}</p>
+            <p class="font-bold mb-0.5">${alertTitle}</p>
             <p class="text-xs leading-relaxed opacity-90">${message}</p>
         </div>
         <button type="button" onclick="this.parentElement.remove()" class="text-current opacity-60 hover:opacity-100 p-1">
@@ -301,7 +335,7 @@ function showAuthAlert(message, type = 'error') {
         if (alertBox && alertBox.parentElement) {
             alertBox.remove();
         }
-    }, 6000);
+    }, 8000);
 }
 
 // Auto-bind to elements with data-firebase-auth attribute on DOM ready

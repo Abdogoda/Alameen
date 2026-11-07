@@ -48,11 +48,18 @@
     </div>
 @else
     {{-- Dropdown style for Admin Topbars & Auth --}}
-    <div x-data="{ open: false }" class="relative inline-block text-start" @click.outside="open = false">
+    <div
+        x-data="{ open: false }"
+        @click.outside="open = false"
+        @keydown.escape.window="open = false"
+        class="relative inline-block text-start"
+        {{ $attributes }}
+    >
         <button
             type="button"
             @click="open = !open"
             class="inline-flex items-center gap-2 px-2.5 sm:px-3 h-9 sm:h-10 rounded-xl border border-[#DEE8F7] dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-[#0B2A8F]/40 dark:hover:border-blue-400/40 hover:bg-slate-50 dark:hover:bg-slate-700/80 hover:-translate-y-0.5 hover:shadow-xs active:scale-95 text-xs font-bold text-[#012383] dark:text-slate-200 transition-all cursor-pointer shadow-xs shrink-0"
+            aria-label="{{ __('اللغة') }}"
         >
             <img src="{{ $currentFlag }}" alt="{{ $locales[$current]['name'] ?? $current }}" class="w-5 h-3.5 rounded-[3px] object-cover shadow-xs border border-slate-200/80 dark:border-slate-700 shrink-0" />
             <span class="hidden sm:inline">{{ $locales[$current]['native'] ?? strtoupper($current) }}</span>
@@ -70,15 +77,20 @@
             x-transition:leave="transition ease-in duration-75"
             x-transition:leave-start="transform opacity-100 scale-100"
             x-transition:leave-end="transform opacity-0 scale-95"
-            class="absolute {{ $align === 'end' ? 'end-0' : 'start-0' }} z-50 mt-2 w-40 origin-top-right rounded-xl border border-[#DEE8F7] dark:border-slate-700 bg-white dark:bg-slate-900 p-1.5 shadow-xl"
+            class="absolute {{ $align === 'end' ? 'end-0' : 'start-0' }} z-50 mt-2 w-44 rounded-xl border border-[#DEE8F7] dark:border-slate-700 bg-white dark:bg-slate-900 p-1.5 shadow-xl ring-1 ring-black/5 dark:ring-black/50"
+            style="display: none;"
         >
+            <div class="px-2.5 py-1 border-b border-[#DEE8F7] dark:border-slate-800 mb-1">
+                <span class="text-[10px] uppercase font-bold text-slate-400 dark:text-slate-500 tracking-wider">{{ __('اللغة') }}</span>
+            </div>
+
             @foreach ($locales as $code => $locale)
                 @php
                     $itemFlag = $locale['flag_svg'] ?? ($code === 'ar' ? '/assets/images/flags/eg.svg' : '/assets/images/flags/us.svg');
                 @endphp
                 <a
                     href="{{ route('locale.switch', $code) }}"
-                    class="flex items-center justify-between px-3 py-2 rounded-lg text-xs font-semibold transition-all {{ $current === $code ? 'bg-[#0B2A8F] text-white font-bold shadow-xs' : 'text-[#334155] dark:text-slate-300 hover:bg-[#EAF1FB] dark:hover:bg-slate-800 hover:text-[#012383] dark:hover:text-white' }}"
+                    class="flex items-center justify-between w-full px-3 py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer {{ $current === $code ? 'bg-[#0B2A8F] text-white font-bold shadow-xs' : 'text-[#334155] dark:text-slate-300 hover:bg-[#EAF1FB] dark:hover:bg-slate-800 hover:text-[#012383] dark:hover:text-white' }}"
                 >
                     <span class="flex items-center gap-2">
                         <img src="{{ $itemFlag }}" alt="{{ $locale['name'] }}" class="w-5 h-3.5 rounded-[3px] object-cover shadow-xs border border-slate-200/80 dark:border-slate-700 shrink-0" />

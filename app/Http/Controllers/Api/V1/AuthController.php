@@ -125,9 +125,22 @@ class AuthController extends Controller
             (bool) $request->boolean('remember', true)
         );
 
+        if (($result['status'] ?? null) === 'pending') {
+            return response()->json([
+                'success' => true,
+                'status' => 'pending',
+                'type' => 'info',
+                'message' => $result['message'] ?? __('حسابك قيد المراجعة وبانتظار موافقة إدارة المنصة. يرجى الانتظار حتى يتم اعتماد الحساب لتتمكن من تسجيل الدخول.'),
+                'data' => [
+                    'user' => new UserResource($result['user']),
+                ],
+            ], 200);
+        }
+
         return response()->json([
             'success' => true,
             'status' => 'authenticated',
+            'type' => 'success',
             'message' => __('تم تسجيل الدخول عبر Firebase بنجاح.'),
             'data' => [
                 'token' => $result['token'],

@@ -159,6 +159,24 @@
                     />
                 </div>
 
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2">
+                        {{ __('اللغة المفضلة') }}
+                    </label>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <label class="flex items-center gap-3 p-3.5 rounded-xl border cursor-pointer transition-all {{ old('locale', $admin->locale) === 'ar' ? 'border-[#012383] dark:border-blue-500 bg-[#EAF1FB]/80 dark:bg-blue-950/40 text-[#012383] dark:text-white font-bold shadow-xs' : 'border-[#DEE8F7] dark:border-slate-800 bg-[#FAFCFF] dark:bg-slate-800/60 text-slate-600 dark:text-slate-300 hover:border-slate-300' }}">
+                            <input type="radio" name="locale" value="ar" {{ old('locale', $admin->locale) === 'ar' ? 'checked' : '' }} class="accent-[#012383] size-4" />
+                            <img src="/assets/images/flags/eg.svg" alt="العربية" class="w-5 h-3.5 rounded-[2px] object-cover shadow-xs border border-slate-200 dark:border-slate-700 shrink-0" />
+                            <span class="text-xs font-semibold">العربية (Arabic - RTL)</span>
+                        </label>
+                        <label class="flex items-center gap-3 p-3.5 rounded-xl border cursor-pointer transition-all {{ old('locale', $admin->locale) === 'en' ? 'border-[#012383] dark:border-blue-500 bg-[#EAF1FB]/80 dark:bg-blue-950/40 text-[#012383] dark:text-white font-bold shadow-xs' : 'border-[#DEE8F7] dark:border-slate-800 bg-[#FAFCFF] dark:bg-slate-800/60 text-slate-600 dark:text-slate-300 hover:border-slate-300' }}">
+                            <input type="radio" name="locale" value="en" {{ old('locale', $admin->locale) === 'en' ? 'checked' : '' }} class="accent-[#012383] size-4" />
+                            <img src="/assets/images/flags/us.svg" alt="English" class="w-5 h-3.5 rounded-[2px] object-cover shadow-xs border border-slate-200 dark:border-slate-700 shrink-0" />
+                            <span class="text-xs font-semibold">English (الإنجليزية - LTR)</span>
+                        </label>
+                    </div>
+                </div>
+
                 <div class="pt-2">
                     <button
                         type="submit"

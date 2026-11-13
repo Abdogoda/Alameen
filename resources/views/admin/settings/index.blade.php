@@ -996,7 +996,6 @@
                     </div>
                 </form>
             </div>
-            </div>
 
             {{-- 3. About Us & 4 Clinical Pillars --}}
             <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-3xl p-5 sm:p-7 shadow-xs">

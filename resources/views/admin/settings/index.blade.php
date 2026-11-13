@@ -415,7 +415,7 @@
                     <div class="space-y-2">
                         <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1.5">{{ __('شعار المنصة الأساسي (الوضع الفاتح - Logo):') }}</label>
                         <div class="flex items-center gap-3">
-                            <input type="text" name="settings[site_logo][ar]" value="{{ $settings['site_logo']['value_ar'] ?? '/assets/images/logo.png' }}" class="flex-1 h-11 px-4 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-mono bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" />
+                            <input type="text" dir="ltr" name="settings[site_logo][ar]" value="{{ $settings['site_logo']['value_ar'] ?? '/assets/images/logo.png' }}" class="flex-1 h-11 px-4 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-mono text-left bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" />
                             <div class="size-11 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-1.5 shrink-0 flex items-center justify-center">
                                 <img src="{{ platform_logo() }}" alt="Logo" class="size-full object-contain" />
                             </div>
@@ -431,7 +431,7 @@
                     <div class="space-y-2">
                         <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1.5">{{ __('الشعار الأبيض (الوضع الليلي والتذييل - White Logo):') }}</label>
                         <div class="flex items-center gap-3">
-                            <input type="text" name="settings[site_logo_white][ar]" value="{{ $settings['site_logo_white']['value_ar'] ?? '/assets/images/logo-white.png' }}" class="flex-1 h-11 px-4 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-mono bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" />
+                            <input type="text" dir="ltr" name="settings[site_logo_white][ar]" value="{{ $settings['site_logo_white']['value_ar'] ?? '/assets/images/logo-white.png' }}" class="flex-1 h-11 px-4 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-mono text-left bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" />
                             <div class="size-11 rounded-xl bg-[#031338] border border-blue-900/50 p-1.5 shrink-0 flex items-center justify-center shadow-xs">
                                 <img src="{{ platform_logo_white() }}" alt="White Logo" class="size-full object-contain" />
                             </div>
@@ -447,7 +447,7 @@
                     <div class="space-y-2">
                         <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1.5">{{ __('شعار التذييل المستقل (Footer Logo):') }}</label>
                         <div class="flex items-center gap-3">
-                            <input type="text" name="settings[footer_logo][ar]" value="{{ $settings['footer_logo']['value_ar'] ?? '/assets/images/logo-white.png' }}" class="flex-1 h-11 px-4 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-mono bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" />
+                            <input type="text" dir="ltr" name="settings[footer_logo][ar]" value="{{ $settings['footer_logo']['value_ar'] ?? '/assets/images/logo-white.png' }}" class="flex-1 h-11 px-4 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-mono text-left bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" />
                             <div class="size-11 rounded-xl bg-[#031338] border border-blue-900/50 p-1.5 shrink-0 flex items-center justify-center shadow-xs">
                                 <img src="{{ platform_footer_logo() }}" alt="Footer Logo" class="size-full object-contain" />
                             </div>
@@ -463,7 +463,7 @@
                     <div class="space-y-2">
                         <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1.5">{{ __('صورة واجهات تسجيل الدخول والاشتراك (Auth Artwork):') }}</label>
                         <div class="flex items-center gap-3">
-                            <input type="text" name="settings[auth_login_image][ar]" value="{{ $settings['auth_login_image']['value_ar'] ?? '/assets/images/alameen-images/13.jpeg' }}" class="flex-1 h-11 px-4 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-mono bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" />
+                            <input type="text" dir="ltr" name="settings[auth_login_image][ar]" value="{{ $settings['auth_login_image']['value_ar'] ?? '/assets/images/alameen-images/13.jpeg' }}" class="flex-1 h-11 px-4 rounded-xl border border-[#DEE8F7] dark:border-slate-700 text-xs font-mono text-left bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" />
                             <div class="size-11 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 shrink-0 bg-slate-100 dark:bg-slate-800">
                                 <img src="{{ platform_auth_login_image() }}" alt="Auth Image" class="size-full object-cover object-top" />
                             </div>
@@ -788,7 +788,7 @@
                                             @endif
                                         </div>
                                         <div class="flex-1 flex flex-col gap-1.5">
-                                            <input type="text" name="metadata[images][{{ $slot }}]" value="{{ $currentVal }}" placeholder="{{ $mediaInfo['fallback'] }}" oninput="const el = document.getElementById('preview-hero-slot-{{ $slot }}'); if(el && this.value) el.src = this.value;" class="w-full h-9 px-3 rounded-lg border border-[#DEE8F7] dark:border-slate-700 text-xs font-mono bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" />
+                                            <input type="text" dir="ltr" name="metadata[images][{{ $slot }}]" value="{{ $currentVal }}" placeholder="{{ $mediaInfo['fallback'] }}" oninput="const el = document.getElementById('preview-hero-slot-{{ $slot }}'); if(el && this.value) el.src = this.value;" class="w-full h-9 px-3 rounded-lg border border-[#DEE8F7] dark:border-slate-700 text-xs font-mono text-left bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" />
                                             <input type="file" name="media_files[{{ $slot }}]" accept="{{ $isVideo ? 'video/mp4,video/webm,image/*' : 'image/*,video/mp4' }}" onchange="if(this.files && this.files[0]) { const r = new FileReader(); const el = document.getElementById('preview-hero-slot-{{ $slot }}'); r.onload = (e) => { if(el) el.src = e.target.result; }; r.readAsDataURL(this.files[0]); }" class="w-full text-[11px] text-slate-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:font-bold file:bg-[#012383] file:text-white hover:file:bg-[#0B2A8F] cursor-pointer" />
                                         </div>
                                     </div>
@@ -915,7 +915,7 @@
                                             <img id="preview-feedback-slot-{{ $slot }}" src="{{ $val }}" alt="Slot {{ $slot + 1 }}" class="size-full object-cover {{ $isDiag ? 'object-center' : 'object-top' }}" />
                                         </div>
                                         <div class="flex-1 flex flex-col gap-1">
-                                            <input type="text" name="metadata[images][{{ $slot }}]" value="{{ $val }}" placeholder="{{ $slotInfo['fallback'] }}" oninput="const img = document.getElementById('preview-feedback-slot-{{ $slot }}'); if(img && this.value) img.src = this.value;" class="w-full h-8 px-2.5 rounded-md border border-[#DEE8F7] dark:border-slate-700 text-[11px] font-mono bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" />
+                                            <input type="text" dir="ltr" name="metadata[images][{{ $slot }}]" value="{{ $val }}" placeholder="{{ $slotInfo['fallback'] }}" oninput="const img = document.getElementById('preview-feedback-slot-{{ $slot }}'); if(img && this.value) img.src = this.value;" class="w-full h-8 px-2.5 rounded-md border border-[#DEE8F7] dark:border-slate-700 text-[11px] font-mono text-left bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" />
                                             <input type="file" name="media_files[{{ $slot }}]" accept="image/*" onchange="if(this.files && this.files[0]) { const r = new FileReader(); const img = document.getElementById('preview-feedback-slot-{{ $slot }}'); r.onload = (e) => { if(img) img.src = e.target.result; }; r.readAsDataURL(this.files[0]); }" class="w-full text-[10px] text-slate-500 file:mr-1.5 file:py-0.5 file:px-2 file:rounded-md file:border-0 file:text-[10px] file:font-bold file:bg-[#012383] file:text-white hover:file:bg-[#0B2A8F] cursor-pointer" />
                                         </div>
                                     </div>
@@ -1002,7 +1002,7 @@
 
                                 <div class="flex flex-col gap-1.5">
                                     <label class="text-[11px] font-bold text-slate-700 dark:text-slate-300">{{ __('مسار الصورة الحالية:') }}</label>
-                                    <input type="text" name="metadata[items][{{ $r }}][image]" value="{{ $rImg }}" placeholder="{{ $reviewDefaults[$r]['image'] }}" oninput="const img = document.getElementById('preview-review-slot-{{ $r }}'); if(img && this.value) img.src = this.value;" class="w-full h-9 px-3 rounded-lg border border-[#DEE8F7] dark:border-slate-700 text-xs font-mono bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" />
+                                    <input type="text" dir="ltr" name="metadata[items][{{ $r }}][image]" value="{{ $rImg }}" placeholder="{{ $reviewDefaults[$r]['image'] }}" oninput="const img = document.getElementById('preview-review-slot-{{ $r }}'); if(img && this.value) img.src = this.value;" class="w-full h-9 px-3 rounded-lg border border-[#DEE8F7] dark:border-slate-700 text-xs font-mono text-left bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" />
                                 </div>
 
                                 <div class="flex flex-col gap-1.5">

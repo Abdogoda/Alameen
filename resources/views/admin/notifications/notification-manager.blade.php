@@ -356,17 +356,17 @@
         </div>
 
         <!-- Desktop Table View -->
-        <div class="hidden md:block overflow-x-auto min-w-0">
-            <table class="w-full text-start text-xs min-w-[760px]">
+        <div class="hidden md:block overflow-x-auto min-w-0 scrollbar-thin">
+            <table class="w-full text-start text-xs min-w-[1150px]">
                 <thead class="bg-zinc-50 dark:bg-zinc-800/50 border-b border-zinc-200 dark:border-zinc-800 text-zinc-500 uppercase tracking-wider font-semibold">
                     <tr>
-                        <th class="px-5 py-3 text-start">{{ __('notifications.admin.offender') }}</th>
-                        <th class="px-5 py-3 text-start">{{ __('notifications.admin.recipient') }}</th>
-                        <th class="px-5 py-3 text-start">{{ __('notifications.admin.title_label') }}</th>
-                        <th class="px-5 py-3 text-start">{{ __('notifications.admin.type') }}</th>
-                        <th class="px-5 py-3 text-start">{{ __('الحالة') }}</th>
-                        <th class="px-5 py-3 text-start">{{ __('التاريخ') }}</th>
-                        <th class="px-5 py-3 text-end">{{ __('الإجراءات') }}</th>
+                        <th class="px-4 sm:px-5 py-3 text-start min-w-[200px] whitespace-nowrap">{{ __('notifications.admin.offender') }}</th>
+                        <th class="px-4 sm:px-5 py-3 text-start min-w-[170px] whitespace-nowrap">{{ __('notifications.admin.recipient') }}</th>
+                        <th class="px-4 sm:px-5 py-3 text-start min-w-[280px]">{{ __('notifications.admin.title_label') }}</th>
+                        <th class="px-4 sm:px-5 py-3 text-start min-w-[100px] whitespace-nowrap">{{ __('notifications.admin.type') }}</th>
+                        <th class="px-4 sm:px-5 py-3 text-start min-w-[90px] whitespace-nowrap">{{ __('الحالة') }}</th>
+                        <th class="px-4 sm:px-5 py-3 text-start min-w-[110px] whitespace-nowrap">{{ __('التاريخ') }}</th>
+                        <th class="px-4 sm:px-5 py-3 text-end min-w-[110px] whitespace-nowrap sticky rtl:left-0 ltr:right-0 bg-zinc-50 dark:bg-zinc-800/90 backdrop-blur-xs z-10 shadow-[-4px_0_10px_rgba(0,0,0,0.04)] dark:shadow-[-4px_0_10px_rgba(0,0,0,0.3)]">{{ __('الإجراءات') }}</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-zinc-100 dark:divide-zinc-800 text-zinc-700 dark:text-zinc-300">
@@ -607,7 +607,7 @@
                             </td>
 
                             {{-- Actions --}}
-                            <td class="px-5 py-3.5 text-end whitespace-nowrap">
+                            <td class="px-5 py-3.5 text-end whitespace-nowrap sticky rtl:left-0 ltr:right-0 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-xs z-10 shadow-[-4px_0_10px_rgba(0,0,0,0.04)] dark:shadow-[-4px_0_10px_rgba(0,0,0,0.3)]">
                                 <div class="inline-flex items-center gap-1 justify-end">
                                     <button
                                         type="button"

@@ -13,6 +13,15 @@
             </div>
             <span class="text-xs bg-emerald-100 dark:bg-emerald-900/60 text-emerald-900 dark:text-emerald-200 px-2.5 py-1 rounded-lg font-mono">{{ __('تم تفريغ الكاش وتحديث الموقع فورياً') }}</span>
         </div>
+
+        {{-- Floating Toast for guaranteed visibility on anchor navigation --}}
+        <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 7000)" x-transition.duration.300ms class="fixed top-5 end-5 z-[100] max-w-md w-full shadow-2xl rounded-2xl p-4 bg-emerald-600 text-white flex items-center justify-between gap-3 font-bold text-sm border border-emerald-400">
+            <div class="flex items-center gap-2.5 min-w-0">
+                <svg class="size-5 text-white shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                <span class="truncate">{{ session('success') }}</span>
+            </div>
+            <button type="button" @click="show = false" class="size-7 rounded-lg bg-black/10 hover:bg-black/20 flex items-center justify-center text-white cursor-pointer shrink-0">✕</button>
+        </div>
     @endif
 
     @if ($errors->any())
@@ -22,6 +31,22 @@
                 {{ __('يرجى تصحيح الأخطاء التالية:') }}
             </span>
             <ul class="list-disc list-inside text-xs ps-2 space-y-1">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+
+        {{-- Floating Toast for Error Visibility --}}
+        <div x-data="{ show: true }" x-show="show" x-transition.duration.300ms class="fixed top-5 end-5 z-[100] max-w-md w-full shadow-2xl rounded-2xl p-4 bg-rose-600 text-white flex flex-col gap-2 font-bold text-sm border border-rose-400">
+            <div class="flex items-center justify-between">
+                <span class="flex items-center gap-2">
+                    <svg class="size-5 text-white shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                    <span>{{ __('يرجى تصحيح الأخطاء التالية:') }}</span>
+                </span>
+                <button type="button" @click="show = false" class="size-7 rounded-lg bg-black/10 hover:bg-black/20 flex items-center justify-center text-white cursor-pointer shrink-0">✕</button>
+            </div>
+            <ul class="list-disc list-inside text-xs ps-2 space-y-1 font-medium text-rose-100">
                 @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
                 @endforeach
@@ -754,17 +779,17 @@
                                     <div class="flex items-center gap-3">
                                         <div class="size-16 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shrink-0 relative flex items-center justify-center">
                                             @if($isVideo)
-                                                <video src="{{ $currentVal }}" autoplay loop muted playsinline class="size-full object-cover"></video>
+                                                <video id="preview-hero-slot-{{ $slot }}" src="{{ $currentVal }}" autoplay loop muted playsinline class="size-full object-cover"></video>
                                                 <div class="absolute inset-0 bg-black/30 flex items-center justify-center text-white pointer-events-none">
                                                     <span class="text-xs">▶</span>
                                                 </div>
                                             @else
-                                                <img src="{{ $currentVal }}" alt="Slot {{ $slot }}" class="size-full object-cover" />
+                                                <img id="preview-hero-slot-{{ $slot }}" src="{{ $currentVal }}" alt="Slot {{ $slot }}" class="size-full object-cover" />
                                             @endif
                                         </div>
                                         <div class="flex-1 flex flex-col gap-1.5">
-                                            <input type="text" name="metadata[images][{{ $slot }}]" value="{{ $currentVal }}" placeholder="{{ $mediaInfo['fallback'] }}" class="w-full h-9 px-3 rounded-lg border border-[#DEE8F7] dark:border-slate-700 text-xs font-mono bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" />
-                                            <input type="file" name="media_files[{{ $slot }}]" accept="{{ $isVideo ? 'video/mp4,video/webm,image/*' : 'image/*,video/mp4' }}" class="w-full text-[11px] text-slate-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:font-bold file:bg-[#012383] file:text-white hover:file:bg-[#0B2A8F] cursor-pointer" />
+                                            <input type="text" name="metadata[images][{{ $slot }}]" value="{{ $currentVal }}" placeholder="{{ $mediaInfo['fallback'] }}" oninput="const el = document.getElementById('preview-hero-slot-{{ $slot }}'); if(el && this.value) el.src = this.value;" class="w-full h-9 px-3 rounded-lg border border-[#DEE8F7] dark:border-slate-700 text-xs font-mono bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" />
+                                            <input type="file" name="media_files[{{ $slot }}]" accept="{{ $isVideo ? 'video/mp4,video/webm,image/*' : 'image/*,video/mp4' }}" onchange="if(this.files && this.files[0]) { const r = new FileReader(); const el = document.getElementById('preview-hero-slot-{{ $slot }}'); r.onload = (e) => { if(el) el.src = e.target.result; }; r.readAsDataURL(this.files[0]); }" class="w-full text-[11px] text-slate-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:font-bold file:bg-[#012383] file:text-white hover:file:bg-[#0B2A8F] cursor-pointer" />
                                         </div>
                                     </div>
                                     <span class="text-[10px] text-slate-400">القيمة الاحتياطية (Fallback): <code class="font-mono text-slate-600 dark:text-slate-300">{{ $mediaInfo['fallback'] }}</code></span>
@@ -887,11 +912,11 @@
 
                                     <div class="flex items-center gap-2.5">
                                         <div class="size-14 rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shrink-0">
-                                            <img src="{{ $val }}" alt="Slot {{ $slot + 1 }}" class="size-full object-cover {{ $isDiag ? 'object-center' : 'object-top' }}" />
+                                            <img id="preview-feedback-slot-{{ $slot }}" src="{{ $val }}" alt="Slot {{ $slot + 1 }}" class="size-full object-cover {{ $isDiag ? 'object-center' : 'object-top' }}" />
                                         </div>
                                         <div class="flex-1 flex flex-col gap-1">
-                                            <input type="text" name="metadata[images][{{ $slot }}]" value="{{ $val }}" placeholder="{{ $slotInfo['fallback'] }}" class="w-full h-8 px-2.5 rounded-md border border-[#DEE8F7] dark:border-slate-700 text-[11px] font-mono bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" />
-                                            <input type="file" name="media_files[{{ $slot }}]" accept="image/*" class="w-full text-[10px] text-slate-500 file:mr-1.5 file:py-0.5 file:px-2 file:rounded-md file:border-0 file:text-[10px] file:font-bold file:bg-[#012383] file:text-white hover:file:bg-[#0B2A8F] cursor-pointer" />
+                                            <input type="text" name="metadata[images][{{ $slot }}]" value="{{ $val }}" placeholder="{{ $slotInfo['fallback'] }}" oninput="const img = document.getElementById('preview-feedback-slot-{{ $slot }}'); if(img && this.value) img.src = this.value;" class="w-full h-8 px-2.5 rounded-md border border-[#DEE8F7] dark:border-slate-700 text-[11px] font-mono bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" />
+                                            <input type="file" name="media_files[{{ $slot }}]" accept="image/*" onchange="if(this.files && this.files[0]) { const r = new FileReader(); const img = document.getElementById('preview-feedback-slot-{{ $slot }}'); r.onload = (e) => { if(img) img.src = e.target.result; }; r.readAsDataURL(this.files[0]); }" class="w-full text-[10px] text-slate-500 file:mr-1.5 file:py-0.5 file:px-2 file:rounded-md file:border-0 file:text-[10px] file:font-bold file:bg-[#012383] file:text-white hover:file:bg-[#0B2A8F] cursor-pointer" />
                                         </div>
                                     </div>
                                     <span class="text-[9px] text-slate-400 truncate" title="{{ $slotInfo['desc'] }}">{{ $slotInfo['desc'] }}</span>
@@ -969,7 +994,7 @@
                                 </div>
 
                                 <div class="aspect-4/3 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-inner group relative">
-                                    <img src="{{ $rImg }}" alt="Testimonial {{ $r + 1 }}" class="size-full object-cover object-top" />
+                                    <img id="preview-review-slot-{{ $r }}" src="{{ $rImg }}" alt="Testimonial {{ $r + 1 }}" class="size-full object-cover object-top" />
                                     <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-bold pointer-events-none">
                                         معاينة صورة التقييم
                                     </div>
@@ -977,12 +1002,12 @@
 
                                 <div class="flex flex-col gap-1.5">
                                     <label class="text-[11px] font-bold text-slate-700 dark:text-slate-300">{{ __('مسار الصورة الحالية:') }}</label>
-                                    <input type="text" name="metadata[items][{{ $r }}][image]" value="{{ $rImg }}" placeholder="{{ $reviewDefaults[$r]['image'] }}" class="w-full h-9 px-3 rounded-lg border border-[#DEE8F7] dark:border-slate-700 text-xs font-mono bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" />
+                                    <input type="text" name="metadata[items][{{ $r }}][image]" value="{{ $rImg }}" placeholder="{{ $reviewDefaults[$r]['image'] }}" oninput="const img = document.getElementById('preview-review-slot-{{ $r }}'); if(img && this.value) img.src = this.value;" class="w-full h-9 px-3 rounded-lg border border-[#DEE8F7] dark:border-slate-700 text-xs font-mono bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-[#0B2A8F]" />
                                 </div>
 
                                 <div class="flex flex-col gap-1.5">
                                     <label class="text-[11px] font-bold text-slate-700 dark:text-slate-300">{{ __('رفع صورة جديدة (لقطة واتساب / رأي متدرب):') }}</label>
-                                    <input type="file" name="media_files[{{ $r }}]" accept="image/*" class="w-full text-xs text-slate-500 file:mr-2 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-[#012383] file:text-white hover:file:bg-[#0B2A8F] cursor-pointer" />
+                                    <input type="file" name="media_files[{{ $r }}]" accept="image/*" onchange="if(this.files && this.files[0]) { const r = new FileReader(); const img = document.getElementById('preview-review-slot-{{ $r }}'); r.onload = (e) => { if(img) img.src = e.target.result; }; r.readAsDataURL(this.files[0]); }" class="w-full text-xs text-slate-500 file:mr-2 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-[#012383] file:text-white hover:file:bg-[#0B2A8F] cursor-pointer" />
                                 </div>
                             </div>
                         @endfor

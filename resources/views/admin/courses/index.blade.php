@@ -81,13 +81,13 @@
             </span>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <div class="grid grid-cols-1 xl:grid-cols-2 gap-5">
             @forelse($courses as $course)
-                <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-2xl sm:rounded-3xl p-5 sm:p-6 shadow-xs hover:shadow-card hover:border-[#0B2A8F]/40 transition-all flex flex-col justify-between gap-5">
+                <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-2xl sm:rounded-3xl p-4.5 sm:p-6 shadow-xs hover:shadow-card hover:border-[#0B2A8F]/40 transition-all flex flex-col justify-between gap-4 sm:gap-5 overflow-hidden">
                     
                     {{-- Top Header --}}
-                    <div class="flex items-start gap-4">
-                        <div class="size-20 sm:size-24 rounded-2xl bg-[#012383] overflow-hidden shrink-0 border border-[#DEE8F7] dark:border-slate-700 shadow-xs relative">
+                    <div class="flex items-start gap-3.5 sm:gap-4">
+                        <div class="size-18 sm:size-22 rounded-2xl bg-[#012383] overflow-hidden shrink-0 border border-[#DEE8F7] dark:border-slate-700 shadow-xs relative">
                             <img src="{{ $course->thumbnail ?: '/assets/images/course-topic-basics.png' }}" alt="{{ $course->title_ar }}" class="size-full object-cover" />
                             @if($course->promo_video_source === 'mux' || !empty($course->mux_playback_id))
                                 <span class="absolute bottom-1 end-1 bg-black/70 backdrop-blur-xs text-white text-[10px] font-bold px-1.5 py-0.5 rounded-md flex items-center gap-0.5">
@@ -97,7 +97,7 @@
                         </div>
 
                         <div class="space-y-1.5 min-w-0 flex-1">
-                            <div class="flex items-center gap-2 flex-wrap">
+                            <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap">
                                 @if($course->is_published)
                                     <span class="px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 text-xs font-bold font-['Cairo']">
                                         {{ __('نشط ومنشور') }}
@@ -134,25 +134,25 @@
 
                     {{-- Metrics and Price Strip --}}
                     <div class="bg-slate-50/80 dark:bg-slate-800/40 border border-[#DEE8F7]/80 dark:border-slate-800 rounded-2xl p-3 sm:p-3.5 flex items-center justify-between gap-3 flex-wrap">
-                        <div class="flex items-center gap-3 sm:gap-4 text-xs font-bold text-slate-600 dark:text-slate-300">
+                        <div class="flex items-center gap-2 sm:gap-3 flex-wrap text-xs font-bold text-slate-600 dark:text-slate-300">
                             <span class="flex items-center gap-1.5">
-                                <span class="size-2 rounded-full bg-blue-600"></span>
-                                {{ $course->levels_count }} {{ __('مستويات') }}
+                                <span class="size-2 rounded-full bg-blue-600 shrink-0"></span>
+                                <span>{{ $course->levels_count }} {{ __('مستويات') }}</span>
                             </span>
-                            <span>•</span>
+                            <span class="text-slate-300 dark:text-slate-600">•</span>
                             <span class="flex items-center gap-1.5">
-                                <span class="size-2 rounded-full bg-emerald-500"></span>
-                                {{ $course->videos_count }} {{ __('درس') }}
+                                <span class="size-2 rounded-full bg-emerald-500 shrink-0"></span>
+                                <span>{{ $course->videos_count }} {{ __('درس') }}</span>
                             </span>
-                            <span>•</span>
+                            <span class="text-slate-300 dark:text-slate-600">•</span>
                             <span class="flex items-center gap-1.5">
-                                <span class="size-2 rounded-full bg-purple-500"></span>
-                                {{ $course->users_count }} {{ __('متدرب') }}
+                                <span class="size-2 rounded-full bg-purple-500 shrink-0"></span>
+                                <span>{{ $course->users_count }} {{ __('متدرب') }}</span>
                             </span>
                         </div>
 
                         {{-- Price --}}
-                        <div class="flex items-baseline gap-2">
+                        <div class="flex items-baseline gap-2 shrink-0">
                             <span class="text-base sm:text-lg font-black text-[#012383] dark:text-blue-400">
                                 {{ number_format($course->price) }} {{ $currencySymbol ?? __('ج.م') }}
                             </span>
@@ -164,76 +164,79 @@
                         </div>
                     </div>
 
-                    {{-- Bottom Action Buttons (Responsive Layout) --}}
-                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 pt-3 border-t border-[#DEE8F7]/70 dark:border-slate-800">
-                        {{-- Preview & Edit Course Details --}}
-                        <div class="grid grid-cols-1 sm:flex items-center gap-2 flex-1 min-w-0">
+                    {{-- Bottom Action Buttons (Fully Responsive Hierarchical Layout) --}}
+                    <div class="pt-3.5 border-t border-[#DEE8F7]/70 dark:border-slate-800 flex flex-col gap-2.5">
+                        {{-- Row 1: Primary Action (View Curriculum) + Delete Action --}}
+                        <div class="flex items-center gap-2">
                             <a 
                                 href="{{ route('admin.courses.show', $course) }}" 
-                                class="h-9.5 px-3.5 rounded-xl bg-[#012383] hover:bg-[#0B2A8F] text-white font-bold text-xs shadow-xs hover:shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap text-center"
+                                class="flex-1 h-10 px-4 rounded-xl bg-gradient-to-r from-[#012383] to-[#0B2A8F] hover:from-[#0B2A8F] hover:to-[#012383] text-white font-bold text-xs sm:text-sm shadow-xs hover:shadow-md active:scale-[0.99] transition-all flex items-center justify-center gap-2 cursor-pointer text-center"
                             >
-                                <svg class="size-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                <svg class="size-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
                                 <span>{{ __('عرض المنهج والمستويات') }}</span>
                             </a>
 
                             @if(auth('admin')->user()?->hasPermission('courses.manage'))
-                            <a 
-                                href="{{ route('admin.courses.assign-users', $course) }}" 
-                                class="h-9.5 px-3 rounded-xl bg-purple-50 hover:bg-purple-100 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800 font-bold text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap text-center"
-                                title="{{ __('تعيين وتخصيص الكورس للطلاب وتحديث القائمة') }}"
-                            >
-                                <svg class="size-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-                                <span>{{ __('تعيين الطلاب') }}</span>
-                                <span class="bg-purple-200/70 dark:bg-purple-900/60 text-purple-800 dark:text-purple-200 text-[10px] px-1.5 py-0.2 rounded-full font-black">{{ $course->users_count }}</span>
-                            </a>
-
-                            <a 
-                                href="{{ route('admin.courses.edit', $course) }}" 
-                                class="h-9.5 px-3.5 rounded-xl bg-white dark:bg-slate-800 border border-[#DEE8F7] dark:border-slate-700 hover:border-[#0B2A8F] text-[#0B2A8F] dark:text-blue-300 font-bold text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap text-center"
-                            >
-                                <svg class="size-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
-                                <span>{{ __('تعديل بيانات الكورس') }}</span>
-                            </a>
-
-                            <form action="{{ route('admin.courses.toggle-auto-enroll', $course) }}" method="POST" class="w-full sm:w-auto">
-                                @csrf
-                                <button 
-                                    type="submit" 
-                                    class="w-full sm:w-auto h-9.5 px-3 rounded-xl border text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap {{ $course->auto_enroll_students ? 'bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800' : 'bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/40 text-[#012383] dark:text-blue-300 border-blue-200 dark:border-blue-800' }}"
-                                    title="{{ $course->auto_enroll_students ? __('انقر لإلغاء الإتاحة التلقائية واشتراط الإيصال') : __('انقر للإتاحة التلقائية لجميع الطلاب بدون إيصال') }}"
-                                >
-                                    @if($course->auto_enroll_students)
-                                        <svg class="size-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-                                        <span>{{ __('إلغاء الإتاحة التلقائية') }}</span>
-                                    @else
-                                        <svg class="size-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                        <span>{{ __('إتاحة لجميع الطلاب') }}</span>
-                                    @endif
-                                </button>
-                            </form>
-                            @endif
-                        </div>
-
-                        {{-- Quick Delete Course --}}
-                        @if(auth('admin')->user()?->hasPermission('courses.manage'))
-                        <div class="flex items-center justify-end sm:justify-start">
                             <form 
                                 action="{{ route('admin.courses.destroy', $course) }}" 
                                 method="POST" 
                                 data-confirm="{{ __('هل أنت متأكد من رغبتك في حذف هذا الكورس وجميع مستوياته ودروسه نهائياً؟') }}"
                                 data-confirm-title="{{ __('حذف الكورس التدريبي') }}"
                                 data-confirm-btn="{{ __('نعم، احذف الكورس') }}"
-                                class="w-full sm:w-auto"
+                                class="shrink-0"
                             >
                                 @csrf
                                 @method('DELETE')
                                 <button 
                                     type="submit" 
-                                    class="w-full sm:w-auto h-9 sm:h-9 px-3 text-slate-400 hover:text-rose-600 rounded-xl hover:bg-rose-50 dark:hover:bg-rose-950/40 border border-slate-200/80 sm:border-transparent dark:border-slate-800 sm:dark:border-transparent transition-colors cursor-pointer flex items-center justify-center gap-1.5 text-xs font-semibold" 
-                                    title="{{ __('حذف الكورس') }}"
+                                    class="size-10 rounded-xl bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 dark:hover:bg-rose-900/50 text-rose-600 dark:text-rose-400 border border-rose-200/80 dark:border-rose-900/60 transition-colors cursor-pointer flex items-center justify-center shrink-0" 
+                                    title="{{ __('حذف الكورس نهائياً') }}"
                                 >
-                                    <svg class="size-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                                    <span class="sm:hidden text-rose-600 dark:text-rose-400">{{ __('حذف الكورس') }}</span>
+                                    <svg class="size-4.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                </button>
+                            </form>
+                            @endif
+                        </div>
+
+                        {{-- Row 2: Secondary Management Actions (Responsive Grid) --}}
+                        @if(auth('admin')->user()?->hasPermission('courses.manage'))
+                        <div class="grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-3 gap-2">
+                            {{-- Assign Students --}}
+                            <a 
+                                href="{{ route('admin.courses.assign-users', $course) }}" 
+                                class="h-9 px-3 rounded-xl bg-purple-50 hover:bg-purple-100 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 border border-purple-200/80 dark:border-purple-800 font-bold text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer text-center"
+                                title="{{ __('تعيين وتخصيص الكورس للطلاب وتحديث القائمة') }}"
+                            >
+                                <svg class="size-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                                <span class="truncate">{{ __('تعيين الطلاب') }}</span>
+                                <span class="bg-purple-200/80 dark:bg-purple-900/60 text-purple-800 dark:text-purple-200 text-[10px] px-1.5 py-0.2 rounded-full font-black shrink-0">{{ $course->users_count }}</span>
+                            </a>
+
+                            {{-- Edit Details --}}
+                            <a 
+                                href="{{ route('admin.courses.edit', $course) }}" 
+                                class="h-9 px-3 rounded-xl bg-white dark:bg-slate-800 border border-[#DEE8F7] dark:border-slate-700 hover:border-[#0B2A8F] text-[#0B2A8F] dark:text-blue-300 font-bold text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer text-center"
+                                title="{{ __('تعديل بيانات الكورس') }}"
+                            >
+                                <svg class="size-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                                <span class="truncate">{{ __('تعديل البيانات') }}</span>
+                            </a>
+
+                            {{-- Toggle Auto Enroll --}}
+                            <form action="{{ route('admin.courses.toggle-auto-enroll', $course) }}" method="POST" class="w-full sm:col-span-2 2xl:col-span-1">
+                                @csrf
+                                <button 
+                                    type="submit" 
+                                    class="w-full h-9 px-3 rounded-xl border text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer {{ $course->auto_enroll_students ? 'bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border-amber-200/80 dark:border-amber-800' : 'bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/40 text-[#012383] dark:text-blue-300 border-blue-200/80 dark:border-blue-800' }}"
+                                    title="{{ $course->auto_enroll_students ? __('انقر لإلغاء الإتاحة التلقائية واشتراط الإيصال') : __('انقر للإتاحة التلقائية لجميع الطلاب بدون إيصال') }}"
+                                >
+                                    @if($course->auto_enroll_students)
+                                        <svg class="size-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                                        <span class="truncate">{{ __('إلغاء الإتاحة التلقائية') }}</span>
+                                    @else
+                                        <svg class="size-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                        <span class="truncate">{{ __('إتاحة لجميع الطلاب') }}</span>
+                                    @endif
                                 </button>
                             </form>
                         </div>

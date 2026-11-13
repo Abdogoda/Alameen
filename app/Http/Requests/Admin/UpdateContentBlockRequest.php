@@ -6,12 +6,34 @@ namespace App\Http\Requests\Admin;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\UploadedFile;
 
 class UpdateContentBlockRequest extends FormRequest
 {
     public function authorize(): bool
     {
         return true;
+    }
+
+    /**
+     * Prepare data before validation:
+     * Filter out empty file inputs (UPLOAD_ERR_NO_FILE) from media_files array
+     * so Laravel's 'file' validation rule does not fail when slots are left empty.
+     */
+    protected function prepareForValidation(): void
+    {
+        $rawMedia = $this->files->get('media_files');
+        if (is_array($rawMedia)) {
+            $cleaned = array_filter($rawMedia, function ($f) {
+                return $f instanceof UploadedFile && $f->isValid();
+            });
+
+            if (empty($cleaned)) {
+                $this->files->remove('media_files');
+            } else {
+                $this->files->set('media_files', $cleaned);
+            }
+        }
     }
 
     /**

@@ -53,7 +53,7 @@
 
         <div class="flex items-center gap-2 w-full sm:w-auto">
             <a
-                href="{{ route('notifications.index') }}"
+                href="{{ route('admin.notifications.index') }}"
                 wire:navigate
                 class="inline-flex items-center justify-center gap-1.5 w-full sm:w-auto px-4 py-2 text-xs font-bold rounded-xl bg-[#EAF1FB] dark:bg-slate-800 hover:bg-[#DEE8F7] dark:hover:bg-slate-700 text-[#0B2A8F] dark:text-blue-400 transition shadow-xs cursor-pointer text-center"
             >

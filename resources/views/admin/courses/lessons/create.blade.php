@@ -696,13 +696,14 @@
 
                 console.log('[VIDEO_UPLOAD] Initializing @mux/upchunk upload to endpoint:', uploadUrl);
 
-                // Step 2: Stream directly to MUX via UpChunk
+                // Step 2: Stream directly to MUX via UpChunk with network resilience
                 const upload = UpChunk.createUpload({
                     endpoint: uploadUrl,
                     file: file,
                     chunkSize: 5120, // 5MB chunks (multiple of 256KB required by MUX)
-                    attempts: 5,
-                    delayBeforeAttempt: 1,
+                    attempts: 6,
+                    delayBeforeAttempt: 2,
+                    retryCodes: [0, 408, 429, 502, 503, 504],
                 });
 
                 upload.on('attempt', (e) => {

@@ -30,6 +30,8 @@ class AdminActivityLogger
         'admin.support.poll',
         'admin.courses.promo.mux.upload_status',
         'admin.courses.videos.mux.upload_status',
+        'admin.courses.promo.chunk.upload',
+        'admin.courses.videos.chunk.upload',
     ];
 
     /**
@@ -133,8 +135,27 @@ class AdminActivityLogger
             // Map route to functional module, action, description, and target subject
             $meta = static::resolveRouteMetadata($request, $admin);
 
-            // Prepare sanitized properties
-            $requestParams = static::sanitizePayload($request->except(['_token', '_method']));
+            // Prepare sanitized properties safely without calling $request->all() / $request->except()
+            // which converts $_FILES and crashes with FileNotFoundException if uploaded files were moved/deleted.
+            $rawInput = array_diff_key($request->input(), array_flip(['_token', '_method']));
+
+            if ($request->files->count() > 0) {
+                try {
+                    foreach ($request->allFiles() as $fileKey => $file) {
+                        if ($file instanceof UploadedFile) {
+                            $rawInput[$fileKey] = [
+                                'file_name' => $file->getClientOriginalName(),
+                                'file_size' => @is_file($file->getPathname()) ? $file->getSize() : null,
+                                'mime_type' => $file->getClientMimeType(),
+                            ];
+                        }
+                    }
+                } catch (Throwable) {
+                    // Files were already moved/deleted during the request lifecycle
+                }
+            }
+
+            $requestParams = static::sanitizePayload($rawInput);
             $queryParams = static::sanitizePayload($request->query());
             $routeParams = static::extractRouteParameters($request);
 
@@ -188,7 +209,10 @@ class AdminActivityLogger
                 'properties' => $properties,
             ]);
         } catch (Throwable $e) {
-            report($e);
+            // Never report FileNotFoundException as critical error if temporary file was moved/deleted
+            if (! ($e instanceof \Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException)) {
+                report($e);
+            }
 
             return null;
         }
@@ -248,7 +272,10 @@ class AdminActivityLogger
                 'properties' => $properties,
             ]);
         } catch (Throwable $e) {
-            report($e);
+            // Never report FileNotFoundException as critical error if temporary file was moved/deleted
+            if (! ($e instanceof \Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException)) {
+                report($e);
+            }
 
             return null;
         }
@@ -1029,13 +1056,17 @@ class AdminActivityLogger
                 continue;
             }
 
-            // Convert UploadedFile instances to metadata arrays
+            // Convert UploadedFile instances to metadata arrays safely
             if ($value instanceof UploadedFile) {
-                $sanitized[$key] = [
-                    'file_name' => $value->getClientOriginalName(),
-                    'file_size' => $value->getSize(),
-                    'mime_type' => $value->getClientMimeType(),
-                ];
+                try {
+                    $sanitized[$key] = [
+                        'file_name' => $value->getClientOriginalName(),
+                        'file_size' => @is_file($value->getPathname()) ? $value->getSize() : null,
+                        'mime_type' => $value->getClientMimeType(),
+                    ];
+                } catch (Throwable) {
+                    $sanitized[$key] = '[UploadedFile]';
+                }
 
                 continue;
             }

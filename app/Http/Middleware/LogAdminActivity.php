@@ -86,8 +86,17 @@ class LogAdminActivity
             return false;
         }
 
-        // 2. Ignore pure static asset paths
-        if ($request->is('admin/assets/*', 'assets/*', 'build/*', 'flux/*')) {
+        // 2. Ignore pure static asset paths and high-frequency binary chunk uploads
+        if ($request->is(
+            'admin/assets/*',
+            'assets/*',
+            'build/*',
+            'flux/*',
+            'admin/courses/*/promo/upload-chunk',
+            'admin/courses/*/lessons/upload-chunk',
+            '*/upload-chunk',
+            '*/upload-chunk/*'
+        )) {
             return false;
         }
 

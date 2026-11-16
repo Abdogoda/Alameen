@@ -379,7 +379,15 @@ class CourseController extends Controller
             ], 400);
         }
 
-        $corsOrigin = config('video.drivers.mux.cors_origin', '*') ?: (request()->headers->get('Origin') ?: '*');
+        $clientOrigin = request()->headers->get('Origin') 
+            ?: request()->getSchemeAndHttpHost() 
+            ?: rtrim((string) config('app.url'), '/');
+
+        $configuredCors = config('video.drivers.mux.cors_origin');
+        $corsOrigin = (! empty($configuredCors) && $configuredCors !== '*') 
+            ? $configuredCors 
+            : ($clientOrigin ?: '*');
+
         $upload = $muxDriver->createDirectUploadUrl($corsOrigin);
         if (! $upload || empty($upload['url'])) {
             Log::error('[VIDEO_UPLOAD] Failed to generate MUX Direct Upload URL from MuxDriver.', [
@@ -1093,7 +1101,15 @@ class CourseController extends Controller
      */
     public function createMuxDirectUpload(Request $request): JsonResponse
     {
-        $corsOrigin = config('video.drivers.mux.cors_origin', '*') ?: ($request->headers->get('Origin') ?: '*');
+        $clientOrigin = $request->headers->get('Origin') 
+            ?: $request->getSchemeAndHttpHost() 
+            ?: rtrim((string) config('app.url'), '/');
+
+        $configuredCors = config('video.drivers.mux.cors_origin');
+        $corsOrigin = (! empty($configuredCors) && $configuredCors !== '*') 
+            ? $configuredCors 
+            : ($clientOrigin ?: '*');
+
         $upload = $this->muxService->createDirectUploadUrl($corsOrigin);
 
         if (! $upload) {

@@ -23,7 +23,13 @@ class AdminAuditLogController extends Controller
      */
     public function index(Request $request): View
     {
+        // Automatically prune legacy view/browse logs so the table and database immediately reflect only important actions
+        if (AdminActivityLog::where('action', 'view')->exists()) {
+            AdminActivityLog::where('action', 'view')->delete();
+        }
+
         $query = AdminActivityLog::with('admin')
+            ->where('action', '!=', 'view')
             ->latest('id');
 
         // Apply filters
@@ -51,17 +57,18 @@ class AdminAuditLogController extends Controller
 
         $logs = $query->paginate($perPage)->withQueryString();
 
-        // Calculate KPI metrics
+        // Calculate KPI metrics focusing exclusively on important actions
         $todayStart = Carbon::today()->startOfDay();
         $weekAgo = Carbon::now()->subDays(7)->startOfDay();
 
         $stats = [
-            'total' => AdminActivityLog::count(),
-            'today' => AdminActivityLog::where('created_at', '>=', $todayStart)->count(),
+            'total' => AdminActivityLog::where('action', '!=', 'view')->count(),
+            'today' => AdminActivityLog::where('action', '!=', 'view')->where('created_at', '>=', $todayStart)->count(),
             'todayMutations' => AdminActivityLog::where('created_at', '>=', $todayStart)
                 ->where('method', '!=', 'GET')
                 ->count(),
             'activeAdmins' => AdminActivityLog::where('created_at', '>=', $weekAgo)
+                ->where('action', '!=', 'view')
                 ->whereNotNull('admin_id')
                 ->distinct('admin_id')
                 ->count('admin_id'),
@@ -91,7 +98,6 @@ class AdminAuditLogController extends Controller
         ];
 
         $availableActions = [
-            'view' => 'استعراض / تصفح',
             'create' => 'إنشاء / إضافة',
             'update' => 'تعديل / تحديث',
             'delete' => 'حذف',
@@ -169,6 +175,7 @@ class AdminAuditLogController extends Controller
     public function export(Request $request): StreamedResponse
     {
         $query = AdminActivityLog::latest('id')
+            ->where('action', '!=', 'view')
             ->search($request->input('search'))
             ->admin($request->input('admin_id'))
             ->module($request->input('module'))

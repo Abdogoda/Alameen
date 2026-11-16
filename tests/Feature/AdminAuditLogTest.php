@@ -42,19 +42,17 @@ class AdminAuditLogTest extends TestCase
         ]);
     }
 
-    public function test_admin_page_visit_is_automatically_logged(): void
+    public function test_admin_page_visit_is_not_logged(): void
     {
         $response = $this->actingAs($this->superAdmin, 'admin')
             ->get(route('admin.dashboard'));
 
         $response->assertOk();
 
-        $this->assertDatabaseHas('admin_activity_logs', [
+        // Simple view / browse actions must NOT be logged into the activity log
+        $this->assertDatabaseMissing('admin_activity_logs', [
             'admin_id' => $this->superAdmin->id,
-            'module' => 'dashboard',
             'action' => 'view',
-            'method' => 'GET',
-            'status' => 'success',
         ]);
     }
 
@@ -262,9 +260,9 @@ class AdminAuditLogTest extends TestCase
             'admin_id' => $this->superAdmin->id,
             'admin_name' => $this->superAdmin->name,
             'module' => 'courses',
-            'action' => 'view',
+            'action' => 'update',
             'description' => 'سجل قديم',
-            'method' => 'GET',
+            'method' => 'PUT',
             'url' => 'http://localhost/admin/courses',
             'status' => 'success',
         ]);
@@ -276,9 +274,9 @@ class AdminAuditLogTest extends TestCase
             'admin_id' => $this->superAdmin->id,
             'admin_name' => $this->superAdmin->name,
             'module' => 'courses',
-            'action' => 'view',
+            'action' => 'update',
             'description' => 'سجل حديث',
-            'method' => 'GET',
+            'method' => 'PUT',
             'url' => 'http://localhost/admin/courses',
             'status' => 'success',
             'created_at' => Carbon::now()->subDays(5),

@@ -1,6 +1,6 @@
 <x-admin-layout::admin
     :title="__('سجل نشاط الإدارة المركزية والعمليات (Audit Logs)')"
-    :description="__('سجل رقابي شامل لجميع تحركات وزيارات وتعديلات المشرفين داخل لوحة التحكم لتتبع من قام بماذا')"
+    :description="__('سجل رقابي مركزي لتوثيق كافة التعديلات والعمليات والإجراءات الإدارية الهامة داخل لوحة التحكم')"
     contentClass="p-3.5 sm:p-6 lg:p-8 flex flex-col gap-5 sm:gap-6 w-full min-w-0"
 >
     <x-slot:actions>
@@ -68,7 +68,7 @@
             <div class="flex flex-col">
                 <span class="text-xs font-bold text-slate-500 dark:text-slate-400">{{ __('نشاط اليوم') }}</span>
                 <span class="text-2xl font-black text-emerald-600 dark:text-emerald-400 mt-1">{{ number_format($stats['today'] ?? 0) }}</span>
-                <span class="text-[11px] text-emerald-700 dark:text-emerald-400 mt-0.5">{{ __('تحركات وزيارات اليوم') }}</span>
+                <span class="text-[11px] text-emerald-700 dark:text-emerald-400 mt-0.5">{{ __('العمليات والإجراءات المنفذة اليوم') }}</span>
             </div>
             <div class="size-12 rounded-2xl bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0">
                 <svg class="size-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -236,7 +236,7 @@
                         class="w-full h-10 px-3 rounded-xl border border-[#DEE8F7] dark:border-slate-800 text-xs font-medium text-slate-700 dark:text-slate-200 outline-none focus:border-[#0B2A8F] bg-slate-50/60 dark:bg-slate-800/60"
                     >
                         <option value="all">{{ __('الكل') }}</option>
-                        <option value="GET" {{ $filters['method'] === 'GET' ? 'selected' : '' }}>GET (تصفح / عرض)</option>
+                        <option value="GET" {{ $filters['method'] === 'GET' ? 'selected' : '' }}>GET (تصدير / عمليات خاصة)</option>
                         <option value="POST" {{ $filters['method'] === 'POST' ? 'selected' : '' }}>POST (إضافة / اعتماد)</option>
                         <option value="PUT" {{ $filters['method'] === 'PUT' ? 'selected' : '' }}>PUT (تعديل / تحديث)</option>
                         <option value="DELETE" {{ $filters['method'] === 'DELETE' ? 'selected' : '' }}>DELETE (حذف)</option>

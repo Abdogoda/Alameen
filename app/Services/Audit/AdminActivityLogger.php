@@ -69,6 +69,11 @@ class AdminActivityLogger
     public static function log(array $data): ?AdminActivityLog
     {
         try {
+            // Do not record simple view or browse actions
+            if (($data['action'] ?? null) === 'view') {
+                return null;
+            }
+
             $admin = $data['admin'] ?? auth('admin')->user();
 
             if (! isset($data['admin_id']) && $admin instanceof Admin) {
@@ -134,6 +139,11 @@ class AdminActivityLogger
 
             // Map route to functional module, action, description, and target subject
             $meta = static::resolveRouteMetadata($request, $admin);
+
+            // Do not log view or browse actions - only record important actions (mutations, security events, errors, exports)
+            if ($meta['action'] === 'view' && $status === 'success') {
+                return null;
+            }
 
             // Prepare sanitized properties safely without calling $request->all() / $request->except()
             // which converts $_FILES and crashes with FileNotFoundException if uploaded files were moved/deleted.

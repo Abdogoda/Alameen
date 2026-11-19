@@ -52,6 +52,7 @@ class MergeVideoChunksJob implements ShouldQueue
         }
 
         $cacheKey = "chunk_merge:{$this->uploadId}";
+        $mergedFilePath = null;
 
         try {
             // Phase 1: Merging chunks
@@ -80,6 +81,7 @@ class MergeVideoChunksJob implements ShouldQueue
                 $this->totalChunks,
                 $this->originalFilename
             );
+            $mergedFilePath = $mergedFile->getRealPath();
 
             // Phase 2: Storing to local storage
             Cache::put($cacheKey, [
@@ -97,7 +99,10 @@ class MergeVideoChunksJob implements ShouldQueue
             ]);
 
             // Clean up temporary merged file
-            @unlink($mergedFile->getRealPath());
+            if ($mergedFilePath && file_exists($mergedFilePath)) {
+                @unlink($mergedFilePath);
+                $mergedFilePath = null;
+            }
 
             // Phase 3: Update DB record
             if ($this->targetType === 'lesson' && $this->videoId) {
@@ -151,11 +156,15 @@ class MergeVideoChunksJob implements ShouldQueue
                 'trace' => $e->getTraceAsString(),
             ]);
 
-            // Clean up chunks on failure
+            // Clean up chunks and temporary merged file on failure
             try {
                 app(ChunkedUploadService::class)->cleanup($this->uploadId);
             } catch (\Throwable) {
                 // Ignore cleanup errors
+            }
+
+            if ($mergedFilePath && file_exists($mergedFilePath)) {
+                @unlink($mergedFilePath);
             }
 
             Cache::put($cacheKey, [

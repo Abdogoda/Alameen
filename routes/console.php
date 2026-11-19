@@ -11,3 +11,9 @@ Artisan::command('inspire', function () {
 Schedule::call(function () {
     Artisan::call('courses:expire-subscriptions');
 })->hourly()->name('courses:expire-subscriptions')->description('Scan time-bound course subscriptions and mark expired ones as expired');
+
+Schedule::command('storage:clean-temp --hours=24')
+    ->daily()
+    ->name('storage:clean-temp')
+    ->description('Prune abandoned video chunks and temporary merged files older than 24 hours');
+

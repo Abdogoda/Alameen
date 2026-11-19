@@ -57,6 +57,14 @@ Route::prefix('admin')->name('admin.')->middleware([LogAdminActivity::class])->g
         Route::post('logout', [AdminAuthController::class, 'logout'])->name('logout');
         Route::view('dashboard', 'admin.dashboard')->name('dashboard');
 
+        // Session Keep-Alive Heartbeat (used during large file uploads to prevent session timeout)
+        Route::get('keep-alive', function () {
+            return response()->json([
+                'status' => 'ok',
+                'authenticated' => true,
+            ]);
+        })->name('keep-alive');
+
         // Curriculum, Levels & Video Management
         Route::middleware('admin.can:courses.view,courses.manage')->group(function () {
             Route::get('courses', [CourseController::class, 'index'])->name('courses.index');

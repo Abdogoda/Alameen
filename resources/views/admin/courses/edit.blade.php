@@ -620,12 +620,35 @@
         const PROMO_MUX_DIRECT_URL = "{{ route('admin.courses.promo.mux.direct_upload', $course) }}";
         const PROMO_MUX_STATUS_TEMPLATE = "{{ route('admin.courses.promo.mux.upload_status', [$course, ':uploadId']) }}";
         const PROMO_MUX_UPDATE_URL = "{{ route('admin.courses.promo.mux.update', $course) }}";
+        const KEEP_ALIVE_URL = "{{ route('admin.keep-alive') }}";
         const CHUNK_SIZE = 10 * 1024 * 1024; // 10MB binary slices for local upload
         const CSRF_TOKEN = "{{ csrf_token() }}";
 
         let promoCurrentFile = null;
         let isPromoUploading = false;
         let promoUploadStartTime = null;
+        let promoKeepAliveTimer = null;
+
+        function startPromoKeepAlive() {
+            stopPromoKeepAlive();
+            promoKeepAliveTimer = setInterval(async () => {
+                try {
+                    await fetch(KEEP_ALIVE_URL, {
+                        headers: { 'Accept': 'application/json' },
+                        credentials: 'same-origin'
+                    });
+                } catch (e) {
+                    console.debug('[KeepAlive Promo] Ping failed:', e);
+                }
+            }, 40000);
+        }
+
+        function stopPromoKeepAlive() {
+            if (promoKeepAliveTimer) {
+                clearInterval(promoKeepAliveTimer);
+                promoKeepAliveTimer = null;
+            }
+        }
 
         function sleep(ms) {
             return new Promise(resolve => setTimeout(resolve, ms));
@@ -753,6 +776,8 @@
                 const uploadUrl = data.upload_url;
                 const uploadId = data.upload_id;
 
+                startPromoKeepAlive();
+
                 if (statusText) statusText.textContent = '{{ __("جاري الرفع المباشر إلى MUX...") }}';
 
                 const upload = UpChunk.createUpload({
@@ -831,12 +856,14 @@
                         pollCount++;
                         try {
                             const pollRes = await fetch(statusUrl, {
-                                headers: { 'Accept': 'application/json' }
+                                headers: { 'Accept': 'application/json' },
+                                credentials: 'same-origin'
                             });
                             if (pollRes.ok) {
                                 const pollData = await pollRes.json();
                                 if (pollData.asset_id && pollData.playback_id) {
                                     clearInterval(poller);
+                                    stopPromoKeepAlive();
 
                                     // Save MUX details to course on backend
                                     await fetch(PROMO_MUX_UPDATE_URL, {
@@ -887,6 +914,7 @@
 
                         if (pollCount > 60) {
                             clearInterval(poller);
+                            stopPromoKeepAlive();
                             document.getElementById('field-promo-video-source').value = 'mux';
                             processingBanner.classList.add('hidden');
                             successBanner.classList.remove('hidden');
@@ -902,6 +930,7 @@
 
                 upload.on('error', (err) => {
                     console.error('[PROMO_UPLOAD MUX] UpChunk upload error:', err);
+                    stopPromoKeepAlive();
                     if (statusText) {
                         statusText.textContent = 'تعذر استكمال الرفع عبر MUX، جاري التحويل التلقائي للرفع المجزأ فائق الاستقرار عبر خادم المنصة...';
                     }

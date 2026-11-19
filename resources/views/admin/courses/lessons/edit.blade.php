@@ -586,6 +586,7 @@
         const IS_MUX_CONFIGURED = {{ $isMuxConfigured ? 'true' : 'false' }};
         const MUX_DIRECT_UPLOAD_URL = "{{ route('admin.courses.videos.mux.direct_upload', $course) }}";
         const MUX_STATUS_URL_TEMPLATE = "{{ route('admin.courses.videos.mux.upload_status', [$course, ':uploadId']) }}";
+        const KEEP_ALIVE_URL = "{{ route('admin.keep-alive') }}";
         const CHUNK_SIZE = 10 * 1024 * 1024; // 10MB binary slices for local fallback
         const CHUNK_UPLOAD_URL = "{{ route('admin.courses.videos.chunk.upload', $course) }}";
         const VERIFY_CHUNKS_URL = "{{ route('admin.courses.videos.chunks.verify', $course) }}";
@@ -598,6 +599,28 @@
         let activeUploadEngine = null; // 'mux' | 'local'
         let activeMuxUpload = null;    // Active UpChunk instance
         let uploadSessionId = 0;       // Unique counter to discard stale async events
+        let keepAliveTimer = null;
+
+        function startKeepAlive() {
+            stopKeepAlive();
+            keepAliveTimer = setInterval(async () => {
+                try {
+                    await fetch(KEEP_ALIVE_URL, {
+                        headers: { 'Accept': 'application/json' },
+                        credentials: 'same-origin'
+                    });
+                } catch (e) {
+                    console.debug('[KeepAlive] Heartbeat ping failed:', e);
+                }
+            }, 40000);
+        }
+
+        function stopKeepAlive() {
+            if (keepAliveTimer) {
+                clearInterval(keepAliveTimer);
+                keepAliveTimer = null;
+            }
+        }
 
         function sleep(ms) {
             return new Promise(resolve => setTimeout(resolve, ms));
@@ -779,6 +802,15 @@
                 const uploadUrl = data.upload_url;
                 const uploadId = data.upload_id;
 
+                // Immediately register MUX upload ID in hidden fields so it's preserved even if session drops
+                const fieldVideoSource = document.getElementById('field-video-source');
+                if (fieldVideoSource) fieldVideoSource.value = 'mux';
+                const fieldMuxUploadId = document.getElementById('field-mux-upload-id');
+                if (fieldMuxUploadId) fieldMuxUploadId.value = uploadId;
+
+                // Start keep-alive heartbeat to prevent session expiration during large uploads
+                startKeepAlive();
+
                 if (statusText) statusText.textContent = '{{ __("جاري الرفع المباشر إلى MUX...") }}';
 
                 console.log('[VIDEO_UPLOAD] Initializing @mux/upchunk upload to endpoint:', uploadUrl);
@@ -882,13 +914,40 @@
                         pollCount++;
                         try {
                             const pollRes = await fetch(statusUrl, {
-                                headers: { 'Accept': 'application/json' }
+                                headers: { 'Accept': 'application/json' },
+                                credentials: 'same-origin'
                             });
                             
                             const pollData = await pollRes.json().catch(() => ({}));
 
                             if (!pollRes.ok || pollData.status === 'errored') {
+                                if (pollRes.status === 401 || pollRes.status === 403) {
+                                    console.warn('[VIDEO_UPLOAD MUX] Poll 401/403 authorization error:', pollData);
+                                    if (statusBadge) {
+                                        statusBadge.className = 'inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-amber-100 text-amber-900 border border-amber-300';
+                                    }
+                                    if (statusText) {
+                                        statusText.innerHTML = `⚠️ انتهت جلسة الدخول أثناء المعالجة (الفيديو محفوظ بنجاح على MUX). يرجى تسجيل الدخول في تبويب آخر ثم <button type="button" id="btn-retry-poll-edit" class="underline font-extrabold text-blue-700 hover:text-blue-900 mx-1 cursor-pointer">الضغط هنا لإعادة التحقق</button>`;
+                                        const retryBtn = document.getElementById('btn-retry-poll-edit');
+                                        if (retryBtn) {
+                                            retryBtn.onclick = (e) => {
+                                                e.preventDefault();
+                                                pollCount = 0;
+                                                statusText.textContent = 'جاري إعادة التحقق من حالة الفيديو...';
+                                            };
+                                        }
+                                    }
+                                    if (submitBtn) submitBtn.disabled = false;
+                                    const bannerBtn = document.getElementById('btn-banner-submit');
+                                    if (bannerBtn) bannerBtn.disabled = false;
+                                    if (pollCount > 10) {
+                                        clearInterval(poller);
+                                    }
+                                    return;
+                                }
+
                                 clearInterval(poller);
+                                stopKeepAlive();
                                 const errorMsg = pollData.error || pollData.message || '{{ __("فشلت معالجة الفيديو في منصة MUX") }}';
                                 console.error('[VIDEO_UPLOAD MUX] Video processing failed on MUX:', errorMsg);
                                 processingBanner.classList.add('hidden');
@@ -905,6 +964,7 @@
                             // Verified from Backend & MUX: asset created and valid
                             if (pollData.verified && pollData.asset_id) {
                                 clearInterval(poller);
+                                stopKeepAlive();
 
                                 // Populate hidden form inputs
                                 const uploadTabField = document.getElementById('field-upload-tab');
@@ -957,6 +1017,7 @@
 
                         if (pollCount > 60) {
                             clearInterval(poller);
+                            stopKeepAlive();
                             document.getElementById('field-video-source').value = 'mux';
                             document.getElementById('field-mux-upload-id').value = uploadId;
                             processingBanner.classList.add('hidden');
@@ -1025,6 +1086,7 @@
         async function startLocalChunkedUpload(file, sessionId) {
             isUploading = true;
             activeUploadEngine = 'local';
+            startKeepAlive();
 
             const fileFingerprint = `lesson_edit_up_${file.name}_${file.size}_${file.lastModified}`;
             let uploadId = localStorage.getItem(fileFingerprint);
@@ -1250,6 +1312,8 @@
         }
 
         function onEditUploadCompleted(result) {
+            stopKeepAlive();
+            isUploading = false;
             const statusBadge = document.getElementById('progress-status-badge');
             const statusText = document.getElementById('progress-status-text');
             const processingBanner = document.getElementById('processing-banner');

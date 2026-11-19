@@ -537,6 +537,9 @@
         let isUploading = false;
         let uploadStartTime = 0;
         let uploadedBytesTotal = 0;
+        let activeUploadEngine = null; // 'mux' | 'local'
+        let activeMuxUpload = null;    // Active UpChunk instance
+        let uploadSessionId = 0;       // Unique counter to discard stale async events
 
         function sleep(ms) {
             return new Promise(resolve => setTimeout(resolve, ms));
@@ -593,7 +596,21 @@
         }
 
         function startVideoUpload(file) {
+            uploadSessionId++;
+            const currentSession = uploadSessionId;
+
+            // Immediately abort and cleanup any previous upload instance
+            if (activeMuxUpload) {
+                try {
+                    activeMuxUpload.abort();
+                } catch (e) {
+                    console.warn('[VIDEO_UPLOAD] Could not abort previous MUX upload:', e);
+                }
+                activeMuxUpload = null;
+            }
+
             console.log('[VIDEO_UPLOAD] startVideoUpload initiated', {
+                session: currentSession,
                 fileName: file.name,
                 fileSize: formatBytes(file.size),
                 fileSizeBytes: file.size,
@@ -602,31 +619,29 @@
                 upchunkAvailable: typeof UpChunk !== 'undefined'
             });
 
-            if (isUploading) {
-                console.warn('[VIDEO_UPLOAD] Upload already in progress. Action ignored.');
-                return;
-            }
-
             // When MUX is configured, upload directly to MUX (Zero Gateway Timeout, Zero Server Load)
             if (IS_MUX_CONFIGURED && typeof UpChunk !== 'undefined') {
+                activeUploadEngine = 'mux';
                 console.log('[VIDEO_UPLOAD] Path chosen: MUX Direct Cloud Upload via UpChunk');
-                return startMuxDirectUpload(file);
+                return startMuxDirectUpload(file, currentSession);
             }
 
+            activeUploadEngine = 'local';
             console.warn('[VIDEO_UPLOAD] Path chosen: Fallback to Local Server Upload because:', {
                 isMuxConfigured: IS_MUX_CONFIGURED,
                 upchunkAvailable: typeof UpChunk !== 'undefined'
             });
 
             // Fallback: Local server chunked upload
-            return startLocalChunkedUpload(file);
+            return startLocalChunkedUpload(file, currentSession);
         }
 
         /**
          * Direct Browser-to-MUX Upload using @mux/upchunk with high network resilience.
          */
-        async function startMuxDirectUpload(file) {
+        async function startMuxDirectUpload(file, sessionId) {
             isUploading = true;
+            activeUploadEngine = 'mux';
             uploadStartTime = Date.now();
 
             const progressContainer = document.getElementById('upload-progress-container');
@@ -649,7 +664,7 @@
 
             progressContainer.classList.remove('hidden');
             processingBanner.classList.add('hidden');
-            successBanner.classList.add('hidden');
+            successBanner.classList.remove('hidden');
 
             fileNameEl.textContent = file.name;
             fileNameEl.title = file.name;
@@ -674,6 +689,8 @@
                     }
                 });
 
+                if (sessionId !== uploadSessionId || activeUploadEngine !== 'mux') return;
+
                 if (!res.ok) {
                     const err = await res.json().catch(() => ({}));
                     throw new Error(err.message || 'فشل في إنشاء رابط الرفع لمنصة MUX.');
@@ -691,21 +708,25 @@
 
                 console.log('[VIDEO_UPLOAD] Initializing @mux/upchunk upload to endpoint:', uploadUrl);
 
-                // Step 2: Stream directly to MUX via UpChunk with 30 retries per chunk
+                // Step 2: Stream directly to MUX via UpChunk with comprehensive retry resilience
                 const upload = UpChunk.createUpload({
                     endpoint: uploadUrl,
                     file: file,
                     chunkSize: 5120, // 5MB chunks (multiple of 256KB required by MUX)
-                    attempts: 30, // Highly resilient against temporary network hiccups
-                    delayBeforeAttempt: 3,
-                    retryCodes: [0, 408, 429, 500, 502, 503, 504],
+                    attempts: 40,    // High retry allowance on unstable networks
+                    delayBeforeAttempt: 2,
+                    retryCodes: [0, 400, 408, 409, 412, 429, 500, 502, 503, 504],
                 });
 
+                activeMuxUpload = upload;
+
                 upload.on('attempt', (e) => {
+                    if (sessionId !== uploadSessionId || activeUploadEngine !== 'mux') return;
                     console.log(`[VIDEO_UPLOAD MUX] UpChunk Attempting chunk #${e.detail?.chunkNumber ?? '?'}`);
                 });
 
                 upload.on('attemptFailure', (e) => {
+                    if (sessionId !== uploadSessionId || activeUploadEngine !== 'mux') return;
                     console.warn('[VIDEO_UPLOAD MUX] UpChunk Chunk attempt failed:', e.detail);
                     if (statusText) {
                         statusText.textContent = `انقطع الاتصال مؤقتاً، جاري إعادة محاولة إرسال الجزء (${e.detail?.chunkNumber ?? ''})... المحاولات المتبقية: ${e.detail?.attemptsLeft ?? ''}`;
@@ -716,6 +737,7 @@
                 });
 
                 upload.on('chunkSuccess', (e) => {
+                    if (sessionId !== uploadSessionId || activeUploadEngine !== 'mux') return;
                     if (statusText) {
                         statusText.textContent = '{{ __("جاري الرفع المباشر إلى MUX...") }}';
                     }
@@ -725,19 +747,26 @@
                 });
 
                 upload.on('offline', () => {
+                    if (sessionId !== uploadSessionId || activeUploadEngine !== 'mux') return;
                     console.warn('[VIDEO_UPLOAD MUX] Network offline');
-                    if (statusText) statusText.textContent = 'انقطع الاتصال بالإنترنت، بانتظار عودة الشبكة للاستئناف...';
+                    if (statusText) statusText.textContent = 'انقطع الاتصال بالإنترنت مؤقتاً، بانتظار عودة الشبكة للاستئناف التلقائي...';
+                    if (statusBadge) {
+                        statusBadge.className = 'inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-amber-100 text-amber-900 border border-amber-200 animate-pulse';
+                    }
                 });
 
                 upload.on('online', () => {
+                    if (sessionId !== uploadSessionId || activeUploadEngine !== 'mux') return;
                     console.log('[VIDEO_UPLOAD MUX] Network restored');
-                    if (statusText) statusText.textContent = 'تم استعادة الاتصال بالإنترنت، جاري استكمال الرفع...';
+                    if (statusText) statusText.textContent = 'تم استعادة الاتصال بالإنترنت بنجاح! جاري استكمال الرفع...';
                 });
 
                 upload.on('progress', (e) => {
+                    if (sessionId !== uploadSessionId || activeUploadEngine !== 'mux') return;
                     const percent = Math.min(100, Math.round(e.detail));
                     barFill.style.width = percent + '%';
                     percentLabel.textContent = percent + '%';
+                    if (chunksLabel) chunksLabel.textContent = `رفع سحابي مباشر (Zero Timeout) (${percent}%)`;
 
                     const uploadedBytes = (percent / 100) * file.size;
                     uploadedEl.textContent = `${formatBytes(uploadedBytes)} / ${formatBytes(file.size)}`;
@@ -859,31 +888,55 @@
                 });
 
                 upload.on('error', (err) => {
-                    console.error('[VIDEO_UPLOAD MUX] UpChunk upload exhausted all retries:', err);
+                    if (sessionId !== uploadSessionId || activeUploadEngine !== 'mux') return;
+                    console.error('[VIDEO_UPLOAD MUX] UpChunk upload error/aborted:', err);
+
+                    // Explicitly abort and clean up UpChunk so it stops all background network activity
+                    try {
+                        upload.abort();
+                    } catch (e) {}
+                    activeMuxUpload = null;
+
                     if (statusText) {
-                        statusText.textContent = 'تعذر استكمال الرفع المباشر إلى MUX بعد عدة محاولات، جاري التحويل التلقائي للرفع المجزأ فائق الاستقرار عبر خادم المنصة...';
+                        statusText.textContent = 'تعذر استكمال الرفع المباشر إلى MUX، جاري التحويل التلقائي للرفع المجزأ عبر خادم المنصة...';
                     }
                     if (statusBadge) {
-                        statusBadge.className = 'inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-amber-100 text-amber-900 border border-amber-200';
+                        statusBadge.className = 'inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-amber-100 text-amber-900 border border-amber-200 animate-pulse';
                     }
+
+                    // Invalidate previous session and switch exclusively to local server engine
                     isUploading = false;
-                    return startLocalChunkedUpload(file);
+                    uploadSessionId++;
+                    activeUploadEngine = 'local';
+                    return startLocalChunkedUpload(file, uploadSessionId);
                 });
 
             } catch (err) {
+                if (sessionId !== uploadSessionId || activeUploadEngine !== 'mux') return;
                 console.error('[VIDEO_UPLOAD] MUX direct upload initialization failed:', err);
+
+                if (activeMuxUpload) {
+                    try { activeMuxUpload.abort(); } catch (e) {}
+                    activeMuxUpload = null;
+                }
+
                 if (statusText) {
                     statusText.textContent = `تنبيه: تعذر الاتصال بـ MUX (${err.message})، جاري الرفع على السيرفر المحلي بدلاً من ذلك...`;
                 }
-                return startLocalChunkedUpload(file);
+
+                isUploading = false;
+                uploadSessionId++;
+                activeUploadEngine = 'local';
+                return startLocalChunkedUpload(file, uploadSessionId);
             }
         }
 
         /**
          * Resilient Local server chunked upload with AUTO-RESUME and INFINITE RETRY on network disconnects.
          */
-        async function startLocalChunkedUpload(file) {
+        async function startLocalChunkedUpload(file, sessionId) {
             isUploading = true;
+            activeUploadEngine = 'local';
 
             // Session persistence for resume support
             const fileFingerprint = `lesson_up_${file.name}_${file.size}_${file.lastModified}`;
@@ -938,6 +991,7 @@
                     });
                     if (verifyRes.ok) {
                         const verifyData = await verifyRes.json();
+                        if (sessionId !== uploadSessionId || activeUploadEngine !== 'local') return;
                         if (Array.isArray(verifyData.received_chunks) && verifyData.received_chunks.length > 0) {
                             receivedChunks = new Set(verifyData.received_chunks);
                             console.log(`[VIDEO_UPLOAD] Resuming session: ${receivedChunks.size} of ${totalChunks} chunks already exist.`);
@@ -947,6 +1001,8 @@
                     console.warn('[VIDEO_UPLOAD] Could not verify existing chunks:', e);
                 }
             }
+
+            if (sessionId !== uploadSessionId || activeUploadEngine !== 'local') return;
 
             if (!uploadId || receivedChunks.size === 0) {
                 uploadId = 'up_' + Date.now() + '_' + Math.random().toString(36).substring(2, 10);
@@ -959,7 +1015,7 @@
             if (statusText) {
                 statusText.textContent = receivedChunks.size > 0 
                     ? `{{ __("تم استئناف الرفع بنجاح! تم تخطي") }} ${receivedChunks.size} {{ __("جزء مرفوع مسبقاً") }}` 
-                    : '{{ __("جاري الرفع مجزأ وذكي...") }}';
+                    : '{{ __("جاري الرفع مجزأ عبر خادم المنصة...") }}';
             }
 
             uploadStartTime = Date.now();
@@ -967,13 +1023,18 @@
 
             // Step 2: Upload chunks with auto-resume and auto-retry on network disconnects
             for (let chunkIndex = 0; chunkIndex < totalChunks; chunkIndex++) {
+                if (sessionId !== uploadSessionId || activeUploadEngine !== 'local') {
+                    console.log('[VIDEO_UPLOAD LOCAL] Discarding outdated upload session.');
+                    return;
+                }
+
                 // If chunk is already saved on server, skip it! (RESUME)
                 if (receivedChunks.has(chunkIndex)) {
                     const currentDoneBytes = Math.min((chunkIndex + 1) * CHUNK_SIZE, totalSize);
                     const percent = Math.min(100, Math.round((currentDoneBytes / totalSize) * 100));
                     barFill.style.width = percent + '%';
                     percentLabel.textContent = percent + '%';
-                    chunksLabel.textContent = `{{ __("الجزء") }} ${chunkIndex + 1} {{ __("من") }} ${totalChunks} (${percent}%)`;
+                    chunksLabel.textContent = `رفع محلي: الجزء ${chunkIndex + 1} من ${totalChunks} (${percent}%)`;
                     chunksEl.textContent = `${chunkIndex + 1} / ${totalChunks}`;
                     if (partsPctEl) partsPctEl.textContent = `${percent}%`;
                     uploadedEl.textContent = `${formatBytes(currentDoneBytes)} / ${formatBytes(totalSize)}`;
@@ -997,6 +1058,7 @@
                 let attempt = 0;
 
                 while (!chunkSuccess) {
+                    if (sessionId !== uploadSessionId || activeUploadEngine !== 'local') return;
                     attempt++;
                     try {
                         const formData = new FormData();

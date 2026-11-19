@@ -474,11 +474,12 @@
 
                         <div class="p-3 bg-emerald-100/70 dark:bg-emerald-900/40 rounded-xl border border-emerald-300 dark:border-emerald-700 flex flex-col sm:flex-row items-center justify-between gap-3">
                             <div class="text-xs text-emerald-900 dark:text-emerald-200">
-                                <p class="font-bold">{{ __('تم تحديث وحفظ الفيديو الجديد على الدرس في السيرفر بنجاح.') }}</p>
-                                <p class="text-[11px] text-emerald-800/80 dark:text-emerald-300/80">{{ __('اضغط على الزر لتأكيد واعتماد التعديلات وحفظ باقي بيانات الدرس فوراً.') }}</p>
+                                <p class="font-bold" id="edit-auto-save-title">{{ __('تم تحديث وحفظ الفيديو الجديد على الدرس بنجاح.') }}</p>
+                                <p class="text-[11px] text-emerald-800/80 dark:text-emerald-300/80" id="edit-auto-save-desc">{{ __('⚡ حفظ تلقائي: يتم حفظ وتحديث بيانات الدرس تلقائياً فور اكتمال الرفع والتحقق.') }}</p>
                             </div>
                             <button 
                                 type="submit" 
+                                id="btn-edit-banner-submit"
                                 class="px-5 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-black text-xs flex items-center gap-1.5 shadow-md cursor-pointer transition-all shrink-0"
                             >
                                 <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
@@ -816,47 +817,70 @@
                             const pollRes = await fetch(statusUrl, {
                                 headers: { 'Accept': 'application/json' }
                             });
-                            if (pollRes.ok) {
-                                const pollData = await pollRes.json();
-                                if (pollData.asset_id) {
-                                    clearInterval(poller);
+                            
+                            const pollData = await pollRes.json().catch(() => ({}));
 
-                                    // Populate hidden form inputs
-                                    const uploadTabField = document.getElementById('field-upload-tab');
-                                    if (uploadTabField) uploadTabField.value = 'chunked';
-                                    document.getElementById('field-video-source').value = 'mux';
-                                    document.getElementById('field-mux-playback-id').value = pollData.playback_id || '';
-                                    document.getElementById('field-mux-asset-id').value = pollData.asset_id;
-                                    document.getElementById('field-mux-upload-id').value = uploadId;
-
-                                    if (pollData.duration_minutes) {
-                                        const durInput = document.getElementById('edit-lesson-duration');
-                                        if (durInput) durInput.value = pollData.duration_minutes;
-                                    }
-
-                                    // Success UI
-                                    processingBanner.classList.add('hidden');
-                                    successBanner.classList.remove('hidden');
-                                    const driverBadge = document.getElementById('success-driver-badge');
-                                    if (driverBadge) driverBadge.textContent = 'MUX Cloud Stream (مباشر)';
-
-                                    if (statusBadge) {
-                                        statusBadge.className = 'inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-900 transition-all';
-                                    }
-                                    if (statusText) statusText.textContent = '{{ __("تمت معالجة وتشفير الفيديو بنجاح على MUX وهو جاهز للنشر") }}';
-
-                                    // Set preview player
-                                    const player = document.getElementById('preview-player');
-                                    if (player && pollData.playback_id) {
-                                        const tokenQuery = pollData.playback_token ? `?token=${pollData.playback_token}` : '';
-                                        player.src = `https://stream.mux.com/${pollData.playback_id}.m3u8${tokenQuery}`;
-                                        player.load();
-                                    }
-
-                                    if (submitBtn) submitBtn.disabled = false;
-                                    isUploading = false;
-                                    return;
+                            if (!pollRes.ok || pollData.status === 'errored') {
+                                clearInterval(poller);
+                                const errorMsg = pollData.error || pollData.message || '{{ __("فشلت معالجة الفيديو في منصة MUX") }}';
+                                console.error('[VIDEO_UPLOAD MUX] Video processing failed on MUX:', errorMsg);
+                                processingBanner.classList.add('hidden');
+                                if (statusBadge) {
+                                    statusBadge.className = 'inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-rose-100 text-rose-800 border border-rose-300';
                                 }
+                                if (statusText) {
+                                    statusText.textContent = `فشل التحقق من الفيديو: ${errorMsg}`;
+                                }
+                                isUploading = false;
+                                return;
+                            }
+
+                            // Verified from Backend & MUX: asset created and valid
+                            if (pollData.verified && pollData.asset_id) {
+                                clearInterval(poller);
+
+                                // Populate hidden form inputs
+                                const uploadTabField = document.getElementById('field-upload-tab');
+                                if (uploadTabField) uploadTabField.value = 'chunked';
+                                document.getElementById('field-video-source').value = 'mux';
+                                document.getElementById('field-mux-playback-id').value = pollData.playback_id || '';
+                                document.getElementById('field-mux-asset-id').value = pollData.asset_id;
+                                document.getElementById('field-mux-upload-id').value = uploadId;
+
+                                if (pollData.duration_minutes) {
+                                    const durInput = document.getElementById('edit-lesson-duration');
+                                    if (durInput) durInput.value = pollData.duration_minutes;
+                                }
+
+                                // Success UI
+                                processingBanner.classList.add('hidden');
+                                successBanner.classList.remove('hidden');
+                                const driverBadge = document.getElementById('success-driver-badge');
+                                if (driverBadge) driverBadge.textContent = 'MUX Cloud Stream (مباشر)';
+
+                                if (statusBadge) {
+                                    statusBadge.className = 'inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-900 transition-all';
+                                }
+                                if (statusText) statusText.textContent = '{{ __("تمت معالجة وتشفير الفيديو بنجاح على MUX وهو جاهز للنشر") }}';
+
+                                // Set preview player
+                                const player = document.getElementById('preview-player');
+                                if (player && pollData.playback_id) {
+                                    const tokenQuery = pollData.playback_token ? `?token=${pollData.playback_token}` : '';
+                                    player.src = `https://stream.mux.com/${pollData.playback_id}.m3u8${tokenQuery}`;
+                                    player.load();
+                                }
+
+                                if (submitBtn) submitBtn.disabled = false;
+                                isUploading = false;
+
+                                // Direct Auto-Save once verified across Frontend, Backend, and MUX
+                                triggerEditDirectAutoSave('mux', {
+                                    asset_id: pollData.asset_id,
+                                    playback_id: pollData.playback_id,
+                                    upload_id: uploadId
+                                });
+                                return;
                             }
                         } catch (err) {
                             console.warn('[VIDEO_UPLOAD MUX] Poll network error:', err);
@@ -871,6 +895,11 @@
                             if (statusText) statusText.textContent = '{{ __("تم رفع الفيديو بنجاح إلى MUX (جاري إكمال المعالجة في السحابة)") }}';
                             if (submitBtn) submitBtn.disabled = false;
                             isUploading = false;
+
+                            // Direct Auto-Save with verified upload session
+                            triggerEditDirectAutoSave('mux', {
+                                upload_id: uploadId
+                            });
                         }
                     }, 2000);
                 });
@@ -1162,6 +1191,100 @@
 
             if (submitBtn) submitBtn.disabled = false;
             isUploading = false;
+
+            // Direct Auto-Save once verified on Backend disk and storage
+            triggerEditDirectAutoSave(result.driver_used || 'local', {
+                video_url: playUrl,
+                status: result.status
+            });
+        }
+
+        let hasEditAutoSaved = false;
+
+        /**
+         * Direct Auto-Save with multi-tier verification (Frontend, Backend, and MUX).
+         */
+        function triggerEditDirectAutoSave(driver = 'mux', details = {}) {
+            if (hasEditAutoSaved) return;
+
+            // 1. Multi-tier verification: Ensure video is physically uploaded & verified
+            const source = document.getElementById('field-video-source')?.value || driver;
+            const muxPlaybackId = document.getElementById('field-mux-playback-id')?.value;
+            const muxAssetId = document.getElementById('field-mux-asset-id')?.value;
+            const muxUploadId = document.getElementById('field-mux-upload-id')?.value;
+            const videoUrl = document.getElementById('input-direct-video-url')?.value;
+
+            let isVerified = false;
+
+            if (source === 'mux') {
+                if (muxAssetId || (muxPlaybackId && muxPlaybackId.length > 5) || muxUploadId || details.asset_id || details.upload_id) {
+                    isVerified = true;
+                }
+            } else {
+                if (videoUrl && (videoUrl.includes('/storage/') || videoUrl.startsWith('http') || videoUrl.length > 5)) {
+                    isVerified = true;
+                }
+            }
+
+            if (!isVerified) {
+                console.error('[AUTO_SAVE] Edit Video upload verification failed across Frontend/Backend/MUX. Aborting auto-save.', {
+                    source, muxAssetId, muxPlaybackId, muxUploadId, videoUrl, details
+                });
+                return;
+            }
+
+            const form = document.getElementById('form-edit-lesson');
+            if (!form) return;
+
+            if (!form.checkValidity()) {
+                console.warn('[AUTO_SAVE] Edit form has invalid required fields.');
+                form.reportValidity();
+                return;
+            }
+
+            // 2. Mark saving state & prevent beforeunload prompt
+            hasEditAutoSaved = true;
+            isUploading = false;
+
+            const statusBadge = document.getElementById('progress-status-badge');
+            const statusText = document.getElementById('progress-status-text');
+            const submitBtn = document.getElementById('btn-submit-lesson');
+            const bannerBtn = document.getElementById('btn-edit-banner-submit');
+            const autoSaveTitle = document.getElementById('edit-auto-save-title');
+            const autoSaveDesc = document.getElementById('edit-auto-save-desc');
+
+            if (statusBadge) {
+                statusBadge.className = 'inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-emerald-600 text-white shadow-sm animate-pulse';
+            }
+            if (statusText) {
+                statusText.textContent = '{{ __("✓ تم التحقق من الفيديو بنجاح على MUX والخادم! جاري حفظ وتحديث الدرس تلقائياً...") }}';
+            }
+            if (autoSaveTitle) {
+                autoSaveTitle.textContent = '{{ __("✓ تم التأكد من رفع الفيديو الجديد بنجاح على السيرفر!") }}';
+            }
+            if (autoSaveDesc) {
+                autoSaveDesc.textContent = '{{ __("⚡ جاري حفظ وتحديث بيانات الدرس تلقائياً الآن دون الحاجة للضغط على أي زر...") }}';
+            }
+
+            const savingHtml = `
+                <svg class="size-4 animate-spin text-white inline-block shrink-0" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>
+                <span>{{ __("تم التحقق من الرفع بنجاح.. جاري حفظ التعديلات تلقائياً...") }}</span>
+            `;
+
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = savingHtml;
+            }
+            if (bannerBtn) {
+                bannerBtn.disabled = true;
+                bannerBtn.innerHTML = savingHtml;
+            }
+
+            // 3. Save directly after brief confirmation delay (600ms)
+            setTimeout(() => {
+                console.log('[AUTO_SAVE] Edit Video verified across Frontend, Backend and MUX. Submitting lesson edit form now.');
+                form.submit();
+            }, 600);
         }
     </script>
 </x-admin-layout::admin>

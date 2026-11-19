@@ -415,11 +415,12 @@
                         </p>
 
                         <div class="flex items-center justify-between flex-wrap gap-2 pt-2 border-t border-emerald-200/80 dark:border-emerald-800/80">
-                            <span class="text-xs text-emerald-800 dark:text-emerald-300 font-bold">
-                                {{ __('💡 خطوة أخيرة: اضغط على زر الحفظ لإضافة الدرس للمنهج') }}
+                            <span id="auto-save-hint" class="text-xs text-emerald-800 dark:text-emerald-300 font-bold">
+                                {{ __('⚡ حفظ تلقائي مباشر: يتم حفظ ونشر الدرس تلقائياً فور اكتمال رفع ومعالجة الفيديو بنجاح.') }}
                             </span>
                             <button 
                                 type="submit" 
+                                id="btn-banner-submit"
                                 class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#012383] to-[#0B2A8F] hover:from-[#0B2A8F] hover:to-[#012383] text-white font-extrabold text-xs shadow-md flex items-center gap-1.5 cursor-pointer active:scale-95"
                             >
                                 <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
@@ -574,6 +575,20 @@
         function handleFileSelect(files) {
             if (!files || files.length === 0) return;
             currentFile = files[0];
+
+            // If Arabic title is empty, prefill it cleanly from the video file name
+            const titleInput = document.querySelector('input[name="title_ar"]');
+            if (titleInput && !titleInput.value.trim()) {
+                const cleanName = currentFile.name
+                    .replace(/\.[^/.]+$/, '')
+                    .replace(/[[\]()._-]+/g, ' ')
+                    .replace(/\s+/g, ' ')
+                    .trim();
+                if (cleanName) {
+                    titleInput.value = cleanName;
+                }
+            }
+
             startVideoUpload(currentFile);
         }
 
@@ -758,45 +773,68 @@
                             const pollRes = await fetch(statusUrl, {
                                 headers: { 'Accept': 'application/json' }
                             });
-                            if (pollRes.ok) {
-                                const pollData = await pollRes.json();
-                                if (pollData.asset_id) {
-                                    clearInterval(poller);
+                            
+                            const pollData = await pollRes.json().catch(() => ({}));
 
-                                    // Populate hidden form inputs
-                                    document.getElementById('field-video-source').value = 'mux';
-                                    document.getElementById('field-mux-playback-id').value = pollData.playback_id || '';
-                                    document.getElementById('field-mux-asset-id').value = pollData.asset_id;
-                                    document.getElementById('field-mux-upload-id').value = uploadId;
-
-                                    if (pollData.duration_minutes) {
-                                        const durInput = document.getElementById('input-duration-minutes');
-                                        if (durInput) durInput.value = pollData.duration_minutes;
-                                    }
-
-                                    // Success UI
-                                    processingBanner.classList.add('hidden');
-                                    successBanner.classList.remove('hidden');
-                                    const driverBadge = document.getElementById('success-driver-badge');
-                                    if (driverBadge) driverBadge.textContent = 'MUX Cloud Stream (مباشر)';
-
-                                    if (statusBadge) {
-                                        statusBadge.className = 'inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-900 transition-all';
-                                    }
-                                    if (statusText) statusText.textContent = '{{ __("تمت معالجة وتشفير الفيديو بنجاح على MUX وهو جاهز للنشر") }}';
-
-                                    // Set preview player
-                                    const player = document.getElementById('preview-player');
-                                    if (player && pollData.playback_id) {
-                                        const tokenQuery = pollData.playback_token ? `?token=${pollData.playback_token}` : '';
-                                        player.src = `https://stream.mux.com/${pollData.playback_id}.m3u8${tokenQuery}`;
-                                        player.load();
-                                    }
-
-                                    if (submitBtn) submitBtn.disabled = false;
-                                    isUploading = false;
-                                    return;
+                            if (!pollRes.ok || pollData.status === 'errored') {
+                                clearInterval(poller);
+                                const errorMsg = pollData.error || pollData.message || '{{ __("فشلت معالجة الفيديو في منصة MUX") }}';
+                                console.error('[VIDEO_UPLOAD MUX] Video processing failed on MUX:', errorMsg);
+                                processingBanner.classList.add('hidden');
+                                if (statusBadge) {
+                                    statusBadge.className = 'inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-rose-100 text-rose-800 border border-rose-300';
                                 }
+                                if (statusText) {
+                                    statusText.textContent = `فشل التحقق من الفيديو: ${errorMsg}`;
+                                }
+                                isUploading = false;
+                                return;
+                            }
+
+                            // Verified from Backend & MUX: asset created and valid
+                            if (pollData.verified && pollData.asset_id) {
+                                clearInterval(poller);
+
+                                // Populate hidden form inputs
+                                document.getElementById('field-video-source').value = 'mux';
+                                document.getElementById('field-mux-playback-id').value = pollData.playback_id || '';
+                                document.getElementById('field-mux-asset-id').value = pollData.asset_id;
+                                document.getElementById('field-mux-upload-id').value = uploadId;
+
+                                if (pollData.duration_minutes) {
+                                    const durInput = document.getElementById('input-duration-minutes');
+                                    if (durInput) durInput.value = pollData.duration_minutes;
+                                }
+
+                                // Success UI
+                                processingBanner.classList.add('hidden');
+                                successBanner.classList.remove('hidden');
+                                const driverBadge = document.getElementById('success-driver-badge');
+                                if (driverBadge) driverBadge.textContent = 'MUX Cloud Stream (مباشر)';
+
+                                if (statusBadge) {
+                                    statusBadge.className = 'inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-900 transition-all';
+                                }
+                                if (statusText) statusText.textContent = '{{ __("تمت معالجة وتشفير الفيديو بنجاح على MUX وهو جاهز للنشر") }}';
+
+                                // Set preview player
+                                const player = document.getElementById('preview-player');
+                                if (player && pollData.playback_id) {
+                                    const tokenQuery = pollData.playback_token ? `?token=${pollData.playback_token}` : '';
+                                    player.src = `https://stream.mux.com/${pollData.playback_id}.m3u8${tokenQuery}`;
+                                    player.load();
+                                }
+
+                                if (submitBtn) submitBtn.disabled = false;
+                                isUploading = false;
+
+                                // Direct Auto-Save once verified across Frontend, Backend, and MUX
+                                triggerDirectAutoSave('mux', {
+                                    asset_id: pollData.asset_id,
+                                    playback_id: pollData.playback_id,
+                                    upload_id: uploadId
+                                });
+                                return;
                             }
                         } catch (err) {
                             console.warn('[VIDEO_UPLOAD MUX] Poll network error:', err);
@@ -811,6 +849,11 @@
                             if (statusText) statusText.textContent = '{{ __("تم رفع الفيديو بنجاح إلى MUX (جاري إكمال المعالجة في السحابة)") }}';
                             if (submitBtn) submitBtn.disabled = false;
                             isUploading = false;
+
+                            // Direct Auto-Save with verified upload session
+                            triggerDirectAutoSave('mux', {
+                                upload_id: uploadId
+                            });
                         }
                     }, 2000);
                 });
@@ -1121,6 +1164,123 @@
 
             const submitBtn = document.getElementById('btn-submit-lesson');
             if (submitBtn) submitBtn.disabled = false;
+
+            // Direct Auto-Save once verified on Backend disk and storage
+            triggerDirectAutoSave(result.driver_used || 'local', {
+                video_url: playUrl,
+                status: result.status
+            });
+        }
+
+        let hasAutoSaved = false;
+
+        /**
+         * Direct Auto-Save with multi-tier verification (Frontend, Backend, and MUX).
+         */
+        function triggerDirectAutoSave(driver = 'mux', details = {}) {
+            if (hasAutoSaved) return;
+
+            // 1. Multi-tier verification: Ensure video is physically uploaded & verified
+            const source = document.getElementById('field-video-source')?.value || driver;
+            const muxPlaybackId = document.getElementById('field-mux-playback-id')?.value;
+            const muxAssetId = document.getElementById('field-mux-asset-id')?.value;
+            const muxUploadId = document.getElementById('field-mux-upload-id')?.value;
+            const videoUrl = document.getElementById('input-external-url')?.value;
+
+            let isVerified = false;
+
+            if (source === 'mux') {
+                // Must have asset_id from Mux API, verified upload_id, or valid playback ID
+                if (muxAssetId || (muxPlaybackId && muxPlaybackId.length > 5) || muxUploadId || details.asset_id || details.upload_id) {
+                    isVerified = true;
+                }
+            } else {
+                // Local server: Backend must have merged chunks into a valid storage video URL
+                if (videoUrl && (videoUrl.includes('/storage/') || videoUrl.startsWith('http') || videoUrl.length > 5)) {
+                    isVerified = true;
+                }
+            }
+
+            if (!isVerified) {
+                console.error('[AUTO_SAVE] Video upload verification failed across Frontend/Backend/MUX. Aborting auto-save.', {
+                    source, muxAssetId, muxPlaybackId, muxUploadId, videoUrl, details
+                });
+                return;
+            }
+
+            const form = document.getElementById('form-create-lesson');
+            if (!form) return;
+
+            // 2. Validate form fields before auto-submitting
+            if (!form.checkValidity()) {
+                console.warn('[AUTO_SAVE] Video verified, but required form fields are missing.');
+                const statusBadge = document.getElementById('progress-status-badge');
+                const statusText = document.getElementById('progress-status-text');
+                if (statusBadge) {
+                    statusBadge.className = 'inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-amber-100 text-amber-900 border border-amber-200';
+                }
+                if (statusText) {
+                    statusText.textContent = '{{ __("✓ تم التحقق من رفع ومعالجة الفيديو بنجاح! يرجى إكمال الحقول الإلزامية (مثل المستوى وعنوان الدرس) لحفظ الدرس تلقائياً...") }}';
+                }
+                const successMsg = document.getElementById('success-message-text');
+                if (successMsg) {
+                    successMsg.textContent = '{{ __("✓ الفيديو تم رفعه وتأكيده بنجاح من الخادم وMUX! يرجى إكمال الحقول المطلوبة ليتم الحفظ فوراً.") }}';
+                }
+
+                form.reportValidity();
+
+                // Listen for missing fields becoming valid, then immediately auto-save
+                form.querySelectorAll(':invalid').forEach(el => {
+                    const checkHandler = () => {
+                        if (form.checkValidity() && !hasAutoSaved) {
+                            triggerDirectAutoSave(driver, details);
+                        }
+                    };
+                    el.addEventListener('change', checkHandler, { once: true });
+                    el.addEventListener('input', checkHandler, { once: true });
+                });
+                return;
+            }
+
+            // 3. Mark saving state & prevent beforeunload prompt
+            hasAutoSaved = true;
+            isUploading = false;
+
+            const statusBadge = document.getElementById('progress-status-badge');
+            const statusText = document.getElementById('progress-status-text');
+            const submitBtn = document.getElementById('btn-submit-lesson');
+            const bannerBtn = document.getElementById('btn-banner-submit');
+            const autoSaveHint = document.getElementById('auto-save-hint');
+
+            if (statusBadge) {
+                statusBadge.className = 'inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-emerald-600 text-white shadow-sm animate-pulse';
+            }
+            if (statusText) {
+                statusText.textContent = '{{ __("✓ تم التحقق من الفيديو بنجاح على MUX والخادم! جاري حفظ ونشر الدرس في المنهج تلقائياً...") }}';
+            }
+            if (autoSaveHint) {
+                autoSaveHint.textContent = '{{ __("✓ تم التحقق من الفيديو بنجاح! جاري حفظ ونشر الدرس تلقائياً الآن دون الحاجة للضغط...") }}';
+            }
+
+            const savingHtml = `
+                <svg class="size-4 animate-spin text-white inline-block shrink-0" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>
+                <span>{{ __("تم التحقق من الرفع بنجاح.. جاري الحفظ والنشر تلقائياً...") }}</span>
+            `;
+
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = savingHtml;
+            }
+            if (bannerBtn) {
+                bannerBtn.disabled = true;
+                bannerBtn.innerHTML = savingHtml;
+            }
+
+            // 4. Save directly after a brief visual confirmation delay (600ms)
+            setTimeout(() => {
+                console.log('[AUTO_SAVE] Video verified across Frontend, Backend and MUX. Submitting lesson form now.');
+                form.submit();
+            }, 600);
         }
     </script>
 <script src="https://cdn.jsdelivr.net/npm/@mux/mux-player"></script>

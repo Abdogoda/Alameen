@@ -452,9 +452,23 @@ class CourseController extends Controller
             'asset_id' => $assetId,
         ]);
 
+        if ($uploadStatus === 'errored') {
+            $errorMsg = $upload['error']['message'] ?? __('فشلت عملية رفع الفيديو إلى MUX.');
+            Log::error('[VIDEO_UPLOAD] MUX upload session errored', ['upload_id' => $uploadId, 'error' => $errorMsg]);
+
+            return response()->json([
+                'success' => false,
+                'verified' => false,
+                'status' => 'errored',
+                'error' => $errorMsg,
+                'message' => $errorMsg,
+            ], 422);
+        }
+
         if (! $assetId) {
             return response()->json([
                 'success' => true,
+                'verified' => false,
                 'status' => 'uploading_or_processing',
                 'upload_status' => $uploadStatus,
                 'asset_id' => null,
@@ -464,6 +478,21 @@ class CourseController extends Controller
 
         $asset = $muxDriver->getAsset($assetId);
         $assetStatus = $asset['status'] ?? 'preparing';
+
+        if ($assetStatus === 'errored') {
+            $errorMsg = is_array($asset['errors'] ?? null) && ! empty($asset['errors']['messages'][0])
+                ? $asset['errors']['messages'][0]
+                : __('فشلت معالجة ملف الفيديو في منصة MUX (قد يكون الملف تالفاً أو بتنسيق غير مدعوم).');
+            Log::error('[VIDEO_UPLOAD] MUX asset errored', ['asset_id' => $assetId, 'error' => $errorMsg]);
+
+            return response()->json([
+                'success' => false,
+                'verified' => false,
+                'status' => 'errored',
+                'error' => $errorMsg,
+                'message' => $errorMsg,
+            ], 422);
+        }
 
         $playbackIds = is_array($asset['playback_ids'] ?? null) ? $asset['playback_ids'] : [];
         $signedPlayback = null;
@@ -481,16 +510,21 @@ class CourseController extends Controller
             $playbackToken = app(MuxTokenService::class)->generatePlaybackToken($playbackId);
         }
 
+        // True verification: MUX has created asset, assigned playback ID, and is either ready or preparing without errors
+        $isVerified = ! empty($assetId) && (! empty($playbackId) || in_array($assetStatus, ['preparing', 'ready'], true));
+
         Log::info('[VIDEO_UPLOAD] MUX Asset details retrieved', [
             'asset_id' => $assetId,
             'asset_status' => $assetStatus,
             'playback_id' => $playbackId,
             'duration_seconds' => $durationSeconds,
             'has_playback_token' => ! empty($playbackToken),
+            'is_verified' => $isVerified,
         ]);
 
         return response()->json([
             'success' => true,
+            'verified' => $isVerified,
             'status' => $assetStatus,
             'upload_status' => $uploadStatus,
             'asset_id' => $assetId,

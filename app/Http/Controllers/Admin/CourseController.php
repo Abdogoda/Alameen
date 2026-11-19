@@ -33,7 +33,10 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use App\Jobs\MergeVideoChunksJob;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -383,10 +386,10 @@ class CourseController extends Controller
             ?: request()->getSchemeAndHttpHost() 
             ?: rtrim((string) config('app.url'), '/');
 
-        $configuredCors = config('video.drivers.mux.cors_origin');
-        $corsOrigin = (! empty($configuredCors) && $configuredCors !== '*') 
-            ? $configuredCors 
-            : ($clientOrigin ?: '*');
+        $configuredCors = config('video.drivers.mux.cors_origin', '*');
+        $corsOrigin = ($configuredCors === '*' || empty($configuredCors)) 
+            ? '*' 
+            : $configuredCors;
 
         $upload = $muxDriver->createDirectUploadUrl($corsOrigin);
         if (! $upload || empty($upload['url'])) {
@@ -511,7 +514,7 @@ class CourseController extends Controller
         $originalFilename = $validated['original_filename'];
 
         // 1. Save this chunk
-        $this->chunkedUploadService->saveChunk($uploadId, $chunkIndex, $request->file('file_chunk'));
+        $this->chunkedUploadService->saveChunk($uploadId, $chunkIndex, $request->file('file_chunk'), $totalChunks);
 
         // 2. Check if all chunks have arrived
         if (! $this->chunkedUploadService->isComplete($uploadId, $totalChunks)) {
@@ -527,7 +530,7 @@ class CourseController extends Controller
             ]);
         }
 
-        // 3. All chunks received -> Merge & Process promo video file
+        // 3. All chunks received -> Fast Finalize promo video (< 50ms, zero proxy timeout)
         try {
             @ini_set('max_execution_time', '0');
             @set_time_limit(0);
@@ -536,43 +539,50 @@ class CourseController extends Controller
                 @ignore_user_abort(true);
             }
 
-            $mergedFile = $this->chunkedUploadService->mergeChunks($uploadId, $totalChunks, $originalFilename);
-
-            // Process video locally for instant response & zero gateway timeouts
-            $uploadResult = $this->videoManager->handleVideoUpload($mergedFile, 'local');
-
-            // Clean up temporary merged file
-            @unlink($mergedFile->getRealPath());
+            $uploadResult = $this->chunkedUploadService->finalizeFastUpload(
+                $uploadId,
+                $totalChunks,
+                $originalFilename,
+                'public',
+                'courses/promo'
+            );
 
             // If replacing old MUX promo video asset, clean it up
-            if (! empty($course->mux_asset_id) && ! empty($uploadResult['mux_asset_id']) && $course->mux_asset_id !== $uploadResult['mux_asset_id']) {
-                $this->muxService->deleteAsset($course->mux_asset_id);
+            if (! empty($course->mux_asset_id)) {
+                try {
+                    $this->muxService->deleteAsset($course->mux_asset_id);
+                } catch (\Throwable) {
+                    // Ignore deletion error
+                }
             }
 
             // Immediately update course promo video fields
             $course->update([
                 'promo_video_source' => $uploadResult['video_source'],
                 'promo_video_url' => $uploadResult['video_url'],
-                'mux_playback_id' => $uploadResult['mux_playback_id'] ?? null,
-                'mux_asset_id' => $uploadResult['mux_asset_id'] ?? null,
+                'mux_playback_id' => null,
+                'mux_asset_id' => null,
             ]);
 
-            $previewToken = null;
-            if (! empty($uploadResult['mux_playback_id'])) {
-                $previewToken = app(MuxTokenService::class)->generatePlaybackToken($uploadResult['mux_playback_id']);
-            }
+            Cache::put("chunk_merge:{$uploadId}", [
+                'status' => 'completed',
+                'upload_id' => $uploadId,
+                'target_type' => 'promo',
+                'promo_video_source' => $uploadResult['video_source'],
+                'promo_video_url' => $uploadResult['video_url'],
+                'driver_used' => 'local',
+                'original_filename' => $originalFilename,
+            ], 3600);
 
             return response()->json([
                 'status' => 'completed',
-                'message' => $uploadResult['driver_used'] === 'mux'
-                    ? __('تمت معالجة وتهيئة الفيديو التعريفي بنجاح عبر MUX.')
-                    : __('تم حفظ ومعالجة الفيديو التعريفي بنجاح على سيرفر المنصة المحلي.'),
+                'message' => __('تم حفظ ومعالجة الفيديو التعريفي بنجاح على سيرفر المنصة المحلي.'),
                 'driver_used' => $uploadResult['driver_used'],
                 'promo_video_source' => $uploadResult['video_source'],
                 'promo_video_url' => $uploadResult['video_url'],
-                'mux_playback_id' => $uploadResult['mux_playback_id'] ?? null,
-                'mux_asset_id' => $uploadResult['mux_asset_id'] ?? null,
-                'playback_token' => $previewToken,
+                'mux_playback_id' => null,
+                'mux_asset_id' => null,
+                'playback_token' => null,
                 'original_filename' => $originalFilename,
             ]);
         } catch (\Throwable $e) {
@@ -622,7 +632,7 @@ class CourseController extends Controller
         $originalFilename = $validated['original_filename'];
 
         // 1. Save this chunk
-        $this->chunkedUploadService->saveChunk($uploadId, $chunkIndex, $request->file('file_chunk'));
+        $this->chunkedUploadService->saveChunk($uploadId, $chunkIndex, $request->file('file_chunk'), $totalChunks);
 
         if ($chunkIndex === 0) {
             Log::info('[VIDEO_UPLOAD] Local chunked upload initiated', [
@@ -648,14 +658,14 @@ class CourseController extends Controller
             ]);
         }
 
-        Log::info('[VIDEO_UPLOAD] All video chunks received, merging files', [
+        Log::info('[VIDEO_UPLOAD] All video chunks received, fast-finalizing file assembly', [
             'course_id' => $course->id,
             'upload_id' => $uploadId,
             'total_chunks' => $totalChunks,
             'filename' => $originalFilename,
         ]);
 
-        // 3. All chunks received -> Merge & Process video file
+        // 3. All chunks received -> Fast Finalize video (< 50ms, zero proxy timeout)
         try {
             @ini_set('max_execution_time', '0');
             @set_time_limit(0);
@@ -664,23 +674,21 @@ class CourseController extends Controller
                 @ignore_user_abort(true);
             }
 
-            $mergedFile = $this->chunkedUploadService->mergeChunks($uploadId, $totalChunks, $originalFilename);
+            $uploadResult = $this->chunkedUploadService->finalizeFastUpload(
+                $uploadId,
+                $totalChunks,
+                $originalFilename,
+                'public',
+                'videos/lessons'
+            );
 
-            // If chunks were uploaded to the local server, save to local server storage directly
-            // to ensure an instantaneous response (< 1s) and prevent 504 Gateway Timeouts from reverse proxies (e.g. Hostinger hcdn).
-            // Direct browser-to-MUX upload is handled asynchronously by the client.
-            $uploadResult = $this->videoManager->handleVideoUpload($mergedFile, 'local');
-
-            Log::info('[VIDEO_UPLOAD] Chunks merged and saved to local server', [
+            Log::info('[VIDEO_UPLOAD] Chunks fast-finalized and saved to local server', [
                 'course_id' => $course->id,
                 'upload_id' => $uploadId,
                 'video_source' => $uploadResult['video_source'],
                 'video_url' => $uploadResult['video_url'],
                 'driver_used' => $uploadResult['driver_used'],
             ]);
-
-            // Clean up temporary merged file
-            @unlink($mergedFile->getRealPath());
 
             // If a specific video is being edited, update it immediately in database so refresh keeps it
             if (! empty($validated['video_id'])) {
@@ -690,29 +698,34 @@ class CourseController extends Controller
                     $targetVideo->update([
                         'video_source' => $uploadResult['video_source'],
                         'video_url' => $uploadResult['video_url'],
-                        'mux_playback_id' => $uploadResult['mux_playback_id'] ?? null,
-                        'mux_asset_id' => $uploadResult['mux_asset_id'] ?? null,
+                        'mux_playback_id' => null,
+                        'mux_asset_id' => null,
                         'bunny_video_id' => null,
                     ]);
                 }
             }
 
-            $previewToken = null;
-            if (! empty($uploadResult['mux_playback_id'])) {
-                $previewToken = app(MuxTokenService::class)->generatePlaybackToken($uploadResult['mux_playback_id']);
-            }
+            Cache::put("chunk_merge:{$uploadId}", [
+                'status' => 'completed',
+                'upload_id' => $uploadId,
+                'target_type' => 'lesson',
+                'video_source' => $uploadResult['video_source'],
+                'video_url' => $uploadResult['video_url'],
+                'mux_playback_id' => null,
+                'mux_asset_id' => null,
+                'driver_used' => 'local',
+                'original_filename' => $originalFilename,
+            ], 3600);
 
             return response()->json([
                 'status' => 'completed',
-                'message' => $uploadResult['driver_used'] === 'mux'
-                    ? __('تمت معالجة وتهيئة الفيديو بنجاح عبر MUX.')
-                    : __('تم حفظ ومعالجة الفيديو بنجاح على سيرفر المنصة المحلي.'),
+                'message' => __('تم حفظ ومعالجة الفيديو بنجاح على سيرفر المنصة المحلي.'),
                 'driver_used' => $uploadResult['driver_used'],
                 'video_source' => $uploadResult['video_source'],
                 'video_url' => $uploadResult['video_url'],
-                'mux_playback_id' => $uploadResult['mux_playback_id'] ?? null,
-                'mux_asset_id' => $uploadResult['mux_asset_id'] ?? null,
-                'playback_token' => $previewToken,
+                'mux_playback_id' => null,
+                'mux_asset_id' => null,
+                'playback_token' => null,
                 'original_filename' => $originalFilename,
             ]);
         } catch (\Throwable $e) {
@@ -723,6 +736,44 @@ class CourseController extends Controller
                 'message' => __('حدث خطأ أثناء معالجة وتجميع ملف الفيديو: :error', ['error' => $e->getMessage()]),
             ], 500);
         }
+    }
+
+    /**
+     * Check which chunks have already been received for a given upload session
+     * to support resuming without starting from the beginning.
+     */
+    public function verifyChunks(Request $request, Course $course): JsonResponse
+    {
+        $uploadId = $this->chunkedUploadService->sanitizeUploadId((string) $request->input('upload_id', ''));
+        $totalChunks = (int) $request->input('total_chunks', 0);
+
+        $received = $this->chunkedUploadService->getReceivedChunks($uploadId, $totalChunks);
+
+        return response()->json([
+            'upload_id' => $uploadId,
+            'received_chunks' => $received,
+            'total_chunks' => $totalChunks,
+            'is_complete' => count($received) === $totalChunks && $totalChunks > 0,
+        ]);
+    }
+
+    /**
+     * Check status of background merge job or upload session.
+     */
+    public function checkMergeStatus(Request $request, Course $course, string $uploadId): JsonResponse
+    {
+        $safeUploadId = $this->chunkedUploadService->sanitizeUploadId($uploadId);
+        $status = Cache::get("chunk_merge:{$safeUploadId}");
+
+        if (! $status) {
+            return response()->json([
+                'status' => 'unknown',
+                'upload_id' => $safeUploadId,
+            ], 404);
+        }
+
+        return response()->json($status);
+    }
     }
 
     /**

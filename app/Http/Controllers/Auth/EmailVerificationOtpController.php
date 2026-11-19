@@ -23,8 +23,21 @@ class EmailVerificationOtpController extends Controller
      */
     public function showVerificationPrompt(Request $request): View|RedirectResponse
     {
-        if ($request->user()?->hasVerifiedEmail()) {
+        $user = $request->user();
+
+        if ($user?->hasVerifiedEmail()) {
             return redirect()->intended(route('dashboard', absolute: false).'?verified=1');
+        }
+
+        if ($user && ! $this->otpService->hasActiveOtp($user)) {
+            try {
+                $this->otpService->sendOtp($user);
+                if (! session()->has('status')) {
+                    session()->flash('status', 'verification-otp-sent');
+                }
+            } catch (ValidationException) {
+                // Throttle limit encountered or already in cooldown, proceed silently to the form
+            }
         }
 
         return view('web.auth.verify-email');

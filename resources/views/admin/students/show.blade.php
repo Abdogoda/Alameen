@@ -4,7 +4,7 @@
     contentClass="p-3.5 sm:p-6 lg:p-8 flex flex-col gap-5 sm:gap-6 w-full min-w-0"
 >
     <x-slot:actions>
-        <div class="flex items-center gap-2 sm:gap-2.5 flex-wrap w-full xl:w-auto xl:justify-end">
+        <div class="flex items-center gap-2 sm:gap-2.5 flex-wrap w-full">
             {{-- Back to Students List --}}
             <a 
                 href="{{ route('admin.students.index') }}" 

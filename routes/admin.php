@@ -72,6 +72,8 @@ Route::prefix('admin')->name('admin.')->middleware([LogAdminActivity::class])->g
 
             // Course Promo Video Chunked & Direct Upload
             Route::post('courses/{course}/promo/upload-chunk', [CourseController::class, 'uploadPromoChunk'])->name('courses.promo.chunk.upload');
+            Route::post('courses/{course}/promo/verify-chunks', [CourseController::class, 'verifyChunks'])->name('courses.promo.chunks.verify');
+            Route::get('courses/{course}/promo/merge-status/{uploadId}', [CourseController::class, 'checkMergeStatus'])->name('courses.promo.merge.status');
             Route::post('courses/{course}/promo/mux-update', [CourseController::class, 'updatePromoMux'])->name('courses.promo.mux.update');
             Route::post('courses/{course}/promo/direct-upload-url', [CourseController::class, 'getMuxDirectUploadUrl'])->name('courses.promo.mux.direct_upload');
             Route::get('courses/{course}/promo/mux-upload-status/{uploadId}', [CourseController::class, 'checkMuxUploadStatus'])->name('courses.promo.mux.upload_status');
@@ -85,6 +87,8 @@ Route::prefix('admin')->name('admin.')->middleware([LogAdminActivity::class])->g
             Route::get('courses/{course}/lessons/create', [CourseController::class, 'createLesson'])->name('courses.videos.create');
             Route::get('courses/{course}/lessons/{video}/edit', [CourseController::class, 'editLesson'])->name('courses.videos.edit');
             Route::post('courses/{course}/lessons/upload-chunk', [CourseController::class, 'uploadLessonChunk'])->name('courses.videos.chunk.upload');
+            Route::post('courses/{course}/lessons/verify-chunks', [CourseController::class, 'verifyChunks'])->name('courses.videos.chunks.verify');
+            Route::get('courses/{course}/lessons/merge-status/{uploadId}', [CourseController::class, 'checkMergeStatus'])->name('courses.videos.merge.status');
             Route::post('courses/{course}/lessons/direct-upload-url', [CourseController::class, 'getMuxDirectUploadUrl'])->name('courses.videos.mux.direct_upload');
             Route::get('courses/{course}/lessons/mux-upload-status/{uploadId}', [CourseController::class, 'checkMuxUploadStatus'])->name('courses.videos.mux.upload_status');
             Route::post('courses/{course}/videos', [CourseController::class, 'storeVideo'])->name('courses.videos.store');

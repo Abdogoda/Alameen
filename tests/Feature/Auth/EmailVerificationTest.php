@@ -19,12 +19,15 @@ class EmailVerificationTest extends TestCase
 
     public function test_email_verification_screen_can_be_rendered(): void
     {
+        Notification::fake();
+
         $user = User::factory()->unverified()->create();
 
         $response = $this->actingAs($user)->get(route('verification.notice'));
 
         $response->assertOk();
         $response->assertSee(__('رمز التحقق (OTP)'));
+        Notification::assertSentTo($user, EmailVerificationOtpNotification::class);
     }
 
     public function test_unverified_users_are_redirected_to_the_email_verification_prompt(): void

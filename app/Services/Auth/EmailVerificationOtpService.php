@@ -98,6 +98,26 @@ class EmailVerificationOtpService
     }
 
     /**
+     * Check if the user has an active (unexpired) verification OTP token.
+     */
+    public function hasActiveOtp(User $user): bool
+    {
+        $normalizedEmail = Str::lower(trim($user->email));
+
+        $record = DB::table('email_verification_tokens')
+            ->where('email', $normalizedEmail)
+            ->first();
+
+        if (! $record || ! $record->token || ! $record->created_at) {
+            return false;
+        }
+
+        return ! Carbon::parse($record->created_at)
+            ->addMinutes(self::OTP_EXPIRATION_MINUTES)
+            ->isPast();
+    }
+
+    /**
      * Verify if the provided OTP code is valid and marks email verified.
      *
      * @throws ValidationException

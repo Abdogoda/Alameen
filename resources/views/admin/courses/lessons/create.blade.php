@@ -528,6 +528,8 @@
         const MUX_STATUS_URL_TEMPLATE = "{{ route('admin.courses.videos.mux.upload_status', [$course, ':uploadId']) }}";
         const CHUNK_SIZE = 10 * 1024 * 1024; // 10MB chunk slice for local fallback
         const UPLOAD_URL = "{{ route('admin.courses.videos.chunk.upload', $course) }}";
+        const VERIFY_CHUNKS_URL = "{{ route('admin.courses.videos.chunks.verify', $course) }}";
+        const MERGE_STATUS_URL = "{{ route('admin.courses.videos.merge.status', [$course, ':uploadId']) }}";
         const CSRF_TOKEN = "{{ csrf_token() }}";
 
         let currentFile = null;
@@ -539,26 +541,12 @@
             return new Promise(resolve => setTimeout(resolve, ms));
         }
 
-        async function fetchWithRetry(url, options, maxRetries = 3) {
-            let lastError = null;
-            for (let attempt = 1; attempt <= maxRetries; attempt++) {
-                try {
-                    const response = await fetch(url, options);
-                    if (response.ok) {
-                        return response;
-                    }
-                    const errorData = await response.json().catch(() => ({}));
-                    lastError = new Error(errorData.message || `HTTP ${response.status}`);
-                } catch (err) {
-                    lastError = err;
-                }
-
-                if (attempt < maxRetries) {
-                    await sleep(2000 * attempt);
-                }
+        window.addEventListener('beforeunload', (e) => {
+            if (isUploading) {
+                e.preventDefault();
+                e.returnValue = 'جاري رفع الفيديو، هل أنت متأكد من مغادرة الصفحة؟';
             }
-            throw lastError;
-        }
+        });
 
         function formatBytes(bytes) {
             if (bytes === 0) return '0 B';
@@ -620,8 +608,7 @@
         }
 
         /**
-         * Direct Browser-to-MUX Upload using @mux/upchunk.
-         * Streams directly to Google Cloud / MUX eliminating 504 Gateway Timeouts.
+         * Direct Browser-to-MUX Upload using @mux/upchunk with high network resilience.
          */
         async function startMuxDirectUpload(file) {
             isUploading = true;
@@ -674,17 +661,10 @@
 
                 if (!res.ok) {
                     const err = await res.json().catch(() => ({}));
-                    console.error('[VIDEO_UPLOAD] Backend rejected MUX Direct Upload request:', {
-                        status: res.status,
-                        statusText: res.statusText,
-                        errorData: err
-                    });
                     throw new Error(err.message || 'فشل في إنشاء رابط الرفع لمنصة MUX.');
                 }
 
                 const data = await res.json();
-                console.log('[VIDEO_UPLOAD] MUX Direct Upload URL successfully obtained:', data);
-
                 if (!data.success || !data.upload_url) {
                     throw new Error(data.message || 'رابط رفع MUX غير متوفر.');
                 }
@@ -696,14 +676,14 @@
 
                 console.log('[VIDEO_UPLOAD] Initializing @mux/upchunk upload to endpoint:', uploadUrl);
 
-                // Step 2: Stream directly to MUX via UpChunk with network resilience
+                // Step 2: Stream directly to MUX via UpChunk with 30 retries per chunk
                 const upload = UpChunk.createUpload({
                     endpoint: uploadUrl,
                     file: file,
                     chunkSize: 5120, // 5MB chunks (multiple of 256KB required by MUX)
-                    attempts: 6,
-                    delayBeforeAttempt: 2,
-                    retryCodes: [0, 408, 429, 502, 503, 504],
+                    attempts: 30, // Highly resilient against temporary network hiccups
+                    delayBeforeAttempt: 3,
+                    retryCodes: [0, 408, 429, 500, 502, 503, 504],
                 });
 
                 upload.on('attempt', (e) => {
@@ -713,25 +693,30 @@
                 upload.on('attemptFailure', (e) => {
                     console.warn('[VIDEO_UPLOAD MUX] UpChunk Chunk attempt failed:', e.detail);
                     if (statusText) {
-                        statusText.textContent = `جاري إعادة محاولة إرسال الجزء (${e.detail?.chunkNumber ?? ''})... المحاولات المتبقية: ${e.detail?.attemptsLeft ?? ''}`;
+                        statusText.textContent = `انقطع الاتصال مؤقتاً، جاري إعادة محاولة إرسال الجزء (${e.detail?.chunkNumber ?? ''})... المحاولات المتبقية: ${e.detail?.attemptsLeft ?? ''}`;
+                    }
+                    if (statusBadge) {
+                        statusBadge.className = 'inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-amber-100 text-amber-900 border border-amber-200 animate-pulse';
                     }
                 });
 
                 upload.on('chunkSuccess', (e) => {
-                    console.log(`[VIDEO_UPLOAD MUX] UpChunk Chunk #${e.detail?.chunkNumber ?? '?'} succeeded!`);
                     if (statusText) {
                         statusText.textContent = '{{ __("جاري الرفع المباشر إلى MUX...") }}';
+                    }
+                    if (statusBadge) {
+                        statusBadge.className = 'inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-blue-100/90 text-[#012383] dark:bg-blue-950/70 dark:text-blue-300 border border-blue-200 dark:border-blue-900 transition-all shadow-2xs';
                     }
                 });
 
                 upload.on('offline', () => {
                     console.warn('[VIDEO_UPLOAD MUX] Network offline');
-                    if (statusText) statusText.textContent = 'انقطع الاتصال بالإنترنت، بانتظار عودة الشبكة...';
+                    if (statusText) statusText.textContent = 'انقطع الاتصال بالإنترنت، بانتظار عودة الشبكة للاستئناف...';
                 });
 
                 upload.on('online', () => {
                     console.log('[VIDEO_UPLOAD MUX] Network restored');
-                    if (statusText) statusText.textContent = 'تم استعادة الاتصال، جاري استكمال الرفع...';
+                    if (statusText) statusText.textContent = 'تم استعادة الاتصال بالإنترنت، جاري استكمال الرفع...';
                 });
 
                 upload.on('progress', (e) => {
@@ -753,10 +738,6 @@
 
                     if (chunksEl) chunksEl.textContent = `${percent}%`;
                     if (partsPctEl) partsPctEl.textContent = `${percent}%`;
-
-                    if (percent % 25 === 0) {
-                        console.log(`[VIDEO_UPLOAD MUX] UpChunk Progress: ${percent}%`);
-                    }
                 });
 
                 upload.on('success', () => {
@@ -773,20 +754,14 @@
 
                     const poller = setInterval(async () => {
                         pollCount++;
-                        console.log(`[VIDEO_UPLOAD MUX] Polling asset status attempt #${pollCount}...`);
                         try {
                             const pollRes = await fetch(statusUrl, {
                                 headers: { 'Accept': 'application/json' }
                             });
                             if (pollRes.ok) {
                                 const pollData = await pollRes.json();
-                                console.log('[VIDEO_UPLOAD MUX] Poll response data:', pollData);
                                 if (pollData.asset_id) {
                                     clearInterval(poller);
-                                    console.log('[VIDEO_UPLOAD MUX] Asset is ready!', {
-                                        assetId: pollData.asset_id,
-                                        playbackId: pollData.playback_id
-                                    });
 
                                     // Populate hidden form inputs
                                     document.getElementById('field-video-source').value = 'mux';
@@ -827,10 +802,8 @@
                             console.warn('[VIDEO_UPLOAD MUX] Poll network error:', err);
                         }
 
-                        // Max 45 attempts (90 seconds)
-                        if (pollCount > 45) {
+                        if (pollCount > 60) {
                             clearInterval(poller);
-                            console.warn('[VIDEO_UPLOAD MUX] Polling timed out after 90 seconds. Storing upload ID.');
                             document.getElementById('field-video-source').value = 'mux';
                             document.getElementById('field-mux-upload-id').value = uploadId;
                             processingBanner.classList.add('hidden');
@@ -843,10 +816,9 @@
                 });
 
                 upload.on('error', (err) => {
-                    console.error('[VIDEO_UPLOAD MUX] UpChunk upload error:', err);
-                    console.warn('[VIDEO_UPLOAD MUX] Triggering automatic fallback to local chunked upload...');
+                    console.error('[VIDEO_UPLOAD MUX] UpChunk upload exhausted all retries:', err);
                     if (statusText) {
-                        statusText.textContent = 'تعذر استكمال الرفع المباشر إلى MUX (' + (err.detail?.message || 'انقطاع الاتصال') + ')، جاري التحويل التلقائي للرفع عبر خادم المنصة...';
+                        statusText.textContent = 'تعذر استكمال الرفع المباشر إلى MUX بعد عدة محاولات، جاري التحويل التلقائي للرفع المجزأ فائق الاستقرار عبر خادم المنصة...';
                     }
                     if (statusBadge) {
                         statusBadge.className = 'inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-amber-100 text-amber-900 border border-amber-200';
@@ -857,7 +829,6 @@
 
             } catch (err) {
                 console.error('[VIDEO_UPLOAD] MUX direct upload initialization failed:', err);
-                console.warn('[VIDEO_UPLOAD] Fallback triggered: Calling startLocalChunkedUpload(file)');
                 if (statusText) {
                     statusText.textContent = `تنبيه: تعذر الاتصال بـ MUX (${err.message})، جاري الرفع على السيرفر المحلي بدلاً من ذلك...`;
                 }
@@ -866,14 +837,17 @@
         }
 
         /**
-         * Fallback: Local server chunked upload
+         * Resilient Local server chunked upload with AUTO-RESUME and INFINITE RETRY on network disconnects.
          */
         async function startLocalChunkedUpload(file) {
             isUploading = true;
 
-            const uploadId = 'up_' + Date.now() + '_' + Math.random().toString(36).substring(2, 10);
+            // Session persistence for resume support
+            const fileFingerprint = `lesson_up_${file.name}_${file.size}_${file.lastModified}`;
+            let uploadId = localStorage.getItem(fileFingerprint);
             const totalSize = file.size;
             const totalChunks = Math.ceil(totalSize / CHUNK_SIZE);
+            let receivedChunks = new Set();
 
             const progressContainer = document.getElementById('upload-progress-container');
             const dropzone = document.getElementById('chunked-dropzone');
@@ -881,89 +855,205 @@
             const fileSizeEl = document.getElementById('progress-file-size');
             const statusBadge = document.getElementById('progress-status-badge');
             const statusText = document.getElementById('progress-status-text');
+            const percentLabel = document.getElementById('progress-percentage-label');
+            const chunksLabel = document.getElementById('progress-chunks-label');
+            const barFill = document.getElementById('progress-bar-fill');
+            const speedEl = document.getElementById('metric-speed');
+            const etaEl = document.getElementById('metric-eta');
+            const chunksEl = document.getElementById('metric-chunks');
+            const partsPctEl = document.getElementById('metric-parts-pct');
+            const uploadedEl = document.getElementById('metric-uploaded');
+            const processingBanner = document.getElementById('processing-banner');
+            const successBanner = document.getElementById('success-banner');
+            const submitBtn = document.getElementById('btn-submit-lesson');
 
             progressContainer.classList.remove('hidden');
+            processingBanner.classList.add('hidden');
+            successBanner.classList.add('hidden');
+            if (dropzone) dropzone.classList.add('opacity-50', 'pointer-events-none');
+            if (submitBtn) submitBtn.disabled = true;
+
             fileNameEl.textContent = file.name;
             fileNameEl.title = file.name;
             fileSizeEl.textContent = formatBytes(totalSize);
 
-            dropzone.classList.add('opacity-50', 'pointer-events-none');
-            uploadStartTime = Date.now();
-            uploadedBytesTotal = 0;
+            // Step 1: Check existing session on server to resume without starting from beginning
+            if (uploadId) {
+                if (statusText) statusText.textContent = '{{ __("جاري فحص الأجزاء المحفوظة على السيرفر لاستئناف الرفع...") }}';
+                try {
+                    const verifyRes = await fetch(VERIFY_CHUNKS_URL, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': CSRF_TOKEN,
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            upload_id: uploadId,
+                            total_chunks: totalChunks
+                        })
+                    });
+                    if (verifyRes.ok) {
+                        const verifyData = await verifyRes.json();
+                        if (Array.isArray(verifyData.received_chunks) && verifyData.received_chunks.length > 0) {
+                            receivedChunks = new Set(verifyData.received_chunks);
+                            console.log(`[VIDEO_UPLOAD] Resuming session: ${receivedChunks.size} of ${totalChunks} chunks already exist.`);
+                        }
+                    }
+                } catch (e) {
+                    console.warn('[VIDEO_UPLOAD] Could not verify existing chunks:', e);
+                }
+            }
 
+            if (!uploadId || receivedChunks.size === 0) {
+                uploadId = 'up_' + Date.now() + '_' + Math.random().toString(36).substring(2, 10);
+                localStorage.setItem(fileFingerprint, uploadId);
+            }
+
+            if (statusBadge) {
+                statusBadge.className = 'inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-blue-100/90 text-[#012383] dark:bg-blue-950/70 dark:text-blue-300 border border-blue-200 dark:border-blue-900 transition-all shadow-2xs';
+            }
+            if (statusText) {
+                statusText.textContent = receivedChunks.size > 0 
+                    ? `{{ __("تم استئناف الرفع بنجاح! تم تخطي") }} ${receivedChunks.size} {{ __("جزء مرفوع مسبقاً") }}` 
+                    : '{{ __("جاري الرفع مجزأ وذكي...") }}';
+            }
+
+            uploadStartTime = Date.now();
+            uploadedBytesTotal = receivedChunks.size * CHUNK_SIZE;
+
+            // Step 2: Upload chunks with auto-resume and auto-retry on network disconnects
             for (let chunkIndex = 0; chunkIndex < totalChunks; chunkIndex++) {
+                // If chunk is already saved on server, skip it! (RESUME)
+                if (receivedChunks.has(chunkIndex)) {
+                    const currentDoneBytes = Math.min((chunkIndex + 1) * CHUNK_SIZE, totalSize);
+                    const percent = Math.min(100, Math.round((currentDoneBytes / totalSize) * 100));
+                    barFill.style.width = percent + '%';
+                    percentLabel.textContent = percent + '%';
+                    chunksLabel.textContent = `{{ __("الجزء") }} ${chunkIndex + 1} {{ __("من") }} ${totalChunks} (${percent}%)`;
+                    chunksEl.textContent = `${chunkIndex + 1} / ${totalChunks}`;
+                    if (partsPctEl) partsPctEl.textContent = `${percent}%`;
+                    uploadedEl.textContent = `${formatBytes(currentDoneBytes)} / ${formatBytes(totalSize)}`;
+                    continue;
+                }
+
                 const start = chunkIndex * CHUNK_SIZE;
                 const end = Math.min(start + CHUNK_SIZE, totalSize);
                 const chunkBlob = file.slice(start, end);
 
-                const formData = new FormData();
-                formData.append('_token', CSRF_TOKEN);
-                formData.append('upload_id', uploadId);
-                formData.append('chunk_index', chunkIndex);
-                formData.append('total_chunks', totalChunks);
-                formData.append('original_filename', file.name);
-                formData.append('file_chunk', chunkBlob, file.name);
-
                 if (chunkIndex === totalChunks - 1) {
-                    document.getElementById('processing-banner').classList.remove('hidden');
+                    processingBanner.classList.remove('hidden');
                     if (statusBadge) {
                         statusBadge.className = 'inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-amber-100 text-amber-900 dark:bg-amber-950/70 dark:text-amber-200 border border-amber-200 dark:border-amber-900 transition-all animate-pulse';
                     }
-                    if (statusText) statusText.textContent = '{{ __("جاري حفظ ومعالجة الفيديو...") }}';
+                    if (statusText) statusText.textContent = '{{ __("جاري حفظ ومعالجة الفيديو فائق السرعة...") }}';
                 }
 
-                try {
-                    const response = await fetchWithRetry(UPLOAD_URL, {
-                        method: 'POST',
-                        body: formData,
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest'
+                // Resilient network loop: keeps retrying if connection blips
+                let chunkSuccess = false;
+                let attempt = 0;
+
+                while (!chunkSuccess) {
+                    attempt++;
+                    try {
+                        const formData = new FormData();
+                        formData.append('_token', CSRF_TOKEN);
+                        formData.append('upload_id', uploadId);
+                        formData.append('chunk_index', chunkIndex);
+                        formData.append('total_chunks', totalChunks);
+                        formData.append('original_filename', file.name);
+                        formData.append('file_chunk', chunkBlob, file.name);
+
+                        const response = await fetch(UPLOAD_URL, {
+                            method: 'POST',
+                            body: formData,
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'Accept': 'application/json'
+                            }
+                        });
+
+                        if (!response.ok) {
+                            const errorData = await response.json().catch(() => ({}));
+                            throw new Error(errorData.message || `HTTP ${response.status}`);
                         }
-                    }, 3);
 
-                    if (!response.ok) {
-                        const errorData = await response.json().catch(() => ({}));
-                        throw new Error(errorData.message || 'فشل في رفع الجزء ' + (chunkIndex + 1));
+                        const result = await response.json();
+                        chunkSuccess = true;
+                        receivedChunks.add(chunkIndex);
+
+                        uploadedBytesTotal += (end - start);
+                        const percent = Math.min(100, Math.round((uploadedBytesTotal / totalSize) * 100));
+                        const partsPercent = Math.min(100, Math.round(((chunkIndex + 1) / totalChunks) * 100));
+
+                        barFill.style.width = percent + '%';
+                        percentLabel.textContent = percent + '%';
+                        chunksLabel.textContent = `{{ __("الجزء") }} ${chunkIndex + 1} {{ __("من") }} ${totalChunks} (${partsPercent}%)`;
+                        chunksEl.textContent = `${chunkIndex + 1} / ${totalChunks}`;
+                        if (partsPctEl) partsPctEl.textContent = `${partsPercent}%`;
+                        uploadedEl.textContent = `${formatBytes(uploadedBytesTotal)} / ${formatBytes(totalSize)}`;
+
+                        const elapsedSeconds = (Date.now() - uploadStartTime) / 1000;
+                        if (elapsedSeconds > 0) {
+                            const bytesPerSecond = uploadedBytesTotal / elapsedSeconds;
+                            speedEl.textContent = formatBytes(bytesPerSecond) + '/s';
+                            const remainingBytes = Math.max(0, totalSize - uploadedBytesTotal);
+                            const remainingSeconds = bytesPerSecond > 0 ? (remainingBytes / bytesPerSecond) : 0;
+                            etaEl.textContent = formatSeconds(remainingSeconds);
+                        }
+
+                        // Upload completed!
+                        if (result.status === 'completed') {
+                            localStorage.removeItem(fileFingerprint);
+                            onUploadCompleted(result);
+                            return;
+                        }
+
+                        // Asynchronous processing fallback
+                        if (result.status === 'processing') {
+                            await pollMergeStatus(uploadId, fileFingerprint);
+                            return;
+                        }
+
+                    } catch (err) {
+                        console.warn(`[VIDEO_UPLOAD] Chunk ${chunkIndex} connection dropped (attempt ${attempt}):`, err.message);
+                        const retryDelay = Math.min(10000, 1000 * Math.pow(1.5, Math.min(attempt, 8)));
+                        if (statusBadge) {
+                            statusBadge.className = 'inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-amber-100 text-amber-900 border border-amber-200 animate-pulse';
+                        }
+                        if (statusText) {
+                            statusText.textContent = `انقطع الاتصال بالإنترنت، جاري إعادة المحاولة تلقائياً خلال ${Math.round(retryDelay/1000)} ثانية... لن يبدأ من البداية`;
+                        }
+                        await sleep(retryDelay);
+                        if (statusText) {
+                            statusText.textContent = `جاري استئناف رفع الجزء ${chunkIndex + 1}...`;
+                        }
                     }
+                }
+            }
+        }
 
-                    const result = await response.json();
-
-                    uploadedBytesTotal += (end - start);
-                    const percent = Math.min(100, Math.round((uploadedBytesTotal / totalSize) * 100));
-                    const partsPercent = Math.min(100, Math.round(((chunkIndex + 1) / totalChunks) * 100));
-
-                    document.getElementById('progress-bar-fill').style.width = percent + '%';
-                    document.getElementById('progress-percentage-label').textContent = percent + '%';
-                    
-                    document.getElementById('progress-chunks-label').textContent = `{{ __("الجزء") }} ${chunkIndex + 1} {{ __("من") }} ${totalChunks} (${partsPercent}%)`;
-                    document.getElementById('metric-chunks').textContent = `${chunkIndex + 1} / ${totalChunks}`;
-                    document.getElementById('metric-parts-pct').textContent = `${partsPercent}%`;
-                    document.getElementById('metric-uploaded').textContent = `${formatBytes(uploadedBytesTotal)} / ${formatBytes(totalSize)}`;
-
-                    const elapsedSeconds = (Date.now() - uploadStartTime) / 1000;
-                    if (elapsedSeconds > 0) {
-                        const bytesPerSecond = uploadedBytesTotal / elapsedSeconds;
-                        document.getElementById('metric-speed').textContent = formatBytes(bytesPerSecond) + '/s';
-
-                        const remainingBytes = Math.max(0, totalSize - uploadedBytesTotal);
-                        const remainingSeconds = bytesPerSecond > 0 ? (remainingBytes / bytesPerSecond) : 0;
-                        document.getElementById('metric-eta').textContent = formatSeconds(remainingSeconds);
+        async function pollMergeStatus(uploadId, fileFingerprint) {
+            const statusUrl = MERGE_STATUS_URL.replace(':uploadId', uploadId);
+            let attempts = 0;
+            while (attempts < 120) {
+                attempts++;
+                try {
+                    await sleep(2000);
+                    const res = await fetch(statusUrl, { headers: { 'Accept': 'application/json' } });
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (data.status === 'completed') {
+                            if (fileFingerprint) localStorage.removeItem(fileFingerprint);
+                            onUploadCompleted(data);
+                            return;
+                        }
+                        if (data.status === 'failed') {
+                            throw new Error(data.error || 'فشل في حفظ الفيديو');
+                        }
                     }
-
-                    if (result.status === 'completed') {
-                        onUploadCompleted(result);
-                        return;
-                    }
-                } catch (err) {
-                    isUploading = false;
-                    alert('خطأ أثناء الرفع: ' + err.message);
-                    dropzone.classList.remove('opacity-50', 'pointer-events-none');
-                    if (statusBadge) {
-                        statusBadge.className = 'inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-rose-100 text-rose-800 dark:bg-rose-950/70 dark:text-rose-300 border border-rose-200 transition-all';
-                    }
-                    if (statusText) statusText.textContent = '{{ __("فشل الرفع") }}';
-                    document.getElementById('processing-banner').classList.add('hidden');
-                    return;
+                } catch (e) {
+                    console.warn('[VIDEO_UPLOAD] Polling status:', e);
                 }
             }
         }
@@ -1028,6 +1118,9 @@
                 player.load();
                 player.play().catch(() => {});
             }
+
+            const submitBtn = document.getElementById('btn-submit-lesson');
+            if (submitBtn) submitBtn.disabled = false;
         }
     </script>
 <script src="https://cdn.jsdelivr.net/npm/@mux/mux-player"></script>

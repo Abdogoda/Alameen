@@ -615,6 +615,8 @@
     <script>
         const IS_MUX_CONFIGURED = {{ !empty($isMuxConfigured) ? 'true' : 'false' }};
         const PROMO_CHUNK_UPLOAD_URL = "{{ route('admin.courses.promo.chunk.upload', $course) }}";
+        const PROMO_VERIFY_CHUNKS_URL = "{{ route('admin.courses.promo.chunks.verify', $course) }}";
+        const PROMO_MERGE_STATUS_URL = "{{ route('admin.courses.promo.merge.status', [$course, ':uploadId']) }}";
         const PROMO_MUX_DIRECT_URL = "{{ route('admin.courses.promo.mux.direct_upload', $course) }}";
         const PROMO_MUX_STATUS_TEMPLATE = "{{ route('admin.courses.promo.mux.upload_status', [$course, ':uploadId']) }}";
         const PROMO_MUX_UPDATE_URL = "{{ route('admin.courses.promo.mux.update', $course) }}";
@@ -629,26 +631,12 @@
             return new Promise(resolve => setTimeout(resolve, ms));
         }
 
-        async function fetchWithRetry(url, options, maxRetries = 3) {
-            let lastError = null;
-            for (let attempt = 1; attempt <= maxRetries; attempt++) {
-                try {
-                    const response = await fetch(url, options);
-                    if (response.ok) {
-                        return response;
-                    }
-                    const err = await response.json().catch(() => ({ message: `HTTP ${response.status}` }));
-                    lastError = new Error(err.message || 'فشل رفع جزء من الملف');
-                } catch (err) {
-                    lastError = err;
-                }
-
-                if (attempt < maxRetries) {
-                    await sleep(2000 * attempt);
-                }
+        window.addEventListener('beforeunload', (e) => {
+            if (isPromoUploading) {
+                e.preventDefault();
+                e.returnValue = 'جاري رفع الفيديو التعريفي، هل أنت متأكد من مغادرة الصفحة؟';
             }
-            throw lastError;
-        }
+        });
 
         function formatBytes(bytes) {
             if (bytes === 0) return '0 B';
@@ -702,7 +690,7 @@
         }
 
         /**
-         * Direct Browser-to-MUX Upload using @mux/upchunk.
+         * Direct Browser-to-MUX Upload using @mux/upchunk with high network resilience.
          */
         async function startPromoMuxDirectUpload(file) {
             isPromoUploading = true;
@@ -727,7 +715,7 @@
 
             progressContainer.classList.remove('hidden');
             processingBanner.classList.add('hidden');
-            successBanner.classList.remove('hidden');
+            successBanner.classList.add('hidden');
 
             fileNameEl.textContent = file.name;
             fileNameEl.title = file.name;
@@ -771,8 +759,9 @@
                     endpoint: uploadUrl,
                     file: file,
                     chunkSize: 5120, // 5MB chunks
-                    attempts: 5,
-                    delayBeforeAttempt: 1,
+                    attempts: 30, // Resilient
+                    delayBeforeAttempt: 3,
+                    retryCodes: [0, 408, 429, 500, 502, 503, 504],
                 });
 
                 upload.on('attempt', (e) => {
@@ -782,14 +771,19 @@
                 upload.on('attemptFailure', (e) => {
                     console.warn('[PROMO_UPLOAD MUX] UpChunk Chunk attempt failed:', e.detail);
                     if (statusText) {
-                        statusText.textContent = `جاري إعادة محاولة إرسال الجزء (${e.detail?.chunkNumber ?? ''})... المحاولات المتبقية: ${e.detail?.attemptsLeft ?? ''}`;
+                        statusText.textContent = `انقطع الاتصال مؤقتاً، جاري إعادة محاولة إرسال الجزء (${e.detail?.chunkNumber ?? ''})... المحاولات المتبقية: ${e.detail?.attemptsLeft ?? ''}`;
+                    }
+                    if (statusBadge) {
+                        statusBadge.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-900 border border-amber-200 animate-pulse';
                     }
                 });
 
                 upload.on('chunkSuccess', (e) => {
-                    console.log(`[PROMO_UPLOAD MUX] UpChunk Chunk #${e.detail?.chunkNumber ?? '?'} succeeded!`);
                     if (statusText) {
                         statusText.textContent = '{{ __("جاري الرفع المباشر إلى MUX...") }}';
+                    }
+                    if (statusBadge) {
+                        statusBadge.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-blue-100/90 text-[#012383] dark:bg-blue-950/70 dark:text-blue-300 border border-blue-200 dark:border-blue-900 transition-all shadow-2xs';
                     }
                 });
 
@@ -891,7 +885,7 @@
                             console.warn('Poll error:', err);
                         }
 
-                        if (pollCount > 45) {
+                        if (pollCount > 60) {
                             clearInterval(poller);
                             document.getElementById('field-promo-video-source').value = 'mux';
                             processingBanner.classList.add('hidden');
@@ -908,19 +902,14 @@
 
                 upload.on('error', (err) => {
                     console.error('[PROMO_UPLOAD MUX] UpChunk upload error:', err);
-                    console.warn('[PROMO_UPLOAD MUX] Triggering automatic fallback to local chunked upload...');
                     if (statusText) {
-                        statusText.textContent = 'تعذر استكمال الرفع المباشر إلى MUX (' + (err.detail?.message || 'انقطاع الاتصال') + ')، جاري التحويل التلقائي للرفع عبر خادم المنصة...';
+                        statusText.textContent = 'تعذر استكمال الرفع عبر MUX، جاري التحويل التلقائي للرفع المجزأ فائق الاستقرار عبر خادم المنصة...';
                     }
                     if (statusBadge) {
                         statusBadge.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-900 border border-amber-200';
                     }
                     isPromoUploading = false;
-                    return startLocalPromoChunkedUpload(file);
-                });
-                        submitBtn.disabled = false;
-                        if (submitText) submitText.textContent = '{{ __("حفظ التعديلات ونشر الكورس") }}';
-                    }
+                    return startPromoLocalChunkedUpload(file);
                 });
 
             } catch (err) {
@@ -930,13 +919,16 @@
         }
 
         /**
-         * Local server chunked upload
+         * Resilient Local server chunked upload with AUTO-RESUME and INFINITE RETRY on network disconnects.
          */
         async function startPromoLocalChunkedUpload(file) {
             isPromoUploading = true;
 
-            const uploadId = 'promo_' + Date.now() + '_' + Math.random().toString(36).substring(2, 9);
-            const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
+            const fileFingerprint = `course_promo_${file.name}_${file.size}_${file.lastModified}`;
+            let uploadId = localStorage.getItem(fileFingerprint);
+            const totalSize = file.size;
+            const totalChunks = Math.ceil(totalSize / CHUNK_SIZE);
+            let receivedChunks = new Set();
 
             const progressContainer = document.getElementById('promo-upload-progress-container');
             const fileNameEl = document.getElementById('promo-progress-file-name');
@@ -961,140 +953,240 @@
 
             fileNameEl.textContent = file.name;
             fileNameEl.title = file.name;
-            fileSizeEl.textContent = formatBytes(file.size);
-            
+            fileSizeEl.textContent = formatBytes(totalSize);
+
+            // Check existing session on server to resume without starting from 0
+            if (uploadId) {
+                if (statusText) statusText.textContent = '{{ __("جاري فحص الأجزاء المحفوظة على السيرفر لاستئناف الرفع...") }}';
+                try {
+                    const verifyRes = await fetch(PROMO_VERIFY_CHUNKS_URL, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': CSRF_TOKEN,
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            upload_id: uploadId,
+                            total_chunks: totalChunks
+                        })
+                    });
+                    if (verifyRes.ok) {
+                        const verifyData = await verifyRes.json();
+                        if (Array.isArray(verifyData.received_chunks) && verifyData.received_chunks.length > 0) {
+                            receivedChunks = new Set(verifyData.received_chunks);
+                            console.log(`[PROMO_UPLOAD] Resuming session: ${receivedChunks.size} of ${totalChunks} chunks already exist.`);
+                        }
+                    }
+                } catch (e) {
+                    console.warn('[PROMO_UPLOAD] Could not verify existing chunks:', e);
+                }
+            }
+
+            if (!uploadId || receivedChunks.size === 0) {
+                uploadId = 'promo_' + Date.now() + '_' + Math.random().toString(36).substring(2, 9);
+                localStorage.setItem(fileFingerprint, uploadId);
+            }
+
             if (statusBadge) {
                 statusBadge.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-blue-100/90 text-[#012383] dark:bg-blue-950/70 dark:text-blue-300 border border-blue-200 dark:border-blue-900 transition-all shadow-2xs';
             }
-            if (statusText) statusText.textContent = '{{ __("جاري الرفع...") }}';
+            if (statusText) {
+                statusText.textContent = receivedChunks.size > 0 
+                    ? `{{ __("تم استئناف الرفع بنجاح! تم تخطي") }} ${receivedChunks.size} {{ __("جزء مرفوع مسبقاً") }}` 
+                    : '{{ __("جاري الرفع مجزأ وذكي...") }}';
+            }
 
             if (submitBtn) {
                 submitBtn.disabled = true;
                 if (submitText) submitText.textContent = '{{ __("جاري رفع الفيديو التعريفي...") }}';
             }
             promoUploadStartTime = Date.now();
-
-            let uploadedBytes = 0;
+            let uploadedBytes = receivedChunks.size * CHUNK_SIZE;
 
             for (let chunkIndex = 0; chunkIndex < totalChunks; chunkIndex++) {
-                const start = chunkIndex * CHUNK_SIZE;
-                const end = Math.min(start + CHUNK_SIZE, file.size);
-                const chunkBlob = file.slice(start, end);
+                // Skip already uploaded chunks
+                if (receivedChunks.has(chunkIndex)) {
+                    const currentDoneBytes = Math.min((chunkIndex + 1) * CHUNK_SIZE, totalSize);
+                    const percent = Math.min(100, Math.round((currentDoneBytes / totalSize) * 100));
+                    percentLabel.textContent = percent + '%';
+                    barFill.style.width = percent + '%';
+                    chunksLabel.textContent = `{{ __("الجزء") }} ${chunkIndex + 1} {{ __("من") }} ${totalChunks} (${percent}%)`;
+                    chunksEl.textContent = `${chunkIndex + 1} / ${totalChunks}`;
+                    uploadedEl.textContent = `${formatBytes(currentDoneBytes)} / ${formatBytes(totalSize)}`;
+                    continue;
+                }
 
-                const formData = new FormData();
-                formData.append('upload_id', uploadId);
-                formData.append('chunk_index', chunkIndex);
-                formData.append('total_chunks', totalChunks);
-                formData.append('original_filename', file.name);
-                formData.append('total_size', file.size);
-                formData.append('file_chunk', chunkBlob);
+                const start = chunkIndex * CHUNK_SIZE;
+                const end = Math.min(start + CHUNK_SIZE, totalSize);
+                const chunkBlob = file.slice(start, end);
 
                 if (chunkIndex === totalChunks - 1) {
                     processingBanner.classList.remove('hidden');
                     if (statusBadge) {
                         statusBadge.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-900 dark:bg-amber-950/70 dark:text-amber-200 border border-amber-200 dark:border-amber-900 transition-all animate-pulse';
                     }
-                    if (statusText) statusText.textContent = '{{ __("جاري تجميع وحفظ الفيديو على السيرفر...") }}';
+                    if (statusText) statusText.textContent = '{{ __("جاري حفظ ومعالجة الفيديو فائق السرعة...") }}';
                 }
 
-                try {
-                    const response = await fetchWithRetry(PROMO_CHUNK_UPLOAD_URL, {
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': CSRF_TOKEN,
-                            'Accept': 'application/json'
-                        },
-                        body: formData
-                    }, 3);
+                let chunkSuccess = false;
+                let attempt = 0;
 
-                    if (!response.ok) {
-                        const err = await response.json().catch(() => ({ message: 'Server error' }));
-                        throw new Error(err.message || 'فشل رفع جزء من الملف');
-                    }
+                while (!chunkSuccess) {
+                    attempt++;
+                    try {
+                        const formData = new FormData();
+                        formData.append('_token', CSRF_TOKEN);
+                        formData.append('upload_id', uploadId);
+                        formData.append('chunk_index', chunkIndex);
+                        formData.append('total_chunks', totalChunks);
+                        formData.append('original_filename', file.name);
+                        formData.append('total_size', file.size);
+                        formData.append('file_chunk', chunkBlob, file.name);
 
-                    const result = await response.json();
+                        const response = await fetch(PROMO_CHUNK_UPLOAD_URL, {
+                            method: 'POST',
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'Accept': 'application/json'
+                            },
+                            body: formData
+                        });
 
-                    uploadedBytes += (end - start);
-                    const percent = Math.min(100, Math.round((uploadedBytes / file.size) * 100));
-                    const partsPercent = Math.min(100, Math.round(((chunkIndex + 1) / totalChunks) * 100));
+                        if (!response.ok) {
+                            const err = await response.json().catch(() => ({}));
+                            throw new Error(err.message || `HTTP ${response.status}`);
+                        }
 
-                    percentLabel.textContent = percent + '%';
-                    barFill.style.width = percent + '%';
-                    chunksLabel.textContent = `{{ __("الجزء") }} ${chunkIndex + 1} {{ __("من") }} ${totalChunks} (${partsPercent}%)`;
-                    chunksEl.textContent = `${chunkIndex + 1} / ${totalChunks}`;
-                    uploadedEl.textContent = `${formatBytes(uploadedBytes)} / ${formatBytes(file.size)}`;
+                        const result = await response.json();
+                        chunkSuccess = true;
+                        receivedChunks.add(chunkIndex);
 
-                    const elapsedSec = (Date.now() - promoUploadStartTime) / 1000;
-                    if (elapsedSec > 0) {
-                        const bytesPerSec = uploadedBytes / elapsedSec;
-                        speedEl.textContent = formatBytes(bytesPerSec) + '/s';
-                        const remainingBytes = Math.max(0, file.size - uploadedBytes);
-                        const etaSec = bytesPerSec > 0 ? (remainingBytes / bytesPerSec) : 0;
-                        etaEl.textContent = formatSeconds(etaSec);
-                    }
+                        uploadedBytes += (end - start);
+                        const percent = Math.min(100, Math.round((uploadedBytes / file.size) * 100));
+                        const partsPercent = Math.min(100, Math.round(((chunkIndex + 1) / totalChunks) * 100));
 
-                    if (chunkIndex === totalChunks - 1 && result.status === 'completed') {
+                        percentLabel.textContent = percent + '%';
+                        barFill.style.width = percent + '%';
+                        chunksLabel.textContent = `{{ __("الجزء") }} ${chunkIndex + 1} {{ __("من") }} ${totalChunks} (${partsPercent}%)`;
+                        chunksEl.textContent = `${chunkIndex + 1} / ${totalChunks}`;
+                        uploadedEl.textContent = `${formatBytes(uploadedBytes)} / ${formatBytes(totalSize)}`;
+
+                        const elapsedSec = (Date.now() - promoUploadStartTime) / 1000;
+                        if (elapsedSec > 0) {
+                            const bytesPerSec = uploadedBytes / elapsedSec;
+                            speedEl.textContent = formatBytes(bytesPerSec) + '/s';
+                            const remainingBytes = Math.max(0, file.size - uploadedBytes);
+                            const etaSec = bytesPerSec > 0 ? (remainingBytes / bytesPerSec) : 0;
+                            etaEl.textContent = formatSeconds(etaSec);
+                        }
+
+                        if (result.status === 'completed') {
+                            localStorage.removeItem(fileFingerprint);
+                            onPromoUploadCompleted(result);
+                            return;
+                        }
+
+                        if (result.status === 'processing') {
+                            await pollPromoMergeStatus(uploadId, fileFingerprint);
+                            return;
+                        }
+
+                    } catch (err) {
+                        console.warn(`[PROMO_UPLOAD] Chunk ${chunkIndex} connection dropped (attempt ${attempt}):`, err.message);
+                        const retryDelay = Math.min(10000, 1000 * Math.pow(1.5, Math.min(attempt, 8)));
                         if (statusBadge) {
-                            statusBadge.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-900 transition-all';
+                            statusBadge.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-900 border border-amber-200 animate-pulse';
                         }
-                        if (statusText) statusText.textContent = '{{ __("اكتمل الرفع والمعالجة بنجاح") }}';
-                        processingBanner.classList.add('hidden');
-                        successBanner.classList.remove('hidden');
-
-                        let playUrl = result.promo_video_url || '';
-                        if (playUrl.includes('/storage/')) {
-                            playUrl = '/storage/' + playUrl.split('/storage/')[1];
+                        if (statusText) {
+                            statusText.textContent = `انقطع الاتصال بالإنترنت، جاري إعادة المحاولة تلقائياً خلال ${Math.round(retryDelay/1000)} ثانية... لن يبدأ من البداية`;
                         }
-
-                        // Populate hidden form fields so saving the course details updates normally
-                        document.getElementById('field-promo-video-source').value = result.promo_video_source || 'local';
-                        if (playUrl) {
-                            const promoInput = document.getElementById('promo-url-input');
-                            if (promoInput) promoInput.value = playUrl;
+                        await sleep(retryDelay);
+                        if (statusText) {
+                            statusText.textContent = `جاري استئناف رفع الجزء ${chunkIndex + 1}...`;
                         }
-                        document.getElementById('field-mux-playback-id').value = result.mux_playback_id || '';
-                        document.getElementById('field-mux-asset-id').value = result.mux_asset_id || '';
-
-                        const driverBadge = document.getElementById('promo-success-driver-badge');
-                        if (driverBadge) {
-                            driverBadge.textContent = result.driver_used === 'mux' ? 'منصة MUX' : '{{ __("سيرفر المنصة المحلي") }}';
-                        }
-
-                        // Update preview player
-                        if (result.mux_playback_id) {
-                            updatePromoPlayerWithMux(result.mux_playback_id, result.playback_token);
-                        } else if (playUrl) {
-                            const playerContainer = document.getElementById('promo-preview-player');
-                            playerContainer.innerHTML = '';
-                            const video = document.createElement('video');
-                            video.controls = true;
-                            video.className = 'w-full h-full';
-                            video.src = playUrl;
-                            playerContainer.appendChild(video);
-                        }
-
-                        if (submitBtn) {
-                            submitBtn.disabled = false;
-                            if (submitText) submitText.textContent = '{{ __("حفظ التعديلات ونشر الكورس") }}';
-                        }
-                        isPromoUploading = false;
-                        return;
                     }
-                } catch (err) {
-                    console.error(err);
-                    if (statusBadge) {
-                        statusBadge.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-rose-100 text-rose-800 dark:bg-rose-950/70 dark:text-rose-300 border border-rose-200 transition-all';
-                    }
-                    if (statusText) statusText.textContent = '{{ __("خطأ في الرفع") }}';
-                    alert('حدث خطأ أثناء رفع ملف الفيديو: ' + err.message);
-                    if (submitBtn) {
-                        submitBtn.disabled = false;
-                        if (submitText) submitText.textContent = '{{ __("حفظ التعديلات ونشر الكورس") }}';
-                    }
-                    isPromoUploading = false;
-                    return;
                 }
             }
+        }
+
+        async function pollPromoMergeStatus(uploadId, fileFingerprint) {
+            const statusUrl = PROMO_MERGE_STATUS_URL.replace(':uploadId', uploadId);
+            let attempts = 0;
+            while (attempts < 120) {
+                attempts++;
+                try {
+                    await sleep(2000);
+                    const res = await fetch(statusUrl, { headers: { 'Accept': 'application/json' } });
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (data.status === 'completed') {
+                            if (fileFingerprint) localStorage.removeItem(fileFingerprint);
+                            onPromoUploadCompleted(data);
+                            return;
+                        }
+                        if (data.status === 'failed') {
+                            throw new Error(data.error || 'فشل في حفظ وتجميع الفيديو التعريفي');
+                        }
+                    }
+                } catch (e) {
+                    console.warn('[PROMO_UPLOAD] Polling error:', e);
+                }
+            }
+        }
+
+        function onPromoUploadCompleted(result) {
+            const statusBadge = document.getElementById('promo-progress-status-badge');
+            const statusText = document.getElementById('promo-progress-status-text');
+            const processingBanner = document.getElementById('promo-processing-banner');
+            const successBanner = document.getElementById('promo-success-banner');
+            const submitBtn = document.getElementById('btn-submit-course');
+            const submitText = document.getElementById('btn-submit-course-text');
+
+            if (statusBadge) {
+                statusBadge.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-900 transition-all';
+            }
+            if (statusText) statusText.textContent = '{{ __("اكتمل الرفع والمعالجة بنجاح") }}';
+            if (processingBanner) processingBanner.classList.add('hidden');
+            if (successBanner) successBanner.classList.remove('hidden');
+
+            let playUrl = result.promo_video_url || '';
+            if (playUrl.includes('/storage/')) {
+                playUrl = '/storage/' + playUrl.split('/storage/')[1];
+            }
+
+            document.getElementById('field-promo-video-source').value = result.promo_video_source || 'local';
+            if (playUrl) {
+                const promoInput = document.getElementById('promo-url-input');
+                if (promoInput) promoInput.value = playUrl;
+            }
+            document.getElementById('field-mux-playback-id').value = result.mux_playback_id || '';
+            document.getElementById('field-mux-asset-id').value = result.mux_asset_id || '';
+
+            const driverBadge = document.getElementById('promo-success-driver-badge');
+            if (driverBadge) {
+                driverBadge.textContent = result.driver_used === 'mux' ? 'منصة MUX' : '{{ __("سيرفر المنصة المحلي") }}';
+            }
+
+            if (result.mux_playback_id) {
+                updatePromoPlayerWithMux(result.mux_playback_id, result.playback_token);
+            } else if (playUrl) {
+                const playerContainer = document.getElementById('promo-preview-player');
+                if (playerContainer) {
+                    playerContainer.innerHTML = '';
+                    const video = document.createElement('video');
+                    video.controls = true;
+                    video.className = 'w-full h-full';
+                    video.src = playUrl;
+                    playerContainer.appendChild(video);
+                }
+            }
+
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                if (submitText) submitText.textContent = '{{ __("حفظ التعديلات ونشر الكورس") }}';
+            }
+            isPromoUploading = false;
         }
 
         function updatePromoPlayerWithMux(playbackId, token = null) {

@@ -421,7 +421,8 @@
                             <button 
                                 type="submit" 
                                 id="btn-banner-submit"
-                                class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#012383] to-[#0B2A8F] hover:from-[#0B2A8F] hover:to-[#012383] text-white font-extrabold text-xs shadow-md flex items-center gap-1.5 cursor-pointer active:scale-95"
+                                disabled
+                                class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#012383] to-[#0B2A8F] hover:from-[#0B2A8F] hover:to-[#012383] text-white font-extrabold text-xs shadow-md flex items-center gap-1.5 cursor-pointer active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
                                 <span>{{ __('حفظ ونشر الدرس في المنهج الآن') }}</span>
@@ -552,6 +553,20 @@
             }
         });
 
+        // Prevent premature manual form submission while video upload is in progress
+        const lessonFormEl = document.getElementById('form-create-lesson');
+        if (lessonFormEl) {
+            lessonFormEl.addEventListener('submit', function (e) {
+                if (isUploading) {
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                    console.warn('[VIDEO_UPLOAD] Form submission prevented because video upload is actively in progress.');
+                    alert('{{ __("يرجى الانتظار حتى يكتمل رفع ومعالجة الفيديو بالكامل قبل حفظ الدرس.") }}');
+                    return false;
+                }
+            });
+        }
+
         function formatBytes(bytes) {
             if (bytes === 0) return '0 B';
             const k = 1024;
@@ -598,6 +613,20 @@
         function startVideoUpload(file) {
             uploadSessionId++;
             const currentSession = uploadSessionId;
+            isUploading = true;
+            hasAutoSaved = false;
+
+            const progressContainer = document.getElementById('upload-progress-container');
+            const processingBanner = document.getElementById('processing-banner');
+            const successBanner = document.getElementById('success-banner');
+            const submitBtn = document.getElementById('btn-submit-lesson');
+            const bannerBtn = document.getElementById('btn-banner-submit');
+
+            if (progressContainer) progressContainer.classList.remove('hidden');
+            if (processingBanner) processingBanner.classList.add('hidden');
+            if (successBanner) successBanner.classList.add('hidden');
+            if (submitBtn) submitBtn.disabled = true;
+            if (bannerBtn) bannerBtn.disabled = true;
 
             // Immediately abort and cleanup any previous upload instance
             if (activeMuxUpload) {
@@ -661,10 +690,11 @@
             const processingBanner = document.getElementById('processing-banner');
             const successBanner = document.getElementById('success-banner');
             const submitBtn = document.getElementById('btn-submit-lesson');
+            const bannerBtn = document.getElementById('btn-banner-submit');
 
             progressContainer.classList.remove('hidden');
             processingBanner.classList.add('hidden');
-            successBanner.classList.remove('hidden');
+            successBanner.classList.add('hidden');
 
             fileNameEl.textContent = file.name;
             fileNameEl.title = file.name;
@@ -676,6 +706,7 @@
             if (statusText) statusText.textContent = '{{ __("جاري الاتصال بسحابة MUX...") }}';
             if (chunksLabel) chunksLabel.textContent = '{{ __("رفع سحابي مباشر (Zero Timeout)") }}';
             if (submitBtn) submitBtn.disabled = true;
+            if (bannerBtn) bannerBtn.disabled = true;
 
             try {
                 console.log('[VIDEO_UPLOAD] Requesting MUX Direct Upload URL from backend:', MUX_DIRECT_UPLOAD_URL);
@@ -855,6 +886,8 @@
                                 }
 
                                 if (submitBtn) submitBtn.disabled = false;
+                                const bannerBtn = document.getElementById('btn-banner-submit');
+                                if (bannerBtn) bannerBtn.disabled = false;
                                 isUploading = false;
 
                                 // Direct Auto-Save once verified across Frontend, Backend, and MUX
@@ -877,6 +910,8 @@
                             successBanner.classList.remove('hidden');
                             if (statusText) statusText.textContent = '{{ __("تم رفع الفيديو بنجاح إلى MUX (جاري إكمال المعالجة في السحابة)") }}';
                             if (submitBtn) submitBtn.disabled = false;
+                            const bannerBtn = document.getElementById('btn-banner-submit');
+                            if (bannerBtn) bannerBtn.disabled = false;
                             isUploading = false;
 
                             // Direct Auto-Save with verified upload session
@@ -962,12 +997,14 @@
             const processingBanner = document.getElementById('processing-banner');
             const successBanner = document.getElementById('success-banner');
             const submitBtn = document.getElementById('btn-submit-lesson');
+            const bannerBtn = document.getElementById('btn-banner-submit');
 
             progressContainer.classList.remove('hidden');
             processingBanner.classList.add('hidden');
             successBanner.classList.add('hidden');
             if (dropzone) dropzone.classList.add('opacity-50', 'pointer-events-none');
             if (submitBtn) submitBtn.disabled = true;
+            if (bannerBtn) bannerBtn.disabled = true;
 
             fileNameEl.textContent = file.name;
             fileNameEl.title = file.name;
@@ -1226,6 +1263,8 @@
 
             const submitBtn = document.getElementById('btn-submit-lesson');
             if (submitBtn) submitBtn.disabled = false;
+            const bannerBtn = document.getElementById('btn-banner-submit');
+            if (bannerBtn) bannerBtn.disabled = false;
 
             // Direct Auto-Save once verified on Backend disk and storage
             triggerDirectAutoSave(result.driver_used || 'local', {
@@ -1241,6 +1280,12 @@
          */
         function triggerDirectAutoSave(driver = 'mux', details = {}) {
             if (hasAutoSaved) return;
+
+            // Strict Safeguard: Cannot auto-save if an upload is actively transferring chunks
+            if (isUploading) {
+                console.warn('[AUTO_SAVE] Blocked: Video upload is still actively in progress.');
+                return;
+            }
 
             // 1. Multi-tier verification: Ensure video is physically uploaded & verified
             const source = document.getElementById('field-video-source')?.value || driver;

@@ -803,11 +803,16 @@
                 upload.on('attemptFailure', (e) => {
                     if (sessionId !== uploadSessionId || activeUploadEngine !== 'mux') return;
                     console.warn('[VIDEO_UPLOAD MUX] UpChunk Chunk attempt failed:', e.detail);
-                    if (statusText) {
-                        statusText.textContent = `انقطع الاتصال مؤقتاً، جاري إعادة محاولة إرسال الجزء (${e.detail?.chunkNumber ?? ''})... المحاولات المتبقية: ${e.detail?.attemptsLeft ?? ''}`;
-                    }
-                    if (statusBadge) {
-                        statusBadge.className = 'inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-amber-100 text-amber-900 border border-amber-200 animate-pulse';
+
+                    const attemptsLeft = e.detail?.attemptsLeft ?? 40;
+                    // Only show alert badge if multiple attempts failed, so normal 1-retry self-healing doesn't flicker or panic the user
+                    if (attemptsLeft <= 36) {
+                        if (statusText) {
+                            statusText.textContent = `جاري استقرار الاتصال وإعادة محاولة إرسال الجزء (${e.detail?.chunkNumber ?? ''})... المحاولات المتبقية: ${attemptsLeft}`;
+                        }
+                        if (statusBadge) {
+                            statusBadge.className = 'inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-amber-100 text-amber-900 border border-amber-200 animate-pulse';
+                        }
                     }
                 });
 

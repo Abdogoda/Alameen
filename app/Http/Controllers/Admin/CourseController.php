@@ -774,7 +774,6 @@ class CourseController extends Controller
 
         return response()->json($status);
     }
-    }
 
     /**
      * Store a newly created lesson/video in storage.

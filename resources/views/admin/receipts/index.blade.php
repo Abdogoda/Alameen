@@ -255,56 +255,70 @@
     </div>
 
 
-    @if(auth('admin')->user()?->hasPermission('receipts.reject'))
-    <!-- Reject Receipt Modal Script Support -->
-    <div id="modal-reject-receipt" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs hidden">
-        <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 flex flex-col gap-5 shadow-2xl border border-rose-100">
-            <div class="flex items-center gap-2.5 text-rose-600">
-                <div class="size-9 rounded-xl bg-rose-50 flex items-center justify-center">
-                    <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-                </div>
-                <h3 class="font-bold text-lg text-slate-800">{{ __('سبب رفض إيصال التحويل') }}</h3>
-            </div>
-            <p class="text-xs text-slate-500">{{ __('يرجى تحديد سبب الرفض لإشعار الطالب به:') }}</p>
-
-            <form id="reject-receipt-form" method="POST" action="" class="flex flex-col gap-4">
-                @csrf
-                <div>
-                    <label class="text-xs font-bold text-slate-700 block mb-1.5">{{ __('سبب الرفض:') }}</label>
-                    <select name="rejection_reason" class="w-full h-11 px-3.5 rounded-xl border border-[#DEE8F7] bg-white text-xs font-bold text-slate-700 outline-none focus:border-rose-500">
-                        <option value="صورة الإيصال غير واضحة أو مقطوعة">{{ __('صورة الإيصال غير واضحة أو مقطوعة') }}</option>
-                        <option value="المبلغ المحول أقل من سعر الكورس المحدد">{{ __('المبلغ المحول أقل من سعر الكورس المحدد') }}</option>
-                        <option value="رقم العملية غير موجود في كشف الحساب">{{ __('رقم العملية غير موجود في كشف الحساب') }}</option>
-                        <option value="بيانات المحول غير متطابقة">{{ __('بيانات المحول غير متطابقة') }}</option>
-                    </select>
-                </div>
-                <div class="flex items-center justify-end gap-2 pt-2">
-                    <button type="button" onclick="closeRejectModal()" class="px-4 h-10 rounded-xl bg-slate-100 text-slate-600 font-bold text-xs">{{ __('إلغاء') }}</button>
-                    <button type="submit" class="px-5 h-10 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs">{{ __('تأكيد الرفض') }}</button>
-                </div>
-            </form>
-        </div>
-    </div>
-    @endif
-
     <script>
         function openRejectReceiptModalWithId(id) {
-            const modal = document.getElementById('modal-reject-receipt');
             const form = document.getElementById('reject-receipt-form');
-            if (modal && form) {
+            if (form) {
                 form.action = `/admin/receipts/${id}/reject`;
-                modal.classList.remove('hidden');
+            }
+            if (typeof window.openModal === 'function') {
+                window.openModal('modal-reject-receipt');
+            } else {
+                const modal = document.getElementById('modal-reject-receipt');
+                if (modal) {
+                    modal.classList.remove('modal-hidden', 'hidden');
+                    modal.style.display = 'flex';
+                }
             }
         }
         function closeRejectModal() {
-            const modal = document.getElementById('modal-reject-receipt');
-            if (modal) modal.classList.add('hidden');
+            if (typeof window.closeModal === 'function') {
+                window.closeModal('modal-reject-receipt');
+            } else {
+                const modal = document.getElementById('modal-reject-receipt');
+                if (modal) {
+                    modal.classList.add('modal-hidden', 'hidden');
+                    modal.style.display = 'none';
+                }
+            }
         }
     </script>
 
     <x-slot:modals>
+        @if(auth('admin')->user()?->hasPermission('receipts.reject'))
+        <!-- Reject Receipt Modal -->
+        <div id="modal-reject-receipt" class="modal-backdrop fixed inset-0 z-[99999] flex items-center justify-center p-4 modal-hidden">
+            <div class="modal-content bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full p-6 sm:p-7 flex flex-col gap-5 shadow-2xl border border-rose-100 dark:border-rose-900/60">
+                <div class="flex items-center gap-2.5 text-rose-600">
+                    <div class="size-9 rounded-xl bg-rose-50 dark:bg-rose-950/60 flex items-center justify-center">
+                        <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                    </div>
+                    <h3 class="font-bold text-lg text-slate-800 dark:text-white">{{ __('سبب رفض إيصال التحويل') }}</h3>
+                </div>
+                <p class="text-xs text-slate-500 dark:text-slate-400">{{ __('يرجى تحديد سبب الرفض لإشعار الطالب به:') }}</p>
+
+                <form id="reject-receipt-form" method="POST" action="" class="flex flex-col gap-4">
+                    @csrf
+                    <div>
+                        <label class="text-xs font-bold text-slate-700 dark:text-slate-200 block mb-1.5">{{ __('سبب الرفض:') }}</label>
+                        <select name="rejection_reason" id="reject-reason-input" class="w-full h-11 px-3.5 rounded-xl border border-[#DEE8F7] dark:border-slate-800 bg-white dark:bg-slate-800 text-xs font-bold text-slate-700 dark:text-slate-200 outline-none focus:border-rose-500">
+                            <option value="صورة الإيصال غير واضحة أو مقطوعة">{{ __('صورة الإيصال غير واضحة أو مقطوعة') }}</option>
+                            <option value="المبلغ المحول أقل من سعر الكورس المحدد">{{ __('المبلغ المحول أقل من سعر الكورس المحدد') }}</option>
+                            <option value="رقم العملية غير موجود في كشف الحساب">{{ __('رقم العملية غير موجود في كشف الحساب') }}</option>
+                            <option value="بيانات المحول غير متطابقة">{{ __('بيانات المحول غير متطابقة') }}</option>
+                        </select>
+                    </div>
+                    <div class="flex items-center justify-end gap-2 pt-2">
+                        <button type="button" onclick="closeRejectModal()" class="px-4 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold text-xs">{{ __('إلغاء') }}</button>
+                        <button type="submit" class="px-5 h-10 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs">{{ __('تأكيد الرفض') }}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        @endif
+
         <!-- Modal: View Receipt Details -->
-        <div id="modal-view-receipt" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4 modal-hidden">
+        <div id="modal-view-receipt" class="modal-backdrop fixed inset-0 z-[99999] flex items-center justify-center p-4 modal-hidden">
           <div class="modal-content bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 flex flex-col gap-6 shadow-2xl border border-[#DEE8F7] max-h-[90vh] overflow-y-auto">
             <div class="flex items-center justify-between border-b border-[#DEE8F7] pb-4">
               <div class="flex items-center gap-2">
@@ -358,35 +372,6 @@
                 <span>اعتماد ومنح الوصول للكورس</span>
               </button>
             </div>
-          </div>
-        </div>
-
-        <!-- Modal: Reject Reason -->
-        <div id="modal-reject-receipt" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4 modal-hidden">
-          <div class="modal-content bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 flex flex-col gap-5 shadow-2xl border border-rose-100">
-            <div class="flex items-center gap-2.5 text-rose-600">
-              <div class="size-9 rounded-xl bg-rose-50 flex items-center justify-center">
-                <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-              </div>
-              <h3 class="font-bold text-lg text-slate-800">سبب رفض إيصال التحويل</h3>
-            </div>
-            <p class="text-xs text-slate-500">سيصل هذا التوضيح للطالب عبر لوحة تحكمه لإعادة المحاولة.</p>
-
-            <form onsubmit="submitRejectReceipt(event)" class="flex flex-col gap-4">
-              <div>
-                <label class="text-xs font-bold text-slate-700 block mb-1.5">سبب الرفض:</label>
-                <select id="reject-reason-input" class="w-full h-11 px-3.5 rounded-xl border border-[#DEE8F7] bg-white text-xs font-bold text-slate-700 outline-none focus:border-rose-500">
-                  <option value="صورة الإيصال غير واضحة أو مقطوعة">صورة الإيصال غير واضحة أو مقطوعة</option>
-                  <option value="المبلغ المحول أقل من سعر الكورس المحدد">المبلغ المحول أقل من سعر الكورس المحدد</option>
-                  <option value="رقم العملية غير موجود في سجل الحساب">رقم العملية غير موجود في سجل الحساب</option>
-                  <option value="بيانات المحول غير متطابقة">بيانات المحول غير متطابقة</option>
-                </select>
-              </div>
-              <div class="flex items-center justify-end gap-2 pt-2">
-                <button type="button" onclick="closeModal('modal-reject-receipt')" class="px-4 h-10 rounded-xl bg-slate-100 text-slate-600 font-bold text-xs">إلغاء</button>
-                <button type="submit" class="px-5 h-10 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs">تأكيد الرفض</button>
-              </div>
-            </form>
           </div>
         </div>
 

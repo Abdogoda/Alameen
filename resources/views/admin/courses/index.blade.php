@@ -264,7 +264,7 @@
     @if(auth('admin')->user()?->hasPermission('courses.manage'))
     <x-slot:modals>
         <!-- Modal: Add New Course -->
-        <div id="modal-add-course" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 modal-hidden">
+        <div id="modal-add-course" class="modal-backdrop fixed inset-0 z-[99999] flex items-center justify-center p-3 sm:p-4 modal-hidden">
             <div class="modal-content bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl max-w-xl w-full p-5 sm:p-7 flex flex-col gap-4 shadow-2xl border border-[#DEE8F7] dark:border-slate-800 max-h-[90dvh] overflow-y-auto">
                 <div class="flex items-center justify-between border-b border-[#DEE8F7] dark:border-slate-800 pb-3.5">
                     <div class="flex items-center gap-2.5">

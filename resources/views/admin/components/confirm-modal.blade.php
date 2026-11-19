@@ -1,7 +1,7 @@
 <!-- Global Alameen Confirmation Modal -->
 <div 
     id="alameen-confirm-modal" 
-    class="modal-backdrop fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-4 modal-hidden bg-slate-950/60 backdrop-blur-xs select-none"
+    class="modal-backdrop fixed inset-0 z-[99999] flex items-center justify-center p-3 sm:p-4 modal-hidden bg-slate-950/60 backdrop-blur-xs select-none"
     role="dialog"
     aria-modal="true"
     aria-labelledby="alameen-confirm-title"

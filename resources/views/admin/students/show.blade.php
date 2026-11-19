@@ -1180,7 +1180,7 @@
     {{-- MODALS CONTAINER --}}
     <x-slot:modals>
         {{-- 1. EDIT STUDENT PROFILE MODAL --}}
-        <div id="modal-edit-student" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 modal-hidden">
+        <div id="modal-edit-student" class="modal-backdrop fixed inset-0 z-[99999] flex items-center justify-center p-3 sm:p-4 modal-hidden">
             <div class="modal-overlay fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity cursor-pointer" onclick="closeModal('modal-edit-student')"></div>
             <div class="modal-content relative bg-white dark:bg-slate-900 rounded-3xl max-w-lg w-full p-5 sm:p-7 border border-[#DEE8F7] dark:border-slate-800 shadow-2xl z-10 max-h-[90vh] overflow-y-auto">
                 <div class="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
@@ -1263,7 +1263,7 @@
         </div>
 
         {{-- 2. CHANGE PASSWORD MODAL --}}
-        <div id="modal-change-password" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 modal-hidden">
+        <div id="modal-change-password" class="modal-backdrop fixed inset-0 z-[99999] flex items-center justify-center p-3 sm:p-4 modal-hidden">
             <div class="modal-overlay fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity cursor-pointer" onclick="closeModal('modal-change-password')"></div>
             <div class="modal-content relative bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full p-5 sm:p-7 border border-[#DEE8F7] dark:border-slate-800 shadow-2xl z-10 max-h-[90vh] overflow-y-auto">
                 <div class="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
@@ -1296,7 +1296,7 @@
         </div>
 
         {{-- 3. ENROLL COURSE MODAL --}}
-        <div id="modal-enroll-course" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 modal-hidden">
+        <div id="modal-enroll-course" class="modal-backdrop fixed inset-0 z-[99999] flex items-center justify-center p-3 sm:p-4 modal-hidden">
             <div class="modal-overlay fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity cursor-pointer" onclick="closeModal('modal-enroll-course')"></div>
             <div class="modal-content relative bg-white dark:bg-slate-900 rounded-3xl max-w-lg w-full p-5 sm:p-7 border border-[#DEE8F7] dark:border-slate-800 shadow-2xl z-10 max-h-[90vh] overflow-y-auto">
                 <div class="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
@@ -1347,7 +1347,7 @@
         </div>
 
         {{-- 4. EDIT ENROLLMENT MODAL --}}
-        <div id="modal-edit-enrollment" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 modal-hidden">
+        <div id="modal-edit-enrollment" class="modal-backdrop fixed inset-0 z-[99999] flex items-center justify-center p-3 sm:p-4 modal-hidden">
             <div class="modal-overlay fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity cursor-pointer" onclick="closeModal('modal-edit-enrollment')"></div>
             <div class="modal-content relative bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full p-5 sm:p-7 border border-[#DEE8F7] dark:border-slate-800 shadow-2xl z-10 max-h-[90vh] overflow-y-auto">
                 <div class="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
@@ -1393,7 +1393,7 @@
         </div>
 
         {{-- 5. ISSUE CERTIFICATE MODAL --}}
-        <div id="modal-issue-certificate" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 modal-hidden">
+        <div id="modal-issue-certificate" class="modal-backdrop fixed inset-0 z-[99999] flex items-center justify-center p-3 sm:p-4 modal-hidden">
             <div class="modal-overlay fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity cursor-pointer" onclick="closeModal('modal-issue-certificate')"></div>
             <div class="modal-content relative bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full p-5 sm:p-7 border border-[#DEE8F7] dark:border-slate-800 shadow-2xl z-10 max-h-[90vh] overflow-y-auto">
                 <div class="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
@@ -1453,7 +1453,7 @@
         </div>
 
         {{-- 6. GRADE TASK MODAL --}}
-        <div id="modal-grade-task" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 modal-hidden">
+        <div id="modal-grade-task" class="modal-backdrop fixed inset-0 z-[99999] flex items-center justify-center p-3 sm:p-4 modal-hidden">
             <div class="modal-overlay fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity cursor-pointer" onclick="closeModal('modal-grade-task')"></div>
             <div class="modal-content relative bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full p-5 sm:p-7 border border-[#DEE8F7] dark:border-slate-800 shadow-2xl z-10 max-h-[90vh] overflow-y-auto">
                 <div class="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
@@ -1497,7 +1497,7 @@
         </div>
 
         {{-- 7. REJECT RECEIPT MODAL --}}
-        <div id="modal-reject-receipt" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 modal-hidden">
+        <div id="modal-reject-receipt" class="modal-backdrop fixed inset-0 z-[99999] flex items-center justify-center p-3 sm:p-4 modal-hidden">
             <div class="modal-overlay fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity cursor-pointer" onclick="closeModal('modal-reject-receipt')"></div>
             <div class="modal-content relative bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full p-5 sm:p-7 border border-[#DEE8F7] dark:border-slate-800 shadow-2xl z-10 max-h-[90vh] overflow-y-auto">
                 <div class="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
@@ -1528,7 +1528,7 @@
         </div>
 
         {{-- 8. RECEIPT PREVIEW MODAL --}}
-        <div id="modal-receipt-preview" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 modal-hidden">
+        <div id="modal-receipt-preview" class="modal-backdrop fixed inset-0 z-[99999] flex items-center justify-center p-3 sm:p-4 modal-hidden">
             <div class="modal-overlay fixed inset-0 bg-slate-900/80 backdrop-blur-xs transition-opacity cursor-pointer" onclick="closeModal('modal-receipt-preview')"></div>
             <div class="modal-content relative bg-white dark:bg-slate-900 rounded-3xl max-w-2xl w-full p-4 border border-[#DEE8F7] dark:border-slate-800 shadow-2xl z-10 flex flex-col items-center max-h-[90vh] overflow-y-auto">
                 <button type="button" onclick="closeModal('modal-receipt-preview')" class="absolute top-4 end-4 p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-full bg-slate-100 dark:bg-slate-800 cursor-pointer">

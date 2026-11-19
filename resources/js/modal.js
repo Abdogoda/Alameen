@@ -8,10 +8,11 @@
 
 export function initModals() {
     function teleportModals() {
-        document.querySelectorAll('[id^="modal-"].fixed, .modal-backdrop').forEach((modal) => {
-            // Never touch loader, sidebars, or elements marked no-teleport
+        document.querySelectorAll('[id^="modal-"].fixed, .modal-backdrop, [role="dialog"][aria-modal="true"].fixed, [data-modal].fixed').forEach((modal) => {
+            // Never touch loader, sidebars, toast containers, or elements marked no-teleport
             if (
                 modal.id === 'alameen-loader' ||
+                modal.id === 'toast-container' ||
                 modal.classList.contains('student-sidebar-drawer') ||
                 modal.classList.contains('admin-sidebar-drawer') ||
                 modal.dataset.noTeleport === 'true'
@@ -33,10 +34,26 @@ export function initModals() {
     }
     document.addEventListener('livewire:navigated', teleportModals);
 
+    // MutationObserver to catch dynamically added or rendered modals
+    if (typeof MutationObserver !== 'undefined') {
+        const observer = new MutationObserver(() => {
+            teleportModals();
+        });
+        if (document.body) {
+            observer.observe(document.body, { childList: true, subtree: true });
+        } else {
+            document.addEventListener('DOMContentLoaded', () => {
+                if (document.body) {
+                    observer.observe(document.body, { childList: true, subtree: true });
+                }
+            });
+        }
+    }
+
     // Escape key closes open modals
     window.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' || e.key === 'Esc') {
-            document.querySelectorAll('[id^="modal-"].fixed, .modal-backdrop').forEach((modal) => {
+            document.querySelectorAll('[id^="modal-"].fixed, .modal-backdrop, [role="dialog"][aria-modal="true"].fixed, [data-modal].fixed').forEach((modal) => {
                 if (!modal.classList.contains('hidden') && modal.style.display !== 'none' && !modal.classList.contains('modal-hidden')) {
                     modal.classList.add('hidden');
                     modal.classList.add('modal-hidden');
@@ -51,6 +68,9 @@ export function initModals() {
     window.openModal = function (id) {
         const modal = document.getElementById(id);
         if (modal) {
+            if (modal.parentElement && modal.parentElement !== document.body) {
+                document.body.appendChild(modal);
+            }
             modal.classList.remove('hidden', 'modal-hidden');
             modal.style.display = 'flex';
             document.documentElement.classList.add('modal-open');
@@ -68,7 +88,7 @@ export function initModals() {
             modal.classList.add('hidden', 'modal-hidden');
             modal.style.display = 'none';
         }
-        const openRemaining = document.querySelectorAll('[id^="modal-"].fixed:not(.hidden):not(.modal-hidden), .modal-backdrop:not(.hidden):not(.modal-hidden)');
+        const openRemaining = document.querySelectorAll('[id^="modal-"].fixed:not(.hidden):not(.modal-hidden), .modal-backdrop:not(.hidden):not(.modal-hidden), [role="dialog"][aria-modal="true"].fixed:not(.hidden):not(.modal-hidden)');
         if (openRemaining.length === 0) {
             document.documentElement.classList.remove('modal-open');
             document.body.classList.remove('modal-open');

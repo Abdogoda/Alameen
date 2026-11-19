@@ -5,7 +5,7 @@
 <!-- Confirmation Modal: Delete Student Account (Requires Admin Password) -->
 <div 
     id="modal-delete-student" 
-    class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 modal-hidden select-none"
+    class="modal-backdrop fixed inset-0 z-[99999] flex items-center justify-center p-3 sm:p-4 modal-hidden select-none"
     role="dialog"
     aria-modal="true"
     aria-labelledby="delete-student-modal-title"

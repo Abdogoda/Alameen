@@ -549,7 +549,7 @@
 
     <x-slot:modals>
         <!-- Modal 2: Edit Lesson -->
-        <div id="modal-edit-lesson" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 modal-hidden">
+        <div id="modal-edit-lesson" class="modal-backdrop fixed inset-0 z-[99999] flex items-center justify-center p-3 sm:p-4 modal-hidden">
             <div class="modal-content bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl max-w-xl w-full p-5 sm:p-7 flex flex-col gap-4 shadow-2xl border border-[#DEE8F7] dark:border-slate-800 max-h-[90dvh] overflow-y-auto">
                 <div class="flex items-center justify-between border-b border-[#DEE8F7] dark:border-slate-800 pb-3.5">
                     <div>
@@ -630,7 +630,7 @@
         </div>
 
         <!-- Modal 3: Add New Level -->
-        <div id="modal-add-level" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 modal-hidden">
+        <div id="modal-add-level" class="modal-backdrop fixed inset-0 z-[99999] flex items-center justify-center p-3 sm:p-4 modal-hidden">
             <div class="modal-content bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl max-w-md w-full p-5 sm:p-8 flex flex-col gap-4 sm:gap-5 shadow-2xl border border-[#DEE8F7] dark:border-slate-800 max-h-[90dvh] overflow-y-auto">
                 <div class="flex items-center justify-between border-b border-[#DEE8F7] dark:border-slate-800 pb-4">
                     <div class="flex items-center gap-2">
@@ -678,7 +678,7 @@
         </div>
 
         <!-- Modal 4: Edit Level -->
-        <div id="modal-edit-level" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 modal-hidden">
+        <div id="modal-edit-level" class="modal-backdrop fixed inset-0 z-[99999] flex items-center justify-center p-3 sm:p-4 modal-hidden">
             <div class="modal-content bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl max-w-md w-full p-5 sm:p-8 flex flex-col gap-4 shadow-2xl border border-[#DEE8F7] dark:border-slate-800 max-h-[90dvh] overflow-y-auto">
                 <div class="flex items-center justify-between border-b border-[#DEE8F7] dark:border-slate-800 pb-4">
                     <h3 class="font-['Baloo_Bhaijaan_2'] font-bold text-lg text-[#012383] dark:text-white">{{ __('تعديل المستوى التدريبي') }}</h3>
@@ -716,7 +716,7 @@
         </div>
 
         <!-- Modal 5: Edit Price -->
-        <div id="modal-edit-price" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 modal-hidden">
+        <div id="modal-edit-price" class="modal-backdrop fixed inset-0 z-[99999] flex items-center justify-center p-3 sm:p-4 modal-hidden">
             <div class="modal-content bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl max-w-md w-full p-5 sm:p-8 flex flex-col gap-4 sm:gap-5 shadow-2xl border border-[#DEE8F7] dark:border-slate-800 max-h-[90dvh] overflow-y-auto">
                 <div class="flex items-center justify-between border-b border-[#DEE8F7] dark:border-slate-800 pb-4">
                     <div class="flex items-center gap-2">
@@ -753,7 +753,7 @@
         </div>
 
         <!-- Modal 6: Universal Video Preview Modal (MUX Player or Multi-Source) -->
-        <div id="modal-video-preview" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 modal-hidden" onclick="if(event.target === this) closeVideoPreview()">
+        <div id="modal-video-preview" class="modal-backdrop fixed inset-0 z-[99999] flex items-center justify-center p-3 sm:p-4 modal-hidden" onclick="if(event.target === this) closeVideoPreview()">
             <div class="modal-content bg-slate-950 text-white rounded-2xl sm:rounded-3xl max-w-3xl w-full p-4 sm:p-6 flex flex-col gap-4 shadow-2xl border border-slate-800">
                 <div class="flex items-center justify-between border-b border-slate-800 pb-3">
                     <div class="flex items-center gap-2.5">
@@ -785,7 +785,7 @@
         </div>
 
         <!-- Modal 7: Full Video Settings Control (Course, Level, Bulk, or Specific Video) -->
-        <div id="modal-video-settings" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 modal-hidden">
+        <div id="modal-video-settings" class="modal-backdrop fixed inset-0 z-[99999] flex items-center justify-center p-3 sm:p-4 modal-hidden">
             <div class="modal-content bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl max-w-xl w-full p-5 sm:p-7 flex flex-col gap-4 sm:gap-5 shadow-2xl border border-[#DEE8F7] dark:border-slate-800 max-h-[90dvh] overflow-y-auto">
                 <div class="flex items-center justify-between border-b border-[#DEE8F7] dark:border-slate-800 pb-3.5">
                     <div class="flex items-center gap-2.5">
@@ -956,7 +956,7 @@
         </div>
 
         <!-- Modal 8: Bulk Move Lessons to Level -->
-        <div id="modal-bulk-move" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 modal-hidden">
+        <div id="modal-bulk-move" class="modal-backdrop fixed inset-0 z-[99999] flex items-center justify-center p-3 sm:p-4 modal-hidden">
             <div class="modal-content bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl max-w-md w-full p-5 sm:p-7 flex flex-col gap-4 shadow-2xl border border-[#DEE8F7] dark:border-slate-800 max-h-[90dvh] overflow-y-auto">
                 <div class="flex items-center justify-between border-b border-[#DEE8F7] dark:border-slate-800 pb-3">
                     <h3 class="font-['Baloo_Bhaijaan_2'] font-bold text-lg text-[#012383] dark:text-white">

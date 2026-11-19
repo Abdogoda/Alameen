@@ -410,52 +410,54 @@
         </div>
 
         <!-- Close Ticket Confirmation Modal -->
-        <div
-            x-show="showCloseModal"
-            x-cloak
-            class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4"
-        >
+        <template x-teleport="body">
             <div
-                @click.outside="showCloseModal = false"
-                class="bg-white dark:bg-slate-900 rounded-2xl max-w-md w-full p-5 sm:p-6 shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col gap-4 text-start animate-fade-in"
+                x-show="showCloseModal"
+                x-cloak
+                class="modal-backdrop fixed inset-0 z-[99999] flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4"
             >
-                <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-                    <div class="flex items-center gap-2">
-                        <div class="size-8 rounded-xl bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 flex items-center justify-center font-bold">
-                            ⚠️
+                <div
+                    @click.outside="showCloseModal = false"
+                    class="modal-content bg-white dark:bg-slate-900 rounded-2xl max-w-md w-full p-5 sm:p-6 shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col gap-4 text-start animate-fade-in"
+                >
+                    <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+                        <div class="flex items-center gap-2">
+                            <div class="size-8 rounded-xl bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 flex items-center justify-center font-bold">
+                                ⚠️
+                            </div>
+                            <h3 class="font-bold text-base sm:text-lg text-slate-900 dark:text-white">{{ __('إغلاق تذكرة الدعم') }}</h3>
                         </div>
-                        <h3 class="font-bold text-base sm:text-lg text-slate-900 dark:text-white">{{ __('إغلاق تذكرة الدعم') }}</h3>
+                        <button type="button" @click="showCloseModal = false" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer">✕</button>
                     </div>
-                    <button type="button" @click="showCloseModal = false" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer">✕</button>
+
+                    <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                        {{ __('هل أنت متأكد من رغبتك في إغلاق هذه التذكرة؟ يمكنك دائماً إعادة فتحها إذا واجهتك أي صعوبة أخرى مستقبلاً.') }}
+                    </p>
+
+                    <form action="{{ route('support.close', $ticket->id) }}" method="POST" class="flex flex-col gap-3">
+                        @csrf
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">{{ __('ملاحظة أو سبب الإغلاق (اختياري)') }}</label>
+                            <input
+                                type="text"
+                                name="reason"
+                                placeholder="{{ __('مثال: تم حل المشكلة شكراً لكم') }}"
+                                class="w-full h-10 px-3 rounded-xl border border-[#DEE8F7] dark:border-slate-700 dark:bg-slate-800 dark:text-white text-xs focus:border-[#012383] dark:focus:border-blue-400 outline-hidden font-medium"
+                            />
+                        </div>
+
+                        <div class="flex items-center justify-end gap-2 pt-2">
+                            <button type="button" @click="showCloseModal = false" class="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer">
+                                {{ __('إلغاء') }}
+                            </button>
+                            <button type="submit" class="px-5 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold shadow-xs cursor-pointer">
+                                {{ __('تأكيد إغلاق التذكرة') }}
+                            </button>
+                        </div>
+                    </form>
                 </div>
-
-                <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
-                    {{ __('هل أنت متأكد من رغبتك في إغلاق هذه التذكرة؟ يمكنك دائماً إعادة فتحها إذا واجهتك أي صعوبة أخرى مستقبلاً.') }}
-                </p>
-
-                <form action="{{ route('support.close', $ticket->id) }}" method="POST" class="flex flex-col gap-3">
-                    @csrf
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">{{ __('ملاحظة أو سبب الإغلاق (اختياري)') }}</label>
-                        <input
-                            type="text"
-                            name="reason"
-                            placeholder="{{ __('مثال: تم حل المشكلة شكراً لكم') }}"
-                            class="w-full h-10 px-3 rounded-xl border border-[#DEE8F7] dark:border-slate-700 dark:bg-slate-800 dark:text-white text-xs focus:border-[#012383] dark:focus:border-blue-400 outline-hidden font-medium"
-                        />
-                    </div>
-
-                    <div class="flex items-center justify-end gap-2 pt-2">
-                        <button type="button" @click="showCloseModal = false" class="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer">
-                            {{ __('إلغاء') }}
-                        </button>
-                        <button type="submit" class="px-5 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold shadow-xs cursor-pointer">
-                            {{ __('تأكيد إغلاق التذكرة') }}
-                        </button>
-                    </div>
-                </form>
             </div>
-        </div>
+        </template>
 
     </div>
 

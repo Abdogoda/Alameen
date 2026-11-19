@@ -239,8 +239,8 @@
     @if(auth('admin')->user()?->hasPermission('tasks.grade'))
     <x-slot:modals>
         <!-- Modal: Grade Voice Submission -->
-        <div id="modal-grade-task" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/50 backdrop-blur-xs hidden">
-            <div class="bg-white dark:bg-slate-900 rounded-3xl max-lg w-full max-h-[90dvh] overflow-y-auto p-5 sm:p-7 flex flex-col gap-5 shadow-2xl border border-[#DEE8F7] dark:border-slate-800">
+        <div id="modal-grade-task" class="modal-backdrop fixed inset-0 z-[99999] flex items-center justify-center p-3 sm:p-4 modal-hidden">
+            <div class="modal-content bg-white dark:bg-slate-900 rounded-3xl max-w-lg w-full max-h-[90dvh] overflow-y-auto p-5 sm:p-7 flex flex-col gap-5 shadow-2xl border border-[#DEE8F7] dark:border-slate-800">
                 <div class="flex items-center gap-2.5 text-[#012383] dark:text-blue-400">
                     <div class="size-9 rounded-xl bg-blue-50 dark:bg-slate-800 flex items-center justify-center shrink-0">
                         <svg class="size-5 text-[#0B2A8F] dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
@@ -292,11 +292,24 @@
                 scoreInput.value = score || '';
                 feedbackInput.value = feedback || '';
 
-                modal.classList.remove('hidden');
+                if (typeof window.openModal === 'function') {
+                    window.openModal('modal-grade-task');
+                } else {
+                    modal.classList.remove('hidden', 'modal-hidden');
+                    modal.style.display = 'flex';
+                }
             }
 
             function closeGradeModal() {
-                document.getElementById('modal-grade-task').classList.add('hidden');
+                if (typeof window.closeModal === 'function') {
+                    window.closeModal('modal-grade-task');
+                } else {
+                    const modal = document.getElementById('modal-grade-task');
+                    if (modal) {
+                        modal.classList.add('hidden', 'modal-hidden');
+                        modal.style.display = 'none';
+                    }
+                }
             }
         </script>
     </x-slot:modals>

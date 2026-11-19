@@ -442,14 +442,14 @@
     <x-slot:modals>
         @if($currentCourse)
         <!-- Modal: Upload Manual Payment Receipt -->
-        <div id="modal-upload-receipt" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs hidden" onclick="if (event.target === this) this.classList.add('hidden')">
-          <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-lg w-full p-6 sm:p-8 flex flex-col gap-5 shadow-2xl border border-[#DEE8F7] dark:border-slate-800 max-h-[90vh] overflow-y-auto">
+        <div id="modal-upload-receipt" class="modal-backdrop fixed inset-0 z-[99999] flex items-center justify-center p-4 modal-hidden" onclick="if (event.target === this) closeModal('modal-upload-receipt')">
+          <div class="modal-content bg-white dark:bg-slate-900 rounded-3xl max-w-lg w-full p-6 sm:p-8 flex flex-col gap-5 shadow-2xl border border-[#DEE8F7] dark:border-slate-800 max-h-[90vh] overflow-y-auto">
             <div class="flex items-center justify-between border-b border-[#DEE8F7] dark:border-slate-800 pb-3">
               <div class="flex items-center gap-2">
                 <span class="size-8 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 flex items-center justify-center font-bold">💳</span>
                 <h3 class="font-['Baloo_Bhaijaan_2'] font-bold text-xl text-[#012383] dark:text-white">{{ __('رفع إيصال سداد الدورة') }}</h3>
               </div>
-              <button type="button" onclick="document.getElementById('modal-upload-receipt').classList.add('hidden')" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer text-lg leading-none">✕</button>
+              <button type="button" onclick="closeModal('modal-upload-receipt')" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer text-lg leading-none">✕</button>
             </div>
 
             <!-- Dynamic Payment Instructions from SettingsService -->

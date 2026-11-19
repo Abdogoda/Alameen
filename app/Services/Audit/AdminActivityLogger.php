@@ -22,16 +22,24 @@ use Throwable;
 class AdminActivityLogger
 {
     /**
-     * Route patterns to ignore from general request logging (e.g. high-frequency internal polling).
+     * Route patterns to ignore from general request logging (e.g. high-frequency internal polling and auth routes).
      *
      * @var list<string>
      */
     protected static array $ignoredRoutes = [
         'admin.support.poll',
+        'admin.keep-alive',
         'admin.courses.promo.mux.upload_status',
         'admin.courses.videos.mux.upload_status',
         'admin.courses.promo.chunk.upload',
         'admin.courses.videos.chunk.upload',
+        // Admin authentication routes - logged cleanly via authentication events
+        'admin.auth.google.firebase',
+        'admin.login.firebase',
+        'admin.login.store',
+        'admin.passkey.login',
+        'admin.passkey.login-options',
+        'admin.logout',
     ];
 
     /**
@@ -107,8 +115,19 @@ class AdminActivityLogger
         try {
             $routeName = $request->route()?->getName();
 
-            // Ignore pure polling/heartbeat routes to avoid flooding the audit log
+            // Ignore pure polling/heartbeat and auth routes to avoid flooding or duplicating the audit log
             if ($routeName && in_array($routeName, static::$ignoredRoutes, true)) {
+                return null;
+            }
+
+            if ($request->is([
+                'admin/auth/google/firebase*',
+                'admin/login/firebase*',
+                'admin/login*',
+                'admin/logout*',
+                'admin/passkeys/login*',
+                'admin/keep-alive*',
+            ])) {
                 return null;
             }
 
@@ -243,6 +262,13 @@ class AdminActivityLogger
         try {
             $admin = $adminOrEmail instanceof Admin ? $adminOrEmail : null;
             $email = $admin ? $admin->email : (is_string($adminOrEmail) ? $adminOrEmail : null);
+
+            // Guard against duplicate authentication logging within the same request lifecycle
+            $dedupKey = '_admin_auth_logged_'.$event.'_'.($admin?->id ?? $email ?? 'guest');
+            if (request()->attributes->has($dedupKey)) {
+                return null;
+            }
+            request()->attributes->set($dedupKey, true);
 
             $adminName = $admin !== null ? $admin->name : ($email ? "مشرف ({$email})" : 'زائر / غير مسجل');
             $adminRole = $admin?->role;

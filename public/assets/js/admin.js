@@ -56,7 +56,14 @@ export function showToast(title, message, type = 'success') {
 export function openModal(modalId) {
   const modal = document.getElementById(modalId);
   if (!modal) return;
-  modal.classList.remove('modal-hidden');
+
+  // Guarantee modal is mounted at document.body so it is never trapped in nested containers
+  if (modal.parentElement && modal.parentElement !== document.body) {
+    document.body.appendChild(modal);
+  }
+
+  modal.classList.remove('modal-hidden', 'hidden');
+  modal.style.display = 'flex';
   document.documentElement.classList.add('modal-open');
   document.body.classList.add('modal-open');
   document.body.style.overflow = 'hidden';
@@ -72,9 +79,10 @@ export function openModal(modalId) {
 export function closeModal(modalId) {
   const modal = document.getElementById(modalId);
   if (!modal) return;
-  modal.classList.add('modal-hidden');
+  modal.classList.add('modal-hidden', 'hidden');
+  modal.style.display = 'none';
 
-  const anyOpen = document.querySelector('.modal-backdrop:not(.modal-hidden)');
+  const anyOpen = document.querySelector('.modal-backdrop:not(.modal-hidden):not(.hidden), [id^="modal-"].fixed:not(.modal-hidden):not(.hidden)');
   if (!anyOpen) {
     document.documentElement.classList.remove('modal-open');
     document.body.classList.remove('modal-open');

@@ -923,9 +923,9 @@
 <!-- Review Modal Dialog -->
     <div
       id="review-modal"
-      class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 transition-all"
+      class="modal-backdrop hidden fixed inset-0 z-[99999] bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 transition-all"
     >
-      <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl flex flex-col gap-5 relative border border-[#DEE8F7]">
+      <div class="modal-content bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl flex flex-col gap-5 relative border border-[#DEE8F7]">
         <button
           type="button"
           id="close-review-modal-btn"
@@ -1028,7 +1028,7 @@
     <!-- Fullscreen High-Resolution Review Image Lightbox Modal -->
     <div
       id="review-image-lightbox"
-      class="fixed inset-0 z-[9999] bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 opacity-0 pointer-events-none transition-opacity duration-300"
+      class="fixed inset-0 z-[99999] bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 opacity-0 pointer-events-none transition-opacity duration-300"
       onclick="if(event.target === this) closeReviewImageLightbox()"
     >
       <div class="relative max-w-4xl max-h-[90vh] flex flex-col items-center">
@@ -1061,7 +1061,7 @@
     <!-- Hero Video Lightbox Modal with Full Controls & Sound -->
     <div
       id="hero-video-modal"
-      class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6 opacity-0 pointer-events-none transition-opacity duration-300"
+      class="fixed inset-0 z-[99999] bg-black/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6 opacity-0 pointer-events-none transition-opacity duration-300"
     >
       <div class="bg-slate-900 border border-slate-700/80 rounded-2xl w-full max-w-3xl overflow-hidden shadow-2xl flex flex-col transform scale-95 transition-transform duration-300" id="hero-video-modal-card">
         <div class="flex items-center justify-between px-4 py-3 border-b border-slate-800 bg-slate-950/80">

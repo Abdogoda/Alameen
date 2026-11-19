@@ -390,7 +390,9 @@ html.dark textarea::placeholder {
 
 /* 1. Modal Root Backdrop Container */
 .modal-backdrop,
-[id^="modal-"].fixed {
+[id^="modal-"].fixed,
+[role="dialog"][aria-modal="true"].fixed,
+[data-modal].fixed {
     position: fixed !important;
     inset: 0 !important;
     top: 0 !important;
@@ -469,9 +471,13 @@ html.dark textarea::placeholder {
 [id^="modal-"] .modal-content,
 [id^="modal-"]>.modal-content,
 [id^="modal-"].fixed>div:only-child,
-[id^="modal-"].fixed>div:last-child:not(:first-child) {
+[id^="modal-"].fixed>div:last-child:not(:first-child),
+[role="dialog"][aria-modal="true"].fixed>div:only-child,
+[role="dialog"][aria-modal="true"].fixed>div:last-child:not(:first-child),
+[data-modal].fixed>div:only-child,
+[data-modal].fixed>div:last-child:not(:first-child) {
     position: relative !important;
-    z-index: 10 !important;
+    z-index: 100000 !important;
     margin: auto !important;
     margin-inline: auto !important;
     margin-block: auto !important;

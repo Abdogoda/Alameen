@@ -659,8 +659,8 @@
     </div>
 
     <x-slot:modals>
-      <div id="review-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 backdrop-blur-xs p-4 overflow-y-auto">
-        <div class="bg-white rounded-[24px] max-w-lg w-full shadow-2xl border border-[#DEE8F7] relative flex flex-col my-auto overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+      <div id="review-modal" class="modal-backdrop fixed inset-0 z-[99999] modal-hidden items-center justify-center bg-black/60 backdrop-blur-xs p-4 overflow-y-auto">
+        <div class="modal-content bg-white rounded-[24px] max-w-lg w-full shadow-2xl border border-[#DEE8F7] relative flex flex-col my-auto overflow-hidden animate-in fade-in zoom-in-95 duration-200">
           
           <!-- Modal Header (Fixed) -->
           <div class="flex items-center justify-between px-6 py-4 border-b border-[#DEE8F7] shrink-0 bg-white">

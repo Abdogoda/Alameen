@@ -17,7 +17,7 @@ class LogAdminAuthenticationEvents
     /**
      * Handle Login event.
      */
-    public function handleLogin(Login $event): void
+    public function onLogin(Login $event): void
     {
         if ($event->guard === 'admin' || $event->user instanceof Admin) {
             AdminActivityLogger::logAuthentication(
@@ -31,7 +31,7 @@ class LogAdminAuthenticationEvents
     /**
      * Handle Logout event.
      */
-    public function handleLogout(Logout $event): void
+    public function onLogout(Logout $event): void
     {
         if ($event->guard === 'admin' || $event->user instanceof Admin) {
             AdminActivityLogger::logAuthentication(
@@ -45,7 +45,7 @@ class LogAdminAuthenticationEvents
     /**
      * Handle Failed authentication attempt.
      */
-    public function handleFailed(Failed $event): void
+    public function onFailed(Failed $event): void
     {
         $isAdminGuard = $event->guard === 'admin';
         $isAdminRoute = request()->is('admin*') || str_starts_with((string) request()->route()?->getName(), 'admin.');
@@ -65,7 +65,7 @@ class LogAdminAuthenticationEvents
     /**
      * Handle Lockout event.
      */
-    public function handleLockout(Lockout $event): void
+    public function onLockout(Lockout $event): void
     {
         $isAdminRoute = $event->request->is('admin*') || str_starts_with((string) $event->request->route()?->getName(), 'admin.');
 
@@ -89,10 +89,10 @@ class LogAdminAuthenticationEvents
     public function subscribe(Dispatcher $events): array
     {
         return [
-            Login::class => 'handleLogin',
-            Logout::class => 'handleLogout',
-            Failed::class => 'handleFailed',
-            Lockout::class => 'handleLockout',
+            Login::class => 'onLogin',
+            Logout::class => 'onLogout',
+            Failed::class => 'onFailed',
+            Lockout::class => 'onLockout',
         ];
     }
 }

@@ -394,76 +394,78 @@
             @endif
 
             <!-- Add Passkey Modal -->
-            <div
-                x-show="showModal"
-                x-cloak
-                class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs"
-                @keydown.escape.window="if (!registering) showModal = false"
-            >
+            <template x-teleport="body">
                 <div
-                    @click.away="if (!registering) showModal = false"
-                    class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-3xl p-6 sm:p-7 max-w-md w-full shadow-2xl relative"
+                    x-show="showModal"
+                    x-cloak
+                    class="modal-backdrop fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs"
+                    @keydown.escape.window="if (!registering) showModal = false"
                 >
-                    <div class="flex items-center justify-between pb-4 border-b border-[#DEE8F7] dark:border-slate-800 mb-4">
-                        <h4 class="font-bold text-base text-[#012383] dark:text-white flex items-center gap-2">
-                            <svg class="size-5 text-[#0B2A8F] dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 004 11a7.96 7.96 0 001.272 4.316m5.748 4.288A19.92 19.92 0 0112 21"/></svg>
-                            <span>{{ __('تسجيل مفتاح مرور جديد') }}</span>
-                        </h4>
-                        <button
-                            type="button"
-                            @click="showModal = false"
-                            :disabled="registering"
-                            class="p-1 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
-                        >
-                            <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                        </button>
-                    </div>
-
-                    <div class="space-y-4">
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2">
-                                {{ __('اسم الجهاز أو المفتاح') }}
-                            </label>
-                            <input
-                                type="text"
-                                x-model="passkeyName"
-                                placeholder="{{ __('مثال: كمبيوتر العمل، MacBook Pro، هاتف iPhone') }}"
-                                class="w-full px-4 py-3 rounded-xl bg-[#FAFCFF] dark:bg-slate-800 border border-[#DEE8F7] dark:border-slate-700 text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-4 focus:ring-[#0B2A8F]/10 focus:border-[#0B2A8F]"
-                            />
-                        </div>
-
-                        <div x-show="errorMessage" x-cloak class="p-3 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-rose-600 dark:text-rose-400 text-xs font-semibold" x-text="errorMessage"></div>
-
-                        <div class="p-3.5 rounded-xl bg-blue-50/60 dark:bg-slate-800/40 border border-blue-100 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-                            {{ __('عند الضغط على "تسجيل الآن"، سيطلب متصفحك التحقق البيومتري (بصمة الإصبع أو الوجه أو مفتاح الأمان).') }}
-                        </div>
-
-                        <div class="flex items-center justify-end gap-2.5 pt-2">
+                    <div
+                        @click.away="if (!registering) showModal = false"
+                        class="modal-content bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-3xl p-6 sm:p-7 max-w-md w-full shadow-2xl relative"
+                    >
+                        <div class="flex items-center justify-between pb-4 border-b border-[#DEE8F7] dark:border-slate-800 mb-4">
+                            <h4 class="font-bold text-base text-[#012383] dark:text-white flex items-center gap-2">
+                                <svg class="size-5 text-[#0B2A8F] dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 004 11a7.96 7.96 0 001.272 4.316m5.748 4.288A19.92 19.92 0 0112 21"/></svg>
+                                <span>{{ __('تسجيل مفتاح مرور جديد') }}</span>
+                            </h4>
                             <button
                                 type="button"
                                 @click="showModal = false"
                                 :disabled="registering"
-                                class="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer"
+                                class="p-1 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
                             >
-                                {{ __('إلغاء') }}
+                                <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                             </button>
-                            <button
-                                type="button"
-                                @click="addPasskey()"
-                                :disabled="registering"
-                                class="px-5 py-2.5 rounded-xl bg-[#012383] hover:bg-[#0B2A8F] text-white font-bold text-xs shadow-xs transition-colors flex items-center gap-2 cursor-pointer disabled:opacity-75"
-                            >
-                                <svg x-show="registering" x-cloak class="size-4 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3.5" fill="none"></circle>
-                                    <path class="opacity-90" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                </svg>
-                                <span x-show="!registering">{{ __('تسجيل المفتاح الآن') }}</span>
-                                <span x-show="registering" x-cloak>{{ __('جارٍ تسجيل المفتاح...') }}</span>
-                            </button>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2">
+                                    {{ __('اسم الجهاز أو المفتاح') }}
+                                </label>
+                                <input
+                                    type="text"
+                                    x-model="passkeyName"
+                                    placeholder="{{ __('مثال: كمبيوتر العمل، MacBook Pro، هاتف iPhone') }}"
+                                    class="w-full px-4 py-3 rounded-xl bg-[#FAFCFF] dark:bg-slate-800 border border-[#DEE8F7] dark:border-slate-700 text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-4 focus:ring-[#0B2A8F]/10 focus:border-[#0B2A8F]"
+                                />
+                            </div>
+
+                            <div x-show="errorMessage" x-cloak class="p-3 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-rose-600 dark:text-rose-400 text-xs font-semibold" x-text="errorMessage"></div>
+
+                            <div class="p-3.5 rounded-xl bg-blue-50/60 dark:bg-slate-800/40 border border-blue-100 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                                {{ __('عند الضغط على "تسجيل الآن"، سيطلب متصفحك التحقق البيومتري (بصمة الإصبع أو الوجه أو مفتاح الأمان).') }}
+                            </div>
+
+                            <div class="flex items-center justify-end gap-2.5 pt-2">
+                                <button
+                                    type="button"
+                                    @click="showModal = false"
+                                    :disabled="registering"
+                                    class="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer"
+                                >
+                                    {{ __('إلغاء') }}
+                                </button>
+                                <button
+                                    type="button"
+                                    @click="addPasskey()"
+                                    :disabled="registering"
+                                    class="px-5 py-2.5 rounded-xl bg-[#012383] hover:bg-[#0B2A8F] text-white font-bold text-xs shadow-xs transition-colors flex items-center gap-2 cursor-pointer disabled:opacity-75"
+                                >
+                                    <svg x-show="registering" x-cloak class="size-4 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3.5" fill="none"></circle>
+                                        <path class="opacity-90" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                    <span x-show="!registering">{{ __('تسجيل المفتاح الآن') }}</span>
+                                    <span x-show="registering" x-cloak>{{ __('جارٍ تسجيل المفتاح...') }}</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </template>
         </div>
 
         <!-- TAB 4: Permissions Overview -->

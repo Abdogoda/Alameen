@@ -398,6 +398,7 @@
                 <div
                     x-show="showModal"
                     x-cloak
+                    :class="{ 'hidden': !showModal }"
                     class="modal-backdrop fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs"
                     @keydown.escape.window="if (!registering) showModal = false"
                 >

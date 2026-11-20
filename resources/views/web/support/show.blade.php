@@ -414,6 +414,7 @@
             <div
                 x-show="showCloseModal"
                 x-cloak
+                :class="{ 'hidden': !showCloseModal }"
                 class="modal-backdrop fixed inset-0 z-[99999] flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4"
             >
                 <div

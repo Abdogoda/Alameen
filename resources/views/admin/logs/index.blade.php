@@ -503,6 +503,7 @@
             <div
                 x-show="selectedLog !== null || loadingDetails"
                 x-cloak
+                :class="{ 'hidden': !(selectedLog !== null || loadingDetails) }"
                 class="modal-backdrop fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs"
                 @keydown.window.escape="selectedLog = null; loadingDetails = false"
             >
@@ -675,6 +676,7 @@
                     </button>
                 </div>
             </div>
+        </div>
         </template>
 
         <!-- Prune Logs Modal (Super Admin) -->
@@ -687,6 +689,7 @@
                 <div
                     x-show="open"
                     x-cloak
+                    :class="{ 'hidden': !open }"
                     class="modal-backdrop fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs"
                 >
                     <div

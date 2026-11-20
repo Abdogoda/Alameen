@@ -374,6 +374,7 @@
         <div 
             x-show="deleteModalOpen" 
             x-cloak
+            :class="{ 'hidden': !deleteModalOpen }"
             class="modal-backdrop fixed inset-0 z-[99999] flex items-center justify-center p-3 sm:p-4 bg-slate-950/60 backdrop-blur-xs select-none"
             role="dialog"
             aria-modal="true"

@@ -20,19 +20,34 @@
   backdrop-filter: blur(5px) !important;
   -webkit-backdrop-filter: blur(5px) !important;
   z-index: 99999 !important;
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  justify-content: center !important;
   padding: 1rem !important;
   overflow: hidden !important;
   overscroll-behavior: contain !important;
   box-sizing: border-box !important;
   transition: opacity 0.25s ease-out;
 }
+.modal-backdrop:not(.hidden):not(.modal-hidden):not([style*="display: none"]):not([style*="display:none"]):not([x-cloak]),
+[id^="modal-"].fixed:not(.hidden):not(.modal-hidden):not([style*="display: none"]):not([style*="display:none"]):not([x-cloak]),
+[role="dialog"][aria-modal="true"].fixed:not(.hidden):not(.modal-hidden):not([style*="display: none"]):not([style*="display:none"]):not([x-cloak]),
+[data-modal].fixed:not(.hidden):not(.modal-hidden):not([style*="display: none"]):not([style*="display:none"]):not([x-cloak]) {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
 .modal-backdrop.modal-hidden,
 .modal-backdrop.hidden,
 .modal-hidden,
+.hidden,
+[x-cloak],
+.modal-backdrop[style*="display: none"],
+.modal-backdrop[style*="display:none"],
+[id^="modal-"][style*="display: none"],
+[id^="modal-"][style*="display:none"],
+[role="dialog"][style*="display: none"],
+[role="dialog"][style*="display:none"],
+[data-modal][style*="display: none"],
+[data-modal][style*="display:none"],
 [id^="modal-"].fixed.modal-hidden,
 [id^="modal-"].fixed.hidden,
 [role="dialog"][aria-modal="true"].fixed.modal-hidden,

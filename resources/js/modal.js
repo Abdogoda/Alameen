@@ -9,13 +9,17 @@
 export function initModals() {
     function teleportModals() {
         document.querySelectorAll('[id^="modal-"].fixed, .modal-backdrop, [role="dialog"][aria-modal="true"].fixed, [data-modal].fixed').forEach((modal) => {
-            // Never touch loader, sidebars, toast containers, or elements marked no-teleport
+            // Never touch loader, sidebars, toast containers, elements marked no-teleport, or elements managed by Alpine
             if (
                 modal.id === 'alameen-loader' ||
                 modal.id === 'toast-container' ||
                 modal.classList.contains('student-sidebar-drawer') ||
                 modal.classList.contains('admin-sidebar-drawer') ||
-                modal.dataset.noTeleport === 'true'
+                modal.dataset.noTeleport === 'true' ||
+                modal.hasAttribute('x-show') ||
+                modal.hasAttribute('x-data') ||
+                modal.hasAttribute('x-cloak') ||
+                modal.closest('template')
             ) {
                 return;
             }
@@ -34,22 +38,6 @@ export function initModals() {
     }
     document.addEventListener('livewire:navigated', teleportModals);
 
-    // MutationObserver to catch dynamically added or rendered modals
-    if (typeof MutationObserver !== 'undefined') {
-        const observer = new MutationObserver(() => {
-            teleportModals();
-        });
-        if (document.body) {
-            observer.observe(document.body, { childList: true, subtree: true });
-        } else {
-            document.addEventListener('DOMContentLoaded', () => {
-                if (document.body) {
-                    observer.observe(document.body, { childList: true, subtree: true });
-                }
-            });
-        }
-    }
-
     // Escape key closes open modals
     window.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' || e.key === 'Esc') {
@@ -57,6 +45,7 @@ export function initModals() {
                 if (!modal.classList.contains('hidden') && modal.style.display !== 'none' && !modal.classList.contains('modal-hidden')) {
                     modal.classList.add('hidden');
                     modal.classList.add('modal-hidden');
+                    modal.style.display = 'none';
                 }
             });
             document.documentElement.classList.remove('modal-open');
@@ -68,7 +57,7 @@ export function initModals() {
     window.openModal = function (id) {
         const modal = document.getElementById(id);
         if (modal) {
-            if (modal.parentElement && modal.parentElement !== document.body) {
+            if (modal.parentElement && modal.parentElement !== document.body && !modal.hasAttribute('x-show') && !modal.closest('template')) {
                 document.body.appendChild(modal);
             }
             modal.classList.remove('hidden', 'modal-hidden');

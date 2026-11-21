@@ -175,6 +175,22 @@ class Video extends Model
     }
 
     /**
+     * Get the video source attribute with self-healing normalization.
+     * Prevents UI inconsistency if a local file was incorrectly saved as 'mux' without playback ID.
+     */
+    public function getVideoSourceAttribute(?string $value): string
+    {
+        if ($value === 'mux' && empty($this->attributes['mux_playback_id'] ?? null) && ! empty($this->attributes['video_url'] ?? null)) {
+            $url = (string) $this->attributes['video_url'];
+            if (str_contains($url, '/storage/') || str_starts_with($url, 'videos/')) {
+                return 'local';
+            }
+        }
+
+        return $value ?: 'link';
+    }
+
+    /**
      * Get effective streaming / embed / playback URL.
      */
     public function getEffectivePlaybackUrlAttribute(): string
@@ -184,7 +200,7 @@ class Video extends Model
         }
 
         if (! empty($this->video_url)) {
-            if ($this->video_source === 'local' && str_contains($this->video_url, '/storage/')) {
+            if (str_contains($this->video_url, '/storage/')) {
                 return '/storage/'.Str::after($this->video_url, '/storage/');
             }
 

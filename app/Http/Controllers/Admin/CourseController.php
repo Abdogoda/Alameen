@@ -340,6 +340,15 @@ class CourseController extends Controller
     {
         abort_if($video->course_id !== $course->id, 404);
 
+        // Self-heal: If video was incorrectly saved as 'mux' but has local storage path and no MUX playback ID
+        if ($video->getRawOriginal('video_source') === 'mux' && empty($video->mux_playback_id) && ! empty($video->video_url) && (str_contains($video->video_url, '/storage/') || str_starts_with($video->video_url, 'videos/'))) {
+            $video->update([
+                'video_source' => 'local',
+                'mux_upload_id' => null,
+            ]);
+            $video->refresh();
+        }
+
         $course->load('levels');
         $video->load('clinicalTask');
         $activeDriver = $this->videoManager->getActiveDriver();
@@ -844,11 +853,19 @@ class CourseController extends Controller
             $videoData['video_url'] = $uploadResult['video_url'];
             $videoData['mux_playback_id'] = $uploadResult['mux_playback_id'];
             $videoData['mux_asset_id'] = $uploadResult['mux_asset_id'];
+            $videoData['mux_upload_id'] = null;
+        } elseif (($validated['video_source'] ?? '') === 'local' || (! empty($validated['video_url']) && (str_contains($validated['video_url'], '/storage/') || str_starts_with($validated['video_url'], 'videos/')))) {
+            // Local chunked or server-stored video file
+            $videoData['video_source'] = 'local';
+            $videoData['video_url'] = $validated['video_url'] ?? null;
+            $videoData['mux_playback_id'] = null;
+            $videoData['mux_asset_id'] = null;
+            $videoData['mux_upload_id'] = null;
         } elseif (! empty($validated['mux_playback_id'])) {
             $videoData['video_source'] = 'mux';
             $videoData['mux_playback_id'] = trim($validated['mux_playback_id']);
             $videoData['video_url'] = "https://stream.mux.com/{$videoData['mux_playback_id']}.m3u8";
-        } elseif (! empty($validated['mux_upload_id'])) {
+        } elseif (! empty($validated['mux_upload_id']) && ($validated['video_source'] ?? '') === 'mux') {
             $videoData['video_source'] = 'mux';
             $videoData['mux_upload_id'] = trim($validated['mux_upload_id']);
             if (empty($videoData['video_url'])) {
@@ -859,6 +876,10 @@ class CourseController extends Controller
             $videoData['video_source'] = $parsed['video_source'];
             $videoData['video_url'] = $parsed['video_url'];
             $videoData['mux_playback_id'] = $parsed['mux_playback_id'];
+            if ($parsed['video_source'] !== 'mux') {
+                $videoData['mux_asset_id'] = null;
+                $videoData['mux_upload_id'] = null;
+            }
         }
 
         Log::info('[VIDEO_UPLOAD] storeVideo form submitted', [
@@ -929,22 +950,23 @@ class CourseController extends Controller
             $updateData['video_url'] = $uploadResult['video_url'];
             $updateData['mux_playback_id'] = $uploadResult['mux_playback_id'];
             $updateData['mux_asset_id'] = $uploadResult['mux_asset_id'];
+            $updateData['mux_upload_id'] = null;
             $updateData['bunny_video_id'] = null;
         } elseif ($uploadTab === 'chunked' || ($uploadTab === null && ($validated['video_source'] ?? '') === 'local')) {
             $videoSource = $validated['video_source'] ?? 'local';
-            $updateData['video_source'] = $videoSource;
-            if ($videoSource === 'local') {
+            if ($videoSource === 'local' || (! empty($validated['video_url']) && (str_contains($validated['video_url'], '/storage/') || str_starts_with($validated['video_url'], 'videos/')))) {
+                $updateData['video_source'] = 'local';
                 $updateData['video_url'] = $validated['video_url'] ?? $video->video_url;
                 $updateData['mux_playback_id'] = null;
                 $updateData['mux_asset_id'] = null;
+                $updateData['mux_upload_id'] = null;
                 $updateData['bunny_video_id'] = null;
-            } elseif ($videoSource === 'mux' && (! empty($validated['mux_playback_id']) || ! empty($validated['mux_upload_id']))) {
-                $updateData['mux_playback_id'] = ! empty($validated['mux_playback_id']) ? trim($validated['mux_playback_id']) : $video->mux_playback_id;
+            } elseif ($videoSource === 'mux' && ! empty($validated['mux_playback_id'])) {
+                $updateData['video_source'] = 'mux';
+                $updateData['mux_playback_id'] = trim($validated['mux_playback_id']);
                 $updateData['mux_asset_id'] = $validated['mux_asset_id'] ?? $video->mux_asset_id;
                 $updateData['mux_upload_id'] = $validated['mux_upload_id'] ?? $video->mux_upload_id;
-                if (! empty($updateData['mux_playback_id'])) {
-                    $updateData['video_url'] = "https://stream.mux.com/{$updateData['mux_playback_id']}.m3u8";
-                }
+                $updateData['video_url'] = "https://stream.mux.com/{$updateData['mux_playback_id']}.m3u8";
                 $updateData['bunny_video_id'] = null;
             }
         } elseif ($uploadTab === 'link' || ($uploadTab === null && ! empty($validated['video_url']))) {
@@ -957,6 +979,7 @@ class CourseController extends Controller
                 $updateData['bunny_video_id'] = null;
                 if ($parsed['video_source'] !== 'mux') {
                     $updateData['mux_asset_id'] = null;
+                    $updateData['mux_upload_id'] = null;
                 }
             }
         } elseif ($uploadTab === null && ! empty($validated['mux_playback_id']) && ($validated['video_source'] ?? '') === 'mux') {
@@ -965,6 +988,12 @@ class CourseController extends Controller
             $updateData['mux_asset_id'] = $validated['mux_asset_id'] ?? $video->mux_asset_id;
             $updateData['video_url'] = "https://stream.mux.com/{$updateData['mux_playback_id']}.m3u8";
             $updateData['bunny_video_id'] = null;
+        } elseif ($uploadTab === 'keep') {
+            // Self-heal: If keeping current video and it was wrongly saved as 'mux' without playback ID
+            if ($video->getRawOriginal('video_source') === 'mux' && empty($video->mux_playback_id) && ! empty($video->video_url) && (str_contains($video->video_url, '/storage/') || str_starts_with($video->video_url, 'videos/'))) {
+                $updateData['video_source'] = 'local';
+                $updateData['mux_upload_id'] = null;
+            }
         }
 
         Log::info('[VIDEO_UPLOAD] updateVideo form submitted', [

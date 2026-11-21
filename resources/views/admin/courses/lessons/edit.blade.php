@@ -826,10 +826,12 @@
                 });
 
                 activeMuxUpload = upload;
+                const totalMuxChunks = Math.max(1, Math.ceil(file.size / (5120 * 1024)));
 
                 upload.on('attempt', (e) => {
                     if (sessionId !== uploadSessionId || activeUploadEngine !== 'mux') return;
-                    console.log(`[VIDEO_UPLOAD MUX] UpChunk Attempting chunk #${e.detail?.chunkNumber ?? '?'}`);
+                    const chunkNum = e.detail?.chunkNumber ?? 0;
+                    console.log(`[VIDEO_UPLOAD MUX] UpChunk Attempting chunk #${chunkNum} (${chunkNum + 1}/${totalMuxChunks})`);
                 });
 
                 upload.on('attemptFailure', (e) => {
@@ -850,6 +852,9 @@
 
                 upload.on('chunkSuccess', (e) => {
                     if (sessionId !== uploadSessionId || activeUploadEngine !== 'mux') return;
+                    const chunkNum = e.detail?.chunk ?? '?';
+                    const chunkIdx = typeof chunkNum === 'number' ? chunkNum + 1 : '?';
+                    console.log(`[VIDEO_UPLOAD MUX] ✓ Chunk #${chunkNum} (${chunkIdx}/${totalMuxChunks}) uploaded successfully.`);
                     if (statusText) {
                         statusText.textContent = '{{ __("جاري الرفع المباشر إلى MUX...") }}';
                     }
@@ -875,25 +880,51 @@
 
                 upload.on('progress', (e) => {
                     if (sessionId !== uploadSessionId || activeUploadEngine !== 'mux') return;
-                    const percent = Math.min(100, Math.round(e.detail));
-                    barFill.style.width = percent + '%';
-                    percentLabel.textContent = percent + '%';
-                    if (chunksLabel) chunksLabel.textContent = `رفع سحابي مباشر (Zero Timeout) (${percent}%)`;
 
-                    const uploadedBytes = (percent / 100) * file.size;
+                    const rawPercent = Math.min(100, Math.max(0, Number(e.detail) || 0));
+                    const percentDisplay = rawPercent < 10 ? rawPercent.toFixed(1) : Math.round(rawPercent);
+                    const chunkSize = 5120 * 1024; // 5MB in bytes
+                    const totalChunks = Math.max(1, Math.ceil(file.size / chunkSize));
+                    const uploadedBytes = Math.min(file.size, (rawPercent / 100) * file.size);
+                    const currentChunk = Math.min(totalChunks, Math.max(1, Math.floor(uploadedBytes / chunkSize) + 1));
+
+                    // Smooth real-time progress bar fill using float precision
+                    barFill.style.width = `${rawPercent.toFixed(2)}%`;
+                    percentLabel.textContent = `${percentDisplay}%`;
+
+                    if (chunksLabel) {
+                        chunksLabel.textContent = `رفع سحابي مباشر (Zero Timeout) (${percentDisplay}%)`;
+                    }
+
                     uploadedEl.textContent = `${formatBytes(uploadedBytes)} / ${formatBytes(file.size)}`;
 
                     const elapsedSec = (Date.now() - uploadStartTime) / 1000;
+                    let bytesPerSec = 0;
+                    let etaSec = 0;
                     if (elapsedSec > 0) {
-                        const bytesPerSec = uploadedBytes / elapsedSec;
+                        bytesPerSec = uploadedBytes / elapsedSec;
                         speedEl.textContent = formatBytes(bytesPerSec) + '/s';
                         const remainingBytes = Math.max(0, file.size - uploadedBytes);
-                        const etaSec = bytesPerSec > 0 ? (remainingBytes / bytesPerSec) : 0;
+                        etaSec = bytesPerSec > 0 ? (remainingBytes / bytesPerSec) : 0;
                         etaEl.textContent = formatSeconds(etaSec);
                     }
 
-                    if (chunksEl) chunksEl.textContent = `${percent}%`;
-                    if (partsPctEl) partsPctEl.textContent = `${percent}%`;
+                    // Display actual chunk count (e.g. 13 / 948) instead of duplicate percentage
+                    if (chunksEl) chunksEl.textContent = `${currentChunk} / ${totalChunks}`;
+                    if (partsPctEl) partsPctEl.textContent = `${percentDisplay}%`;
+
+                    // Console log upload progress with readable details (throttled ~1 sec or on completion)
+                    const now = Date.now();
+                    if (!upload._lastLogTime || now - upload._lastLogTime >= 1000 || rawPercent >= 100) {
+                        upload._lastLogTime = now;
+                        console.log(
+                            `[VIDEO_UPLOAD MUX] Progress: ${rawPercent.toFixed(2)}% | ` +
+                            `Uploaded: ${formatBytes(uploadedBytes)} / ${formatBytes(file.size)} | ` +
+                            `Chunk: #${currentChunk - 1} (${currentChunk}/${totalChunks}) | ` +
+                            `Speed: ${formatBytes(bytesPerSec)}/s | ` +
+                            `ETA: ${formatSeconds(etaSec)}`
+                        );
+                    }
                 });
 
                 upload.on('success', () => {
@@ -1087,6 +1118,16 @@
             isUploading = true;
             activeUploadEngine = 'local';
             startKeepAlive();
+
+            // Clear any stale MUX session IDs from hidden form fields
+            const fieldVideoSource = document.getElementById('field-video-source');
+            if (fieldVideoSource) fieldVideoSource.value = 'local';
+            const fieldMuxUploadId = document.getElementById('field-mux-upload-id');
+            if (fieldMuxUploadId) fieldMuxUploadId.value = '';
+            const fieldMuxPlaybackId = document.getElementById('field-mux-playback-id');
+            if (fieldMuxPlaybackId) fieldMuxPlaybackId.value = '';
+            const fieldMuxAssetId = document.getElementById('field-mux-asset-id');
+            if (fieldMuxAssetId) fieldMuxAssetId.value = '';
 
             const fileFingerprint = `lesson_edit_up_${file.name}_${file.size}_${file.lastModified}`;
             let uploadId = localStorage.getItem(fileFingerprint);
@@ -1340,6 +1381,8 @@
             }
             document.getElementById('field-mux-playback-id').value = result.mux_playback_id || '';
             document.getElementById('field-mux-asset-id').value = result.mux_asset_id || '';
+            const fieldMuxUploadId = document.getElementById('field-mux-upload-id');
+            if (fieldMuxUploadId) fieldMuxUploadId.value = '';
 
             const driverBadge = document.getElementById('success-driver-badge');
             if (driverBadge) {

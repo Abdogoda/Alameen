@@ -20,6 +20,7 @@
             @endphp
             <a
                 href="{{ route('locale.switch', $code) }}"
+                rel="nofollow"
                 class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold transition-all {{ $current === $code ? 'bg-white text-[#0B2A8F] shadow-sm' : 'text-[#475569] hover:text-[#012383]' }}"
                 title="{{ $locale['name'] }}"
             >
@@ -36,6 +37,7 @@
             @endphp
             <a
                 href="{{ route('locale.switch', $code) }}"
+                rel="nofollow"
                 class="inline-flex items-center gap-1.5 transition-colors {{ $current === $code ? 'font-semibold text-zinc-900 dark:text-white underline underline-offset-4' : 'text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white' }}"
             >
                 <img src="{{ $itemFlag }}" alt="{{ $locale['name'] }}" class="w-4.5 h-3 rounded-[2px] object-cover shadow-xs border border-slate-200/80 dark:border-slate-700 shrink-0" />
@@ -89,6 +91,7 @@
                 @endphp
                 <a
                     href="{{ route('locale.switch', $code) }}"
+                    rel="nofollow"
                     class="flex items-center justify-between w-full px-3 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer {{ $current === $code ? 'bg-[#EAF1FB] dark:bg-slate-800 text-[#0B2A8F] dark:text-blue-400' : 'text-[#475569] dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/60' }}"
                 >
                     <div class="flex items-center gap-2">

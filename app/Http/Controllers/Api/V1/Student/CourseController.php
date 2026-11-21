@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api\V1\Student;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Student\SubmitPaymentReceiptRequest;
+use App\Http\Requests\Student\SubmitReceiptRequest;
 use App\Http\Resources\Api\V1\CertificateResource;
 use App\Http\Resources\Api\V1\CourseSummaryResource;
 use App\Http\Resources\Api\V1\LevelResource;
@@ -102,7 +102,7 @@ class CourseController extends Controller
      * POST /api/v1/student/courses/{slug}/receipt
      * Submit a manual payment receipt (Vodafone Cash / InstaPay) for a course.
      */
-    public function submitReceipt(SubmitPaymentReceiptRequest $request, string $slug): JsonResponse
+    public function submitReceipt(SubmitReceiptRequest $request, string $slug): JsonResponse
     {
         $course = Course::query()
             ->where('slug', $slug)

@@ -182,12 +182,13 @@ class SeoService
      */
     public function getHreflangUrls(): array
     {
-        $currentUrl = Request::url();
+        $canonical = $this->getCanonicalUrl();
+        $separator = str_contains($canonical, '?') ? '&' : '?';
 
         return [
-            'ar' => url('locale/ar?redirect='.urlencode($currentUrl)),
-            'en' => url('locale/en?redirect='.urlencode($currentUrl)),
-            'x-default' => url($currentUrl),
+            'ar' => $canonical,
+            'en' => $canonical.$separator.'locale=en',
+            'x-default' => $canonical,
         ];
     }
 
@@ -513,8 +514,9 @@ Allow: /assets/
 Allow: /build/
 Allow: /src/
 
-# Prevent crawlers from accessing private student LMS and admin endpoints
+# Prevent crawlers from accessing private student LMS, locale switches and admin endpoints
 Disallow: /admin/
+Disallow: /locale/
 Disallow: /dashboard
 Disallow: /lesson/
 Disallow: /assignment/

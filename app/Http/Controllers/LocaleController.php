@@ -51,6 +51,37 @@ class LocaleController extends Controller
             ]);
         }
 
-        return redirect()->back();
+        // 1. Check for explicit redirect target query parameter
+        $redirectUrl = $request->query('redirect') ?? $request->input('redirect');
+        if (! empty($redirectUrl) && is_string($redirectUrl)) {
+            $parsed = parse_url($redirectUrl);
+            $appHost = strtolower($request->getHost());
+            $targetHost = isset($parsed['host']) ? strtolower($parsed['host']) : null;
+
+            // Safe internal redirect: relative path OR same host
+            if ($targetHost === null || $targetHost === $appHost) {
+                $targetPath = ($parsed['path'] ?? '/');
+                if (isset($parsed['query'])) {
+                    $targetPath .= '?'.$parsed['query'];
+                }
+                if (isset($parsed['fragment'])) {
+                    $targetPath .= '#'.$parsed['fragment'];
+                }
+
+                return redirect()->to($targetPath)->header('X-Robots-Tag', 'noindex, nofollow');
+            }
+        }
+
+        // 2. Safe referer redirect: ONLY redirect back if referer is from the exact same application host
+        $referer = $request->headers->get('referer');
+        if (! empty($referer) && is_string($referer)) {
+            $refererHost = parse_url($referer, PHP_URL_HOST);
+            if ($refererHost && strtolower($refererHost) === strtolower($request->getHost())) {
+                return redirect()->back()->header('X-Robots-Tag', 'noindex, nofollow');
+            }
+        }
+
+        // 3. Fallback: Always redirect to the platform root (never back to search engines or external referers)
+        return redirect()->to('/')->header('X-Robots-Tag', 'noindex, nofollow');
     }
 }

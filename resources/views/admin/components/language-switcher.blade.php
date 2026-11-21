@@ -20,6 +20,7 @@
             @endphp
             <a
                 href="{{ route('locale.switch', $code) }}"
+                rel="nofollow"
                 class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold transition-all {{ $current === $code ? 'bg-[#0B2A8F] text-white shadow-xs' : 'text-[#475569] dark:text-slate-300 hover:text-[#012383] dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-700/60' }}"
                 title="{{ $locale['name'] }}"
             >
@@ -36,6 +37,7 @@
             @endphp
             <a
                 href="{{ route('locale.switch', $code) }}"
+                rel="nofollow"
                 class="inline-flex items-center gap-1.5 transition-colors {{ $current === $code ? 'font-semibold text-[#012383] dark:text-white underline underline-offset-4' : 'text-slate-400 hover:text-[#012383] dark:hover:text-white' }}"
             >
                 <img src="{{ $itemFlag }}" alt="{{ $locale['name'] }}" class="w-4.5 h-3 rounded-[2px] object-cover shadow-xs border border-slate-200/80 dark:border-slate-700 shrink-0" />
@@ -90,6 +92,7 @@
                 @endphp
                 <a
                     href="{{ route('locale.switch', $code) }}"
+                    rel="nofollow"
                     class="flex items-center justify-between w-full px-3 py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer {{ $current === $code ? 'bg-[#0B2A8F] text-white font-bold shadow-xs' : 'text-[#334155] dark:text-slate-300 hover:bg-[#EAF1FB] dark:hover:bg-slate-800 hover:text-[#012383] dark:hover:text-white' }}"
                 >
                     <span class="flex items-center gap-2">

@@ -33,7 +33,7 @@ class SeoController extends Controller
             'lastmod' => $now,
             'changefreq' => 'daily',
             'priority' => '1.0',
-            'ar' => url('/?locale=ar'),
+            'ar' => url('/'),
             'en' => url('/?locale=en'),
         ];
 
@@ -43,7 +43,7 @@ class SeoController extends Controller
             'lastmod' => $now,
             'changefreq' => 'daily',
             'priority' => '0.9',
-            'ar' => url('/courses?locale=ar'),
+            'ar' => url('/courses'),
             'en' => url('/courses?locale=en'),
         ];
 
@@ -60,7 +60,7 @@ class SeoController extends Controller
                 'lastmod' => $course->updated_at?->toAtomString() ?? $now,
                 'changefreq' => 'weekly',
                 'priority' => '0.9',
-                'ar' => $courseUrl.'?locale=ar',
+                'ar' => $courseUrl,
                 'en' => $courseUrl.'?locale=en',
             ];
         }
@@ -71,7 +71,7 @@ class SeoController extends Controller
             'lastmod' => $now,
             'changefreq' => 'weekly',
             'priority' => '0.8',
-            'ar' => url('/reviews?locale=ar'),
+            'ar' => url('/reviews'),
             'en' => url('/reviews?locale=en'),
         ];
 
@@ -81,7 +81,7 @@ class SeoController extends Controller
             'lastmod' => $now,
             'changefreq' => 'monthly',
             'priority' => '0.7',
-            'ar' => url('/contact?locale=ar'),
+            'ar' => url('/contact'),
             'en' => url('/contact?locale=en'),
         ];
 
@@ -91,7 +91,7 @@ class SeoController extends Controller
             'lastmod' => $now,
             'changefreq' => 'monthly',
             'priority' => '0.6',
-            'ar' => url('/audit-report?locale=ar'),
+            'ar' => url('/audit-report'),
             'en' => url('/audit-report?locale=en'),
         ];
 

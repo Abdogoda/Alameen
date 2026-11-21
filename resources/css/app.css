@@ -431,7 +431,6 @@ html.dark textarea::placeholder {
 .modal-backdrop.hidden,
 .modal-backdrop.modal-hidden,
 .modal-hidden,
-.hidden,
 [x-cloak],
 .modal-backdrop[style*="display: none"],
 .modal-backdrop[style*="display:none"],

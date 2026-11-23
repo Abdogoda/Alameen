@@ -23,6 +23,11 @@
         Header set Cross-Origin-Opener-Policy "same-origin-allow-popups"
     </IfModule>
 
+    # Block access to source maps and development artifacts
+    <FilesMatch "\.(map)$">
+        Require all denied
+    </FilesMatch>
+
     # Send Requests To Front Controller...
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f

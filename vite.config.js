@@ -20,6 +20,18 @@ export default defineConfig({
         }),
         tailwindcss(),
     ]),
+    build: {
+        sourcemap: false,
+        minify: 'esbuild',
+        rollupOptions: {
+            output: {
+                compact: true,
+            },
+        },
+    },
+    esbuild: {
+        drop: ['console', 'debugger'],
+    },
     server: {
         cors: true,
         watch: {

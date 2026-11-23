@@ -152,6 +152,9 @@
 
         </div>
 
+        {{-- Educational Content & Announcements Widget --}}
+        <x-announcements-widget />
+
         <!-- 3. Resume Learning Split-Card (Hero Card) -->
         @php
             $heroCourse = $lastWatchedCourse ?? ($enrolledCourses->first() ?? null);

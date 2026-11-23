@@ -13,8 +13,35 @@
             'description' => $description ?? null,
             'robots' => 'noindex, nofollow, noarchive',
         ])
-        <link rel="stylesheet" href="/assets/css/admin.css" />
+        <link rel="stylesheet" href="{{ asset('assets/css/admin.css') }}?v={{ file_exists(public_path('assets/css/admin.css')) ? filemtime(public_path('assets/css/admin.css')) : '2.0' }}" />
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+        <style>
+            /* Bulletproof Responsive Table & Cards Visibility Enforcement */
+            @media (min-width: 768px) {
+                .admin-desktop-table,
+                [data-admin-table="desktop"] {
+                    display: block !important;
+                    visibility: visible !important;
+                    opacity: 1 !important;
+                }
+                .admin-mobile-cards,
+                [data-admin-table="mobile"] {
+                    display: none !important;
+                }
+            }
+            @media (max-width: 767.98px) {
+                .admin-desktop-table,
+                [data-admin-table="desktop"] {
+                    display: none !important;
+                }
+                .admin-mobile-cards,
+                [data-admin-table="mobile"] {
+                    display: block !important;
+                    visibility: visible !important;
+                    opacity: 1 !important;
+                }
+            }
+        </style>
     </head>
     <body
         class="bg-[#F8FAFC] dark:bg-[#0B1120] text-[#334155] dark:text-slate-200 min-h-screen flex flex-col font-['Cairo'] antialiased selection:bg-[#EAF1FB] selection:text-[#0B2A8F] w-full max-w-full relative alameen-dashboard-layout"
@@ -236,6 +263,21 @@
                         >
                             <svg class="size-5 shrink-0 {{ request()->routeIs('admin.notifications.*') ? 'text-white' : 'text-slate-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
                             <span class="flex-1 text-start sidebar-label">{{ __('إدارة الإشعارات') }}</span>
+                        </a>
+                        @endif
+
+                        @if($adminUser?->hasAnyPermission(['announcements.view', 'announcements.manage']))
+                        <!-- الفيديوهات والإعلانات التعليمية والتعاميم -->
+                        <a
+                            href="{{ route('admin.announcements.index') }}"
+                            @click="if (window.innerWidth < 1024) mobileSidebarOpen = false"
+                            class="sidebar-nav-link flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-sm transition-colors {{ request()->routeIs('admin.announcements.*') ? 'bg-[#012383] text-white font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-[#EAF1FB]/60 dark:hover:bg-slate-800 hover:text-[#012383] dark:hover:text-white' }}"
+                            :title="!desktopSidebarOpen && window.innerWidth >= 1024 ? '{{ __('الإعلانات والفيديوهات') }}' : ''"
+                        >
+                            <svg class="size-5 shrink-0 {{ request()->routeIs('admin.announcements.*') ? 'text-white' : 'text-slate-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"/>
+                            </svg>
+                            <span class="flex-1 text-start sidebar-label">{{ __('الإعلانات والفيديوهات') }}</span>
                         </a>
                         @endif
 
@@ -642,6 +684,7 @@
 
         {{-- Global Modals Container (Rendered directly under body to guarantee absolute viewport centering) --}}
         {{ $modals ?? '' }}
+        <x-announcements-renderer platform="admin" />
         <x-admin::confirm-modal />
 
         @persist('toast')

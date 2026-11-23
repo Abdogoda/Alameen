@@ -521,6 +521,7 @@
         @endpersist
 
         {{ $modals ?? '' }}
+        <x-announcements-renderer platform="web" />
         {{ $scripts ?? '' }}
 
         @fluxScripts

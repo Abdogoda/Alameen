@@ -56,7 +56,7 @@
     <!-- Students Roster Container -->
     <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-3xl overflow-hidden shadow-xs">
         <!-- Desktop Table View -->
-        <div class="hidden md:block overflow-x-auto min-w-0">
+        <div class="admin-desktop-table max-md:hidden overflow-x-auto min-w-0" data-admin-table="desktop">
             <table class="w-full text-right border-collapse min-w-[760px]">
                 <thead>
                     <tr class="bg-slate-50/80 dark:bg-slate-800/50 border-b border-[#DEE8F7] dark:border-slate-800 text-[12px] font-bold text-slate-500">
@@ -200,7 +200,7 @@
         </div>
 
         <!-- Mobile Card View -->
-        <div class="block md:hidden divide-y divide-[#DEE8F7]/70 dark:divide-slate-800">
+        <div class="admin-mobile-cards md:hidden divide-y divide-[#DEE8F7]/70 dark:divide-slate-800" data-admin-table="mobile">
             @forelse ($students as $student)
             <div class="p-4 flex flex-col gap-3">
                 <div class="flex items-start justify-between gap-2">

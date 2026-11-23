@@ -765,7 +765,7 @@
     </style>
 
     <!-- Optional precompiled platform CSS fallback -->
-    <link rel="stylesheet" href="/assets/css/admin.css">
+    <link rel="stylesheet" href="{{ asset('assets/css/admin.css') }}?v={{ file_exists(public_path('assets/css/admin.css')) ? filemtime(public_path('assets/css/admin.css')) : '2.0' }}">
 </head>
 <body class="bg-grid">
 

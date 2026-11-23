@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AnnouncementWebController;
 use App\Http\Controllers\Auth\EmailVerificationOtpController;
 use App\Http\Controllers\Auth\FirebaseAuthController;
 use App\Http\Controllers\Auth\GoogleAuthController;
@@ -192,5 +193,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->name('support.poll');
     });
 });
+
+// -------------------------------------------------------------
+// Web Announcements & Educational Content Interactions
+// -------------------------------------------------------------
+Route::post('announcements/{announcement}/interact', [AnnouncementWebController::class, 'interact'])
+    ->name('announcements.interact');
 
 require __DIR__.'/settings.php';

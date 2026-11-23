@@ -2221,3 +2221,34 @@ html[data-scroll-progress-enabled="false"] #alameen-scroll-progress {
     display: none !important;
     visibility: hidden !important;
 }
+
+/* ==========================================================================
+   Admin Responsive Tables & Cards - Bulletproof Visibility Enforcement
+   Guarantees desktop tables always show on desktop (>=768px) and mobile cards
+   show on mobile (<768px), immune to any generic .hidden utility conflicts.
+   ========================================================================== */
+@media (min-width: 768px) {
+    .admin-desktop-table,
+    [data-admin-table="desktop"] {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    .admin-mobile-cards,
+    [data-admin-table="mobile"] {
+        display: none !important;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .admin-desktop-table,
+    [data-admin-table="desktop"] {
+        display: none !important;
+    }
+    .admin-mobile-cards,
+    [data-admin-table="mobile"] {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+}

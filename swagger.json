@@ -108,6 +108,139 @@
         }
     ],
     "paths": {
+        "/announcements": {
+            "get": {
+                "tags": [
+                    "Announcements & Educational Videos"
+                ],
+                "x-apidog-folder": "Announcements",
+                "x-apidog-status": "released",
+                "summary": "Fetch eligible educational videos and announcements for client application",
+                "description": "Returns active announcements, educational videos, forced popups, and banners tailored to the requesting platform (mobile, web, admin) and audience (student, guest, admin).\n\n- **Controller**: `AnnouncementApiController::index()`\n- **Service**: `AnnouncementService::getEligibleAnnouncements()`\n- **Supported Display Modes**: `popup`, `force` (compulsory blocking modal), `banner` (top alert), `inline` (dashboard card)",
+                "operationId": "getAnnouncements",
+                "parameters": [
+                    {
+                        "name": "platform",
+                        "in": "query",
+                        "description": "Target client platform (`mobile`, `web`, `admin`). Defaults to `mobile`.",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": ["mobile", "web", "admin"],
+                            "default": "mobile"
+                        }
+                    },
+                    {
+                        "name": "display_mode",
+                        "in": "query",
+                        "description": "Filter by presentation mode (`popup`, `force`, `banner`, `inline`)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": ["popup", "force", "banner", "inline"]
+                        }
+                    },
+                    {
+                        "name": "content_type",
+                        "in": "query",
+                        "description": "Filter by content type (`video`, `text`, `mixed`)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": ["video", "text", "mixed"]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Eligible announcements collection with has_forced metadata flag."
+                    }
+                }
+            }
+        },
+        "/announcements/{id}": {
+            "get": {
+                "tags": [
+                    "Announcements & Educational Videos"
+                ],
+                "x-apidog-folder": "Announcements",
+                "summary": "Get details of an announcement or educational video by ID",
+                "operationId": "getAnnouncementById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "description": "Unique announcement integer ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Announcement details object."
+                    },
+                    "404": {
+                        "description": "Announcement not found or expired."
+                    }
+                }
+            }
+        },
+        "/announcements/{id}/interact": {
+            "post": {
+                "tags": [
+                    "Announcements & Educational Videos"
+                ],
+                "x-apidog-folder": "Announcements",
+                "summary": "Record user interaction (viewed, dismissed, acknowledged) for an announcement",
+                "description": "Notifies backend when user views, dismisses (popup), or acknowledges (force modal) an announcement.\nWhen a mandatory `force` modal is acknowledged, it stops blocking the user.",
+                "operationId": "interactAnnouncement",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "description": "Announcement integer ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": ["action"],
+                                "properties": {
+                                    "action": {
+                                        "type": "string",
+                                        "enum": ["viewed", "dismissed", "acknowledged"],
+                                        "description": "Interaction action type"
+                                    },
+                                    "platform": {
+                                        "type": "string",
+                                        "enum": ["mobile", "web", "admin"],
+                                        "default": "mobile"
+                                    },
+                                    "device_fingerprint": {
+                                        "type": "string",
+                                        "description": "Unique client hardware or install identifier"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Interaction successfully persisted."
+                    }
+                }
+            }
+        },
         "/auth/email/verification-notification": {
             "post": {
                 "tags": [

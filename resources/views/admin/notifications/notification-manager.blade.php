@@ -356,7 +356,7 @@
         </div>
 
         <!-- Desktop Table View -->
-        <div class="hidden md:block overflow-x-auto min-w-0 scrollbar-thin">
+        <div class="admin-desktop-table max-md:hidden overflow-x-auto min-w-0 scrollbar-thin" data-admin-table="desktop">
             <table class="w-full text-start text-xs min-w-[1150px]">
                 <thead class="bg-zinc-50 dark:bg-zinc-800/50 border-b border-zinc-200 dark:border-zinc-800 text-zinc-500 uppercase tracking-wider font-semibold">
                     <tr>
@@ -651,7 +651,7 @@
         </div>
 
         <!-- Mobile Cards View -->
-        <div class="block md:hidden divide-y divide-zinc-100 dark:divide-zinc-800">
+        <div class="admin-mobile-cards md:hidden divide-y divide-zinc-100 dark:divide-zinc-800" data-admin-table="mobile">
             @forelse ($history as $item)
                 @php
                     $recipient = $item->notifiable;

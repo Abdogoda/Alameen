@@ -61,7 +61,7 @@
     <div class="bg-white dark:bg-slate-900 border border-[#DEE8F7] dark:border-slate-800 rounded-2xl sm:rounded-3xl overflow-hidden shadow-xs min-w-0">
         
         <!-- Desktop Table View (Tablets & Desktops >= 768px) -->
-        <div class="hidden md:block overflow-x-auto">
+        <div class="admin-desktop-table max-md:hidden overflow-x-auto" data-admin-table="desktop">
             <table class="w-full text-right border-collapse min-w-[850px]">
                 <thead>
                     <tr class="bg-slate-50/80 dark:bg-slate-800/50 border-b border-[#DEE8F7] dark:border-slate-800 text-[12px] font-bold text-slate-500 dark:text-slate-400">
@@ -157,7 +157,7 @@
         </div>
 
         <!-- Mobile Cards List View (Phones & Small Tablets < 768px) -->
-        <div class="block md:hidden divide-y divide-[#DEE8F7]/70 dark:divide-slate-800 p-3 sm:p-4 space-y-3.5">
+        <div class="admin-mobile-cards md:hidden divide-y divide-[#DEE8F7]/70 dark:divide-slate-800 p-3 sm:p-4 space-y-3.5" data-admin-table="mobile">
             @forelse($receipts as $receipt)
                 @php
                     $imgSrc = $receipt->receipt_image_path ? (str_starts_with($receipt->receipt_image_path, 'http') ? $receipt->receipt_image_path : asset('storage/' . $receipt->receipt_image_path)) : asset('assets/images/certificate-preview.png');

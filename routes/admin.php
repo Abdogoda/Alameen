@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\AdminLogViewerSecurityController;
 use App\Http\Controllers\Admin\AdminManagementController;
 use App\Http\Controllers\Admin\AdminPasskeyController;
 use App\Http\Controllers\Admin\AdminProfileController;
+use App\Http\Controllers\Admin\AnnouncementController;
 use App\Http\Controllers\Admin\ClinicalTaskController;
 use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Admin\ReceiptController;
@@ -234,6 +235,21 @@ Route::prefix('admin')->name('admin.')->middleware([LogAdminActivity::class])->g
         Route::livewire('notifications', NotificationManager::class)
             ->middleware('admin.can:notifications.view,notifications.send,notifications.manage')
             ->name('notifications.index');
+
+        // Educational Content & Announcements Control Tower
+        Route::middleware('admin.can:announcements.view,announcements.manage')->group(function () {
+            Route::get('announcements', [AnnouncementController::class, 'index'])->name('announcements.index');
+            Route::get('announcements/{announcement}', [AnnouncementController::class, 'show'])->name('announcements.show');
+        });
+
+        Route::middleware('admin.can:announcements.manage')->group(function () {
+            Route::get('announcements/create', [AnnouncementController::class, 'create'])->name('announcements.create');
+            Route::post('announcements', [AnnouncementController::class, 'store'])->name('announcements.store');
+            Route::get('announcements/{announcement}/edit', [AnnouncementController::class, 'edit'])->name('announcements.edit');
+            Route::put('announcements/{announcement}', [AnnouncementController::class, 'update'])->name('announcements.update');
+            Route::delete('announcements/{announcement}', [AnnouncementController::class, 'destroy'])->name('announcements.destroy');
+            Route::post('announcements/{announcement}/toggle', [AnnouncementController::class, 'toggle'])->name('announcements.toggle');
+        });
 
         // Central Admin Audit Logs (Record of all dashboard pages and actions)
         Route::middleware('admin.can:logs.view,settings.manage')->group(function () {

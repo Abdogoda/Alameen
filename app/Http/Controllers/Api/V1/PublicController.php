@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Public\SwitchLocaleRequest;
+use App\Http\Resources\Api\V1\AnnouncementResource;
 use App\Http\Resources\Api\V1\CertificateResource;
 use App\Http\Resources\Api\V1\CourseSummaryResource;
 use App\Http\Resources\Api\V1\LevelResource;
@@ -32,9 +33,17 @@ class PublicController extends Controller
      */
     public function bootstrap(): JsonResponse
     {
+        $config = $this->publicContentService->getBootstrapConfig();
+
+        $announcements = app(\App\Services\Announcement\AnnouncementService::class)
+            ->getEligibleAnnouncements(platform: 'mobile');
+
+        $config['announcements'] = AnnouncementResource::collection($announcements);
+        $config['has_forced_announcement'] = $announcements->contains(fn ($a) => $a->display_mode === 'force');
+
         return response()->json([
             'success' => true,
-            'data' => $this->publicContentService->getBootstrapConfig(),
+            'data' => $config,
         ]);
     }
 

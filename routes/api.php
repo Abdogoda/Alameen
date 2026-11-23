@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\AnnouncementApiController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\PublicController;
 use App\Http\Controllers\Api\V1\Student\AssignmentController;
@@ -207,4 +208,19 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
                 Route::delete('/passkeys/{passkeyId}', [SettingsController::class, 'deletePasskey'])->name('passkeys.destroy');
             });
         });
+
+    /*
+    |--------------------------------------------------------------------------
+    | 4. Announcements & Educational Videos Endpoints
+    |--------------------------------------------------------------------------
+    |
+    | Centralized endpoints for Website, Mobile App (Flutter/iOS/Android),
+    | and Admin notifications with multi-format and enforcement support.
+    |
+    */
+    Route::prefix('announcements')->name('announcements.')->group(function () {
+        Route::get('/', [AnnouncementApiController::class, 'index'])->name('index');
+        Route::get('/{id}', [AnnouncementApiController::class, 'show'])->name('show');
+        Route::post('/{id}/interact', [AnnouncementApiController::class, 'interact'])->name('interact');
+    });
 });

@@ -33,6 +33,10 @@ enum AdminPermission: string
     case NOTIFICATIONS_SEND = 'notifications.send';
     case NOTIFICATIONS_MANAGE = 'notifications.manage';
 
+    // Educational Videos & Announcements
+    case ANNOUNCEMENTS_VIEW = 'announcements.view';
+    case ANNOUNCEMENTS_MANAGE = 'announcements.manage';
+
     // Students
     case STUDENTS_VIEW = 'students.view';
     case STUDENTS_MANAGE = 'students.manage';
@@ -77,6 +81,8 @@ enum AdminPermission: string
             self::NOTIFICATIONS_VIEW => 'استعراض سجل الإشعارات الصادرة',
             self::NOTIFICATIONS_SEND => 'إرسال إشعار جماعي أو فردي',
             self::NOTIFICATIONS_MANAGE => 'إدارة قوالب وحذف الإشعارات',
+            self::ANNOUNCEMENTS_VIEW => 'استعراض الفيديوهات والإعلانات التعليمية',
+            self::ANNOUNCEMENTS_MANAGE => 'إضافة وتعديل وحذف الإعلانات والتحكم بظهورها',
             self::STUDENTS_VIEW => 'استعراض قائمة الطلاب المسجلين',
             self::STUDENTS_MANAGE => 'تعديل وتفعيل حسابات الطلاب',
             self::ADMINS_VIEW => 'استعراض فريق العمل والمشرفين',
@@ -114,6 +120,8 @@ enum AdminPermission: string
             self::NOTIFICATIONS_VIEW => 'View notification history logs',
             self::NOTIFICATIONS_SEND => 'Broadcast notifications to students',
             self::NOTIFICATIONS_MANAGE => 'Manage templates and delete alerts',
+            self::ANNOUNCEMENTS_VIEW => 'View educational videos and announcements',
+            self::ANNOUNCEMENTS_MANAGE => 'Create, edit, and control announcements and popups',
             self::STUDENTS_VIEW => 'View enrolled students roster',
             self::STUDENTS_MANAGE => 'Manage student account statuses',
             self::ADMINS_VIEW => 'View supervisor and staff roster',
@@ -142,6 +150,7 @@ enum AdminPermission: string
             self::CERTIFICATES_VIEW, self::CERTIFICATES_APPROVE => 'الشهادات والاعتمادات',
             self::RECEIPTS_VIEW, self::RECEIPTS_VERIFY, self::RECEIPTS_APPROVE, self::RECEIPTS_REJECT => 'المالية وإيصالات الدفع',
             self::NOTIFICATIONS_VIEW, self::NOTIFICATIONS_SEND, self::NOTIFICATIONS_MANAGE => 'الإشعارات والتعاميم',
+            self::ANNOUNCEMENTS_VIEW, self::ANNOUNCEMENTS_MANAGE => 'الفيديوهات والإعلانات التعليمية',
             self::STUDENTS_VIEW, self::STUDENTS_MANAGE => 'شؤون الطلاب والمتدربين',
             self::ADMINS_VIEW, self::ADMINS_MANAGE, self::ROLES_MANAGE => 'إدارة المشرفين والأدوار',
             self::CMS_MANAGE, self::MENUS_MANAGE => 'إدارة المحتوى والقوائم',

@@ -52,6 +52,7 @@ class AdminRoleAndPermissionEnforcementTest extends TestCase
             route('admin.settings.index'),
             route('admin.support.index'),
             route('admin.notifications.index'),
+            route('admin.announcements.index'),
             route('log-viewer.index'),
         ];
 
@@ -69,6 +70,7 @@ class AdminRoleAndPermissionEnforcementTest extends TestCase
         $dashResponse->assertSee(route('admin.tasks.index'));
         $dashResponse->assertSee(route('admin.students.index'));
         $dashResponse->assertSee(route('admin.admins.index'));
+        $dashResponse->assertSee(route('admin.announcements.index'));
         $dashResponse->assertSee(route('admin.settings.index'));
     }
 
@@ -97,6 +99,7 @@ class AdminRoleAndPermissionEnforcementTest extends TestCase
             route('admin.settings.index'),
             route('admin.support.index'),
             route('admin.notifications.index'),
+            route('admin.announcements.index'),
             route('log-viewer.index'),
         ];
 

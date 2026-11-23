@@ -15,7 +15,34 @@
 <link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;600;700;800&family=Cairo:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/src/css/tokens.css">
 <link rel="stylesheet" href="/src/css/animations.css">
-<link rel="stylesheet" href="/assets/css/admin.css">
+<link rel="stylesheet" href="{{ asset('assets/css/admin.css') }}?v={{ file_exists(public_path('assets/css/admin.css')) ? filemtime(public_path('assets/css/admin.css')) : '2.0' }}">
+<style>
+    /* Bulletproof Responsive Table & Cards Visibility Enforcement */
+    @media (min-width: 768px) {
+        .admin-desktop-table,
+        [data-admin-table="desktop"] {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+        .admin-mobile-cards,
+        [data-admin-table="mobile"] {
+            display: none !important;
+        }
+    }
+    @media (max-width: 767.98px) {
+        .admin-desktop-table,
+        [data-admin-table="desktop"] {
+            display: none !important;
+        }
+        .admin-mobile-cards,
+        [data-admin-table="mobile"] {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+    }
+</style>
 <!-- Theme Initialization (Zero Flash) -->
 <script>
     (function () {

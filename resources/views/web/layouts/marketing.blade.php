@@ -61,6 +61,7 @@
         </div>
 
         {{ $modals ?? '' }}
+        <x-announcements-renderer platform="web" />
 
         <!-- Review Lightbox Core Handlers (Available Globally Across All Marketing Pages) -->
         <script>

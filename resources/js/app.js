@@ -1,4 +1,5 @@
 import './theme';
+import './anti-inspect';
 import './firebase-auth';
 import './loader';
 import './button-loader';

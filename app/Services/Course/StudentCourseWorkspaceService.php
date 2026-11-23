@@ -691,6 +691,22 @@ class StudentCourseWorkspaceService
         string $incidentType = 'screen_recording_attempt',
         ?Request $request = null
     ): array {
+        // Devtools, inspect, or right-click attempts are disabled on the client and do NOT suspend the user account
+        if (in_array($incidentType, ['devtools_opened', 'devtools_open', 'inspect_attempt', 'right_click_attempt'], true)) {
+            Log::info('[SECURITY_NOTICE] Devtools/inspect attempt blocked without suspending student account.', [
+                'user_id' => $user->id,
+                'user_name' => $user->name,
+                'video_id' => $video?->id,
+                'incident_type' => $incidentType,
+            ]);
+
+            return [
+                'success' => true,
+                'status' => 'blocked',
+                'message' => __('تم تعطيل أدوات الفحص بنجاح دون إيقاف الحساب.'),
+            ];
+        }
+
         // 1. Immediately deactivate/suspend the student account
         $user->update(['status' => 'suspended']);
 

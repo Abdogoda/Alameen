@@ -198,6 +198,7 @@
 
 @fonts
 
+@include('partials.anti-inspect')
 @include('partials.firebase-config')
 @php
     $themeSettings = app(\App\Services\Cms\SettingsService::class);

@@ -706,13 +706,12 @@
                         e.preventDefault();
                         return;
                     }
-                    if (e.key === 'F12' || ((e.ctrlKey || e.metaKey) && e.shiftKey && ['I', 'J', 'C'].includes(e.key.toUpperCase()))) {
+                    if (e.key === 'F12' || ((e.ctrlKey || e.metaKey) && e.shiftKey && ['I', 'J', 'C', 'K', 'E'].includes(e.key.toUpperCase())) || (e.metaKey && e.altKey && ['I', 'J', 'C', 'U'].includes(e.key.toUpperCase()))) {
                         e.preventDefault();
-                        this.instantBlackout(
-                            '{{ __('أدوات المطورين محظورة') }}',
-                            '{{ __('تم رصد محاولة فحص الصفحة أو استخراج عناصر الفيديو.') }}',
-                            'devtools_opened'
-                        );
+                        e.stopPropagation();
+                        if (typeof e.stopImmediatePropagation === 'function') {
+                            e.stopImmediatePropagation();
+                        }
                         return;
                     }
                 };

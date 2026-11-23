@@ -172,6 +172,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('results.show');
     Route::view('user-profile', 'web.pages.profile')->name('user.profile');
 
+    // Student Announcements & Educational Videos Catalog
+    Route::middleware('page.enabled:announcements')->group(function () {
+        Route::get('announcements', [AnnouncementWebController::class, 'index'])->name('announcements.index');
+        Route::get('announcements/{announcement}', [AnnouncementWebController::class, 'show'])
+            ->whereNumber('announcement')
+            ->name('announcements.show');
+    });
+
     // Student Notifications Inbox & Support Tickets
     Route::middleware('page.enabled:notifications')->group(function () {
         Route::livewire('notifications', NotificationInbox::class)

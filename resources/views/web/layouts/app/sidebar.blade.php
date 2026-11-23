@@ -139,6 +139,20 @@
                         </a>
                         @endif
 
+                        @if($cmsSettings->isPageEnabled('announcements'))
+                        <!-- الإعلانات والشروحات التعليمية -->
+                        <a
+                            href="{{ route('announcements.index') }}"
+                            @click="if (window.innerWidth < 1024) mobileSidebarOpen = false"
+                            class="sidebar-nav-link flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-sm transition-colors {{ request()->routeIs('announcements.*') ? 'bg-[#012383] text-white font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-[#EAF1FB]/60 dark:hover:bg-slate-800 hover:text-[#012383] dark:hover:text-white' }}"
+                            wire:navigate
+                            :title="!desktopSidebarOpen && window.innerWidth >= 1024 ? '{{ __('الإعلانات والشروحات') }}' : ''"
+                        >
+                            <svg class="size-5 shrink-0 {{ request()->routeIs('announcements.*') ? 'text-white' : 'text-slate-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                            <span class="flex-1 text-start sidebar-label">{{ __('الإعلانات والشروحات') }}</span>
+                        </a>
+                        @endif
+
                         @if($cmsSettings->isPageEnabled('tasks'))
                         <!-- المهام -->
                         <a

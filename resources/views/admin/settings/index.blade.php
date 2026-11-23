@@ -1963,6 +1963,7 @@
                 tasksEnabled: {{ ($settings['page_tasks_enabled']['value_ar'] ?? '0') === '1' ? 'true' : 'false' }},
                 gradesEnabled: {{ ($settings['page_grades_enabled']['value_ar'] ?? '0') === '1' ? 'true' : 'false' }},
                 notificationsEnabled: {{ ($settings['page_notifications_enabled']['value_ar'] ?? '0') === '1' ? 'true' : 'false' }},
+                announcementsEnabled: {{ ($settings['page_announcements_enabled']['value_ar'] ?? '1') === '1' ? 'true' : 'false' }},
                 settingsEnabled: {{ ($settings['page_settings_enabled']['value_ar'] ?? '1') === '1' ? 'true' : 'false' }}
             }"
         >
@@ -2287,7 +2288,63 @@
                             </div>
                         </div>
 
-                        {{-- Card 6: Settings & Security --}}
+                        {{-- Card 6: Announcements & Educational Media --}}
+                        <div class="p-5 rounded-2xl border transition-all duration-200 flex flex-col justify-between gap-4"
+                            :class="announcementsEnabled 
+                                ? 'bg-white dark:bg-slate-900 border-blue-200 dark:border-blue-800/80 shadow-xs ring-1 ring-blue-500/10' 
+                                : 'bg-slate-50/70 dark:bg-slate-800/30 border-dashed border-slate-300 dark:border-slate-700 opacity-80'"
+                        >
+                            <input type="hidden" name="settings[page_announcements_enabled][ar]" :value="announcementsEnabled ? '1' : '0'" />
+                            <input type="hidden" name="settings[page_announcements_enabled][en]" :value="announcementsEnabled ? '1' : '0'" />
+                            <input type="hidden" name="settings[page_announcements_enabled][group]" value="pages" />
+
+                            <div class="flex items-start justify-between gap-3">
+                                <div class="flex items-start gap-3">
+                                    <div class="size-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center shrink-0 shadow-xs font-bold text-base">
+                                        📢
+                                    </div>
+                                    <div class="flex flex-col gap-1">
+                                        <div class="flex items-center gap-2">
+                                            <h4 class="font-bold text-sm text-slate-900 dark:text-white">{{ __('الإعلانات والشروحات التعليمية (Announcements & Media)') }}</h4>
+                                        </div>
+                                        <span class="font-mono text-[11px] text-slate-400 dark:text-slate-500 dir-ltr text-start">/announcements</span>
+                                        <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mt-1">
+                                            {{ __('صفحة مستقلة ومكتبة تفاعلية للطلاب تضم كافة الفيديوهات التعليمية، التنبيهات الإدارية، وتظهر في القائمة الجانبية.') }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-800">
+                                <div>
+                                    <span x-show="announcementsEnabled" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300">
+                                        <span class="size-1.5 rounded-full bg-emerald-500"></span>
+                                        {{ __('مفعلة وظاهرة للطلاب') }}
+                                    </span>
+                                    <span x-show="!announcementsEnabled" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-200/80 text-slate-600 dark:bg-slate-700/60 dark:text-slate-300">
+                                        <span class="size-1.5 rounded-full bg-slate-400"></span>
+                                        {{ __('مخفية مؤقتاً') }}
+                                    </span>
+                                </div>
+
+                                <button
+                                    type="button"
+                                    @click="announcementsEnabled = !announcementsEnabled"
+                                    class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none"
+                                    :class="announcementsEnabled ? 'bg-[#012383]' : 'bg-slate-300 dark:bg-slate-700'"
+                                    role="switch"
+                                    :aria-checked="announcementsEnabled"
+                                >
+                                    <span
+                                        aria-hidden="true"
+                                        class="pointer-events-none inline-block size-5 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out"
+                                        :class="announcementsEnabled ? 'ltr:translate-x-5 rtl:-translate-x-5' : 'translate-x-0'"
+                                    ></span>
+                                </button>
+                            </div>
+                        </div>
+
+                        {{-- Card 7: Settings & Security --}}
                         <div class="p-5 rounded-2xl border transition-all duration-200 flex flex-col justify-between gap-4"
                             :class="settingsEnabled 
                                 ? 'bg-white dark:bg-slate-900 border-blue-200 dark:border-blue-800/80 shadow-xs ring-1 ring-blue-500/10' 

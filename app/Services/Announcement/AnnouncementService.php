@@ -199,6 +199,42 @@ class AnnouncementService
     }
 
     /**
+     * Get paginated catalog of announcements for user browsing (archive/learning feed).
+     */
+    public function getCatalog(
+        string $platform = 'web',
+        ?User $user = null,
+        ?string $contentType = null,
+        ?string $search = null,
+        int $perPage = 12
+    ) {
+        $query = Announcement::query()
+            ->active()
+            ->forPlatform($platform);
+
+        if ($user !== null) {
+            $query->forAudience('students');
+        } else {
+            $query->forAudience('guests');
+        }
+
+        if (! empty($contentType) && $contentType !== 'all') {
+            $query->where('content_type', $contentType);
+        }
+
+        if (! empty($search)) {
+            $term = trim($search);
+            $query->where(function ($q) use ($term) {
+                $q->where('title', 'like', "%{$term}%")
+                    ->orWhere('summary', 'like', "%{$term}%")
+                    ->orWhere('body', 'like', "%{$term}%");
+            });
+        }
+
+        return $query->ordered()->paginate($perPage)->withQueryString();
+    }
+
+    /**
      * Toggle active status.
      */
     public function toggleStatus(Announcement $announcement): bool

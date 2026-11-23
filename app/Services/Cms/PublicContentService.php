@@ -70,6 +70,7 @@ class PublicContentService
                 'tasks' => $this->settingsService->isPageEnabled('tasks'),
                 'grades' => $this->settingsService->isPageEnabled('grades'),
                 'notifications' => $this->settingsService->isPageEnabled('notifications'),
+                'announcements' => $this->settingsService->isPageEnabled('announcements'),
                 'settings' => $this->settingsService->isPageEnabled('settings'),
             ],
             'localization' => [

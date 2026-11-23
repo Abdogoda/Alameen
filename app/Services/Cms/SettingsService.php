@@ -299,6 +299,7 @@ class SettingsService
         $default = app()->environment('testing') ? '1' : match ($pageKey) {
             'courses', 'page_courses_enabled' => '1',
             'settings', 'page_settings_enabled' => '1',
+            'announcements', 'page_announcements_enabled' => '1',
             default => '0',
         };
 

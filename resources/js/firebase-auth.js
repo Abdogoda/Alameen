@@ -35,7 +35,25 @@ export function getFirebaseInstance() {
 }
 
 /**
- * Perform Google sign-in via Firebase popup and authenticate with Laravel session.
+ * Detect if the current device/browser is a mobile or tablet environment.
+ * On mobile devices, browsers do not support desktop popup windows; window.open
+ * opens a new browser tab. When closed, mobile browsers (especially Chrome on Android)
+ * often switch to an adjacent open tab rather than returning to the parent tab,
+ * and background tab execution is throttled or suspended.
+ */
+export function isMobileDevice() {
+    if (typeof window === 'undefined' || typeof navigator === 'undefined') {
+        return false;
+    }
+    const ua = navigator.userAgent || navigator.vendor || window.opera || '';
+    const isMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i.test(ua);
+    const isTouchScreen = Boolean(navigator.maxTouchPoints && navigator.maxTouchPoints > 1 && window.innerWidth <= 1024);
+    return isMobileUA || isTouchScreen;
+}
+
+/**
+ * Perform Google sign-in via Firebase (Redirect on mobile, Popup with Redirect fallback on desktop)
+ * and authenticate with Laravel session.
  *
  * @param {'user'|'admin'} targetRole
  * @param {HTMLElement|null} buttonElement
@@ -77,13 +95,32 @@ window.signInWithFirebaseGoogle = async function (targetRole = 'user', buttonEle
         `;
     }
 
+    const provider = new GoogleAuthProvider();
+    provider.setCustomParameters({ prompt: 'select_account' });
+
+    // On mobile devices, use signInWithRedirect directly to prevent mobile browsers
+    // from opening separate tabs and losing context or switching to adjacent tabs.
+    if (isMobileDevice()) {
+        try {
+            sessionStorage.setItem('firebase_auth_role', targetRole);
+            sessionStorage.setItem('firebase_auth_in_progress', 'true');
+            await signInWithRedirect(fb.auth, provider);
+            return;
+        } catch (error) {
+            console.error('[Firebase Auth Redirect Error]', error);
+            sessionStorage.removeItem('firebase_auth_role');
+            sessionStorage.removeItem('firebase_auth_in_progress');
+            showAuthAlert(getFirebaseErrorMessage(error), 'error');
+            resetButton(buttonElement, originalContent);
+            isAuthInProgress = false;
+            return;
+        }
+    }
+
     let unhandledHandler = null;
     let timeoutId = null;
 
     try {
-        const provider = new GoogleAuthProvider();
-        provider.setCustomParameters({ prompt: 'select_account' });
-
         // Safety timeout (60s) to guarantee the button never spins infinitely if the browser or popup hangs
         const timeoutPromise = new Promise((_, reject) => {
             timeoutId = setTimeout(() => {
@@ -118,7 +155,20 @@ window.signInWithFirebaseGoogle = async function (targetRole = 'user', buttonEle
         await postTokenToBackend(idToken, targetRole, buttonElement, originalContent);
     } catch (error) {
         console.error('[Firebase Auth Error]', error);
-        if (error.code === 'auth/popup-closed-by-user') {
+        if (error.code === 'auth/popup-blocked') {
+            // Popup blocked on desktop: automatically fallback to redirect
+            console.info('[Firebase Auth] Popup was blocked, falling back to redirect flow.');
+            try {
+                sessionStorage.setItem('firebase_auth_role', targetRole);
+                sessionStorage.setItem('firebase_auth_in_progress', 'true');
+                await signInWithRedirect(fb.auth, provider);
+                return;
+            } catch (redirectError) {
+                sessionStorage.removeItem('firebase_auth_role');
+                sessionStorage.removeItem('firebase_auth_in_progress');
+                showAuthAlert(getFirebaseErrorMessage(redirectError), 'error');
+            }
+        } else if (error.code === 'auth/popup-closed-by-user') {
             showAuthAlert(getFirebaseErrorMessage(error), 'info');
         } else if (error.code === 'auth/cancelled-popup-request') {
             // Ignored when multiple popups triggered
@@ -248,6 +298,7 @@ function getFirebaseErrorMessage(error) {
 
     const arErrors = {
         'auth/popup-closed-by-user': 'تم إغلاق نافذة تسجيل الدخول عبر Google.',
+        'auth/redirect-cancelled-by-user': 'تم إلغاء عملية تسجيل الدخول عبر Google.',
         'auth/popup-blocked': 'تم حظر النافذة المنبثقة من قبل المتصفح. يرجى السماح بالنوافذ المنبثقة لمنصة الأمين.',
         'auth/network-request-failed': 'تعذر الاتصال بالخادم. يرجى التحقق من اتصالك بالإنترنت والمحاولة مجدداً.',
         'auth/unauthorized-domain': 'نطاق هذا الموقع غير مصرح به في إعدادات Google Firebase. يرجى إضافته إلى النطاقات المصرح بها (Authorized Domains) في Firebase Console.',
@@ -261,6 +312,7 @@ function getFirebaseErrorMessage(error) {
 
     const enErrors = {
         'auth/popup-closed-by-user': 'Google sign-in popup was closed.',
+        'auth/redirect-cancelled-by-user': 'Google sign-in operation was cancelled.',
         'auth/popup-blocked': 'Popup was blocked by your browser. Please allow popups for this site.',
         'auth/network-request-failed': 'Network connection failed. Please check your internet connection.',
         'auth/unauthorized-domain': 'This domain is not authorized in Firebase Console settings.',
@@ -350,6 +402,7 @@ function initFirebaseAuthButtons() {
             // Only intercept if Firebase project id is present
             if (window.__firebaseConfig?.projectId) {
                 e.preventDefault();
+                e.stopPropagation();
                 window.signInWithFirebaseGoogle(role, btn);
             }
         });
@@ -358,18 +411,63 @@ function initFirebaseAuthButtons() {
 
 // Check for redirect result on page load (if user was redirected)
 async function checkRedirectResult() {
+    const isRedirectPending = sessionStorage.getItem('firebase_auth_in_progress') === 'true';
+    const targetRole = sessionStorage.getItem('firebase_auth_role') || 'user';
+    const isEn = (document.documentElement.lang || 'ar').toLowerCase().startsWith('en');
+
+    // Find the matching Google auth button on the page to display loading state
+    const btn = document.querySelector(`[data-firebase-auth="${targetRole}"]`) || document.querySelector('[data-firebase-auth]');
+    const originalContent = btn ? btn.innerHTML : null;
+
+    if (isRedirectPending && btn) {
+        btn.disabled = true;
+        btn.classList.add('opacity-75', 'cursor-wait');
+        const loadingText = targetRole === 'admin'
+            ? (isEn ? 'Completing admin Google sign-in...' : 'جاري استكمال تسجيل دخول المشرف عبر Google...')
+            : (isEn ? 'Completing Google sign-in...' : 'جاري استكمال تسجيل الدخول عبر Google...');
+        btn.innerHTML = `
+            <svg class="animate-spin size-5 shrink-0 text-current" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span>${loadingText}</span>
+        `;
+    }
+
     try {
         const fb = getFirebaseInstance();
-        if (!fb?.auth) return;
+        if (!fb?.auth) {
+            if (isRedirectPending) {
+                sessionStorage.removeItem('firebase_auth_in_progress');
+                sessionStorage.removeItem('firebase_auth_role');
+                resetButton(btn, originalContent);
+            }
+            return;
+        }
+
         const result = await getRedirectResult(fb.auth);
+
         if (result && result.user) {
-            const idToken = await result.user.getIdToken();
-            const targetRole = sessionStorage.getItem('firebase_auth_role') || 'user';
+            sessionStorage.removeItem('firebase_auth_in_progress');
             sessionStorage.removeItem('firebase_auth_role');
-            await postTokenToBackend(idToken, targetRole, null, null);
+            const idToken = await result.user.getIdToken();
+            await postTokenToBackend(idToken, targetRole, btn, originalContent);
+        } else if (isRedirectPending) {
+            sessionStorage.removeItem('firebase_auth_in_progress');
+            sessionStorage.removeItem('firebase_auth_role');
+            resetButton(btn, originalContent);
         }
     } catch (err) {
-        console.warn('[Firebase Auth] Redirect result check:', err);
+        console.error('[Firebase Auth] Redirect result check error:', err);
+        sessionStorage.removeItem('firebase_auth_in_progress');
+        sessionStorage.removeItem('firebase_auth_role');
+        resetButton(btn, originalContent);
+
+        if (err?.code === 'auth/redirect-cancelled-by-user' || err?.code === 'auth/popup-closed-by-user') {
+            showAuthAlert(getFirebaseErrorMessage(err), 'info');
+        } else if (err?.code) {
+            showAuthAlert(getFirebaseErrorMessage(err), 'error');
+        }
     }
 }
 
@@ -382,3 +480,9 @@ if (document.readyState === 'loading') {
     initFirebaseAuthButtons();
     checkRedirectResult();
 }
+
+// Support Livewire SPA page transitions
+document.addEventListener('livewire:navigated', () => {
+    initFirebaseAuthButtons();
+    checkRedirectResult();
+});

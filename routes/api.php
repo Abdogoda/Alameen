@@ -220,7 +220,7 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
     */
     Route::prefix('announcements')->name('announcements.')->group(function () {
         Route::get('/', [AnnouncementApiController::class, 'index'])->name('index');
-        Route::get('/{id}', [AnnouncementApiController::class, 'show'])->name('show');
-        Route::post('/{id}/interact', [AnnouncementApiController::class, 'interact'])->name('interact');
+        Route::get('/{id}', [AnnouncementApiController::class, 'show'])->whereNumber('id')->name('show');
+        Route::post('/{id}/interact', [AnnouncementApiController::class, 'interact'])->whereNumber('id')->name('interact');
     });
 });

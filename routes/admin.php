@@ -239,16 +239,19 @@ Route::prefix('admin')->name('admin.')->middleware([LogAdminActivity::class])->g
         // Educational Content & Announcements Control Tower
         Route::middleware('admin.can:announcements.view,announcements.manage')->group(function () {
             Route::get('announcements', [AnnouncementController::class, 'index'])->name('announcements.index');
-            Route::get('announcements/{announcement}', [AnnouncementController::class, 'show'])->name('announcements.show');
         });
 
         Route::middleware('admin.can:announcements.manage')->group(function () {
             Route::get('announcements/create', [AnnouncementController::class, 'create'])->name('announcements.create');
             Route::post('announcements', [AnnouncementController::class, 'store'])->name('announcements.store');
-            Route::get('announcements/{announcement}/edit', [AnnouncementController::class, 'edit'])->name('announcements.edit');
-            Route::put('announcements/{announcement}', [AnnouncementController::class, 'update'])->name('announcements.update');
-            Route::delete('announcements/{announcement}', [AnnouncementController::class, 'destroy'])->name('announcements.destroy');
-            Route::post('announcements/{announcement}/toggle', [AnnouncementController::class, 'toggle'])->name('announcements.toggle');
+            Route::get('announcements/{announcement}/edit', [AnnouncementController::class, 'edit'])->whereNumber('announcement')->name('announcements.edit');
+            Route::put('announcements/{announcement}', [AnnouncementController::class, 'update'])->whereNumber('announcement')->name('announcements.update');
+            Route::delete('announcements/{announcement}', [AnnouncementController::class, 'destroy'])->whereNumber('announcement')->name('announcements.destroy');
+            Route::post('announcements/{announcement}/toggle', [AnnouncementController::class, 'toggle'])->whereNumber('announcement')->name('announcements.toggle');
+        });
+
+        Route::middleware('admin.can:announcements.view,announcements.manage')->group(function () {
+            Route::get('announcements/{announcement}', [AnnouncementController::class, 'show'])->whereNumber('announcement')->name('announcements.show');
         });
 
         // Central Admin Audit Logs (Record of all dashboard pages and actions)

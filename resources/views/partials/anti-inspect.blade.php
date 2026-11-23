@@ -1,32 +1,44 @@
 <style>
-    /* Prevent mobile callout menus on long press without breaking text input fields */
+    /* Prevent selection and context callouts on mobile and desktop without breaking form inputs */
     body, html {
-        -webkit-touch-callout: none;
+        -webkit-touch-callout: none !important;
     }
     input, textarea, [contenteditable="true"] {
         -webkit-touch-callout: default !important;
+        user-select: text !important;
+        -webkit-user-select: text !important;
     }
 </style>
 <script>
     (function () {
         'use strict';
 
-        // 1. Disable Right Click (Context Menu) across the entire website
-        function disableContextMenu(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            return false;
+        // 1. Disable Right-Click (Context Menu) completely
+        function blockEvent(e) {
+            if (e.button === 2 || e.which === 3 || e.type === 'contextmenu') {
+                e.preventDefault();
+                e.stopPropagation();
+                if (typeof e.stopImmediatePropagation === 'function') {
+                    e.stopImmediatePropagation();
+                }
+                return false;
+            }
         }
 
-        document.addEventListener('contextmenu', disableContextMenu, true);
-        window.addEventListener('contextmenu', disableContextMenu, true);
+        ['contextmenu', 'mousedown', 'mouseup', 'pointerdown'].forEach(function (eventType) {
+            document.addEventListener(eventType, blockEvent, true);
+            window.addEventListener(eventType, blockEvent, true);
+        });
 
-        // 2. Disable Developer Inspection & Source Keyboard Shortcuts
+        document.oncontextmenu = function () { return false; };
+        window.oncontextmenu = function () { return false; };
+
+        // 2. Disable DevTools and Inspect shortcuts
         function disableInspectKeys(e) {
             var key = e.key ? e.key.toUpperCase() : '';
             var keyCode = e.keyCode || e.which;
             var isCtrl = Boolean(e.ctrlKey);
-            var isMeta = Boolean(e.metaKey); // Cmd key on macOS
+            var isMeta = Boolean(e.metaKey); // Cmd on macOS
             var isShift = Boolean(e.shiftKey);
             var isAlt = Boolean(e.altKey);
 
@@ -40,8 +52,8 @@
                 return false;
             }
 
-            // Ctrl/Cmd + Shift + (I, J, C, K, E) -> Elements / Console / Network / Debugger
-            if ((isCtrl || isMeta) && isShift && ['I', 'J', 'C', 'K', 'E'].indexOf(key) !== -1) {
+            // Ctrl/Cmd + Shift + (I, J, C, K, E, S)
+            if ((isCtrl || isMeta) && isShift && ['I', 'J', 'C', 'K', 'E', 'S'].indexOf(key) !== -1) {
                 e.preventDefault();
                 e.stopPropagation();
                 if (typeof e.stopImmediatePropagation === 'function') {

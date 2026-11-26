@@ -3,6 +3,7 @@ import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRe
 
 let cachedInstance = null;
 let isAuthInProgress = false;
+let isCheckingRedirect = false;
 
 /**
  * Retrieve or initialize the Firebase app instance using configuration from the window.
@@ -36,10 +37,6 @@ export function getFirebaseInstance() {
 
 /**
  * Detect if the current device/browser is a mobile or tablet environment.
- * On mobile devices, browsers do not support desktop popup windows; window.open
- * opens a new browser tab. When closed, mobile browsers (especially Chrome on Android)
- * often switch to an adjacent open tab rather than returning to the parent tab,
- * and background tab execution is throttled or suspended.
  */
 export function isMobileDevice() {
     if (typeof window === 'undefined' || typeof navigator === 'undefined') {
@@ -52,7 +49,7 @@ export function isMobileDevice() {
 }
 
 /**
- * Perform Google sign-in via Firebase (Redirect on mobile, Popup with Redirect fallback on desktop)
+ * Perform Google sign-in via Firebase (Popup on all devices with clean Redirect fallback)
  * and authenticate with Laravel session.
  *
  * @param {'user'|'admin'} targetRole
@@ -98,25 +95,6 @@ window.signInWithFirebaseGoogle = async function (targetRole = 'user', buttonEle
     const provider = new GoogleAuthProvider();
     provider.setCustomParameters({ prompt: 'select_account' });
 
-    // On mobile devices, use signInWithRedirect directly to prevent mobile browsers
-    // from opening separate tabs and losing context or switching to adjacent tabs.
-    if (isMobileDevice()) {
-        try {
-            sessionStorage.setItem('firebase_auth_role', targetRole);
-            sessionStorage.setItem('firebase_auth_in_progress', 'true');
-            await signInWithRedirect(fb.auth, provider);
-            return;
-        } catch (error) {
-            console.error('[Firebase Auth Redirect Error]', error);
-            sessionStorage.removeItem('firebase_auth_role');
-            sessionStorage.removeItem('firebase_auth_in_progress');
-            showAuthAlert(getFirebaseErrorMessage(error), 'error');
-            resetButton(buttonElement, originalContent);
-            isAuthInProgress = false;
-            return;
-        }
-    }
-
     let unhandledHandler = null;
     let timeoutId = null;
 
@@ -145,6 +123,8 @@ window.signInWithFirebaseGoogle = async function (targetRole = 'user', buttonEle
             window.addEventListener('unhandledrejection', unhandledHandler);
         });
 
+        // Use signInWithPopup across all devices (including mobile) because modern mobile browsers
+        // support popups initiated from user gestures, avoiding cross-site storage / redirect hangs.
         const result = await Promise.race([
             signInWithPopup(fb.auth, provider),
             timeoutPromise,
@@ -156,7 +136,7 @@ window.signInWithFirebaseGoogle = async function (targetRole = 'user', buttonEle
     } catch (error) {
         console.error('[Firebase Auth Error]', error);
         if (error.code === 'auth/popup-blocked') {
-            // Popup blocked on desktop: automatically fallback to redirect
+            // Popup blocked on browser: fallback to redirect flow
             console.info('[Firebase Auth] Popup was blocked, falling back to redirect flow.');
             try {
                 sessionStorage.setItem('firebase_auth_role', targetRole);
@@ -200,22 +180,45 @@ async function postTokenToBackend(idToken, targetRole, buttonElement, originalCo
 
     const pageLocale = (document.documentElement.lang || 'ar').toLowerCase().startsWith('en') ? 'en' : 'ar';
 
-    const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'X-CSRF-TOKEN': csrfToken || '',
-            'X-Locale': pageLocale,
-            'Accept-Language': pageLocale === 'ar' ? 'ar,en;q=0.9' : 'en,ar;q=0.9',
-        },
-        body: JSON.stringify({
-            id_token: idToken,
-            remember: true,
-        }),
-    });
+    const abortController = new AbortController();
+    const abortTimeout = setTimeout(() => abortController.abort(), 20000);
 
-    const data = await response.json().catch(() => ({}));
+    let response;
+    let data = {};
+
+    try {
+        response = await fetch(endpoint, {
+            method: 'POST',
+            signal: abortController.signal,
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': csrfToken || '',
+                'X-Locale': pageLocale,
+                'Accept-Language': pageLocale === 'ar' ? 'ar,en;q=0.9' : 'en,ar;q=0.9',
+            },
+            body: JSON.stringify({
+                id_token: idToken,
+                remember: true,
+            }),
+        });
+
+        data = await response.json().catch(() => ({}));
+    } catch (networkErr) {
+        console.error('[Firebase Auth] Backend communication error:', networkErr);
+        const isTimeout = networkErr.name === 'AbortError';
+        const isEn = (document.documentElement.lang || 'ar').toLowerCase().startsWith('en');
+        showAuthAlert(
+            isTimeout
+                ? (isEn ? 'Connection timed out while verifying login with server. Please try again.' : 'استغرقت عملية التحقق مع الخادم وقتاً أطول من المتوقع. يرجى إعادة المحاولة.')
+                : (isEn ? 'Network error occurred while connecting to server. Please try again.' : 'حدث خطأ في الاتصال بالخادم. يرجى التحقق من اتصالك بالإنترنت وإعادة المحاولة.'),
+            'error'
+        );
+        resetButton(buttonElement, originalContent);
+        return;
+    } finally {
+        clearTimeout(abortTimeout);
+    }
 
     // Comprehensive translation mapping for auth alerts
     const errorTranslationsAr = {
@@ -399,7 +402,7 @@ function initFirebaseAuthButtons() {
         btn.dataset.firebaseBound = 'true';
         btn.addEventListener('click', (e) => {
             const role = btn.getAttribute('data-firebase-auth') || 'user';
-            // Only intercept if Firebase project id is present
+            // If Firebase is configured, handle via Firebase SDK
             if (window.__firebaseConfig?.projectId) {
                 e.preventDefault();
                 e.stopPropagation();
@@ -411,7 +414,16 @@ function initFirebaseAuthButtons() {
 
 // Check for redirect result on page load (if user was redirected)
 async function checkRedirectResult() {
+    if (isCheckingRedirect) {
+        return;
+    }
+
     const isRedirectPending = sessionStorage.getItem('firebase_auth_in_progress') === 'true';
+    if (!isRedirectPending) {
+        return;
+    }
+
+    isCheckingRedirect = true;
     const targetRole = sessionStorage.getItem('firebase_auth_role') || 'user';
     const isEn = (document.documentElement.lang || 'ar').toLowerCase().startsWith('en');
 
@@ -419,7 +431,7 @@ async function checkRedirectResult() {
     const btn = document.querySelector(`[data-firebase-auth="${targetRole}"]`) || document.querySelector('[data-firebase-auth]');
     const originalContent = btn ? btn.innerHTML : null;
 
-    if (isRedirectPending && btn) {
+    if (btn) {
         btn.disabled = true;
         btn.classList.add('opacity-75', 'cursor-wait');
         const loadingText = targetRole === 'admin'
@@ -434,27 +446,54 @@ async function checkRedirectResult() {
         `;
     }
 
+    let timeoutId = null;
+
     try {
         const fb = getFirebaseInstance();
         if (!fb?.auth) {
-            if (isRedirectPending) {
-                sessionStorage.removeItem('firebase_auth_in_progress');
-                sessionStorage.removeItem('firebase_auth_role');
-                resetButton(btn, originalContent);
-            }
+            sessionStorage.removeItem('firebase_auth_in_progress');
+            sessionStorage.removeItem('firebase_auth_role');
+            resetButton(btn, originalContent);
             return;
         }
 
-        const result = await getRedirectResult(fb.auth);
+        // Safety timeout (12s) to ensure the redirect check NEVER hangs indefinitely
+        const timeoutPromise = new Promise((_, reject) => {
+            timeoutId = setTimeout(() => {
+                const timeoutErr = new Error('REDIRECT_TIMEOUT');
+                timeoutErr.code = 'auth/timeout';
+                reject(timeoutErr);
+            }, 12000);
+        });
+
+        let result = null;
+        try {
+            result = await Promise.race([
+                getRedirectResult(fb.auth),
+                timeoutPromise,
+            ]);
+        } catch (raceErr) {
+            console.warn('[Firebase Auth] getRedirectResult error or timeout:', raceErr);
+            // Check if user was already restored in auth state
+            if (fb.auth.currentUser) {
+                result = { user: fb.auth.currentUser };
+            } else {
+                throw raceErr;
+            }
+        }
+
+        // If result was null, also check if currentUser was restored
+        if (!result?.user && fb.auth.currentUser) {
+            result = { user: fb.auth.currentUser };
+        }
+
+        sessionStorage.removeItem('firebase_auth_in_progress');
+        sessionStorage.removeItem('firebase_auth_role');
 
         if (result && result.user) {
-            sessionStorage.removeItem('firebase_auth_in_progress');
-            sessionStorage.removeItem('firebase_auth_role');
             const idToken = await result.user.getIdToken();
             await postTokenToBackend(idToken, targetRole, btn, originalContent);
-        } else if (isRedirectPending) {
-            sessionStorage.removeItem('firebase_auth_in_progress');
-            sessionStorage.removeItem('firebase_auth_role');
+        } else {
             resetButton(btn, originalContent);
         }
     } catch (err) {
@@ -465,9 +504,16 @@ async function checkRedirectResult() {
 
         if (err?.code === 'auth/redirect-cancelled-by-user' || err?.code === 'auth/popup-closed-by-user') {
             showAuthAlert(getFirebaseErrorMessage(err), 'info');
+        } else if (err?.code === 'auth/timeout') {
+            showAuthAlert(getFirebaseErrorMessage(err), 'error');
         } else if (err?.code) {
             showAuthAlert(getFirebaseErrorMessage(err), 'error');
         }
+    } finally {
+        if (timeoutId) {
+            clearTimeout(timeoutId);
+        }
+        isCheckingRedirect = false;
     }
 }
 

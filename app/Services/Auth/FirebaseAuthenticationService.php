@@ -130,9 +130,13 @@ class FirebaseAuthenticationService
             }
         }
 
+        $redirect = app(\App\Services\Cms\SettingsService::class)->isPageEnabled('student_dashboard')
+            ? route('dashboard')
+            : route('courses.index');
+
         return [
             'user' => $user,
-            'redirect' => route('dashboard'),
+            'redirect' => $redirect,
         ];
     }
 

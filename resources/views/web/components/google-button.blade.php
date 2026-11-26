@@ -11,7 +11,6 @@
 <button
     type="button"
     data-firebase-auth="user"
-    onclick="window.handleGoogleSignIn ? window.handleGoogleSignIn(this) : null"
     class="w-full h-[50px] rounded-xl border border-[#DEE8F7] hover:border-[#0B2A8F]/40 dark:border-slate-700 bg-white hover:bg-[#F8FAFC] dark:bg-slate-800 dark:hover:bg-slate-700/80 text-[#012383] dark:text-white font-bold text-sm shadow-xs hover:shadow-sm active:scale-[0.99] transition-all flex items-center justify-center gap-3 cursor-pointer select-none group {{ $class }}"
     title="{{ $action === 'signup' ? __('التسجيل باستخدام Google') : __('المتابعة باستخدام Google') }}"
 >
